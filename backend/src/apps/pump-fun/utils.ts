@@ -1,15 +1,15 @@
-import { TransactionWithTs } from "../apps/pump-fun/types"
-import { Candlestick } from "../types"
+import { TransactionWithTs } from "./types"
+import { Candle } from "../../types"
 
 // Функция для преобразования массива транзакций в свечи
 export function transactionsToCandles(
   transactions: TransactionWithTs[],
   candleIntervalMs: number = 60000 // 1 минута
-): Candlestick[] {
+): Candle[] {
   if (transactions.length === 0) return []
 
   const sortedTx = [...transactions].sort((a, b) => a.timestamp - b.timestamp)
-  const candles: Candlestick[] = []
+  const candles: Candle[] = []
 
   let currentCandleStart =
     Math.floor(sortedTx[0].timestamp / candleIntervalMs) * candleIntervalMs

@@ -2,13 +2,13 @@
 
 import { apiClient } from "@/lib/api"
 import { useEffect, useState, useTransition } from "react"
-import { DataTable } from "../data-table"
-import { columns } from "../columns"
+import { DataTable } from "../../data-table"
+import { columns } from "../../columns"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Tradingview from "../../../components/app/tradingview-chart"
+import Tradingview from "../../../../components/app/tradingview-chart"
 import { AppTable, adaptKeys } from "@/lib/helpers"
 import { cn } from "@/lib/utils"
 import { socket } from "@/lib/socket"
@@ -125,7 +125,7 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
       <div className="flex gap-4 items-center">
         <h1 className="text-2xl">Анализ валютной пары {symbol}</h1>
         <div className="flex gap-2">
-          <Link href="/trade">
+          <Link href="/">
             <Button size="sm">Назад</Button>
           </Link>
           <Button
@@ -134,16 +134,8 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
             disabled={isPending}
             onClick={handleStartClick}
           >
-            Начать
+            Скан
           </Button>
-          <Link
-            href={`https://www.bybit.com/trade/usdt/${symbol}`}
-            target="_blank"
-          >
-            <Button variant={"outline"} size="sm">
-              Bybit
-            </Button>
-          </Link>
         </div>
       </div>
 

@@ -1,8 +1,8 @@
 import { bybitWsClient } from "./sdk/clients"
 import { WS_KEY_MAP, isWsOrderbookEventV5 } from "bybit-api"
 import { io } from "../../server"
-import { getSymbolTA } from "./technical-indicators"
-import { Candlestick } from "../../types"
+import { getTechnicalAnalyze } from "../analyzer/indicators"
+import { Candle } from "../../types"
 
 const getSubscriptions = (symbol: string, exclude = false) =>
   [
@@ -55,10 +55,10 @@ bybitWsClient.on("update", (data: bybitWS) => {
         low: parseFloat(kline.low),
         volume: parseFloat(kline.volume),
         turnover: parseFloat(kline.turnover),
-      })) as Candlestick[]
+      })) as Candle[]
     )
 
-    io.emit("ta" + timeframe, JSON.stringify(getSymbolTA(klines)))
+    io.emit("ta" + timeframe, JSON.stringify(getTechnicalAnalyze(klines)))
   }
 })
 

@@ -1,8 +1,9 @@
-import { AnalysisResult, Candlestick, Ticker } from "../../types"
+import { Analyze, Candle, Signal, Ticker } from "../../types"
+import { getSupertrendCrossingSignal } from "./strategies/supertrend-crossing"
 
 type IndicatorFunction = (
   currentPrice: number,
-  analysis: AnalysisResult,
+  analysis: Analyze,
   ticker: Ticker
 ) => number
 
@@ -14,20 +15,20 @@ const INDICATOR_WEIGHTS = {
   stochasticRsi: 1,
   adx: 1.3,
   cci: 1,
-  change24h: 2.5, // Наибольшее влияние
-  openInterest: 2.5, // Наибольшее влияние
+  change24h: 1.5, // Наибольшее влияние
+  openInterest: 1.5, // Наибольшее влияние
 }
 
 // Вспомогательная функция для безопасного деления
 const safeDivide = (numerator: number, denominator: number): number =>
   denominator !== 0 ? numerator / denominator : 0
 
-export function calculateRating(
-  historical: Candlestick[],
-  analysis: AnalysisResult,
+export function analyzeCandles(
+  candles: Candle[],
+  analysis: Analyze,
   ticker: Ticker
-): { decision: 1 | 0 | -1; rating: number } {
-  const currentPrice = historical[historical.length - 1].close
+): { decision: Signal; rating: number } {
+  const currentPrice = candles[candles.length - 1].close
 
   const indicators: IndicatorFunction[] = [
     // SMA
@@ -109,12 +110,11 @@ export function calculateRating(
     0
   )
 
-  // Пороговые значения для принятия решения
-  const positiveThreshold = 1
-  const negativeThreshold = -1
+  const signal = getSupertrendCrossingSignal(candles, [
+    { period: 10, multiplier: 1 },
+    { period: 11, multiplier: 2 },
+    { period: 12, multiplier: 3 },
+  ])
 
-  const decision: 1 | 0 | -1 =
-    rating > positiveThreshold ? 1 : rating < negativeThreshold ? -1 : 0
-
-  return { decision, rating }
+  return { decision: signal, rating }
 }

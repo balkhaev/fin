@@ -1,16 +1,14 @@
 import Queue from "bull"
-import { fetchKline } from "./sdk/methods"
-import { getSymbolTA } from "./technical-indicators"
-import { supabase } from "../../sdk/supabase"
+import { getTechnicalAnalyze } from "../../analyzer/indicators"
+import { supabase } from "../../../lib/supabase"
 import snakecaseKeys from "snakecase-keys"
-import { calculateRating } from "./calculate-rating"
-import { io } from "../../server"
-import { bybitRestClient } from "./sdk/clients"
-import { tickerAdapter } from "./sdk/adapters"
+import { io } from "../../../server"
+import { bybitRestClient } from "../sdk/clients"
+import { tickerAdapter } from "../sdk/adapters"
+import { fetchKline } from "../sdk/methods"
+import { analyzeCandles } from "../../analyzer"
 
-export const analyzeSymbolQueue = new Queue<{ symbol: string }>(
-  "analyze symbol"
-)
+export const analyzeSymbolQueue = new Queue<{ symbol: string }>("bybit-analyze")
 
 analyzeSymbolQueue.process(3, async (job) => {
   const historicalData = await fetchKline({ symbol: job.data.symbol })
@@ -18,8 +16,9 @@ analyzeSymbolQueue.process(3, async (job) => {
     category: "linear",
     symbol: job.data.symbol,
   })
-  const analysis = getSymbolTA(historicalData)
-  const rating = calculateRating(
+
+  const analysis = getTechnicalAnalyze(historicalData)
+  const rating = analyzeCandles(
     historicalData,
     analysis,
     tickerAdapter(tickers.list[0])

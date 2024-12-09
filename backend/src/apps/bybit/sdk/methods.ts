@@ -1,6 +1,6 @@
 import { GetKlineParamsV5 } from "bybit-api"
 import { bybitRestClient } from "./clients"
-import { Candlestick, Ticker } from "../../../types"
+import { Candle, Ticker } from "../../../types"
 import { klineAdapter, tickerAdapter } from "./adapters"
 
 export async function fetchTickers(): Promise<Ticker[]> {
@@ -15,7 +15,7 @@ export async function fetchTickers(): Promise<Ticker[]> {
 export async function fetchKline({
   symbol = "BTCUSDT",
   interval = "15",
-}: Partial<GetKlineParamsV5>): Promise<Candlestick[]> {
+}: Partial<GetKlineParamsV5>): Promise<Candle[]> {
   const res = await bybitRestClient.getKline({
     symbol,
     category: "linear",

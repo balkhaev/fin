@@ -1,12 +1,4 @@
-type SnakeCase<S extends string> = S extends `${infer T}${infer U}`
-  ? T extends Lowercase<T>
-    ? `${T}${SnakeCase<U>}`
-    : `_${Lowercase<T>}${SnakeCase<U>}`
-  : S
-
-type SnakeCasedKeys<T> = {
-  [K in keyof T as K extends string ? SnakeCase<K> : K]: T[K]
-}
+import { SnakeCase, SnakeCasedKeys } from "./types"
 
 function toSnakeCase<S extends string>(str: S): SnakeCase<S> {
   return str

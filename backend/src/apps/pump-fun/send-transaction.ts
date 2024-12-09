@@ -3,7 +3,7 @@ import {
   QUICKNODE_POLL,
   WALLET_PUBLIC_KEY,
   signAndSend,
-} from "../../sdk/solana"
+} from "../../lib/solana"
 
 type Opts = {
   mint: string

@@ -8,11 +8,11 @@ export type Signal = -1 | 0 | 1
 
 export type Intervals = KlineIntervalV3
 
-export type Candlestick = {
+export type Candle = {
   start?: number // Время начала интервала (в миллисекундах с 1970 года)
   end?: number // Время окончания интервала (в миллисекундах с 1970 года)
   interval?: number // Интервал свечи (например, '5' для 5 минут)
-  open: number // Цена открытия (в строковом формате)
+  open?: number // Цена открытия (в строковом формате)
   close: number // Цена закрытия (в строковом формате)
   high: number // Максимальная цена за интервал (в строковом формате)
   low: number // Минимальная цена за интервал (в строковом формате)
@@ -28,7 +28,7 @@ export type Ticker = {
   volume24h: number
   openInterest: number
 }
-export type AnalysisResult = {
+export type Analyze = {
   symbol?: string
   lastPrice: number
   sma: number | null
@@ -46,8 +46,23 @@ export type AnalysisResult = {
   change24h?: number
   volume24h?: number
 }
+
+/**
+ * Технические типы
+ */
+
 export type RecursiveRequired<T> = Required<{
   [P in keyof T]: T[P] extends object | undefined
     ? RecursiveRequired<Required<T[P]>>
     : T[P]
 }>
+
+export type SnakeCase<S extends string> = S extends `${infer T}${infer U}`
+  ? T extends Lowercase<T>
+    ? `${T}${SnakeCase<U>}`
+    : `_${Lowercase<T>}${SnakeCase<U>}`
+  : S
+
+export type SnakeCasedKeys<T> = {
+  [K in keyof T as K extends string ? SnakeCase<K> : K]: T[K]
+}

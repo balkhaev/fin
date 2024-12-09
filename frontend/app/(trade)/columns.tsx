@@ -38,7 +38,7 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     accessorKey: "symbol",
     header: "Symbol",
     cell: ({ getValue }) => (
-      <Link href={`/trade/${getValue<string>()}`}>{getValue<string>()}</Link>
+      <Link href={`/symbol/${getValue<string>()}`}>{getValue<string>()}</Link>
     ),
   },
   {

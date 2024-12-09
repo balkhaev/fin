@@ -1,8 +1,7 @@
-import { transactionsToCandles } from "../../utils/candles"
+import { transactionsToCandles } from "./utils"
 import { io } from "../../server"
 import { CreateTransaction, TransactionWithTs } from "./types"
-import { doubleSupertrendStrategy } from "../../strategies/double-supertrend"
-import { supertrend } from "../../strategies/indicators/supertrend"
+import { getSupertrendCrossingSignal } from "../analyzer/strategies/supertrend-crossing"
 import {
   getBuyedTx,
   getCoinCreatingTime,
@@ -11,6 +10,7 @@ import {
 } from "./state"
 import { RecursiveRequired } from "../../types"
 import { pumpFunEvents } from "./listener"
+import { getSupertrendSignal } from "../analyzer/signals/supertrend"
 
 export const MIN_MARKET_CAP_LIMIT_IN_SOL = 50
 export const MAX_MARKET_CAP_LIMIT_IN_SOL = 150
@@ -192,12 +192,9 @@ export function rateTx(
 
     if (candles.length > fallback.minCandlesForDouble) {
       // Достаточно свечей для doubleSupertrend
-      const result = doubleSupertrendStrategy(candles, {
-        global,
-        realtime,
-      })
+      const signal = getSupertrendCrossingSignal(candles, [global, realtime])
 
-      return { signal: result.signal, data: "[double supertrend] sniper" }
+      return { signal, data: "[double supertrend] sniper" }
     }
 
     // Мало свечей, fallback на простой supertrend
@@ -210,14 +207,10 @@ export function rateTx(
       multiplier = candles.length > 7 ? 3 : fallback.multiplierSell
     }
 
-    const result = supertrend({
-      initialArray: candles,
-      period,
-      multiplier,
-    })
+    const signal = getSupertrendSignal(candles, period, multiplier)
 
     return {
-      signal: result.signal,
+      signal: signal,
       data: `[supertrend] sniper fallback`,
     }
   }
@@ -241,14 +234,10 @@ export function rateTx(
    * Вход по любому супертренду чтобы быстро протестить сигналы
    */
   if (strategy === "supertrend") {
-    const result = supertrend({
-      initialArray: candles,
-      period: 4,
-      multiplier: 3,
-    })
+    const signal = getSupertrendSignal(candles, 4, 3)
 
     return {
-      signal: result.signal,
+      signal,
       data: `[supertrend] strategy signal`,
     }
   }
@@ -277,13 +266,10 @@ export function rateTx(
   // }
 
   // В остальных случаях doubleSupertrend
-  const dtResult = doubleSupertrendStrategy(candles, {
-    global,
-    realtime,
-  })
+  const signal = getSupertrendCrossingSignal(candles, [global, realtime])
 
   return {
-    signal: dtResult.signal,
+    signal,
     data: "[double supertrend] strategy signal",
   }
 }

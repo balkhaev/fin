@@ -1,24 +1,16 @@
 import { ATR } from "technicalindicators"
-import { Signal } from "../../types"
+import { Candle, Signal } from "../../../types"
 
-export type SupertrendProps = {
-  initialArray: Array<{
-    high: number
-    low: number
-    close: number
-  }>
+export type SupertrendOpts = {
   period: number
   multiplier: number
 }
 
-export function supertrend({
-  initialArray,
-  period = 10,
-  multiplier = 3,
-}: SupertrendProps): {
-  superTrend: Array<number>
-  signal: Signal
-} {
+export function getSupertrendSignal(
+  initialArray: Candle[],
+  period: number,
+  multiplier: number
+): Signal {
   const high = initialArray.map((bar) => bar.high)
   const low = initialArray.map((bar) => bar.low)
   const close = initialArray.map((bar) => bar.close)
@@ -27,7 +19,7 @@ export function supertrend({
   const r = initialArray.slice(period)
 
   const len = r.length
-  if (len === 0) return { superTrend: [], signal: 0 }
+  if (len === 0) return 0
 
   const basicUpperBand = new Array<number>(len)
   const basicLowerBand = new Array<number>(len)
@@ -97,5 +89,5 @@ export function supertrend({
     }
   }
 
-  return { superTrend, signal }
+  return signal
 }

@@ -1,5 +1,5 @@
 import { OHLCVKlineV5, TickerLinearInverseV5 } from "bybit-api"
-import { Candlestick, Ticker } from "../../../types"
+import { Candle, Ticker } from "../../../types"
 
 export const tickerAdapter = (ticker: TickerLinearInverseV5): Ticker => ({
   symbol: ticker.symbol,
@@ -9,7 +9,7 @@ export const tickerAdapter = (ticker: TickerLinearInverseV5): Ticker => ({
   openInterest: parseFloat(ticker.openInterestValue),
 })
 
-export const klineAdapter = (kline: OHLCVKlineV5): Candlestick => ({
+export const klineAdapter = (kline: OHLCVKlineV5): Candle => ({
   open: parseFloat(kline[1]),
   high: parseFloat(kline[2]),
   low: parseFloat(kline[3]),

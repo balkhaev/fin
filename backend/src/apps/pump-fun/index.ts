@@ -1,4 +1,4 @@
-import { DEVNET_POOL, QUICKNODE_POLL } from "../../sdk/solana"
+import { DEVNET_POOL, QUICKNODE_POLL } from "../../lib/solana"
 import { io } from "../../server"
 import { handleBuy, handleSell } from "./handlers"
 import { listenPumpFun, pumpFunEvents } from "./listener"

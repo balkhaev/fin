@@ -9,10 +9,10 @@ import {
   SMA,
   StochasticRSI,
 } from "technicalindicators"
-import { AnalysisResult, Candlestick } from "../../types"
-import { mom } from "../../strategies/indicators/mom"
+import { Analyze, Candle } from "../../types"
+import { mom } from "./indicators/mom"
 
-export function getSymbolTA(historicalData: Candlestick[]): AnalysisResult {
+export function getTechnicalAnalyze(historicalData: Candle[]): Analyze {
   const prices = historicalData.map((data) => data.close)
   const highs = historicalData.map((data) => data.high)
   const lows = historicalData.map((data) => data.low)

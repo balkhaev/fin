@@ -144,7 +144,7 @@ export function DexPageClient({ coin }: Props) {
     })
     socket.on("buyed", (data) => {
       const fartSound = new Audio(
-        "https://cdn.freesound.org/previews/610/610067_7376654-lq.mp3"
+        "https://cdn.freesound.org/previews/498/498167_9986848-lq.mp3"
       )
       fartSound.volume = 0.2
       fartSound.play()
