@@ -1,6 +1,6 @@
 import Queue from "bull"
 import { fetchKline } from "../sdk/methods"
-import { getSupertrendCrossingSignal } from "../../analyzer/strategies/supertrend-crossing"
+import { getSupertrendCrossingSignal } from "../../analyzer/strategies"
 
 export const botQueue = new Queue("bybit-bot")
 

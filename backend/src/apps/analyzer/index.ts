@@ -1,5 +1,5 @@
 import { Analyze, Candle, Signal, Ticker } from "../../types"
-import { getSupertrendCrossingSignal } from "./strategies/supertrend-crossing"
+import { getSupertrendCrossingSignal } from "./strategies"
 
 type IndicatorFunction = (
   currentPrice: number,

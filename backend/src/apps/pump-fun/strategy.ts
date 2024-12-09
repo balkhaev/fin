@@ -1,7 +1,7 @@
 import { transactionsToCandles } from "./utils"
 import { io } from "../../server"
 import { CreateTransaction, TransactionWithTs } from "./types"
-import { getSupertrendCrossingSignal } from "../analyzer/strategies/supertrend-crossing"
+import { getSupertrendCrossingSignal } from "../analyzer/strategies"
 import {
   getBuyedTx,
   getCoinCreatingTime,
