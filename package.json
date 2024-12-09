@@ -1,0 +1,12 @@
+{
+  "name": "trader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "types": "cd backend && npm run types && cd ../frontend && npm run types"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
