@@ -129,10 +129,10 @@ export function rateTx(
   /**
    * Не залетаем в монеты с большим маркет капом
    */
-  if (!buyedTx && MAX_MARKET_CAP_LIMIT_IN_SOL > tx.marketCapSol) {
+  if (!buyedTx && tx.marketCapSol > MAX_MARKET_CAP_LIMIT_IN_SOL) {
     return {
       signal: -1,
-      data: `[market cap limit] ${MAX_MARKET_CAP_LIMIT_IN_SOL} SOL`,
+      data: `[ignore] maxcap ${tx.marketCapSol} > ${MAX_MARKET_CAP_LIMIT_IN_SOL}`,
     }
   }
 
@@ -224,7 +224,7 @@ export function rateTx(
   ) {
     return {
       signal: 0,
-      data: `[ignore] market cap ${tx.marketCapSol} < ${MIN_MARKET_CAP_LIMIT_IN_SOL}`,
+      data: `[ignore] mincap ${tx.marketCapSol} < ${MIN_MARKET_CAP_LIMIT_IN_SOL}`,
     }
   }
 
