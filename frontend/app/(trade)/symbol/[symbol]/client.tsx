@@ -12,8 +12,8 @@ import Tradingview from "../../../../components/app/tradingview-chart"
 import { AppTable, adaptKeys } from "@/lib/helpers"
 import { cn } from "@/lib/utils"
 import { socket } from "@/lib/socket"
-import { Card } from "@/components/ui/card"
 import TechnicalAnalysisDisplay from "./ta"
+import { useCopilotReadable } from "@copilotkit/react-core"
 
 type Props = {
   symbol: string
@@ -58,6 +58,23 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
     ask1Size: null,
     openInterest: null,
     tickDirection: null,
+  })
+
+  useCopilotReadable({
+    description: "Тикер валютной пары",
+    value: ticker,
+  })
+  useCopilotReadable({
+    description: "Технический анализ на основе 1 минутных свечей",
+    value: ta1,
+  })
+  useCopilotReadable({
+    description: "Технический анализ на основе 5 минутных свечей",
+    value: ta5,
+  })
+  useCopilotReadable({
+    description: "История технических анализов",
+    value: items,
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -139,67 +156,65 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
         </div>
       </div>
 
-      <Card>
-        <div className="grid grid-cols-4 text-center py-4">
-          <div>
-            <div
-              className={cn(
-                ticker.tickDirection?.toLocaleLowerCase().includes("plus")
-                  ? "text-green-500"
-                  : "text-red-500",
-                "font-bold"
-              )}
-            >
-              {lastPrice.toLocaleString("ru-RU")} USD
-            </div>
-            <div>Last price</div>
+      <div className="grid grid-cols-4 text-center py-4">
+        <div>
+          <div
+            className={cn(
+              ticker.tickDirection?.toLocaleLowerCase().includes("plus")
+                ? "text-green-500"
+                : "text-red-500",
+              "font-bold"
+            )}
+          >
+            {lastPrice.toLocaleString("ru-RU")} USD
           </div>
-          <div>
-            <div className="font-bold">
-              {volume24h.toLocaleString("ru-RU")} USD
-            </div>
-            <div>Volume (24h)</div>
-          </div>
-          <div>
-            <div className="font-bold">
-              {turnover24h.toLocaleString("ru-RU")} USD
-            </div>
-            <div>объём торгов (24h)</div>
-          </div>
-          <div>
-            <div
-              className={cn(
-                ticker.tickDirection?.toLocaleLowerCase().includes("plus")
-                  ? "text-green-500"
-                  : "text-red-500",
-                "font-bold"
-              )}
-            >
-              {price24hPcnt.toFixed(2)}%
-            </div>
-            <div>Change (24h)</div>
-          </div>
+          <div>Last price</div>
         </div>
-        <div className="h-[600px] overflow-hidden grid grid-cols-4 gap-2">
-          <div className="col-span-3">
-            <Tradingview symbol={symbol} />
+        <div>
+          <div className="font-bold">
+            {volume24h.toLocaleString("ru-RU")} USD
           </div>
-          <div>
-            <Tabs defaultValue="1">
-              <TabsList>
-                <TabsTrigger value="1">1m</TabsTrigger>
-                <TabsTrigger value="5">5m</TabsTrigger>
-              </TabsList>
-              <TabsContent value="1">
-                <TechnicalAnalysisDisplay ta={ta1} />
-              </TabsContent>
-              <TabsContent value="5">
-                <TechnicalAnalysisDisplay ta={ta5} />
-              </TabsContent>
-            </Tabs>
-          </div>
+          <div>Volume (24h)</div>
         </div>
-      </Card>
+        <div>
+          <div className="font-bold">
+            {turnover24h.toLocaleString("ru-RU")} USD
+          </div>
+          <div>объём торгов (24h)</div>
+        </div>
+        <div>
+          <div
+            className={cn(
+              ticker.tickDirection?.toLocaleLowerCase().includes("plus")
+                ? "text-green-500"
+                : "text-red-500",
+              "font-bold"
+            )}
+          >
+            {price24hPcnt.toFixed(2)}%
+          </div>
+          <div>Change (24h)</div>
+        </div>
+      </div>
+      <div className="h-[600px] overflow-hidden grid grid-cols-4">
+        <div className="col-span-3">
+          <Tradingview symbol={symbol} />
+        </div>
+        <div className="bg-[#131722] border-[#363a45] border border-l-0 p-2">
+          <Tabs defaultValue="1">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="1">1m</TabsTrigger>
+              <TabsTrigger value="5">5m</TabsTrigger>
+            </TabsList>
+            <TabsContent value="1">
+              <TechnicalAnalysisDisplay ta={ta1} />
+            </TabsContent>
+            <TabsContent value="5">
+              <TechnicalAnalysisDisplay ta={ta5} />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
       <Tabs
         defaultValue="market"
         className="flex-1 overflow-hidden flex flex-col"

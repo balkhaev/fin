@@ -1,7 +1,7 @@
 import { bybitWsClient } from "./sdk/clients"
 import { WS_KEY_MAP, isWsOrderbookEventV5 } from "bybit-api"
 import { io } from "../../server"
-import { getTechnicalAnalyze } from "../analyzer/indicators"
+import { getTechnicalAnalyze } from "../blackbox/indicators"
 import { Candle } from "../../types"
 
 const getSubscriptions = (symbol: string, exclude = false) =>

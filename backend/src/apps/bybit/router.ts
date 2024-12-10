@@ -38,10 +38,7 @@ router.get("/status/bybit", async (req, res) => {
   res.json({
     status: "ok",
     result: {
-      working:
-        analyzeBybitCron.running ||
-        (await analyzeSymbolQueue.count()) > 0 ||
-        (await botQueue.count()),
+      working: analyzeBybitCron.running,
     },
   })
 })

@@ -1,20 +1,20 @@
 import Queue from "bull"
-import { getTechnicalAnalyze } from "../../analyzer/indicators"
+import { getTechnicalAnalyze } from "../../blackbox/indicators"
 import { supabase } from "../../../lib/supabase"
 import snakecaseKeys from "snakecase-keys"
 import { io } from "../../../server"
 import { bybitRestClient } from "../sdk/clients"
 import { tickerAdapter } from "../sdk/adapters"
 import { fetchKline } from "../sdk/methods"
-import { analyzeCandles } from "../../analyzer"
+import { analyzeCandles } from "../../blackbox"
 import { KlineIntervalV3 } from "bybit-api"
 
 export const analyzeSymbolQueue = new Queue<{ symbol: string }>("bybit-analyze")
 
-const CANDLES_TO_FETCH: KlineIntervalV3[] = ["1", "15", "60", "D"]
+const CANDLES_TO_FETCH: KlineIntervalV3[] = ["1", "15", "30", "60"]
 
-analyzeSymbolQueue.process(4, async (job) => {
-  const [candles1, candles15, candles60, candlesD] = await Promise.all(
+analyzeSymbolQueue.process(3, async (job) => {
+  const [candles1, candles15, candles30, candles60] = await Promise.all(
     CANDLES_TO_FETCH.map((interval) =>
       fetchKline({ symbol: job.data.symbol, interval })
     )
@@ -31,8 +31,8 @@ analyzeSymbolQueue.process(4, async (job) => {
     candles: {
       1: candles1,
       15: candles15,
+      30: candles30,
       60: candles60,
-      D: candlesD,
     },
     analysis,
     ticker,

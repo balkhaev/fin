@@ -14,7 +14,7 @@ dayjsOrig.locale(ru)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const dayjs = (date: Date) => {
-  return dayjsOrig(date).add(3, "hour").tz()
+  return dayjsOrig(date).tz()
 }
 
 const timezonedUnix = (value: number) => {

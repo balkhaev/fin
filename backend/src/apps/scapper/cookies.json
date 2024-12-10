@@ -1,0 +1,10 @@
+[
+  "guest_id_marketing=v1%3A173384901753132209; Expires=Thu, 10 Dec 2026 16:43:37 GMT; Max-Age=63072000; Domain=twitter.com; Path=/; Secure; hostOnly=false; aAge=0ms; cAge=1881ms",
+  "guest_id_ads=v1%3A173384901753132209; Expires=Thu, 10 Dec 2026 16:43:37 GMT; Max-Age=63072000; Domain=twitter.com; Path=/; Secure; hostOnly=false; aAge=0ms; cAge=1881ms",
+  "personalization_id=\"v1_IWEfxG7KR7oHHITUpSIT3g==\"; Expires=Thu, 10 Dec 2026 16:43:37 GMT; Max-Age=63072000; Domain=twitter.com; Path=/; Secure; hostOnly=false; aAge=0ms; cAge=1881ms",
+  "guest_id=v1%3A173384901753132209; Expires=Thu, 10 Dec 2026 16:43:37 GMT; Max-Age=63072000; Domain=twitter.com; Path=/; Secure; hostOnly=false; aAge=0ms; cAge=1881ms",
+  "twid=\"u=434113824\"; Expires=Sun, 09 Dec 2029 16:43:39 GMT; Max-Age=157680000; Domain=twitter.com; Path=/; Secure; hostOnly=false; aAge=0ms; cAge=237ms",
+  "ct0=d1a272362dba28c941292aed072e246e196ece250743a90fd6c5fa0659daffb35016b97a3c2b09322ff90414465b215eb4bafe02ea8453aba43ab55652ea1cdaf07db6eba9f205b87ec5ae7292f704ad; Expires=Sun, 09 Dec 2029 16:43:39 GMT; Max-Age=157680000; Domain=twitter.com; Path=/; Secure; SameSite=Lax; hostOnly=false; aAge=0ms; cAge=236ms",
+  "auth_token=bc4b1292ded743c22cceb7e636e601c31c8094f4; Expires=Sun, 09 Dec 2029 16:43:39 GMT; Max-Age=157680000; Domain=twitter.com; Path=/; Secure; HttpOnly; hostOnly=false; aAge=0ms; cAge=236ms",
+  "att=1-hvi1pKOWdtcdiTM5pQX2DTBjMh9U8nynAQaMKhgc; Expires=Wed, 11 Dec 2024 16:43:39 GMT; Max-Age=86400; Domain=twitter.com; Path=/; Secure; HttpOnly; hostOnly=false; aAge=0ms; cAge=1ms"
+]

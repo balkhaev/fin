@@ -1,7 +1,7 @@
 import { transactionsToCandles } from "./utils"
 import { io } from "../../server"
 import { CreateTransaction, TransactionWithTs } from "./types"
-import { getSupertrendCrossingSignal } from "../analyzer/strategies"
+import { getSupertrendCrossingSignal } from "../blackbox/strategies"
 import {
   getBuyedTx,
   getCoinCreatingTime,
@@ -10,7 +10,7 @@ import {
 } from "./state"
 import { RecursiveRequired } from "../../types"
 import { pumpFunEvents } from "./listener"
-import { getSupertrendSignal } from "../analyzer/signals/supertrend"
+import { getSupertrendSignal } from "../blackbox/signals/supertrend"
 
 export const MIN_MARKET_CAP_LIMIT_IN_SOL = 50
 export const MAX_MARKET_CAP_LIMIT_IN_SOL = 150

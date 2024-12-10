@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-import { io, server } from "./server"
+import { server, io } from "./server"
 
 const PORT = process.env.PORT || 8000
 

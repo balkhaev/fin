@@ -25,13 +25,11 @@ function TradingViewChart({ symbol }: Props) {
           "locale": "ru",
           "allow_symbol_change": true,
           "save_image": false,
-          "details": true,
           "calendar": false,
           "studies": [
             "STD;Awesome_Oscillator",
             "STD;Supertrend"
-          ],
-          "support_host": "https://www.tradingview.com"
+          ]
         }`
     container.current?.appendChild(script)
   }, [])

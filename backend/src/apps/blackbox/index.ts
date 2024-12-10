@@ -26,19 +26,16 @@ const safeDivide = (numerator: number, denominator: number): number =>
   denominator !== 0 ? numerator / denominator : 0
 
 type CandlesOpts = {
-  candles: Pick<Record<KlineIntervalV3, Candle[]>, "1" | "15" | "60" | "D">
+  candles: Pick<Record<KlineIntervalV3, Candle[]>, "1" | "15" | "30" | "60">
   analysis: Analyze
   ticker: Ticker
 }
 
 export function analyzeCandles({ candles, analysis, ticker }: CandlesOpts): {
-  tripleSupertrend: Signal
-  doubleSupertrend: Signal
-  macdSupertrend: Signal
-  supertrend: Signal
+  signals: { name: string; signal: Signal }[]
   rating: number
 } {
-  const currentPrice = candles[15][candles[15].length - 1].close
+  const currentPrice = candles[1][candles[1].length - 1].close
 
   const indicators: IndicatorFunction[] = [
     // SMA
@@ -120,29 +117,43 @@ export function analyzeCandles({ candles, analysis, ticker }: CandlesOpts): {
     0
   )
 
-  const supertrend = getSupertrendSignal(candles[1], 10, 3)
+  const supertrend = getSupertrendSignal(candles[15], 10, 3)
 
-  const tripleSupertrend = getSupertrendCrossingSignal(candles[60], [
+  const tripleSupertrend = getSupertrendCrossingSignal(candles[30], [
     { period: 10, multiplier: 1 },
     { period: 11, multiplier: 2 },
     { period: 12, multiplier: 3 },
   ])
 
-  const doubleSupertrend = getSupertrendCrossingSignal(candles[60], [
+  const doubleSupertrend = getSupertrendCrossingSignal(candles[15], [
     { period: 10, multiplier: 3 },
     { period: 25, multiplier: 5 },
   ])
 
   const macdSupertrend = checkSignalsCrossing([
     analysis.macd?.histogram ? (analysis.macd.histogram > 0 ? 1 : 0) : 0,
-    getSupertrendSignal(candles[60], 10, 3),
+    supertrend,
   ])
 
   return {
-    tripleSupertrend,
-    doubleSupertrend,
-    macdSupertrend,
-    supertrend,
+    signals: [
+      {
+        name: "Triple Supertrend",
+        signal: tripleSupertrend,
+      },
+      {
+        name: "Double Supertrend",
+        signal: doubleSupertrend,
+      },
+      {
+        name: "MACD Supertrend",
+        signal: macdSupertrend,
+      },
+      {
+        name: "Supertrend",
+        signal: supertrend,
+      },
+    ],
     rating,
   }
 }

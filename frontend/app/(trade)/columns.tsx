@@ -34,25 +34,156 @@ const formatCell = (
   )
 }
 
-const SignalCell = ({ value }: { value: number }) => {
-  let text = ""
-  let color = ""
-  switch (value) {
-    case 1:
-      text = "Покупать"
-      color = "text-green-500"
-      break
-    case -1:
-      text = "Продавать"
-      color = "text-red-500"
-      break
-    case 0:
-    default:
-      text = "Держать"
-      color = "text-yellow-500"
-      break
-  }
-  return <span className={color}>{text}</span>
+const SignalCell = ({
+  signals,
+}: {
+  signals: { name: string; signal: number }[]
+}) => {
+  return (
+    <div className="flex flex-col">
+      {signals.map(({ name, signal }) => {
+        let text = ""
+        let color = ""
+        switch (signal) {
+          case 1:
+            text = "Buy"
+            color = "text-green-500"
+            break
+          case -1:
+            text = "Sell"
+            color = "text-red-500"
+            break
+          case 0:
+          default:
+            text = "Hold"
+            color = "text-yellow-500"
+            break
+        }
+        return (
+          <span key={name} className={color}>
+            {name}: {text}
+          </span>
+        )
+      })}
+    </div>
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TechnicalAnalysis = ({ row }: { row: any }) => {
+  const rsiK = row.stochasticRsi?.k
+  const rsiD = row.stochasticRsi?.d
+  const adx = row.adx?.adx
+  const pdi = row.adx?.pdi
+  const mdi = row.adx?.mdi
+  const macd = row.macd?.MACD
+  const macdSignal = row.macd?.signal
+  const macdHistogram = row.macd?.histogram
+  const bbUpper = row.bollingerBands?.upper
+  const bbMiddle = row.bollingerBands?.middle
+  const bbLower = row.bollingerBands?.lower
+  const currentPrice = row.lastPrice
+
+  return (
+    <div>
+      <div className="text-gray-500">
+        <span className="font-semibold">RSI: </span>
+        <span
+          className={
+            rsiK > 80
+              ? "text-green-500"
+              : rsiK < 20
+              ? "text-red-500"
+              : "text-gray-500"
+          }
+        >
+          {rsiK?.toFixed(2)} K
+        </span>
+        {" / "}
+        <span
+          className={
+            rsiD > 80
+              ? "text-green-500"
+              : rsiD < 20
+              ? "text-red-500"
+              : "text-gray-500"
+          }
+        >
+          {rsiD?.toFixed(2)} D
+        </span>
+      </div>
+      <div className="text-gray-500">
+        <span className="font-semibold">ADX: </span>
+        <span
+          className={
+            adx > 25
+              ? "text-green-500"
+              : adx >= 20
+              ? "text-yellow-500"
+              : "text-gray-500"
+          }
+        >
+          {adx?.toFixed(2)}
+        </span>
+        {" / "}
+        <span className={pdi > mdi ? "text-green-500" : "text-gray-500"}>
+          {pdi?.toFixed(2)} +DI
+        </span>
+        {" / "}
+        <span className={mdi > pdi ? "text-red-500" : "text-gray-500"}>
+          {mdi?.toFixed(2)} -DI
+        </span>
+      </div>
+      <div className="text-gray-500">
+        <span className="font-semibold">MACD: </span>
+        <span className={macd > macdSignal ? "text-green-500" : "text-red-500"}>
+          {macd?.toFixed(2)}
+        </span>
+        {" / "}
+        <span className={macdSignal > macd ? "text-green-500" : "text-red-500"}>
+          {macdSignal?.toFixed(2)} Signal
+        </span>
+        {" / "}
+        <span
+          className={
+            macdHistogram > 0.2
+              ? "text-green-500"
+              : macdHistogram < -0.2
+              ? "text-red-500"
+              : "text-gray-500"
+          }
+        >
+          {macdHistogram?.toFixed(2)} Hist
+        </span>
+      </div>
+      <div className="text-gray-500">
+        <span className="font-semibold">BB: </span>
+        <span
+          className={
+            currentPrice >= bbUpper ? "text-yellow-500" : "text-gray-500"
+          }
+        >
+          {bbUpper?.toFixed(2)} U
+        </span>
+        {" / "}
+        <span
+          className={
+            currentPrice === bbMiddle ? "text-yellow-500" : "text-gray-500"
+          }
+        >
+          {bbMiddle?.toFixed(2)} M
+        </span>
+        {" / "}
+        <span
+          className={
+            currentPrice <= bbLower ? "text-green-500" : "text-gray-500"
+          }
+        >
+          {bbLower?.toFixed(2)} L
+        </span>
+      </div>
+    </div>
+  )
 }
 
 export const columns: ColumnDef<AppTable<"analysis">>[] = [
@@ -77,10 +208,10 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     accessorKey: "createdAt",
     header: "Updated At",
     cell: ({ getValue }) => {
-      const date = getValue<string>()
+      const date = dayjs(new Date(getValue<string>())).add(3, "hours")
       return date ? (
-        <div title={dayjs(new Date(date)).format("DD.MM.YYYY, HH:mm:ss")}>
-          {dayjs(new Date(date)).fromNow()}
+        <div title={date.format("DD.MM.YYYY, HH:mm:ss")}>
+          {date.format("HH:mm:ss")}
         </div>
       ) : (
         "N/A"
@@ -126,25 +257,22 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
       </span>
     ),
   },
-  // Новый столбец: Open Interest
   {
     accessorKey: "openInterest",
     header: "Interest",
     cell: ({ getValue, row }) => {
-      // @ts-expect-error easd
+      // @ts-expect-error asd
       const volume24h = row.original.volume24H
       const openInterest = getValue<number | undefined>()
 
-      // Проверка на наличие значений
       if (openInterest === undefined) {
-        return "N/A" // Защита от деления на 0 или отсутствующих данных
+        return "N/A"
       }
 
       const percentage = openInterest / volume24h
 
-      // Логика интерпретации открытого интереса
-      const isHigh = percentage > 0.2 // Примерный порог для высокого открытого интереса
-      const isLow = percentage < 0.05 // Примерный порог для низкого открытого интереса
+      const isHigh = percentage > 0.2
+      const isLow = percentage < 0.05
 
       const color = isHigh
         ? "text-green-500"
@@ -159,7 +287,6 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
       )
     },
   },
-  // Новый столбец: Change 24h
   {
     accessorKey: "change24H",
     header: "Price %",
@@ -186,225 +313,52 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     },
   },
   {
-    accessorKey: "stochasticRsi",
-    header: "RSI",
-    cell: ({ getValue }) => {
-      const value = getValue<{ k: number; d: number } | null>()
-      if (!value) return "N/A"
-
-      const { k, d } = value
-
-      // Интерпретация сигналов:
-      // "Хороший положительный тренд" (бычий): когда K > D и K > 80
-      // "Отрицательный" (медвежий): когда K < D и K < 20
-      const isBullish = k > d && k > 80
-      const isBearish = k < d && k < 20
-
-      // Если не бычий и не медвежий, считаем нейтральным.
-      // При нейтральном сигнале окраска будет серой.
-      const kColor = isBullish
-        ? "text-green-500"
-        : isBearish
-        ? "text-red-500"
-        : "text-gray-500"
-
-      const dColor = isBullish
-        ? "text-green-500"
-        : isBearish
-        ? "text-red-500"
-        : "text-gray-500"
+    accessorKey: "technicalAnalysis",
+    header: "Technical Analysis",
+    cell: ({ row }) => <TechnicalAnalysis row={row.original} />,
+  },
+  {
+    accessorKey: "additionalIndicators",
+    header: "Indicators",
+    cell: ({ row }) => {
+      const cci = row.original.cci!
+      const atr = row.original.atr!
+      const momentum = row.original.momentum!
 
       return (
         <div>
-          <span className={kColor}>K: {k.toFixed(2)}</span>,{" "}
-          <span className={dColor}>D: {d.toFixed(2)}</span>
+          <div className="text-gray-500">
+            CCI:{" "}
+            <span
+              className={
+                cci > 100
+                  ? "text-red-500"
+                  : cci < -100
+                  ? "text-green-500"
+                  : cci < -60
+                  ? "text-yellow-500"
+                  : "text-gray-500"
+              }
+            >
+              {cci?.toFixed(2)}
+            </span>
+          </div>
+          <div className="text-gray-500">ATR: {atr?.toFixed(2)}</div>
+          <div className="text-gray-500">
+            MOM:{" "}
+            <span
+              className={
+                momentum > 0
+                  ? "text-green-500"
+                  : momentum < 0
+                  ? "text-red-500"
+                  : "text-gray-500"
+              }
+            >
+              {momentum?.toFixed(2)}
+            </span>
+          </div>
         </div>
-      )
-    },
-  },
-
-  {
-    accessorKey: "adx",
-    header: "ADX",
-    cell: ({ getValue }) => {
-      const value = getValue<{ adx: number; pdi: number; mdi: number } | null>()
-      if (!value) return "N/A"
-
-      const { adx, pdi, mdi } = value
-
-      // Интерпретация тренда
-      const isStrongTrend = adx > 25
-      const isModerateTrend = adx >= 20 && adx <= 25
-      const isTrend = isStrongTrend || isModerateTrend
-
-      const isBullish = pdi > mdi
-      const isBearish = mdi > pdi
-      const ratio = mdi / pdi
-
-      // Цветовая индикация для ADX
-      const adxColor = isStrongTrend
-        ? "text-green-500"
-        : isModerateTrend
-        ? "text-yellow-500"
-        : "text-gray-500"
-
-      // Цветовая индикация для +DI и -DI
-      const pdiColor =
-        isTrend && isBullish && ratio > 0.2 ? "text-green-500" : "text-gray-500"
-      const mdiColor =
-        isTrend && isBearish && ratio > 1.1 ? "text-red-500" : "text-gray-500"
-
-      return (
-        <div>
-          <span className={adxColor}>ADX: {adx?.toFixed(2)}</span>,{" "}
-          <span className={pdiColor}>+DI: {pdi?.toFixed(2)}</span>,{" "}
-          <span className={mdiColor}>-DI: {mdi?.toFixed(2)}</span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: "macd",
-    header: "MACD",
-    enableSorting: true,
-    sortingFn: (rowA, rowB) => {
-      // @ts-expect-error asd
-      const macdA = rowA.original.macd?.signal ?? 0
-      // @ts-expect-error asd
-      const macdB = rowB.original.macd?.signal ?? 0
-      return macdA - macdB
-    },
-    cell: ({ getValue }) => {
-      const value = getValue<{
-        MACD: number
-        signal: number
-        histogram: number
-      } | null>()
-      if (!value) return "N/A"
-
-      const isNeutral = Math.abs(value.histogram) < 0.1
-      const isBullish = !isNeutral && value.histogram > 0
-      const isBearish = !isNeutral && value.histogram < 0
-      const className = isBullish
-        ? "text-green-500"
-        : isBearish
-        ? "text-red-500"
-        : "text-gray-500"
-
-      return (
-        <>
-          <span className={className}>MACD: {value.MACD.toFixed(2)}</span>,{" "}
-          <span className={className}>Signal: {value.signal?.toFixed(2)}</span>,{" "}
-          <span className={className}>
-            Histogram: {value.histogram?.toFixed(2)}
-          </span>
-        </>
-      )
-    },
-  },
-  {
-    accessorKey: "bollingerBands",
-    header: "BB",
-    enableSorting: true,
-    sortingFn: (rowA, rowB) => {
-      // @ts-expect-error asd
-      const upperA = rowA.original.bollingerBands?.upper ?? 0
-      // @ts-expect-error asd
-      const upperB = rowB.original.bollingerBands?.upper ?? 0
-      return upperA - upperB
-    },
-    cell: ({ row, getValue }) => {
-      const value = getValue<{
-        upper: number
-        lower: number
-        middle: number
-      } | null>()
-      const currentPrice = row.original.lastPrice
-
-      if (!value || !currentPrice) return "N/A"
-
-      const isNearUpper = currentPrice >= value.upper
-      const isNearLower = currentPrice <= value.lower
-
-      return (
-        <div>
-          <span className={isNearUpper ? "text-yellow-500" : "text-gray-500"}>
-            Upper: {value.upper.toFixed(2)}
-          </span>
-          ,{" "}
-          <span className={isNearLower ? "text-green-500" : "text-gray-500"}>
-            Lower: {value.lower.toFixed(2)}
-          </span>
-          ,{" "}
-          <span
-            className={
-              currentPrice === value.middle
-                ? "text-yellow-500"
-                : "text-gray-500"
-            }
-          >
-            Middle: {value.middle.toFixed(2)}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: "cci",
-    header: "CCI",
-    cell: ({ getValue }) => {
-      const value = getValue<number | null>()
-      if (!value) return "N/A"
-
-      const isOverbought = value > 100
-      const isOversold = value < -100
-
-      return (
-        <span
-          className={
-            isOverbought
-              ? "text-red-500"
-              : isOversold
-              ? "text-green-500"
-              : "text-gray-500"
-          }
-        >
-          {value.toFixed(2)}
-        </span>
-      )
-    },
-  },
-  {
-    accessorKey: "atr",
-    header: "ATR",
-    cell: ({ getValue }) => (
-      <span className="text-gray-700">
-        {getValue<number | null>()?.toFixed(2) || "N/A"}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "momentum",
-    header: "MOM",
-    cell: ({ getValue }) => {
-      const value = getValue<number | null>()
-      if (!value) return "N/A"
-
-      const isPositive = value > 0
-      const isNegative = value < 0
-
-      return (
-        <span
-          className={
-            isPositive
-              ? "text-green-500"
-              : isNegative
-              ? "text-red-500"
-              : "text-gray-500"
-          }
-        >
-          {value.toFixed(2)}
-        </span>
       )
     },
   },
@@ -444,23 +398,10 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     },
   },
   {
-    accessorKey: "tripleSupertrend",
-    header: "TST",
-    cell: ({ getValue }) => <SignalCell value={getValue<number>()} />,
-  },
-  {
-    accessorKey: "doubleSupertrend",
-    header: "DST",
-    cell: ({ getValue }) => <SignalCell value={getValue<number>()} />,
-  },
-  {
-    accessorKey: "macdSupertrend",
-    header: "MST",
-    cell: ({ getValue }) => <SignalCell value={getValue<number>()} />,
-  },
-  {
-    accessorKey: "supertrend",
-    header: "ST",
-    cell: ({ getValue }) => <SignalCell value={getValue<number>()} />,
+    accessorKey: "signals",
+    header: "Signals",
+    cell: ({ getValue }) => (
+      <SignalCell signals={getValue<{ name: string; signal: number }[]>()} />
+    ),
   },
 ]

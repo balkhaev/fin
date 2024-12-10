@@ -1,5 +1,4 @@
 import React from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 
@@ -12,11 +11,7 @@ export default function TechnicalAnalysisDisplay({
   ta,
 }: TechnicalAnalysisDisplayProps) {
   if (!ta) {
-    return (
-      <Card className="w-full max-w-md">
-        <CardContent>Нет данных для анализа</CardContent>
-      </Card>
-    )
+    return "Нет данных для анализа"
   }
 
   const formatValue = (value: number | null | undefined) =>

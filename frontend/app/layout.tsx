@@ -21,11 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.className} antialiased`}>
-        <div className="p-4 gap-4 h-screen overflow-hidden flex flex-col">
-          {children}
-        </div>
-      </body>
+      <body className={`${roboto.className} antialiased`}>{children}</body>
     </html>
   )
 }

@@ -17,7 +17,7 @@ export type Database = {
           cci: number | null
           change24h: number | null
           created_at: string | null
-          decision: number | null
+          ema: number | null
           id: number
           last_price: number
           macd: Json | null
@@ -26,6 +26,7 @@ export type Database = {
           open_interest: number | null
           rating: number | null
           rsi: number | null
+          signals: Json | null
           sma: number | null
           stochastic_rsi: Json | null
           symbol: string
@@ -39,7 +40,7 @@ export type Database = {
           cci?: number | null
           change24h?: number | null
           created_at?: string | null
-          decision?: number | null
+          ema?: number | null
           id?: never
           last_price: number
           macd?: Json | null
@@ -48,6 +49,7 @@ export type Database = {
           open_interest?: number | null
           rating?: number | null
           rsi?: number | null
+          signals?: Json | null
           sma?: number | null
           stochastic_rsi?: Json | null
           symbol: string
@@ -61,7 +63,7 @@ export type Database = {
           cci?: number | null
           change24h?: number | null
           created_at?: string | null
-          decision?: number | null
+          ema?: number | null
           id?: never
           last_price?: number
           macd?: Json | null
@@ -70,6 +72,7 @@ export type Database = {
           open_interest?: number | null
           rating?: number | null
           rsi?: number | null
+          signals?: Json | null
           sma?: number | null
           stochastic_rsi?: Json | null
           symbol?: string
@@ -114,7 +117,7 @@ export type Database = {
         }
         Relationships: []
       }
-      tickers: {
+      tickers_spot: {
         Row: {
           high_price_24h: number
           id: number
@@ -167,7 +170,7 @@ export type Database = {
           cci: number | null
           change24h: number | null
           created_at: string | null
-          decision: number | null
+          ema: number | null
           id: number
           last_price: number
           macd: Json | null
@@ -176,6 +179,7 @@ export type Database = {
           open_interest: number | null
           rating: number | null
           rsi: number | null
+          signals: Json | null
           sma: number | null
           stochastic_rsi: Json | null
           symbol: string

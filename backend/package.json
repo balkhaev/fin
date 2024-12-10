@@ -12,11 +12,13 @@
   "dependencies": {
     "@bull-board/api": "^6.5.3",
     "@bull-board/express": "^6.5.3",
+    "@copilotkit/runtime": "^1.4.1",
     "@solana/compat": "^2.0.0",
     "@solana/keys": "^2.0.0",
     "@solana/transactions": "^2.0.0",
     "@solana/web3.js": "^2.0.0",
     "@supabase/supabase-js": "^2.46.2",
+    "agent-twitter-client": "^0.0.16",
     "axios": "^1.7.8",
     "bn.js": "^5.2.1",
     "bs58": "^6.0.0",
@@ -32,6 +34,8 @@
     "snakecase-keys": "^8.0.1",
     "socket.io": "^4.8.1",
     "technicalindicators": "^3.1.0",
+    "twitter-api-sdk": "^1.2.1",
+    "twitter-api-v2": "^1.18.2",
     "ws": "^8.18.0"
   },
   "devDependencies": {

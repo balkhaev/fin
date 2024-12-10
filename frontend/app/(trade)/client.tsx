@@ -1,6 +1,7 @@
 "use client"
 
 import { apiClient } from "@/lib/api"
+// @ts-expect-error react 19 bug
 import { useActionState, useEffect, useState } from "react"
 import { DataTable } from "./data-table"
 import { columns } from "./columns"
@@ -9,6 +10,7 @@ import { createClient } from "@/lib/supabase/client"
 import camelcaseKeys from "camelcase-keys"
 import { AppTable } from "@/lib/helpers"
 import { JobsPanel } from "../../components/app/jobs-panel"
+import { useCopilotReadable } from "@copilotkit/react-core"
 
 export type NormalizedAnalysis = AppTable<"analysis">
 
@@ -21,6 +23,11 @@ export default function TradePageClient({ data, working }: Props) {
   const client = createClient()
   const [items, setItems] = useState<NormalizedAnalysis[]>(data ?? [])
   const [isWorking, setWorking] = useState(working)
+
+  useCopilotReadable({
+    description: "Текущее состояние работы приложения",
+    value: isWorking,
+  })
 
   const [error, submitAction, isPending] = useActionState(async () => {
     setWorking((prev) => !prev)
