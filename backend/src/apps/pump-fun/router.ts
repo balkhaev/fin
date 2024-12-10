@@ -55,7 +55,7 @@ router.post("/sniper/sell", async (req, res) => {
   })
 })
 
-router.get("/status", async (req, res) => {
+router.get("/status/pump-fun", async (req, res) => {
   res.json({
     status: "ok",
     result: {

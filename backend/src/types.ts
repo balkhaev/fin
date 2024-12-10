@@ -40,6 +40,7 @@ export type Analyze = {
   cci: number | null
   atr: number | null
   obv: number | null
+  ema: number | null
   momentum: number | null
   trend: "Bullish" | "Bearish" | "Neutral"
   openInterest?: number

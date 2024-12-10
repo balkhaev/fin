@@ -4,25 +4,17 @@ import { socket } from "@/lib/socket"
 import { useEffect, useState } from "react"
 
 export function JobsPanel() {
-  const [activeJobs, setActiveJobs] = useState<string[]>([])
-
-  // socket.on("active-job", (data) => {
-  //   const job = JSON.parse(data)
-  // })
+  const [jobCount, setJobCount] = useState<number>(0)
 
   useEffect(() => {
-    socket.on("waiting-job", (jobId) => {
-      setActiveJobs((prev) => [...prev, jobId])
-    })
-
-    socket.on("completed-job", () => {
-      setActiveJobs((prev) => prev.slice(0, -1))
+    socket.on("job-count", (count) => {
+      setJobCount(count)
     })
   }, [])
 
-  if (activeJobs.length === 0) {
+  if (jobCount === 0) {
     return null
   }
 
-  return `Задач ${activeJobs.length}`
+  return `Задач ${jobCount}`
 }

@@ -13,15 +13,20 @@ import { JobsPanel } from "../../components/app/jobs-panel"
 export type NormalizedAnalysis = AppTable<"analysis">
 
 type Props = {
+  working?: boolean
   data: NormalizedAnalysis[]
 }
 
-export default function TradePageClient({ data }: Props) {
+export default function TradePageClient({ data, working }: Props) {
   const client = createClient()
   const [items, setItems] = useState<NormalizedAnalysis[]>(data ?? [])
+  const [isWorking, setWorking] = useState(working)
 
   const [error, submitAction, isPending] = useActionState(async () => {
-    const { data } = await apiClient.post("/analysis")
+    setWorking((prev) => !prev)
+
+    const method = isWorking ? "delete" : "post"
+    const { data } = await apiClient[method]("/analysis")
 
     if (data.status !== "ok") {
       return data.result
@@ -41,15 +46,22 @@ export default function TradePageClient({ data }: Props) {
           table: "analysis",
         },
         (payload) => {
-          setItems((prev) =>
-            prev.map((item) =>
-              item.symbol === payload.new.symbol
-                ? (camelcaseKeys(payload.new, {
-                    deep: false,
-                  }) as NormalizedAnalysis)
-                : item
+          setItems((prev) => {
+            const symbolIndex = prev.findIndex(
+              (item) => item.symbol === payload.new.symbol
             )
-          )
+            const analyz = camelcaseKeys(payload.new, {
+              deep: false,
+            }) as NormalizedAnalysis
+
+            if (symbolIndex === -1) {
+              return [...prev, analyz]
+            }
+
+            return prev.map((item) =>
+              item.symbol === payload.new.symbol ? analyz : item
+            )
+          })
         }
       )
       .subscribe()
@@ -63,19 +75,23 @@ export default function TradePageClient({ data }: Props) {
     <>
       <div className="flex gap-4 items-center">
         <h1 className="text-2xl">Анализ валютных пар</h1>
-        <form action={submitAction} className="flex gap-2 items-center">
-          <Button size="sm" disabled={isPending}>
-            Начать
-          </Button>
-          {error}
+        <div className="flex gap-2 items-center">
+          <form action={submitAction} className="flex gap-2 items-center">
+            <Button size="sm" disabled={isPending}>
+              {isWorking ? "Остановить" : "Начать"}
+            </Button>
+            {error}
+          </form>
           <JobsPanel />
-        </form>
+        </div>
       </div>
-      <DataTable
-        columns={columns}
-        data={items}
-        sortingState={[{ id: "rating", desc: true }]}
-      />
+      <div className="overflow-hidden flex flex-col">
+        <DataTable
+          columns={columns}
+          data={items}
+          sortingState={[{ id: "rating", desc: true }]}
+        />
+      </div>
     </>
   )
 }

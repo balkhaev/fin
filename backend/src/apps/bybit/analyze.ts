@@ -5,7 +5,7 @@ export async function getTrendTickers() {
   const tickers = await fetchTickers()
 
   const trending = tickers.filter(
-    (ticker) => ticker.volume24h > 1000000 && ticker.lastPrice > 0.05
+    (ticker) => ticker.volume24h > 1_000_000 && ticker.lastPrice > 0.05
   )
 
   return {
@@ -17,9 +17,11 @@ export async function getTrendTickers() {
 export default async function analyzeBybit() {
   const tickers = await getTrendTickers()
 
-  tickers.trending.forEach((ticker) => {
-    analyzeSymbolQueue.add(ticker)
-  })
+  analyzeSymbolQueue.addBulk(
+    tickers.trending.map((ticker) => ({
+      data: ticker,
+    }))
+  )
 
   return { tickers }
 }

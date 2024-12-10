@@ -4,6 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -31,22 +32,29 @@ export function DataTable<TData, TValue>({
   sortingState = [],
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>(sortingState) // Состояние сортировки
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 60,
+  })
 
   const table = useReactTable({
     data,
     columns,
     state: {
       sorting,
+      pagination,
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(), // Включаем сортировку
+    onPaginationChange: setPagination,
   })
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border flex flex-col overflow-hidden">
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0 bg-slate-900">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {

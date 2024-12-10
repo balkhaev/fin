@@ -200,11 +200,14 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
           </div>
         </div>
       </Card>
-      <Tabs defaultValue="market">
-        <TabsList>
+      <Tabs
+        defaultValue="market"
+        className="flex-1 overflow-hidden flex flex-col"
+      >
+        {/* <TabsList>
           <TabsTrigger value="market">Маркет</TabsTrigger>
-        </TabsList>
-        <TabsContent value="market" className="space-y-4">
+        </TabsList> */}
+        <TabsContent value="market" className="space-y-4 overflow-auto">
           <DataTable columns={columns} data={items} />
         </TabsContent>
       </Tabs>

@@ -2,8 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
-import { format } from "date-fns"
 import { AppTable } from "@/lib/helpers"
+import { Button } from "@/components/ui/button"
+import dayjs from "@/utils/date"
 
 const formatCell = (
   value: number | null,
@@ -33,12 +34,43 @@ const formatCell = (
   )
 }
 
+const SignalCell = ({ value }: { value: number }) => {
+  let text = ""
+  let color = ""
+  switch (value) {
+    case 1:
+      text = "Покупать"
+      color = "text-green-500"
+      break
+    case -1:
+      text = "Продавать"
+      color = "text-red-500"
+      break
+    case 0:
+    default:
+      text = "Держать"
+      color = "text-yellow-500"
+      break
+  }
+  return <span className={color}>{text}</span>
+}
+
 export const columns: ColumnDef<AppTable<"analysis">>[] = [
   {
     accessorKey: "symbol",
     header: "Symbol",
     cell: ({ getValue }) => (
-      <Link href={`/symbol/${getValue<string>()}`}>{getValue<string>()}</Link>
+      <div className="flex items-center gap-2">
+        <Link
+          href={`https://www.bybit.com/trade/usdt/${getValue<string>()}`}
+          target="_blank"
+        >
+          <Button variant={"outline"} size={"sm"}>
+            Bybit
+          </Button>
+        </Link>
+        <Link href={`/symbol/${getValue<string>()}`}>{getValue<string>()}</Link>
+      </div>
     ),
   },
   {
@@ -46,7 +78,13 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     header: "Updated At",
     cell: ({ getValue }) => {
       const date = getValue<string>()
-      return date ? format(new Date(date), "dd MMM yyyy, HH:mm:ss") : "N/A"
+      return date ? (
+        <div title={dayjs(new Date(date)).format("DD.MM.YYYY, HH:mm:ss")}>
+          {dayjs(new Date(date)).fromNow()}
+        </div>
+      ) : (
+        "N/A"
+      )
     },
   },
   {
@@ -91,7 +129,7 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
   // Новый столбец: Open Interest
   {
     accessorKey: "openInterest",
-    header: "Open Interest",
+    header: "Interest",
     cell: ({ getValue, row }) => {
       // @ts-expect-error easd
       const volume24h = row.original.volume24H
@@ -105,8 +143,8 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
       const percentage = openInterest / volume24h
 
       // Логика интерпретации открытого интереса
-      const isHigh = percentage > 0.01 // Примерный порог для высокого открытого интереса
-      const isLow = percentage < 0.01 // Примерный порог для низкого открытого интереса
+      const isHigh = percentage > 0.2 // Примерный порог для высокого открытого интереса
+      const isLow = percentage < 0.05 // Примерный порог для низкого открытого интереса
 
       const color = isHigh
         ? "text-green-500"
@@ -124,13 +162,13 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
   // Новый столбец: Change 24h
   {
     accessorKey: "change24H",
-    header: "Change 24h (%)",
+    header: "Price %",
     cell: ({ getValue }) => {
       const value = getValue<number | undefined>()
       if (value === undefined) return "N/A"
 
-      const isPositive = value > 0
-      const isNegative = value < 0
+      const isPositive = value > 0.1
+      const isNegative = value < -0.1
 
       return (
         <span
@@ -149,33 +187,31 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
   },
   {
     accessorKey: "stochasticRsi",
-    header: "Stochastic RSI",
+    header: "RSI",
     cell: ({ getValue }) => {
       const value = getValue<{ k: number; d: number } | null>()
       if (!value) return "N/A"
 
       const { k, d } = value
 
-      // Интерпретация сигналов
+      // Интерпретация сигналов:
+      // "Хороший положительный тренд" (бычий): когда K > D и K > 80
+      // "Отрицательный" (медвежий): когда K < D и K < 20
       const isBullish = k > d && k > 80
       const isBearish = k < d && k < 20
-      const isNeutral = !isBullish && !isBearish // Если не подходит ни под одну зону, значит нейтрально.
 
-      // Цветовая индикация
+      // Если не бычий и не медвежий, считаем нейтральным.
+      // При нейтральном сигнале окраска будет серой.
       const kColor = isBullish
         ? "text-green-500"
         : isBearish
         ? "text-red-500"
-        : isNeutral
-        ? "text-yellow-500"
         : "text-gray-500"
 
       const dColor = isBullish
         ? "text-green-500"
         : isBearish
         ? "text-red-500"
-        : isNeutral
-        ? "text-yellow-500"
         : "text-gray-500"
 
       return (
@@ -199,6 +235,7 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
       // Интерпретация тренда
       const isStrongTrend = adx > 25
       const isModerateTrend = adx >= 20 && adx <= 25
+      const isTrend = isStrongTrend || isModerateTrend
 
       const isBullish = pdi > mdi
       const isBearish = mdi > pdi
@@ -213,9 +250,9 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
 
       // Цветовая индикация для +DI и -DI
       const pdiColor =
-        isBullish && ratio > 0.8 ? "text-green-500" : "text-gray-500"
+        isTrend && isBullish && ratio > 0.2 ? "text-green-500" : "text-gray-500"
       const mdiColor =
-        isBearish && ratio > 1.1 ? "text-red-500" : "text-gray-500"
+        isTrend && isBearish && ratio > 1.1 ? "text-red-500" : "text-gray-500"
 
       return (
         <div>
@@ -245,38 +282,20 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
       } | null>()
       if (!value) return "N/A"
 
-      const isBullish = value.histogram > 0
-      const isBearish = value.histogram < 0
+      const isNeutral = Math.abs(value.histogram) < 0.1
+      const isBullish = !isNeutral && value.histogram > 0
+      const isBearish = !isNeutral && value.histogram < 0
+      const className = isBullish
+        ? "text-green-500"
+        : isBearish
+        ? "text-red-500"
+        : "text-gray-500"
 
       return (
         <>
-          <span
-            className={
-              isBullish
-                ? "text-green-500"
-                : isBearish
-                ? "text-red-500"
-                : "text-gray-500"
-            }
-          >
-            MACD: {value.MACD.toFixed(2)}
-          </span>
-          ,{" "}
-          <span
-            className={value?.signal > 0 ? "text-green-500" : "text-red-500"}
-          >
-            Signal: {value.signal?.toFixed(2)}
-          </span>
-          ,{" "}
-          <span
-            className={
-              isBullish
-                ? "text-green-500"
-                : isBearish
-                ? "text-red-500"
-                : "text-gray-500"
-            }
-          >
+          <span className={className}>MACD: {value.MACD.toFixed(2)}</span>,{" "}
+          <span className={className}>Signal: {value.signal?.toFixed(2)}</span>,{" "}
+          <span className={className}>
             Histogram: {value.histogram?.toFixed(2)}
           </span>
         </>
@@ -285,7 +304,7 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
   },
   {
     accessorKey: "bollingerBands",
-    header: "Bollinger Bands",
+    header: "BB",
     enableSorting: true,
     sortingFn: (rowA, rowB) => {
       // @ts-expect-error asd
@@ -309,7 +328,7 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
 
       return (
         <div>
-          <span className={isNearUpper ? "text-red-500" : "text-gray-500"}>
+          <span className={isNearUpper ? "text-yellow-500" : "text-gray-500"}>
             Upper: {value.upper.toFixed(2)}
           </span>
           ,{" "}
@@ -365,24 +384,8 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     ),
   },
   {
-    accessorKey: "obv",
-    header: "OBV",
-    cell: ({ getValue }) => {
-      const value = getValue<number | null>()
-      if (!value) return "N/A"
-
-      const isPositive = value > 0
-
-      return (
-        <span className={isPositive ? "text-green-500" : "text-red-500"}>
-          {value.toFixed(2)}
-        </span>
-      )
-    },
-  },
-  {
     accessorKey: "momentum",
-    header: "Momentum",
+    header: "MOM",
     cell: ({ getValue }) => {
       const value = getValue<number | null>()
       if (!value) return "N/A"
@@ -441,28 +444,23 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     },
   },
   {
-    accessorKey: "decision",
-    header: "Decision",
-    cell: ({ getValue }) => {
-      const value = getValue<1 | 0 | -1>()
-      let text = ""
-      let color = ""
-      switch (value) {
-        case 1:
-          text = "Покупать"
-          color = "text-green-500"
-          break
-        case -1:
-          text = "Продавать"
-          color = "text-red-500"
-          break
-        case 0:
-        default:
-          text = "Держать"
-          color = "text-yellow-500"
-          break
-      }
-      return <span className={color}>{text}</span>
-    },
+    accessorKey: "tripleSupertrend",
+    header: "TST",
+    cell: ({ getValue }) => <SignalCell value={getValue<number>()} />,
+  },
+  {
+    accessorKey: "doubleSupertrend",
+    header: "DST",
+    cell: ({ getValue }) => <SignalCell value={getValue<number>()} />,
+  },
+  {
+    accessorKey: "macdSupertrend",
+    header: "MST",
+    cell: ({ getValue }) => <SignalCell value={getValue<number>()} />,
+  },
+  {
+    accessorKey: "supertrend",
+    header: "ST",
+    cell: ({ getValue }) => <SignalCell value={getValue<number>()} />,
   },
 ]

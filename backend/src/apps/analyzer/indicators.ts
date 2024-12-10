@@ -3,6 +3,7 @@ import {
   ATR,
   BollingerBands,
   CCI,
+  EMA,
   MACD,
   OBV,
   RSI,
@@ -12,87 +13,116 @@ import {
 import { Analyze, Candle } from "../../types"
 import { mom } from "./indicators/mom"
 
-export function getTechnicalAnalyze(historicalData: Candle[]): Analyze {
-  const prices = historicalData.map((data) => data.close)
-  const highs = historicalData.map((data) => data.high)
-  const lows = historicalData.map((data) => data.low)
-  const volumes = historicalData.map((data) => data.volume)
+type IndicatorPeriods = {
+  sma?: number
+  rsi?: number
+  macdFast?: number
+  macdSlow?: number
+  macdSignal?: number
+  bollinger?: number
+  bollingerStdDev?: number
+  stochasticRsi?: number
+  adx?: number
+  cci?: number
+  atr?: number
+  momentum?: number
+  ema?: number
+}
 
-  const smaPeriod = 14
-  const rsiPeriod = 14
-  const macdFastPeriod = 12
-  const macdSlowPeriod = 26
-  const macdSignalPeriod = 9
-  const bollingerPeriod = 20
-  const bollingerStdDev = 2
-  const stochasticRsiPeriod = 14
-  const adxPeriod = 14
-  const cciPeriod = 14
-  const atrPeriod = 14
-  const momentumPeriod = 10
+const DEFAULT_PERIODS: Required<IndicatorPeriods> = {
+  sma: 14,
+  rsi: 14,
+  macdFast: 12,
+  macdSlow: 26,
+  macdSignal: 9,
+  bollinger: 20,
+  bollingerStdDev: 2,
+  stochasticRsi: 14,
+  adx: 14,
+  cci: 14,
+  atr: 14,
+  momentum: 10,
+  ema: 5,
+}
 
-  // Вычисление индикаторов без использования функций calculateSMA и calculateRSI
-  const sma = SMA.calculate({ values: prices, period: smaPeriod })
-  const rsi = RSI.calculate({ values: prices, period: rsiPeriod })
-  const macd = MACD.calculate({
-    values: prices,
-    fastPeriod: macdFastPeriod,
-    slowPeriod: macdSlowPeriod,
-    signalPeriod: macdSignalPeriod,
-    SimpleMAOscillator: false,
-    SimpleMASignal: false,
-  })
-  const bollingerBands = BollingerBands.calculate({
-    values: prices,
-    period: bollingerPeriod,
-    stdDev: bollingerStdDev,
-  })
-  const stochasticRsi = StochasticRSI.calculate({
-    values: prices,
-    rsiPeriod: rsiPeriod,
-    stochasticPeriod: stochasticRsiPeriod,
-    kPeriod: 3,
-    dPeriod: 3,
-  })
-  const adx = ADX.calculate({
-    close: prices,
-    high: highs,
-    low: lows,
-    period: adxPeriod,
-  })
-  const cci = CCI.calculate({
-    high: highs,
-    low: lows,
-    close: prices,
-    period: cciPeriod,
-  })
-  const atr = ATR.calculate({
-    high: highs,
-    low: lows,
-    close: prices,
-    period: atrPeriod,
-  })
-  const obv = OBV.calculate({
-    close: prices,
-    volume: volumes,
-  })
-  const momentum = mom(prices, momentumPeriod)
+export function getTechnicalAnalyze(
+  candles: Candle[],
+  periods: IndicatorPeriods = {}
+): Analyze {
+  const {
+    sma,
+    rsi,
+    macdFast,
+    macdSlow,
+    macdSignal,
+    bollinger,
+    bollingerStdDev,
+    stochasticRsi,
+    adx,
+    cci,
+    atr,
+    momentum,
+    ema,
+  } = { ...DEFAULT_PERIODS, ...periods }
+
+  const prices = candles.map((d) => d.close)
+  const highs = candles.map((d) => d.high)
+  const lows = candles.map((d) => d.low)
+  const volumes = candles.map((d) => d.volume)
+
+  // Однострочные вычисления с деструктуризацией последнего значения
+  const [lastSMA] = SMA.calculate({ values: prices, period: sma }).slice(-1)
+  const [lastRSI] =
+    RSI.calculate({ values: prices, period: rsi }).slice(-1) ?? []
+  const [lastMACD] =
+    MACD.calculate({
+      values: prices,
+      fastPeriod: macdFast,
+      slowPeriod: macdSlow,
+      signalPeriod: macdSignal,
+      SimpleMAOscillator: false,
+      SimpleMASignal: false,
+    }).slice(-1) ?? []
+  const [lastBollinger] =
+    BollingerBands.calculate({
+      values: prices,
+      period: bollinger,
+      stdDev: bollingerStdDev,
+    }).slice(-1) ?? []
+  const [lastStochasticRsi] =
+    StochasticRSI.calculate({
+      values: prices,
+      rsiPeriod: rsi,
+      stochasticPeriod: stochasticRsi,
+      kPeriod: 3,
+      dPeriod: 3,
+    }).slice(-1) ?? []
+  const [lastADX] =
+    ADX.calculate({ close: prices, high: highs, low: lows, period: adx }).slice(
+      -1
+    ) ?? []
+  const [lastCCI] =
+    CCI.calculate({ high: highs, low: lows, close: prices, period: cci }).slice(
+      -1
+    ) ?? []
+  const [lastATR] =
+    ATR.calculate({ high: highs, low: lows, close: prices, period: atr }).slice(
+      -1
+    ) ?? []
+  const [lastOBV] =
+    OBV.calculate({ close: prices, volume: volumes }).slice(-1) ?? []
+  const [lastMomentum] = mom(prices, momentum).slice(-1) ?? []
+  const [lastEma] =
+    EMA.calculate({
+      values: prices,
+      period: ema,
+    }).slice(-1) ?? []
 
   const lastPrice = prices[prices.length - 1]
-  const lastSMA = sma[sma.length - 1] || null
-  const lastRSI = rsi[rsi.length - 1] || null
-  const lastMACD = macd[macd.length - 1] || null
-  const lastBollinger = bollingerBands[bollingerBands.length - 1] || null
-  const lastStochasticRsi = stochasticRsi[stochasticRsi.length - 1] || null
-  const lastADX = adx[adx.length - 1] || null
-  const lastCCI = cci[cci.length - 1] || null
-  const lastATR = atr[atr.length - 1] || null
-  const lastOBV = obv[obv.length - 1] || null
-  const lastMomentum = momentum[momentum.length - 1] || null
 
   // Определение тренда
   let trend: "Bullish" | "Bearish" | "Neutral" = "Neutral"
-  if (lastRSI !== null && lastMACD?.histogram !== undefined) {
+  if (lastRSI !== undefined && lastMACD?.histogram !== undefined) {
     if (lastRSI > 50 && lastMACD.histogram > 0) {
       trend = "Bullish"
     } else if (lastRSI < 50 && lastMACD.histogram < 0) {
@@ -102,16 +132,17 @@ export function getTechnicalAnalyze(historicalData: Candle[]): Analyze {
 
   return {
     lastPrice,
-    sma: lastSMA,
-    rsi: lastRSI,
-    stochasticRsi: lastStochasticRsi,
-    adx: lastADX,
-    macd: lastMACD,
-    bollingerBands: lastBollinger,
-    cci: lastCCI,
-    atr: lastATR,
-    obv: lastOBV,
-    momentum: lastMomentum,
+    sma: lastSMA ?? null,
+    rsi: lastRSI ?? null,
+    stochasticRsi: lastStochasticRsi ?? null,
+    adx: lastADX ?? null,
+    macd: lastMACD ?? null,
+    bollingerBands: lastBollinger ?? null,
+    cci: lastCCI ?? null,
+    atr: lastATR ?? null,
+    obv: lastOBV ?? null,
+    momentum: lastMomentum ?? null,
+    ema: lastEma ?? null,
     trend,
   }
 }

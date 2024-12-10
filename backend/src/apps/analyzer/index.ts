@@ -1,5 +1,7 @@
+import { KlineIntervalV3 } from "bybit-api"
 import { Analyze, Candle, Signal, Ticker } from "../../types"
-import { getSupertrendCrossingSignal } from "./strategies"
+import { getSupertrendSignal } from "./signals/supertrend"
+import { checkSignalsCrossing, getSupertrendCrossingSignal } from "./strategies"
 
 type IndicatorFunction = (
   currentPrice: number,
@@ -15,20 +17,28 @@ const INDICATOR_WEIGHTS = {
   stochasticRsi: 1,
   adx: 1.3,
   cci: 1,
-  change24h: 1.5, // Наибольшее влияние
-  openInterest: 1.5, // Наибольшее влияние
+  change24h: 0.1,
+  openInterest: 0.1,
 }
 
 // Вспомогательная функция для безопасного деления
 const safeDivide = (numerator: number, denominator: number): number =>
   denominator !== 0 ? numerator / denominator : 0
 
-export function analyzeCandles(
-  candles: Candle[],
-  analysis: Analyze,
+type CandlesOpts = {
+  candles: Pick<Record<KlineIntervalV3, Candle[]>, "1" | "15" | "60" | "D">
+  analysis: Analyze
   ticker: Ticker
-): { decision: Signal; rating: number } {
-  const currentPrice = candles[candles.length - 1].close
+}
+
+export function analyzeCandles({ candles, analysis, ticker }: CandlesOpts): {
+  tripleSupertrend: Signal
+  doubleSupertrend: Signal
+  macdSupertrend: Signal
+  supertrend: Signal
+  rating: number
+} {
+  const currentPrice = candles[15][candles[15].length - 1].close
 
   const indicators: IndicatorFunction[] = [
     // SMA
@@ -110,11 +120,29 @@ export function analyzeCandles(
     0
   )
 
-  const signal = getSupertrendCrossingSignal(candles, [
+  const supertrend = getSupertrendSignal(candles[1], 10, 3)
+
+  const tripleSupertrend = getSupertrendCrossingSignal(candles[60], [
     { period: 10, multiplier: 1 },
     { period: 11, multiplier: 2 },
     { period: 12, multiplier: 3 },
   ])
 
-  return { decision: signal, rating }
+  const doubleSupertrend = getSupertrendCrossingSignal(candles[60], [
+    { period: 10, multiplier: 3 },
+    { period: 25, multiplier: 5 },
+  ])
+
+  const macdSupertrend = checkSignalsCrossing([
+    analysis.macd?.histogram ? (analysis.macd.histogram > 0 ? 1 : 0) : 0,
+    getSupertrendSignal(candles[60], 10, 3),
+  ])
+
+  return {
+    tripleSupertrend,
+    doubleSupertrend,
+    macdSupertrend,
+    supertrend,
+    rating,
+  }
 }

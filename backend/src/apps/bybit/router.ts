@@ -6,6 +6,7 @@ import express from "express"
 import { listenBybit, unlistenBybit } from "./websocket"
 import { analyzeSymbolQueue } from "./queue/analyze-symbol"
 import { botQueue } from "./queue/bot"
+import { analyzeBybitCron } from "./crons"
 
 const router = express.Router()
 
@@ -23,6 +24,8 @@ router.get("/analysis/:symbol", async (req, res) => {
 })
 
 router.post("/analysis", async (req, res) => {
+  analyzeBybitCron.start()
+
   const result = await analyzeBybit()
 
   res.json({
@@ -31,7 +34,20 @@ router.post("/analysis", async (req, res) => {
   })
 })
 
+router.get("/status/bybit", async (req, res) => {
+  res.json({
+    status: "ok",
+    result: {
+      working:
+        analyzeBybitCron.running ||
+        (await analyzeSymbolQueue.count()) > 0 ||
+        (await botQueue.count()),
+    },
+  })
+})
+
 router.delete("/analysis", async (req, res) => {
+  analyzeBybitCron.stop()
   await analyzeSymbolQueue.removeJobs("*")
 
   res.json({
@@ -49,7 +65,7 @@ router.get("/analysis", async (req, res) => {
 })
 
 router.post("/analysis/:symbol", async (req, res) => {
-  analyzeSymbolQueue.add({ symbol: req.params.symbol })
+  analyzeSymbolQueue.add({ symbol: req.params.symbol }, { lifo: true })
 
   res.json({
     status: "ok",

@@ -2,21 +2,25 @@ import { AppTable } from "@/lib/helpers"
 import TradePageClient from "./client"
 import { createClient } from "@/lib/supabase/server"
 import camelcaseKeys from "camelcase-keys"
+import { apiClient } from "@/lib/api"
 
 export default async function TradePage() {
   const client = await createClient()
-  const { data, error } = await client.rpc("get_most_recent_unique_symbols")
+  const { data: symbols, error } = await client.rpc(
+    "get_most_recent_unique_symbols"
+  )
+  const { data } = await apiClient.get("/status/bybit")
 
   if (error) console.log("in trade page", error)
 
-  if (!data) {
+  if (!symbols) {
     return <TradePageClient data={[]} />
   }
 
-  const items = data.map(
+  const items = symbols.map(
     // @ts-expect-error 123
     (item) => camelcaseKeys(item, { deep: false }) as AppTable<"analysis">
   )
 
-  return <TradePageClient data={items} />
+  return <TradePageClient data={items} working={data.result.working} />
 }

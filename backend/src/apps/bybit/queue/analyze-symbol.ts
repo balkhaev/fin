@@ -7,22 +7,36 @@ import { bybitRestClient } from "../sdk/clients"
 import { tickerAdapter } from "../sdk/adapters"
 import { fetchKline } from "../sdk/methods"
 import { analyzeCandles } from "../../analyzer"
+import { KlineIntervalV3 } from "bybit-api"
 
 export const analyzeSymbolQueue = new Queue<{ symbol: string }>("bybit-analyze")
 
-analyzeSymbolQueue.process(3, async (job) => {
-  const historicalData = await fetchKline({ symbol: job.data.symbol })
+const CANDLES_TO_FETCH: KlineIntervalV3[] = ["1", "15", "60", "D"]
+
+analyzeSymbolQueue.process(4, async (job) => {
+  const [candles1, candles15, candles60, candlesD] = await Promise.all(
+    CANDLES_TO_FETCH.map((interval) =>
+      fetchKline({ symbol: job.data.symbol, interval })
+    )
+  )
+
   const { result: tickers } = await bybitRestClient.getTickers({
     category: "linear",
     symbol: job.data.symbol,
   })
 
-  const analysis = getTechnicalAnalyze(historicalData)
-  const rating = analyzeCandles(
-    historicalData,
+  const ticker = tickerAdapter(tickers.list[0])
+  const analysis = getTechnicalAnalyze(candles15)
+  const rating = analyzeCandles({
+    candles: {
+      1: candles1,
+      15: candles15,
+      60: candles60,
+      D: candlesD,
+    },
     analysis,
-    tickerAdapter(tickers.list[0])
-  )
+    ticker,
+  })
 
   return {
     ...analysis,
@@ -35,8 +49,6 @@ analyzeSymbolQueue.process(3, async (job) => {
 })
 
 analyzeSymbolQueue.on("completed", async (job) => {
-  io.emit("completed-job", JSON.stringify(job))
-
   const { error } = await supabase
     .from("analysis")
     .insert(snakecaseKeys(job.returnvalue, { deep: false }))
@@ -45,8 +57,12 @@ analyzeSymbolQueue.on("completed", async (job) => {
     console.error(job, error)
     throw error
   }
+
+  io.emit("job-count", await analyzeSymbolQueue.count())
+
+  if (job.returnvalue.rating > 0) io.emit("signal", job.returnvalue)
 })
 
-analyzeSymbolQueue.on("waiting", (job) => {
-  io.emit("waiting-job", JSON.stringify(job))
+analyzeSymbolQueue.on("waiting", async () => {
+  io.emit("job-count", await analyzeSymbolQueue.count())
 })
