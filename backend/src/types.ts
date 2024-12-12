@@ -26,7 +26,7 @@ export type Ticker = {
   lastPrice: number
   change24h: number
   volume24h: number
-  openInterest: number
+  openInterest?: number
 }
 export type Analyze = {
   symbol?: string

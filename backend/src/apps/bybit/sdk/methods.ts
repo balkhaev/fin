@@ -1,4 +1,4 @@
-import { GetKlineParamsV5 } from "bybit-api"
+import { GetKlineParamsV5, OrderParamsV5 } from "bybit-api"
 import { bybitRestClient } from "./clients"
 import { Candle, Ticker } from "../../../types"
 import { klineAdapter, tickerAdapter } from "./adapters"
@@ -26,12 +26,28 @@ export async function fetchKline({
   return res.result.list.map(klineAdapter)
 }
 
-export async function createOrder() {
-  return bybitRestClient.submitOrder({
-    symbol: "BTCUSDT",
-    side: "Buy",
-    qty: "0.01",
-    orderType: "Market",
+export async function fetchCurrentPrice({ symbol }: { symbol: string }) {
+  const { result } = await bybitRestClient.getTickers({
+    symbol,
     category: "linear",
   })
+
+  return parseFloat(result.list[0].lastPrice)
+}
+
+export type OrderParams = Pick<
+  OrderParamsV5,
+  "orderType" | "symbol" | "side" | "qty" | "price"
+>
+
+export async function createOrder(opts: OrderParams) {
+  const { result, retMsg } = await bybitRestClient.submitOrder({
+    ...opts,
+    marketUnit: "baseCoin",
+    category: "linear",
+  })
+
+  console.log(retMsg, result)
+
+  return result
 }

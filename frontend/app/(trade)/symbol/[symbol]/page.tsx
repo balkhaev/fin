@@ -10,9 +10,11 @@ export default async function TradeSymbolPage({
 }) {
   const symbol = (await params).symbol
   const { data } = await apiClient.get(`/analysis/${symbol}`)
+  const { data: dataBot } = await apiClient.get(`/market/${symbol}/bot`)
 
   return (
     <TradeSymbolPageClient
+      botWorking={dataBot.result}
       symbol={symbol}
       data={data.result.map((item: Tables<"analysis">) =>
         camelcaseKeys(item, { deep: false })

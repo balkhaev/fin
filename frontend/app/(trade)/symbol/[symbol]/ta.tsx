@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 
 interface TechnicalAnalysisDisplayProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ta: any | undefined
+  ta1: any | undefined
+  ta5: any | undefined
 }
 
 export default function TechnicalAnalysisDisplay({
-  ta,
+  ta1,
+  ta5,
 }: TechnicalAnalysisDisplayProps) {
-  if (!ta) {
+  if (!ta1 && !ta5) {
     return "Нет данных для анализа"
   }
 
@@ -24,7 +26,11 @@ export default function TechnicalAnalysisDisplay({
         : trend === "Bearish"
         ? "bg-red-500"
         : "bg-yellow-500"
-    return <Badge className={color}>{trend || "Unknown"}</Badge>
+
+    const text =
+      trend === "Bullish" ? "Buy" : trend === "Bearish" ? "Sell" : "Hold"
+
+    return <Badge className={color}>{text}</Badge>
   }
 
   return (
@@ -32,24 +38,38 @@ export default function TechnicalAnalysisDisplay({
       <TableBody>
         <TableRow>
           <TableCell className="font-medium">Last Price</TableCell>
-          <TableCell>{formatValue(ta.lastPrice)}</TableCell>
+          <TableCell>{formatValue(ta1.lastPrice)}</TableCell>
+          <TableCell>{formatValue(ta5?.lastPrice)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">SMA</TableCell>
-          <TableCell>{formatValue(ta.sma)}</TableCell>
+          <TableCell>{formatValue(ta1.sma)}</TableCell>
+          <TableCell>{formatValue(ta5?.sma)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">RSI</TableCell>
-          <TableCell>{formatValue(ta.rsi)}</TableCell>
+          <TableCell>{formatValue(ta1.rsi)}</TableCell>
+          <TableCell>{formatValue(ta5?.rsi)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">MACD</TableCell>
           <TableCell>
-            {ta.macd ? (
+            {ta1.macd ? (
               <>
-                <div>MACD: {formatValue(ta.macd?.MACD)}</div>
-                <div>Signal: {formatValue(ta.macd?.signal)}</div>
-                <div>Histogram: {formatValue(ta.macd?.histogram)}</div>
+                <div>MACD: {formatValue(ta1.macd?.MACD)}</div>
+                <div>Signal: {formatValue(ta1.macd?.signal)}</div>
+                <div>Histogram: {formatValue(ta1.macd?.histogram)}</div>
+              </>
+            ) : (
+              "N/A"
+            )}
+          </TableCell>
+          <TableCell>
+            {ta5?.macd ? (
+              <>
+                <div>MACD: {formatValue(ta5.macd?.MACD)}</div>
+                <div>Signal: {formatValue(ta5.macd?.signal)}</div>
+                <div>Histogram: {formatValue(ta5.macd?.histogram)}</div>
               </>
             ) : (
               "N/A"
@@ -59,11 +79,22 @@ export default function TechnicalAnalysisDisplay({
         <TableRow>
           <TableCell className="font-medium">Bollinger Bands</TableCell>
           <TableCell>
-            {ta.bollingerBands ? (
+            {ta1.bollingerBands ? (
               <>
-                <div>Upper: {formatValue(ta.bollingerBands?.upper)}</div>
-                <div>Middle: {formatValue(ta.bollingerBands?.middle)}</div>
-                <div>Lower: {formatValue(ta.bollingerBands?.lower)}</div>
+                <div>Upper: {formatValue(ta1.bollingerBands?.upper)}</div>
+                <div>Middle: {formatValue(ta1.bollingerBands?.middle)}</div>
+                <div>Lower: {formatValue(ta1.bollingerBands?.lower)}</div>
+              </>
+            ) : (
+              "N/A"
+            )}
+          </TableCell>
+          <TableCell>
+            {ta5?.bollingerBands ? (
+              <>
+                <div>Upper: {formatValue(ta5.bollingerBands?.upper)}</div>
+                <div>Middle: {formatValue(ta5.bollingerBands?.middle)}</div>
+                <div>Lower: {formatValue(ta5.bollingerBands?.lower)}</div>
               </>
             ) : (
               "N/A"
@@ -73,10 +104,20 @@ export default function TechnicalAnalysisDisplay({
         <TableRow>
           <TableCell className="font-medium">Stochastic RSI</TableCell>
           <TableCell>
-            {ta.stochasticRsi ? (
+            {ta1.stochasticRsi ? (
               <>
-                <div>K: {formatValue(ta.stochasticRsi?.k)}</div>
-                <div>D: {formatValue(ta.stochasticRsi?.d)}</div>
+                <div>K: {formatValue(ta1.stochasticRsi?.k)}</div>
+                <div>D: {formatValue(ta1.stochasticRsi?.d)}</div>
+              </>
+            ) : (
+              "N/A"
+            )}
+          </TableCell>
+          <TableCell>
+            {ta5?.stochasticRsi ? (
+              <>
+                <div>K: {formatValue(ta5.stochasticRsi?.k)}</div>
+                <div>D: {formatValue(ta5.stochasticRsi?.d)}</div>
               </>
             ) : (
               "N/A"
@@ -85,27 +126,33 @@ export default function TechnicalAnalysisDisplay({
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">ADX</TableCell>
-          <TableCell>{formatValue(ta.adx)}</TableCell>
+          <TableCell>{formatValue(ta1.adx)}</TableCell>
+          <TableCell>{formatValue(ta5?.adx)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">CCI</TableCell>
-          <TableCell>{formatValue(ta.cci)}</TableCell>
+          <TableCell>{formatValue(ta1.cci)}</TableCell>
+          <TableCell>{formatValue(ta5?.cci)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">ATR</TableCell>
-          <TableCell>{formatValue(ta.atr)}</TableCell>
+          <TableCell>{formatValue(ta1.atr)}</TableCell>
+          <TableCell>{formatValue(ta5?.atr)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">OBV</TableCell>
-          <TableCell>{formatValue(ta.obv)}</TableCell>
+          <TableCell>{formatValue(ta1.obv)}</TableCell>
+          <TableCell>{formatValue(ta5?.obv)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">Momentum</TableCell>
-          <TableCell>{formatValue(ta.momentum)}</TableCell>
+          <TableCell>{formatValue(ta1.momentum)}</TableCell>
+          <TableCell>{formatValue(ta5?.momentum)}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">Trend</TableCell>
-          <TableCell>{getTrendBadge(ta.trend)}</TableCell>
+          <TableCell>{getTrendBadge(ta1.trend)}</TableCell>
+          <TableCell>{getTrendBadge(ta5?.trend)}</TableCell>
         </TableRow>
       </TableBody>
     </Table>

@@ -188,20 +188,23 @@ const TechnicalAnalysis = ({ row }: { row: any }) => {
 
 export const columns: ColumnDef<AppTable<"analysis">>[] = [
   {
+    header: "Exchange",
+    cell: ({ getValue }) => (
+      <Link
+        href={`https://www.bybit.com/trade/usdt/${getValue<string>()}`}
+        target="_blank"
+      >
+        <Button variant={"outline"} size={"sm"}>
+          Bybit
+        </Button>
+      </Link>
+    ),
+  },
+  {
     accessorKey: "symbol",
     header: "Symbol",
     cell: ({ getValue }) => (
-      <div className="flex items-center gap-2">
-        <Link
-          href={`https://www.bybit.com/trade/usdt/${getValue<string>()}`}
-          target="_blank"
-        >
-          <Button variant={"outline"} size={"sm"}>
-            Bybit
-          </Button>
-        </Link>
-        <Link href={`/symbol/${getValue<string>()}`}>{getValue<string>()}</Link>
-      </div>
+      <Link href={`/symbol/${getValue<string>()}`}>{getValue<string>()}</Link>
     ),
   },
   {
@@ -211,12 +214,14 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
       const date = dayjs(new Date(getValue<string>())).add(3, "hours")
       return date ? (
         <div title={date.format("DD.MM.YYYY, HH:mm:ss")}>
-          {date.format("HH:mm:ss")}
+          {date.format("HH:mm:ss DD.MM")}
         </div>
       ) : (
         "N/A"
       )
     },
+    // @ts-expect-error 123
+    filterFn: "dateRange",
   },
   {
     accessorKey: "lastPrice",
@@ -244,7 +249,7 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     header: "SMA",
     cell: ({ getValue }) => {
       return (
-        <span className="text-gray-700">{getValue<number>()?.toFixed(2)}</span>
+        <span className="text-gray-600">{getValue<number>()?.toFixed(2)}</span>
       )
     },
   },
@@ -252,7 +257,7 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     accessorKey: "volume24H",
     header: "Volume 24h",
     cell: ({ getValue }) => (
-      <span className="text-gray-700">
+      <span className="text-gray-600">
         {getValue<number>()?.toLocaleString()} USD
       </span>
     ),
@@ -313,9 +318,24 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     },
   },
   {
-    accessorKey: "technicalAnalysis",
-    header: "Technical Analysis",
-    cell: ({ row }) => <TechnicalAnalysis row={row.original} />,
+    accessorKey: "rating",
+    header: "Rating",
+    cell: ({ getValue }) => {
+      const value = getValue<number>()
+      return (
+        <span
+          className={
+            value > 0
+              ? "text-green-500"
+              : value < 0
+              ? "text-red-500"
+              : "text-yellow-500"
+          }
+        >
+          {value.toFixed(2)}
+        </span>
+      )
+    },
   },
   {
     accessorKey: "additionalIndicators",
@@ -363,39 +383,9 @@ export const columns: ColumnDef<AppTable<"analysis">>[] = [
     },
   },
   {
-    accessorKey: "trend",
-    header: "Trend",
-    cell: ({ getValue }) => {
-      const value = getValue<string>()
-      const color =
-        value === "Bullish"
-          ? "text-green-500"
-          : value === "Bearish"
-          ? "text-red-500"
-          : "text-yellow-500"
-
-      return <span className={color}>{value}</span>
-    },
-  },
-  {
-    accessorKey: "rating",
-    header: "Rating",
-    cell: ({ getValue }) => {
-      const value = getValue<number>()
-      return (
-        <span
-          className={
-            value > 0
-              ? "text-green-500"
-              : value < 0
-              ? "text-red-500"
-              : "text-yellow-500"
-          }
-        >
-          {value.toFixed(2)}
-        </span>
-      )
-    },
+    accessorKey: "technicalAnalysis",
+    header: "Technical Analysis",
+    cell: ({ row }) => <TechnicalAnalysis row={row.original} />,
   },
   {
     accessorKey: "signals",

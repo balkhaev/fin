@@ -106,7 +106,11 @@ export function rateTx(
   const currentMarketCap = tx.marketCapSol
   const buyedTx = getBuyedTx()
 
-  if (buyedTx && currentMarketCap > buyedTx.marketCapSol * takeProfit) {
+  if (
+    takeProfit !== 0 &&
+    buyedTx &&
+    currentMarketCap > buyedTx.marketCapSol * takeProfit
+  ) {
     return {
       signal: -1,
       data: `[take profit] ${(takeProfit - 1) * 100}%`,
@@ -267,6 +271,12 @@ export function rateTx(
 
   // В остальных случаях doubleSupertrend
   const signal = getSupertrendCrossingSignal(candles, [global, realtime])
+
+  console.log(
+    [global, realtime].map((cfg) =>
+      getSupertrendSignal(candles, cfg.period, cfg.multiplier)
+    )
+  )
 
   return {
     signal,

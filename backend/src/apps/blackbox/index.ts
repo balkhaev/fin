@@ -99,16 +99,6 @@ export function analyzeCandles({ candles, analysis, ticker }: CandlesOpts): {
       analysis.change24h !== undefined
         ? (analysis.change24h / 100) * INDICATOR_WEIGHTS.change24h
         : 0,
-
-    // Open Interest (основной фактор)
-    (_, __, ticker) => {
-      if (ticker.openInterest !== undefined && ticker.volume24h !== undefined) {
-        const percentage = safeDivide(ticker.openInterest, ticker.volume24h)
-
-        return percentage * INDICATOR_WEIGHTS.openInterest
-      }
-      return 0
-    },
   ]
 
   // Расчёт общего рейтинга

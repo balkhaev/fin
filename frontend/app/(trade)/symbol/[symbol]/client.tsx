@@ -1,23 +1,25 @@
 "use client"
 
 import { apiClient } from "@/lib/api"
-import { useEffect, useState, useTransition } from "react"
-import { DataTable } from "../../data-table"
-import { columns } from "../../columns"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
+import { DataTable } from "../../trade-table"
+import { columns } from "../../trade-columns"
 import { createClient } from "@/lib/supabase/client"
-import Link from "next/link"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Tradingview from "../../../../components/app/tradingview-chart"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { AppTable, adaptKeys } from "@/lib/helpers"
-import { cn } from "@/lib/utils"
 import { socket } from "@/lib/socket"
 import TechnicalAnalysisDisplay from "./ta"
 import { useCopilotReadable } from "@copilotkit/react-core"
+import { omit } from "remeda"
+import { AppChart } from "@/components/app/apex-charts"
+import { Candlestick } from "@/lib/types"
+import { candlesToSeries } from "@/lib/candles-to-series"
+import { Button } from "@/components/ui/button"
 
 type Props = {
   symbol: string
   data: AppTable<"analysis">[]
+  botWorking: boolean
 }
 
 type Ticker = {
@@ -41,11 +43,18 @@ type Ticker = {
 
 const taSockets = ["1", "5"]
 
-export default function TradeSymbolPageClient({ symbol, data }: Props) {
+export default function TradeSymbolPageClient({
+  symbol,
+  data,
+  botWorking,
+}: Props) {
   const client = createClient()
   const [items, setItems] = useState<AppTable<"analysis">[]>(data ?? [])
-  const [ta1, setTa1] = useState()
-  const [ta5, setTa5] = useState()
+  const [ta1, setTa1] = useState<AppTable<"analysis">>()
+  const [ta5, setTa5] = useState<AppTable<"analysis">>()
+  const [candles, setCandles] = useState<Candlestick[]>([])
+  const [signal, setSignal] = useState<number | null>(null)
+  const [working, setWorking] = useState(botWorking)
   const [ticker, setTicker] = useState<Ticker>({
     symbol: "ETHUSDT",
     lastPrice: null,
@@ -66,15 +75,15 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
   })
   useCopilotReadable({
     description: "Технический анализ на основе 1 минутных свечей",
-    value: ta1,
+    value: ta1 ? omit(ta1, ["trend"]) : {},
   })
   useCopilotReadable({
     description: "Технический анализ на основе 5 минутных свечей",
-    value: ta5,
+    value: ta5 ? omit(ta5, ["trend"]) : {},
   })
   useCopilotReadable({
     description: "История технических анализов",
-    value: items,
+    value: items.slice(0, 5),
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,23 +92,20 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
     "5": setTa5,
   }
 
-  const [isPending, startTransition] = useTransition()
-
-  const handleStartClick = () => {
-    startTransition(() => {
-      apiClient.post("/analysis/" + symbol)
-    })
-  }
-
   useEffect(() => {
     socket.on("ticker", (data) => {
       setTicker((prev) => ({ ...prev, ...JSON.parse(data) }))
     })
 
+    socket.on("candles", (data, signal) => {
+      setCandles(data)
+      setSignal(signal)
+    })
+
     taSockets.forEach((timeframe) => {
-      socket.on("ta" + timeframe, (data) =>
+      socket.on("ta" + timeframe, (data) => {
         settersMap[timeframe]?.(JSON.parse(data))
-      )
+      })
     })
 
     const channel = client
@@ -130,89 +136,58 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const parseValue = (value: string | null) => (value ? parseFloat(value) : 0)
+  const handleBot = async () => {
+    setWorking((prev) => !prev)
 
-  const volume24h = parseValue(ticker.volume24h)
-  const price24hPcnt = parseValue(ticker.price24hPcnt) * 100
-  const turnover24h = parseValue(ticker.turnover24h)
-  const lastPrice = parseValue(ticker.bid1Price)
+    const method = working ? "delete" : "post"
+
+    await apiClient[method](`/market/${symbol}/bot`)
+  }
 
   return (
     <>
-      <div className="flex gap-4 items-center">
-        <h1 className="text-2xl">Анализ валютной пары {symbol}</h1>
-        <div className="flex gap-2">
-          <Link href="/">
-            <Button size="sm">Назад</Button>
-          </Link>
-          <Button
-            variant={"outline"}
-            size="sm"
-            disabled={isPending}
-            onClick={handleStartClick}
-          >
-            Скан
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-4 text-center py-4">
-        <div>
-          <div
-            className={cn(
-              ticker.tickDirection?.toLocaleLowerCase().includes("plus")
-                ? "text-green-500"
-                : "text-red-500",
-              "font-bold"
-            )}
-          >
-            {lastPrice.toLocaleString("ru-RU")} USD
-          </div>
-          <div>Last price</div>
-        </div>
-        <div>
-          <div className="font-bold">
-            {volume24h.toLocaleString("ru-RU")} USD
-          </div>
-          <div>Volume (24h)</div>
-        </div>
-        <div>
-          <div className="font-bold">
-            {turnover24h.toLocaleString("ru-RU")} USD
-          </div>
-          <div>объём торгов (24h)</div>
-        </div>
-        <div>
-          <div
-            className={cn(
-              ticker.tickDirection?.toLocaleLowerCase().includes("plus")
-                ? "text-green-500"
-                : "text-red-500",
-              "font-bold"
-            )}
-          >
-            {price24hPcnt.toFixed(2)}%
-          </div>
-          <div>Change (24h)</div>
-        </div>
-      </div>
-      <div className="h-[600px] overflow-hidden grid grid-cols-4">
+      <div className="grid grid-cols-4 text-center py-4">{signal}</div>
+      <div className="overflow-hidden grid grid-cols-4">
         <div className="col-span-3">
-          <Tradingview symbol={symbol} />
+          <AppChart
+            options={{
+              chart: {
+                type: "candlestick",
+                height: 350,
+              },
+              title: {
+                text: "CandleStick Chart",
+                align: "left",
+              },
+              xaxis: {
+                type: "datetime",
+              },
+              yaxis: {
+                tooltip: {
+                  enabled: true,
+                },
+              },
+              plotOptions: {
+                candlestick: {
+                  colors: {
+                    upward: "#3C90EB",
+                    downward: "#DF7D46",
+                  },
+                },
+              },
+            }}
+            type="candlestick"
+            series={candlesToSeries(candles)}
+            width="100%"
+            height={600}
+          />
+          {/* <Tradingview symbol={symbol} /> */}
         </div>
-        <div className="bg-[#131722] border-[#363a45] border border-l-0 p-2">
-          <Tabs defaultValue="1">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="1">1m</TabsTrigger>
-              <TabsTrigger value="5">5m</TabsTrigger>
-            </TabsList>
-            <TabsContent value="1">
-              <TechnicalAnalysisDisplay ta={ta1} />
-            </TabsContent>
-            <TabsContent value="5">
-              <TechnicalAnalysisDisplay ta={ta5} />
-            </TabsContent>
-          </Tabs>
+        <div className="bg-[#131722] border-[#363a45] border border-l-0 flex flex-col justify-between">
+          <TechnicalAnalysisDisplay ta1={ta1} ta5={ta5} />
+          <Button className="rounded-none" onClick={handleBot}>
+            {working ? "Стоп" : "Начать"}
+          </Button>
         </div>
       </div>
       <Tabs
@@ -222,7 +197,10 @@ export default function TradeSymbolPageClient({ symbol, data }: Props) {
         {/* <TabsList>
           <TabsTrigger value="market">Маркет</TabsTrigger>
         </TabsList> */}
-        <TabsContent value="market" className="space-y-4 overflow-auto">
+        <TabsContent
+          value="market"
+          className="space-y-4 overflow-hidden mt-0 flex flex-col"
+        >
           <DataTable columns={columns} data={items} />
         </TabsContent>
       </Tabs>

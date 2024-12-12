@@ -2,6 +2,7 @@
 
 import { socket } from "@/lib/socket"
 import { useEffect, useState } from "react"
+import { Badge } from "@/components/ui/badge"
 
 export function JobsPanel() {
   const [jobCount, setJobCount] = useState<number>(0)
@@ -16,5 +17,5 @@ export function JobsPanel() {
     return null
   }
 
-  return `Задач ${jobCount}`
+  return <Badge className="text-sm">Задач {jobCount}</Badge>
 }

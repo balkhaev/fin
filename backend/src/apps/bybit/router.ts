@@ -3,7 +3,13 @@ import { supabase } from "../../lib/supabase"
 import { bybitRestClient } from "./sdk/clients"
 
 import express from "express"
-import { listenBybit, unlistenBybit } from "./websocket"
+import {
+  botWorking,
+  listenBybit,
+  startBot,
+  stopBot,
+  unlistenBybit,
+} from "./websocket"
 import { analyzeSymbolQueue } from "./queue/analyze-symbol"
 import { botQueue } from "./queue/bot"
 import { analyzeBybitCron } from "./crons"
@@ -94,8 +100,16 @@ router.post("/market/:symbol/unlisten", async (req, res) => {
   })
 })
 
+router.get("/market/:symbol/bot", async (req, res) => {
+  res.json({
+    status: "ok",
+    result: botWorking(),
+  })
+})
+
 router.post("/market/:symbol/bot", async (req, res) => {
-  botQueue.add({ symbol: req.params.symbol }, { repeat: { cron: "* * * * *" } })
+  console.log("START BOT")
+  startBot(req.params.symbol)
 
   res.json({
     status: "ok",
@@ -103,7 +117,8 @@ router.post("/market/:symbol/bot", async (req, res) => {
 })
 
 router.delete("/market/:symbol/bot", async (req, res) => {
-  botQueue.removeJobs("*")
+  console.log("STOP BOT")
+  stopBot()
 
   res.json({
     status: "ok",

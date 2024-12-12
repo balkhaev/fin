@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import Markdown from "react-markdown"
+import { useEffect, useRef, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +16,7 @@ type Opts = {
 }
 
 export function ChatbotSidebar({ promt }: Opts) {
+  const bottomAnchorRef = useRef<HTMLDivElement | null>(null)
   const { visibleMessages, appendMessage, stopGeneration, isLoading } =
     useCopilotChat({
       makeSystemMessage: (
@@ -41,9 +43,15 @@ export function ChatbotSidebar({ promt }: Opts) {
     }
   }
 
+  useEffect(() => {
+    bottomAnchorRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [inputMessage])
+
   return (
-    <div className="flex flex-col h-screen w-[400px] border-l bg-background">
-      <div className="p-4 font-semibold border-b">AI финансовый ассистент</div>
+    <div className="flex flex-col h-screen border-l bg-background">
+      <div className="h-[60px] flex items-center font-semibold border-b px-4">
+        Финансовый ассистент
+      </div>
       <ScrollArea className="flex-1 p-4">
         {visibleMessages.map((message) => {
           if (message.isTextMessage()) {
@@ -72,7 +80,7 @@ export function ChatbotSidebar({ promt }: Opts) {
                         message.role === "user" && "text-background"
                       )}
                     >
-                      {message.content}
+                      <Markdown>{message.content}</Markdown>
                     </div>
                   </div>
                 </div>
@@ -83,18 +91,15 @@ export function ChatbotSidebar({ promt }: Opts) {
             )
           }
 
-          if (message.isResultMessage()) {
-            return (
-              <div key={message.id} className={`mb-4`}>
-                <div className="text-xs text-muted-foreground mt-1">
-                  {message.result}
-                </div>
-              </div>
-            )
-          }
-
-          return null
+          return message.type
+          return JSON.stringify(message, null, 2)
         })}
+        <div
+          style={{ float: "left", clear: "both" }}
+          ref={(el) => {
+            bottomAnchorRef.current = el
+          }}
+        ></div>
       </ScrollArea>
 
       <form onSubmit={handleSendMessage} className="p-4 border-t flex gap-2">
