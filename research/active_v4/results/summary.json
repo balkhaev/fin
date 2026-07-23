@@ -1,0 +1,21 @@
+{
+  "status": "paper_forward_candidate",
+  "selection_uses_only_development_and_validation": true,
+  "research_holdout_is_fully_untouched": false,
+  "selected_processes": [
+    "static_tr0_sel0_k2_equal_none_breadth-dual",
+    "walkforward_tr730_sel182_k3_robust_none_all",
+    "static_tr0_sel0_k3_equal_none_breadth-dual-donchian"
+  ],
+  "base_holdout_return": 0.05112773940611004,
+  "stress_holdout_return": 0.04693758903586853,
+  "severe_holdout_return": 0.042763746501433886,
+  "stress_holdout_max_drawdown": -0.08519128457489622,
+  "stress_holdout_annual_turnover": 2.888696277603548,
+  "stress_holdout_rolling_positive_share": 1.0,
+  "positive_stress_components": 3,
+  "positive_stress_families": 3,
+  "workflow_run_id": 30034064199,
+  "artifact_id": 8574516327,
+  "artifact_digest": "sha256:84da0a0499ec97baeeb821b5b351697a1cf2c331aef805e070cfcaf7ecf3b16b"
+}
