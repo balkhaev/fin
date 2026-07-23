@@ -1,0 +1,16 @@
+{
+  "parts": 5,
+  "encoded_bytes": 21624,
+  "encoded_sha256": "5123fdb1b2ef8c8bd81c8e5dac5a9c4c2e7a77446278896598c9f627b5eeb619",
+  "archive_bytes": 16216,
+  "archive_sha256": "99b3170be8f2c20e25ded9f8ca83a3916e6c68571d619ecdbf03454aa5bd5f22",
+  "source_files": {
+    "metrics.py": "43858044642e7e738d3487d4890030c3c4cfd9f73e53bcd5ce10e69059b0642c",
+    "data.py": "28ab616cc6a03182caed6946a8b573c3a5136ab0ffd565b68faee5b157737283",
+    "README.md": "7d75b7c411df013f42025df188698e59191d205ad0fd32ffe3b9f0f179b9dd99",
+    "requirements.txt": "40a7775f9f27385f94f8f686fcc81e4cca0fc58723fd6a46b3829f249a27b749",
+    "run_research.py": "ab4ae6369a83e750a848a413dd1df153b7fa2b81679105cdcd97ec5ff92e6c8c",
+    "config.py": "6ee4cd2766fd869a45bff246ee1925fc53fa5f9b180a01c74552e30807ec8f6c",
+    "strategy.py": "4049c7f9c9ca51ffc27d3504f90bdc8488ab0b08b1b2602e0470dfd526c8f3cf"
+  }
+}
