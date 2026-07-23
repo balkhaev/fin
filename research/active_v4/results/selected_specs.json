@@ -1,0 +1,36 @@
+[
+  {
+    "kind": "static",
+    "train_days": 0,
+    "selection_days": 0,
+    "top_k": 2,
+    "score_mode": "equal",
+    "overlay": "none",
+    "subset": [
+      "breadth",
+      "dual"
+    ]
+  },
+  {
+    "kind": "walkforward",
+    "train_days": 730,
+    "selection_days": 182,
+    "top_k": 3,
+    "score_mode": "robust",
+    "overlay": "none",
+    "subset": []
+  },
+  {
+    "kind": "static",
+    "train_days": 0,
+    "selection_days": 0,
+    "top_k": 3,
+    "score_mode": "equal",
+    "overlay": "none",
+    "subset": [
+      "breadth",
+      "dual",
+      "donchian"
+    ]
+  }
+]
