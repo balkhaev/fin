@@ -1,0 +1,7 @@
+{
+  "family": "market-neutral spot-perpetual funding/basis carry",
+  "configurations_tested": 24192,
+  "positive_in_all_prefinal_segments": 0,
+  "verdict": "rejected_negative_control",
+  "reason": "No configuration was profitable in development, both validations, and 2025 bridge simultaneously after costs."
+}

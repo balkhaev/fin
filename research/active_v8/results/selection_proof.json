@@ -1,0 +1,50 @@
+{
+  "search_family": "BTC-ETH market-neutral relative momentum",
+  "grid_configurations": 30240,
+  "prefinal_viable_configurations": 33,
+  "selection_periods": ["development_2021_2022", "validation_2023", "validation_2024", "bridge_2025"],
+  "selection_costs_bps_per_perp_side": [20, 40],
+  "final_2026h1_used_for_parameter_ranking": false,
+  "program_level_2026h1_is_pristine": false,
+  "selected_components": [
+    {
+      "lb": 126, "thr": 0.05, "vd": 60, "tv": 0.2, "mg": 0.75, "every": 7, "hyst": true, "maf": 0,
+      "score": 0.049804544348063105,
+      "base_development_ret": 0.09628922821139141, "base_validation_a_ret": 0.0731179229192569,
+      "base_validation_b_ret": 0.06849657627330252, "base_bridge_2025_ret": 0.08387574507970785,
+      "stress_development_ret": 0.032210425842234436, "stress_validation_a_ret": 0.05678128793762727,
+      "stress_validation_b_ret": 0.048237302056991505, "stress_bridge_2025_ret": 0.06410093979263465,
+      "stress_development_dd": -0.2264111088510652, "stress_validation_a_dd": -0.05065757060840903,
+      "stress_validation_b_dd": -0.10851223557348721, "stress_bridge_2025_dd": -0.18111237991743934,
+      "stress_development_turn": 15.332473546374747, "stress_validation_a_turn": 8.406296629456396,
+      "stress_validation_b_turn": 10.27791833715403, "stress_bridge_2025_turn": 9.941964431718151
+    },
+    {
+      "lb": 90, "thr": 0.15, "vd": 30, "tv": 0.1, "mg": 1.0, "every": 28, "hyst": true, "maf": 0,
+      "score": 0.03358488720382194,
+      "base_development_ret": 0.049856535424620985, "base_validation_a_ret": 0.058993092794441315,
+      "base_validation_b_ret": 0.08721643562228931, "base_bridge_2025_ret": 0.11342280010351713,
+      "stress_development_ret": 0.014978815986086635, "stress_validation_a_ret": 0.043270867956324954,
+      "stress_validation_b_ret": 0.07142213292739763, "stress_bridge_2025_ret": 0.09869261817522146,
+      "stress_development_dd": -0.1662628482709534, "stress_validation_a_dd": -0.09112354279960755,
+      "stress_validation_b_dd": -0.08306761501732018, "stress_bridge_2025_dd": -0.08961481720383802,
+      "stress_development_turn": 8.621657247229498, "stress_validation_a_turn": 8.251839723268882,
+      "stress_validation_b_turn": 7.827969175929029, "stress_bridge_2025_turn": 7.0510221848849355
+    },
+    {
+      "lb": 90, "thr": 0.15, "vd": 60, "tv": 0.1, "mg": 1.0, "every": 28, "hyst": true, "maf": 0,
+      "score": 0.017585257379064197,
+      "base_development_ret": 0.03394778855292557, "base_validation_a_ret": 0.05367088536699738,
+      "base_validation_b_ret": 0.057897885338890065, "base_bridge_2025_ret": 0.11759807270700695,
+      "stress_development_ret": 0.0038033696268724437, "stress_validation_a_ret": 0.03796997508408784,
+      "stress_validation_b_ret": 0.04562524780515442, "stress_bridge_2025_ret": 0.10469181872986622,
+      "stress_development_dd": -0.1634118164309024, "stress_validation_a_dd": -0.08029116600502284,
+      "stress_validation_b_dd": -0.07604386663685547, "stress_bridge_2025_dd": -0.08296500061265821,
+      "stress_development_turn": 7.545288743111337, "stress_validation_a_turn": 8.05844589459201,
+      "stress_validation_b_turn": 6.32535580113142, "stress_bridge_2025_turn": 6.178208070586609
+    }
+  ],
+  "ensemble_rule": "equal weight across the three preselected neighboring components",
+  "overlay_scale": 0.4,
+  "overlay_scale_reason": "Conservative point in the stable 0.4-0.6 neighborhood; lower exposure/turnover than larger overlays."
+}
