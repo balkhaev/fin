@@ -1,0 +1,3 @@
+symbol,rows,start,end,duplicates,irregular_intervals,largest_gap_minutes,null_values
+BTCUSDT,227656,2020-01-01T00:00:00+00:00,2026-06-30T23:45:00+00:00,0,15,360.0,0
+ETHUSDT,227656,2020-01-01T00:00:00+00:00,2026-06-30T23:45:00+00:00,0,15,360.0,0
