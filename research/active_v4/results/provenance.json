@@ -1,0 +1,29 @@
+{
+  "workflow_run_id": 30034064199,
+  "workflow_artifact_id": 8574516327,
+  "workflow_artifact_digest": "sha256:84da0a0499ec97baeeb821b5b351697a1cf2c331aef805e070cfcaf7ecf3b16b",
+  "compute_repository": "balkhaev/trader",
+  "compute_branch": "agent/active-v4-compute",
+  "compute_commit": "4d13c219151f0566fba30fff15836474790ea872",
+  "payload_encoded_sha256": "90c619a8e349abac1189b031c5b8e20e8e309363998d187af15c2947be65a159",
+  "payload_archive_sha256": "59f544555ff961513d328809e196dde8c9ffa2a6480f481b03503e06f59fa8f9",
+  "result_files": {
+    "REPORT_RU.md": "579af35f2ce219d2307f90f333e8d131fe13dde619e808d2e31de4dbdcbc0089",
+    "config.json": "bdf7199822eb581c5f370fad50adbfcdad0c3ea8445a13b7cf43faa5ac8449d6",
+    "data_manifest.csv": "9fbb96dad8a0aee438fadfc7519aee7d77fe6cfff82c1961b43b3c03040e38e2",
+    "data_quality.csv": "00cc5b51458484e27a14e0e301061de44ff83fe6e2899e7862cbec7750d36d40",
+    "family_library.csv": "5ed5f3297b87da011e38ac13e10b72f737d9c523a291a6495430a89e8d5ece67",
+    "holdout_base_equity.csv": "d79f23a6b17610a2faf40c317b9d9732482e9949c0c2572625aaba1b3b6a498f",
+    "holdout_equity.png": "03479c6430a4586a27710ae836d90297fcf0ec925894c191dbffc3824bdf0e6d",
+    "holdout_low_equity.csv": "6c8fd40811dc46b1a19e724eb94dba4fc9fb4dee6f7e76d5ede69c67b6ee754f",
+    "holdout_severe_equity.csv": "67e8c0c88e2beee61c35c6faa7b87764b2702fe2175b5f7fdd0429c2bd428070",
+    "holdout_stress_equity.csv": "5946f8691fef266eba9e848735fa434503175631161a22641163c82c7270a164",
+    "metrics.csv": "c258711432c3d8666f0e2608f87dda3dae761db5a12636d8cf5d09525744d5ce",
+    "process_search.csv": "8de6ff402cc8a44c0a4a3f7d009be9ac4ba494f924de1b98edc66f7614c949d0",
+    "selected_processes.csv": "ba2abe7a29d8b663e6985d982515a8e20eaf5b9ff0c26e981d18c2e87ff74c8e",
+    "selected_specs.json": "c710c71ea591e336fdfcac488a644404ece3468b09c54af97ac70e7e8a1a42ad",
+    "selection_history.csv": "707c84f4af7eb50ea0c217cfa781d8183e7845731589c55176876efb1c41755f",
+    "summary.json": "7b3d70551d1255c2cdf79c03e8bce3bf1ba9afdbefe2ea45778bf0752d6b8cba",
+    "yearly.csv": "93ff4ba396326191ef35a6db68f4611a61cc2fd874ea7d3eff770444f290f1bd"
+  }
+}
