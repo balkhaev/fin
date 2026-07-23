@@ -1,0 +1,22 @@
+{
+  "status": "rejected_or_needs_iteration",
+  "selected_processes": [
+    "static_tr0_sel0_k2_robust_xs_momentum-residual_momentum",
+    "static_tr0_sel0_k2_robust_xs_momentum-anchor",
+    "static_tr0_sel0_k2_robust_xs_momentum-funding_momentum"
+  ],
+  "selection_excludes_2026h1": true,
+  "final_2026h1_is_program_level_pristine": false,
+  "prefinal_positive_severe_periods": 0,
+  "stress_final_2026h1_return": 0.04543078108285159,
+  "stress_final_2026h1_max_drawdown": -0.01971562207080091,
+  "severe_final_2026h1_return": 0.004856429730313305,
+  "severe_final_2026h1_max_drawdown": -0.04166174207619977,
+  "severe_full_return": -0.53128918722843,
+  "severe_full_cagr": -0.12879612571926113,
+  "severe_full_max_drawdown": -0.5585962369314812,
+  "severe_full_sharpe": -1.8275756763157587,
+  "severe_full_annual_turnover": 21.06253762594016,
+  "positive_severe_final_components": 2,
+  "decision": "reject"
+}
