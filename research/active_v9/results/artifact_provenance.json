@@ -1,0 +1,16 @@
+{
+  "workflow_run_id": 30050806292,
+  "artifact_id": 8580987864,
+  "artifact_digest": "sha256:6e05e068e49cffc9ee3f31aaf5c48a6b74d040483695c5585f6ad5dcbf330f0a",
+  "head_sha": "009822f0730f9d201b2f1b1c0d7c54fba0ddb33c",
+  "source_files": {
+    "README.md": "c9335bec9cf7153763c0a1673bb22796decf5ba40c026e82f7dd9b8d54630e95",
+    "config.py": "597bc4a014b1050a36a75e0d70b4be5c656d676a4846702f271f50a182edd54f",
+    "data.py": "2200091b43a6cbcbaee115bbb4224b6c6091053ea1b4ed19c099fd37d1d89f5e",
+    "market.py": "a7ba9ecf9b4fe3fb0eeddf047589794893ab75feed6ad9931247d9fd3b31cd02",
+    "metrics.py": "6f05bfc6a49dbae00bd07114c556101e130b5fc4685ed047df7910af3301576d",
+    "requirements.txt": "69641f72a8965749cd614d7b744351d30f21b663351b19c80145885f90e2a5e1",
+    "run.py": "dded6a862317dbf6e8c32ce780b0e58063e78e90bb85171b8d40c7b96108b89f",
+    "strategy.py": "fdd3e5e3a4eddea0a6490a08863db0e5050edb96f1e6fbe03b6ac09029b5ae84"
+  }
+}
