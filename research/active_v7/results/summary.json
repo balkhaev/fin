@@ -1,0 +1,23 @@
+{
+  "candidate_name": "V7_HEDGE_TOP3",
+  "selection_uses_2026_h1": false,
+  "research_final_is_not_pristine_relative_to_previous_iterations": true,
+  "grid_specs": 576,
+  "viable_prefinal_specs": 223,
+  "selected_components": [
+    {"key": "kind-carry_bear_size-0.3_ema_days-100_mom_days-252_vol_days-90_target_vol-0.1_every-14_breadth_threshold-0.3", "robust_score": 0.2373370780919943},
+    {"key": "kind-dual_size-0.4_ema_days-100_mom_days-252_vol_days-90_target_vol-0.1_every-14_breadth_threshold-0.3", "robust_score": 0.2278065646512362},
+    {"key": "kind-carry_bear_size-0.4_ema_days-100_mom_days-252_vol_days-60_target_vol-0.1_every-14_breadth_threshold-0.3", "robust_score": 0.2144917558477099}
+  ],
+  "nominal_final": {"total_return": 0.0699332771600929, "annualized_return": 0.1469087185021309, "max_drawdown": -0.0682143638060965, "sharpe": 1.1113369813703533, "annual_turnover": 13.37090092768164, "avg_gross": 0.2192007982473805, "costs": 183.24914597262145, "funding": 14.31169736291774},
+  "nominal_full": {"total_return": 1.701033748012255, "annualized_return": 0.1981706330513912, "max_drawdown": -0.2737592704865309, "sharpe": 1.0159844452131357, "annual_turnover": 14.713177490795486, "avg_gross": 0.2763730580290942, "costs": 5584.606508223127, "funding": 199.7570770098745},
+  "worst_final_cost_matrix_return": 0.0351977087553998,
+  "worst_final_cost_matrix_drawdown": -0.0794480728979609,
+  "half_hedge_final_return": 0.0059199524856303,
+  "bootstrap_min_p_positive": 0.7526,
+  "bootstrap_min_median_annualized": 0.17202047302699242,
+  "bootstrap_worst_5pct_annualized": -0.16819312391893598,
+  "bootstrap_min_hit_20_before_minus_10": 0.5446,
+  "exposure": {"days": 2007, "hedge_active_share": 0.27204783258594917, "average_spot_gross": 0.2264105049641026, "average_hedge_gross": 0.0499625530649916, "maximum_hedge_gross": 0.4101798127329239, "average_total_gross": 0.2763730580290942, "maximum_total_gross": 0.9165216599565864, "funding_pnl_total": 199.75707700987425, "transaction_costs_total": 5584.606508223116},
+  "decision": "frozen_paper_forward_candidate"
+}
