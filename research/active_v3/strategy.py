@@ -9,6 +9,8 @@ import pandas as pd
 from config import Costs, ResearchConfig, TrendParams
 from metrics import equity_metrics
 
+ANNUALIZATION = 365.0
+
 
 class DailyCache:
     def __init__(self, daily: dict[str, pd.DataFrame]):
@@ -112,33 +114,50 @@ def simulate(
     pending = np.zeros(len(cache.symbols), dtype=float)
     if start_location > 0:
         pending = signal_weights.iloc[start_location - 1].to_numpy(float)
-    actual = np.zeros(len(cache.symbols), dtype=float)
+    asset_values = np.zeros(len(cache.symbols), dtype=float)
+    cash_value = config.starting_equity
     equity = config.starting_equity
     high_water = equity
     hard_stop = False
+    previous_timestamp: pd.Timestamp | None = None
     rows: list[dict[str, object]] = []
     for timestamp in index:
+        # Existing holdings participate in the close-to-next-open gap before the
+        # next-open rebalance. Ignoring this leg materially biases a daily model.
+        if previous_timestamp is not None:
+            overnight_ratio = (
+                cache.open.loc[timestamp].to_numpy(float)
+                / cache.close.loc[previous_timestamp].to_numpy(float)
+            )
+            asset_values *= overnight_ratio
+        equity_open = float(cash_value + asset_values.sum())
+        actual_open = asset_values / equity_open if equity_open > 0 else np.zeros(len(cache.symbols), dtype=float)
+
         if hard_stop:
             pending = np.zeros(len(cache.symbols), dtype=float)
-        turnover = float(np.abs(pending - actual).sum())
-        cost_cash = equity * turnover * costs.rate
-        after_cost = max(0.0, equity - cost_cash)
+        turnover = float(np.abs(pending - actual_open).sum())
+        cost_cash = equity_open * turnover * costs.rate
+        after_cost = max(0.0, equity_open - cost_cash)
+
+        # Rebalance at today's open, then carry the target portfolio through the
+        # intraday open-to-close move. No future close is used at execution time.
         asset_values = pending * after_cost
         cash_value = max(0.0, (1.0 - pending.sum()) * after_cost)
-        returns = cache.open_to_close.loc[timestamp].to_numpy(float)
-        asset_values *= 1.0 + returns
+        intraday_returns = cache.open_to_close.loc[timestamp].to_numpy(float)
+        asset_values *= 1.0 + intraday_returns
         equity = float(cash_value + asset_values.sum())
-        actual = asset_values / equity if equity > 0 else np.zeros(len(cache.symbols), dtype=float)
+        actual_close = asset_values / equity if equity > 0 else np.zeros(len(cache.symbols), dtype=float)
         high_water = max(high_water, equity)
         drawdown = equity / high_water - 1 if high_water > 0 else -1.0
         if drawdown <= -config.hard_drawdown_stop:
             hard_stop = True
         rows.append({
             "time": timestamp, "equity": equity, "drawdown": drawdown,
-            "exposure": float(actual.sum()), "turnover": turnover, "costs": cost_cash,
-            **{f"weight_{symbol}": float(actual[j]) for j, symbol in enumerate(cache.symbols)},
+            "exposure": float(actual_close.sum()), "turnover": turnover, "costs": cost_cash,
+            **{f"weight_{symbol}": float(actual_close[j]) for j, symbol in enumerate(cache.symbols)},
         })
         pending = signal_weights.loc[timestamp].to_numpy(float)
+        previous_timestamp = timestamp
     return pd.DataFrame(rows).set_index("time")
 
 
