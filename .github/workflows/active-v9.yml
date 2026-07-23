@@ -1,0 +1,55 @@
+name: Active V9 research
+
+on:
+  push:
+    branches:
+      - agent/active-v9-xs-perp
+    paths:
+      - "research/active_v9/**"
+      - ".github/workflows/active-v9.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "research/active_v9/**"
+      - ".github/workflows/active-v9.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Cache Binance archives
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+      - name: Install dependencies
+        run: python -m pip install -r research/active_v9/requirements.txt
+      - name: Compile source
+        run: python -m py_compile research/active_v9/*.py
+      - name: Run deterministic self-test
+        run: python research/active_v9/run.py --self-test
+      - name: Run full research
+        run: |
+          python research/active_v9/run.py \
+            --output artifacts/active_v9 \
+            --cache .cache/v9
+      - name: Upload research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v9-research
+          path: artifacts/active_v9
+          if-no-files-found: warn
+          retention-days: 30
