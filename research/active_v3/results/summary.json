@@ -1,0 +1,14 @@
+{
+  "status": "rejected_or_needs_iteration",
+  "selection_is_holdout_free": true,
+  "holdout_is_fully_untouched": false,
+  "base_holdout_return": -0.0960430159347555,
+  "stress_holdout_return": -0.10299723935640692,
+  "stress_holdout_max_drawdown": -0.15854287570698733,
+  "stress_holdout_annual_turnover": 5.505890364562704,
+  "stress_holdout_rolling_positive_share": 0.0,
+  "positive_stress_components": 0,
+  "workflow_run_id": 30026059842,
+  "artifact_id": 8571656019,
+  "artifact_digest": "sha256:4466eb69900bfb894e89755ce2d53e9dab82cb20f6955ec9c6e89dec556fda4c"
+}
