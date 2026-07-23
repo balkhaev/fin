@@ -1,0 +1,14 @@
+{
+  "canonical_repository": "balkhaev/fin",
+  "canonical_pr": 1,
+  "compute_repository": "balkhaev/trader",
+  "compute_pr": 5,
+  "workflow_run_id": 30022908924,
+  "workflow_conclusion": "success",
+  "head_sha": "3a2bc04cf90960c60eb195aa606db50b40773d4f",
+  "artifact_id": 8570557080,
+  "artifact_sha256": "1aacca9416f545499bce3b6d77cea3de19318c32abbb4c2bfe5c7fbf8badd262",
+  "created_at_utc": "2026-07-23T16:14:43Z",
+  "status": "rejected_or_needs_iteration",
+  "shock_status": "rejected"
+}
