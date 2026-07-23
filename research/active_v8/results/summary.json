@@ -1,0 +1,27 @@
+{
+  "status": "frozen_paper_forward_candidate",
+  "candidate": "V8_V7_RATCHET_SCALE_0_4_CAP_0_85",
+  "selection_excludes_2026h1_parameters": true,
+  "program_level_2026h1_is_pristine": false,
+  "target_gross_cap": 0.85,
+  "v8_overlay_scale": 0.4,
+  "stress_full_return": 2.0147056557006904,
+  "stress_full_cagr": 0.22236412488891277,
+  "stress_full_max_drawdown": -0.2336861931223625,
+  "stress_full_sharpe": 1.211992529517684,
+  "stress_full_max_gross": 0.9136463023235393,
+  "stress_final_2026h1_return": 0.14723756025613888,
+  "stress_final_2026h1_max_drawdown": -0.10647029725923529,
+  "severe_validation_a_return": -0.06880297130556778,
+  "important_limit": "Severe-cost 2023 is negative; candidate is paper-forward only.",
+  "v7_hedge_components": [
+    {"kind":"carry_bear","max_size":0.3,"ema_days":100,"mom_days":252,"vol_days":90,"target_vol":0.1,"every":14},
+    {"kind":"dual","max_size":0.4,"ema_days":100,"mom_days":252,"vol_days":90,"target_vol":0.1,"every":14},
+    {"kind":"carry_bear","max_size":0.4,"ema_days":100,"mom_days":252,"vol_days":60,"target_vol":0.1,"every":14}
+  ],
+  "v8_components": [
+    {"lookback_days":126,"threshold":0.05,"vol_days":60,"target_vol":0.2,"max_gross":0.75,"rebalance_days":7},
+    {"lookback_days":90,"threshold":0.15,"vol_days":30,"target_vol":0.1,"max_gross":1.0,"rebalance_days":28},
+    {"lookback_days":90,"threshold":0.15,"vol_days":60,"target_vol":0.1,"max_gross":1.0,"rebalance_days":28}
+  ]
+}
