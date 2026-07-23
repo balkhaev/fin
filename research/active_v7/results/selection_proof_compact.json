@@ -1,0 +1,48 @@
+{
+  "selection_periods": {"dev": ["2021-01-01", "2023-01-01"], "va": ["2023-01-01", "2024-01-01"], "vb": ["2024-01-01", "2025-01-01"], "bridge": ["2025-01-01", "2026-01-01"]},
+  "final_period": ["2026-01-01", "2026-07-01"],
+  "final_not_used_for_ranking": true,
+  "grid_specs": 576,
+  "viable_prefinal_specs": 223,
+  "selected_neighbors": [
+    {
+      "key": "kind-carry_bear_size-0.3_ema_days-100_mom_days-252_vol_days-90_target_vol-0.1_every-14_breadth_threshold-0.3", "kind": "carry_bear", "size": 0.3, "ema_days": 100, "mom_days": 252, "vol_days": 90, "target_vol": 0.1, "every": 14, "breadth_threshold": 0.3, "robust_score": 0.23733707809199434,
+      "dev_hc20_total_return": 0.6081549992823541, "dev_hc20_max_drawdown": -0.14365099021224748, "dev_hc20_sharpe": 1.3944817731474892, "dev_hc20_annual_turnover": 9.200119914097755,
+      "dev_hc40_total_return": 0.5935490296062638, "dev_hc40_max_drawdown": -0.14427253316728506, "dev_hc40_sharpe": 1.3692516027639223, "dev_hc40_annual_turnover": 9.200119914097755,
+      "va_hc20_total_return": 0.021366261664178543, "va_hc20_max_drawdown": -0.19322258255314384, "va_hc20_sharpe": 0.20578652726641486, "va_hc20_annual_turnover": 19.77753967639959,
+      "va_hc40_total_return": 0.018952739471843394, "va_hc40_max_drawdown": -0.19322258255314295, "va_hc40_sharpe": 0.19369125480665378, "va_hc40_annual_turnover": 19.77753967639959,
+      "vb_hc20_total_return": 0.36379727328629974, "vb_hc20_max_drawdown": -0.18625564973294617, "vb_hc20_sharpe": 1.5548518371991422, "vb_hc20_annual_turnover": 19.527259649357703,
+      "vb_hc40_total_return": 0.36025983986685595, "vb_hc40_max_drawdown": -0.18728115606314022, "vb_hc40_sharpe": 1.5423243841826817, "vb_hc40_annual_turnover": 19.527259649357703,
+      "bridge_hc20_total_return": 0.09696373568331196, "bridge_hc20_max_drawdown": -0.15217964876983792, "bridge_hc20_sharpe": 0.5167375295150761, "bridge_hc20_annual_turnover": 17.518167557557668,
+      "bridge_hc40_total_return": 0.09426925108389184, "bridge_hc40_max_drawdown": -0.15217964876983847, "bridge_hc40_sharpe": 0.5060966707473207, "bridge_hc40_annual_turnover": 17.51816755755767
+    },
+    {
+      "key": "kind-dual_size-0.4_ema_days-100_mom_days-252_vol_days-90_target_vol-0.1_every-14_breadth_threshold-0.3", "kind": "dual", "size": 0.4, "ema_days": 100, "mom_days": 252, "vol_days": 90, "target_vol": 0.1, "every": 14, "breadth_threshold": 0.3, "robust_score": 0.22780656465123628,
+      "dev_hc20_total_return": 0.6090000401535589, "dev_hc20_max_drawdown": -0.170352771321439, "dev_hc20_sharpe": 1.3863579341365673, "dev_hc20_annual_turnover": 8.867886731496903,
+      "dev_hc40_total_return": 0.5965223403758853, "dev_hc40_max_drawdown": -0.17271072646026975, "dev_hc40_sharpe": 1.3651889240728459, "dev_hc40_annual_turnover": 8.867886731496903,
+      "va_hc20_total_return": 0.026080716627754574, "va_hc20_max_drawdown": -0.19322258255314495, "va_hc20_sharpe": 0.22935486278607814, "va_hc20_annual_turnover": 19.71650806874658,
+      "va_hc40_total_return": 0.02373170983121997, "va_hc40_max_drawdown": -0.19322258255314428, "va_hc40_sharpe": 0.21764162334527065, "va_hc40_annual_turnover": 19.71650806874658,
+      "vb_hc20_total_return": 0.3480230230310897, "vb_hc20_max_drawdown": -0.19288733807111091, "vb_hc20_sharpe": 1.4999298059511932, "vb_hc20_annual_turnover": 19.979216056784573,
+      "vb_hc40_total_return": 0.3433289889061524, "vb_hc40_max_drawdown": -0.1942489231495046, "vb_hc40_sharpe": 1.483140362783001, "vb_hc40_annual_turnover": 19.979216056784573,
+      "bridge_hc20_total_return": 0.10523110142711589, "bridge_hc20_max_drawdown": -0.15217964876983903, "bridge_hc20_sharpe": 0.5451249105290472, "bridge_hc20_annual_turnover": 17.806819251195286,
+      "bridge_hc40_total_return": 0.10188215375643472, "bridge_hc40_max_drawdown": -0.15217964876983903, "bridge_hc40_sharpe": 0.5321882704331228, "bridge_hc40_annual_turnover": 17.806819251195286
+    },
+    {
+      "key": "kind-carry_bear_size-0.4_ema_days-100_mom_days-252_vol_days-60_target_vol-0.1_every-14_breadth_threshold-0.3", "kind": "carry_bear", "size": 0.4, "ema_days": 100, "mom_days": 252, "vol_days": 60, "target_vol": 0.1, "every": 14, "breadth_threshold": 0.3, "robust_score": 0.21449175584770996,
+      "dev_hc20_total_return": 0.6104903225269678, "dev_hc20_max_drawdown": -0.14263258800147216, "dev_hc20_sharpe": 1.3880710989186014, "dev_hc20_annual_turnover": 9.342356780600488,
+      "dev_hc40_total_return": 0.5949546217362811, "dev_hc40_max_drawdown": -0.14319517417088945, "dev_hc40_sharpe": 1.361559182251075, "dev_hc40_annual_turnover": 9.342356780600488,
+      "va_hc20_total_return": 0.01859489235710332, "va_hc20_max_drawdown": -0.19322258255314595, "va_hc20_sharpe": 0.19189718643315057, "va_hc20_annual_turnover": 20.09740235579621,
+      "va_hc40_total_return": 0.0154914713229104, "va_hc40_max_drawdown": -0.19322258255314262, "va_hc40_sharpe": 0.17629798583875203, "va_hc40_annual_turnover": 20.097402355796206,
+      "vb_hc20_total_return": 0.3480230230310897, "vb_hc20_max_drawdown": -0.19288733807111091, "vb_hc20_sharpe": 1.4999298059511932, "vb_hc20_annual_turnover": 19.979216056784573,
+      "vb_hc40_total_return": 0.3433289889061524, "vb_hc40_max_drawdown": -0.1942489231495046, "vb_hc40_sharpe": 1.483140362783001, "vb_hc40_annual_turnover": 19.979216056784573,
+      "bridge_hc20_total_return": 0.09010059075274701, "bridge_hc20_max_drawdown": -0.1521796487698387, "bridge_hc20_sharpe": 0.49121888007658393, "bridge_hc20_annual_turnover": 17.590036302621193,
+      "bridge_hc40_total_return": 0.08726280021814103, "bridge_hc40_max_drawdown": -0.15217964876983936, "bridge_hc40_sharpe": 0.4798617755928233, "bridge_hc40_annual_turnover": 17.590036302621193
+    }
+  ],
+  "top3_components": [
+    "kind-carry_bear_size-0.3_ema_days-100_mom_days-252_vol_days-90_target_vol-0.1_every-14_breadth_threshold-0.3",
+    "kind-dual_size-0.4_ema_days-100_mom_days-252_vol_days-90_target_vol-0.1_every-14_breadth_threshold-0.3",
+    "kind-carry_bear_size-0.4_ema_days-100_mom_days-252_vol_days-60_target_vol-0.1_every-14_breadth_threshold-0.3"
+  ],
+  "candidate_name": "V7_HEDGE_TOP3"
+}
