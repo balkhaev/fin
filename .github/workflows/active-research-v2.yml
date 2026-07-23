@@ -1,0 +1,56 @@
+name: Active research v2
+
+on:
+  push:
+    branches:
+      - agent/active-research-v2
+      - agent/active-research-v2-impl
+    paths:
+      - "research/active_v2/**"
+      - ".github/workflows/active-research-v2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: research/active_v2/requirements.txt
+
+      - name: Cache Binance public archives
+        uses: actions/cache@v4
+        with:
+          path: .cache/binance_vision_15m
+          key: binance-15m-btc-eth-2020-2026-v1
+
+      - name: Install dependencies
+        run: python -m pip install -r research/active_v2/requirements.txt
+
+      - name: Run deterministic self-test
+        run: python research/active_v2/run_research.py --self-test
+
+      - name: Run full development, validation and holdout research
+        run: |
+          python research/active_v2/run_research.py \
+            --output artifacts/active_v2 \
+            --cache .cache/binance_vision_15m
+
+      - name: Upload research packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-research-v2
+          path: artifacts/active_v2
+          if-no-files-found: warn
+          retention-days: 30
