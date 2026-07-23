@@ -1,0 +1,22 @@
+{
+  "status": "best_available_but_not_approved",
+  "selected_candidate": "spot_momentum",
+  "components": [
+    "spot_momentum"
+  ],
+  "candidate_score_prefinal": 1.1309605083234697,
+  "bridge_2025_stress_return": -0.007615782916674085,
+  "final_2026h1_stress_return": -0.006459609089512153,
+  "final_2026h1_stress_max_drawdown": -0.006459609089512153,
+  "full_stress_return": 4.242582280499377,
+  "full_stress_annualized_return": 0.2903948010516011,
+  "full_stress_max_drawdown": -0.21340924414855833,
+  "full_stress_annual_turnover": 8.266092525345956,
+  "positive_stress_calendar_years": 4,
+  "final_period_was_not_used_for_selection": true,
+  "holdout_is_fully_untouched": false,
+  "live_trading_approved": false,
+  "workflow_run_id": 30034631906,
+  "artifact_id": 8575347195,
+  "artifact_digest": "sha256:43ac64a77e205e9fed4601ebdb526bd71495beb8a0e76751bad91685ebad0a63"
+}

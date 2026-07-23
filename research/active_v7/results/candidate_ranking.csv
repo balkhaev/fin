@@ -1,0 +1,5 @@
+candidate,role,full_cagr,full_max_dd,recent_return,recent_max_dd,status
+V7_HEDGE_TOP3,best core candidate,0.1981706330513912,-0.2737592704865309,0.0699332771600929,-0.0682143638060965,frozen paper-forward
+V7_RATCHET,accelerate then de-risk,0.206551954861506,-0.2113581512636754,0.1131999103690335,-0.0952391178445727,experimental paper-forward
+V4_DEFENSIVE,capital preservation benchmark,,,0.04693758903586853,-0.08519128457489622,paper-forward benchmark
+V6_STANDALONE,rejected base,0.1336268589904286,-0.3433228511955694,-0.05626781557800742,-0.08516527427579501,rejected standalone

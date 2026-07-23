@@ -1,0 +1,12 @@
+{
+  "rotation": [
+    {"fast_days": 7, "slow_days": 21, "ema_days": 40, "vol_days": 30, "target_vol": 0.4, "rebalance_hours": 12, "hysteresis": 0.0},
+    {"fast_days": 7, "slow_days": 21, "ema_days": 10, "vol_days": 30, "target_vol": 0.4, "rebalance_hours": 4, "hysteresis": 0.0},
+    {"fast_days": 14, "slow_days": 21, "ema_days": 10, "vol_days": 30, "target_vol": 0.3, "rebalance_hours": 4, "hysteresis": 0.0}
+  ],
+  "shock": [
+    {"shock_bars": 2, "z_threshold": -2.5, "trend_ema_days": 20, "bar_location": 0.55, "taker_ratio": 0.5, "volume_ratio": 1.25, "stop_atr": 1.0, "target_r": 1.0, "max_hold_bars": 8},
+    {"shock_bars": 2, "z_threshold": -2.5, "trend_ema_days": 20, "bar_location": 0.55, "taker_ratio": 0.5, "volume_ratio": 1.25, "stop_atr": 1.0, "target_r": 1.0, "max_hold_bars": 16},
+    {"shock_bars": 2, "z_threshold": -2.5, "trend_ema_days": 20, "bar_location": 0.55, "taker_ratio": 0.5, "volume_ratio": 1.25, "stop_atr": 1.0, "target_r": 1.0, "max_hold_bars": 32}
+  ]
+}

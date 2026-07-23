@@ -1,0 +1,7 @@
+{
+  "best_prefinal": "kind-carry_bear_size-0.3_ema_days-100_mom_days-252_vol_days-90_target_vol-0.1_every-14_breadth_threshold-0.3",
+  "viable_count": 223,
+  "final_not_used_for_selection": true,
+  "top3_final": {"total_return": 0.0699332771600929, "annualized_return": 0.14690871850213094, "max_drawdown": -0.06821436380609658, "sharpe": 1.1113369813703533, "annual_turnover": 13.37090092768164},
+  "top3_full": {"total_return": 1.701033748012255, "annualized_return": 0.19817063305139127, "max_drawdown": -0.2737592704865309, "sharpe": 1.0159844452131355, "annual_turnover": 14.713177490795486}
+}

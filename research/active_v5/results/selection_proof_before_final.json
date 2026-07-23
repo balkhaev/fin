@@ -1,0 +1,30 @@
+{
+  "selected_candidate": "spot_momentum",
+  "components": [
+    "spot_momentum"
+  ],
+  "candidate_score": 1.1309605083234697,
+  "final_period_not_used_in_selection": true,
+  "selection_periods": {
+    "development": [
+      "2020-01-01",
+      "2022-01-01"
+    ],
+    "validation_a": [
+      "2022-01-01",
+      "2024-01-01"
+    ],
+    "validation_b": [
+      "2024-01-01",
+      "2025-01-01"
+    ]
+  },
+  "bridge_period": [
+    "2025-01-01",
+    "2026-01-01"
+  ],
+  "final_period": [
+    "2026-01-01",
+    "2026-07-01"
+  ]
+}
