@@ -1,0 +1,110 @@
+{
+  "candidate": "V8_V7_RATCHET_SCALE_0_4_CAP_0_85",
+  "status": "frozen_paper_forward_candidate",
+  "spot_signal": "frozen V6 momentum family ensemble",
+  "v7_hedge_components": [
+    {
+      "kind": "carry_bear",
+      "max_size": 0.3,
+      "ema_days": 100,
+      "mom_days": 252,
+      "vol_days": 90,
+      "target_vol": 0.1,
+      "every": 14
+    },
+    {
+      "kind": "dual",
+      "max_size": 0.4,
+      "ema_days": 100,
+      "mom_days": 252,
+      "vol_days": 90,
+      "target_vol": 0.1,
+      "every": 14
+    },
+    {
+      "kind": "carry_bear",
+      "max_size": 0.4,
+      "ema_days": 100,
+      "mom_days": 252,
+      "vol_days": 60,
+      "target_vol": 0.1,
+      "every": 14
+    }
+  ],
+  "v8_relative_components": [
+    {
+      "lookback_days": 126,
+      "threshold": 0.05,
+      "vol_days": 60,
+      "target_vol": 0.2,
+      "max_gross": 0.75,
+      "rebalance_days": 7
+    },
+    {
+      "lookback_days": 90,
+      "threshold": 0.15,
+      "vol_days": 30,
+      "target_vol": 0.1,
+      "max_gross": 1.0,
+      "rebalance_days": 28
+    },
+    {
+      "lookback_days": 90,
+      "threshold": 0.15,
+      "vol_days": 60,
+      "target_vol": 0.1,
+      "max_gross": 1.0,
+      "rebalance_days": 28
+    }
+  ],
+  "v8_overlay_scale": 0.4,
+  "target_gross_cap": 0.85,
+  "ratchet": {
+    "initial_scale": 1.5,
+    "first_high_water_multiple": 1.5,
+    "first_reduced_scale": 1.0,
+    "second_high_water_multiple": 2.0,
+    "second_reduced_scale": 0.75
+  },
+  "cost_scenarios_bps_per_side": {
+    "nominal": {
+      "spot_cost_bps": 40.0,
+      "perp_cost_bps": 20.0
+    },
+    "stress": {
+      "spot_cost_bps": 40.0,
+      "perp_cost_bps": 40.0
+    },
+    "severe": {
+      "spot_cost_bps": 80.0,
+      "perp_cost_bps": 80.0
+    }
+  },
+  "forced_delisting_penalty_bps": 100.0,
+  "periods": {
+    "development": [
+      "2021-01-01",
+      "2023-01-01"
+    ],
+    "validation_a": [
+      "2023-01-01",
+      "2024-01-01"
+    ],
+    "validation_b": [
+      "2024-01-01",
+      "2025-01-01"
+    ],
+    "bridge_2025": [
+      "2025-01-01",
+      "2026-01-01"
+    ],
+    "final_2026h1": [
+      "2026-01-01",
+      "2026-07-01"
+    ],
+    "full": [
+      "2021-01-01",
+      "2026-07-01"
+    ]
+  }
+}
