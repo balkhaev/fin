@@ -1,0 +1,26 @@
+{
+  "candidate": "V7_HEDGE_TOP3",
+  "status": "frozen_paper_forward_candidate",
+  "spot_sleeve": {
+    "source": "V6 momentum_family_ensemble",
+    "components": ["momentum_top1", "momentum_top2", "momentum_top3", "momentum_breadth"],
+    "universe": ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "LTCUSDT", "BCHUSDT", "EOSUSDT", "DOGEUSDT"],
+    "cost_bps_per_side": 40
+  },
+  "hedge_sleeve": {
+    "instruments": ["BTCUSDT_PERP", "ETHUSDT_PERP"],
+    "cost_bps_per_side": 20,
+    "components": [
+      {"kind": "carry_bear", "max_size": 0.30, "ema_days": 100, "momentum_days": 252, "vol_days": 90, "target_vol": 0.10, "rebalance_days": 14},
+      {"kind": "dual", "max_size": 0.40, "ema_days": 100, "momentum_days": 252, "vol_days": 90, "target_vol": 0.10, "rebalance_days": 14},
+      {"kind": "carry_bear", "max_size": 0.40, "ema_days": 100, "momentum_days": 252, "vol_days": 60, "target_vol": 0.10, "rebalance_days": 14}
+    ],
+    "ensemble": "equal_weight"
+  },
+  "execution": "completed_daily_signal_next_utc_open",
+  "max_total_gross": 1.0,
+  "leverage": false,
+  "forced_delisting_penalty_bps": 100,
+  "selection_period_end": "2026-01-01",
+  "final_evaluation": ["2026-01-01", "2026-07-01"]
+}
