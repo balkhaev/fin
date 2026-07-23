@@ -8,6 +8,13 @@ on:
     paths:
       - "research/active_v2/**"
       - ".github/workflows/active-research-v2.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "research/active_v2/**"
+      - "archive/aimr_v1/**"
+      - ".github/workflows/active-research-v2.yml"
   workflow_dispatch:
 
 permissions:
