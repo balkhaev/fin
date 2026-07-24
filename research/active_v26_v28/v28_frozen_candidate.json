@@ -1,0 +1,26 @@
+{
+  "candidate": "ACTIVE_V28_EXACT8H_BREAKOUT_CARRY_CASH",
+  "status": "frozen_paper_forward_candidate",
+  "signal_construction": {
+    "base": "V26 execution-aware spot",
+    "breakout_weight": 0.15,
+    "breakout_gate_lookbacks": [63, 126, 252],
+    "breakout_gate_confirmation_days": 10,
+    "perp_execution": ["l1 band .20 age84", "schedule28"],
+    "relative_weight": 0.4,
+    "carry_policies": "four V38 positive-funding cash-and-carry policies",
+    "cash_policy": "V27 upper_b1_14d"
+  },
+  "target_gross_cap": 0.85,
+  "risk_ratchet": {"initial_scale": 1.5, "at_1_5x": 1.0, "at_2_0x": 0.75, "irreversible": true},
+  "spot_execution_ensemble": ["schedule_7_immediate_exit", "l1_band_0.10_max_age_56", "l1_band_0.20_max_age_28"],
+  "perpetual_execution": ["v7_l1_band_0.20_max_age_84", "v7_schedule_28", "relative_weight_0.40"],
+  "breakout_overlay": {"weight": 0.15, "lookbacks": [63, 126, 252], "confirmation_days": 10},
+  "funding_carry": {"lookbacks_days": [30, 45], "entry_annualized": [0.08, 0.12], "exit_annualized": 0.0, "basis_floor": 0.0, "max_carry_gross": 0.3, "schedule_days": 7},
+  "cash_policy": {"name": "upper_b1_14d", "yield_haircut": 0.8, "annual_expense_bps": 40, "operational_reserve": 0.12, "margin_multiple": 1.0, "max_treasury_fraction": 0.6, "sweep_interval_days": 14, "settlement": "T+1_US_business_day", "transfer_cost_bps": 5, "minimum_transfer_fraction": 0.04},
+  "execution": "completed_daily_close_to_next_UTC_open_with_exact_8h_perp_and_funding_timing",
+  "cost_scenarios_bps_per_side": {"stress": 40, "severe": 80, "extreme": 120, "super_extreme": 160, "catastrophic": 200},
+  "selection_excludes_2026h1": true,
+  "program_level_holdout_is_pristine": false,
+  "selection_proof_sha256": "fcdf6d12bd1ba95374c8866e3a44987e0eea1d187cc2e4100a81f446d20a4828"
+}

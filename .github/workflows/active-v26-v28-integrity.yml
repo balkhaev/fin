@@ -1,0 +1,30 @@
+name: Active V26-V28 integrity
+
+on:
+  push:
+    branches:
+      - agent/active-v26-v28
+    paths:
+      - "research/active_v26_v28/**"
+      - ".github/workflows/active-v26-v28-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/active_v26_v28/**"
+      - ".github/workflows/active-v26-v28-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify V26-V28 archive
+        run: python research/active_v26_v28/verify_archive.py

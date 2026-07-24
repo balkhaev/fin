@@ -1,0 +1,14 @@
+{
+  "candidate": "V43_QUARTERLY_DELIVERY_BASIS",
+  "status": "rejected_or_needs_iteration",
+  "grid_size": 1536,
+  "base_policy_groups": 384,
+  "gross_levels": [0.15, 0.20, 0.25, 0.30],
+  "screen_period": "2021-01-01 through 2025-12-31",
+  "selection_excludes_2026h1": true,
+  "execution": "completed daily close to next UTC open, actual Binance delivery futures and spot, expiry and roll handling, costs and collateral included",
+  "decision": "No screened policy had both positive standalone prefinal return and positive uplift versus the frozen V38 funding-carry baseline. The detailed candidate set was therefore empty and no final-period evaluation was opened.",
+  "eligible_before_final": 0,
+  "final_2026h1_opened": false,
+  "note": "The original screening process reached all 384 groups. Its reporting step raised an empty-detail dataframe error after the economically required prefilter returned no candidates; this does not change the rejection decision."
+}
