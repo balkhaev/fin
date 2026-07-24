@@ -1,0 +1,41 @@
+{
+  "v26": {
+    "candidate": "V26_EXECUTION_AWARE_V8",
+    "status": "frozen_paper_forward_candidate",
+    "selection_proof_sha256": "1357101d26f2310873745cdb1ff779031e18c46945dab70970dac03b0eefd63f",
+    "selection_uses_2021_2025_only": true,
+    "tested_policy_count": 281,
+    "stress_full_cagr": 0.2655302790290801,
+    "stress_full_return": 2.6482003007696315,
+    "stress_full_max_drawdown": -0.23193786986510667,
+    "stress_full_sharpe": 1.3219241944090236,
+    "stress_full_turnover": 10.64016698783219,
+    "stress_final_2026h1_return": 0.12109952742658914,
+    "stress_final_2026h1_max_drawdown": -0.13106825943898703,
+    "source_artifact": "active-research-v26-candidate.zip",
+    "source_artifact_sha256": "be5abfec990ad243cc4bc80f3cc47936e68f8a8578a08b70e3e41091ec904ffc"
+  },
+  "v27": {
+    "candidate": "V27_EXECUTION_AWARE_CASH",
+    "status": "frozen_paper_forward_candidate",
+    "base_strategy": "V26_EXECUTION_AWARE_V8",
+    "selection_proof_sha256": "9234aad8202b3eefe6c8a284360524ce915f342c0bd57d2fb7dd7232e1dc60db",
+    "selection_uses_2021_2025_only": true,
+    "tested_cash_policy_count": 6,
+    "selected_policy": "upper_b1_30d",
+    "stress_full_cagr": 0.2730074594469136,
+    "stress_full_return": 2.768247369246931,
+    "stress_full_max_drawdown": -0.2232415309490067,
+    "stress_full_sharpe": 1.3530712124494306,
+    "stress_full_turnover": 10.670261261441745,
+    "stress_final_2026h1_return": 0.1228909892819292,
+    "stress_final_2026h1_max_drawdown": -0.1298946805211074,
+    "source_artifact": "active-research-v27-candidate.zip",
+    "source_artifact_sha256": "5ed7e744e3fd3d101658c3386cf621ca9450c5a4bbaed860d9c46c293d6368f2"
+  },
+  "combined_git_ready_artifact": {
+    "name": "active-v26-v27-git-ready.zip",
+    "sha256": "0ce88fb570a8a3bf81d33036fe68f50730ee4e04c2877de89165f861ef8e407c"
+  },
+  "note": "The connector truncated single transport blobs above 10,000 bytes. Those broken transport files were removed. Critical V28 source is stored directly and independently validated by exact Git blob identity; V26/V27 artifact hashes and immutable decisions are retained here."
+}
