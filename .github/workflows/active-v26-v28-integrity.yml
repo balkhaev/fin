@@ -5,14 +5,12 @@ on:
     branches:
       - agent/active-v26-v28
     paths:
-      - "research/active_v26_v27/**"
-      - "research/active_v28/**"
+      - "research/active_v26_v28/**"
       - ".github/workflows/active-v26-v28-integrity.yml"
   pull_request:
     branches: [main]
     paths:
-      - "research/active_v26_v27/**"
-      - "research/active_v28/**"
+      - "research/active_v26_v28/**"
       - ".github/workflows/active-v26-v28-integrity.yml"
   workflow_dispatch:
 
@@ -28,7 +26,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Verify V26/V27 bundle
-        run: python research/active_v26_v27/verify_bundle.py
-      - name: Verify V28 exact-8h archive
-        run: python research/active_v28/verify_archive.py
+      - name: Verify V26-V28 archive
+        run: python research/active_v26_v28/verify_archive.py
