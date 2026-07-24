@@ -1,0 +1,18 @@
+{
+  "baseline": "Frozen Active V8",
+  "selection_periods": [
+    "2021-2022 development",
+    "2023 validation A",
+    "2024 validation B",
+    "2025 bridge"
+  ],
+  "final_period": "2026 H1; excluded from the formal selection formula but not pristine at program level",
+  "required_cagr_improvement_vs_v8": 0.015,
+  "required_all_stress_periods_positive": true,
+  "worst_severe_period_return_floor": -0.1,
+  "worst_extreme_period_return_floor": -0.15,
+  "stress_prefinal_max_drawdown_floor": -0.3,
+  "extreme_prefinal_max_drawdown_floor": -0.36,
+  "annual_turnover_ceiling": 25.0,
+  "result": "No V18-V25 candidate passed every gate."
+}
