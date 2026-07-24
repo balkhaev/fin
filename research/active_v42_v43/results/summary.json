@@ -1,0 +1,120 @@
+{
+  "candidate": "ACTIVE_V42_V43_BTC_OI_CROWDING",
+  "status": "rejected_or_needs_iteration",
+  "selection_proof_sha256": "838c3a311302f1a932aee20bcdf7c96f348f3af50241e865c51d5b09c74648fa",
+  "selection_excludes_2026h1": true,
+  "program_level_holdout_is_pristine": false,
+  "promoted_leaders": [],
+  "leaders": {
+    "oi": {
+      "candidate": "oi:oi_breakout",
+      "status": "rejected_or_needs_iteration",
+      "eligible_before_final": false,
+      "prefinal": {
+        "prefinal_cagr": -0.011250740245771995,
+        "prefinal_sharpe": -1.0194935814844264,
+        "prefinal_max_drawdown": -0.05739101603413266,
+        "prefinal_turnover": 3.943783748527523,
+        "worst_severe_segment": -0.04776042618205556,
+        "worst_extreme_segment": -0.06652821462880842
+      },
+      "stress_full": {
+        "annualized_return": -0.014479733178269005,
+        "total_return": -0.07705665829351616,
+        "max_drawdown": -0.07849302011162851,
+        "sharpe": -1.2396558229388674,
+        "annual_turnover": 4.380105510306049,
+        "average_gross": 0.0023372027259776626,
+        "max_gross": 0.3468421701755425,
+        "funding_pnl": -4.408683379385719,
+        "costs": 933.6610345796933,
+        "final_equity": 9229.433417064838
+      },
+      "stress_final_2026h1": {
+        "annualized_return": -0.04654904769688062,
+        "total_return": -0.02331805526050934,
+        "max_drawdown": -0.030729668592014092,
+        "sharpe": -2.7818190247070445,
+        "annual_turnover": 8.797290740511386,
+        "average_gross": 0.004199554319318859,
+        "max_gross": 0.3468421701755425,
+        "funding_pnl": 0.3713175661179322,
+        "costs": 172.8912951559746,
+        "final_equity": 9766.819447394906
+      },
+      "strict_costs": {
+        "stress": {"full_cagr": -0.014479733178269005, "full_return": -0.07705665829351616, "full_dd": -0.07849302011162851, "final_return": -0.02331805526050934},
+        "severe": {"full_cagr": -0.0316078330256907, "full_return": -0.1618653029515693, "full_dd": -0.16269892636169736, "final_return": -0.040198783224856593},
+        "extreme": {"full_cagr": -0.048445958865136585, "full_return": -0.23891483351238407, "full_dd": -0.23924386494386285, "final_return": -0.05679847800037163},
+        "super_extreme": {"full_cagr": -0.06499889140767068, "full_return": -0.3089120335873785, "full_dd": -0.3089120335873785, "final_return": -0.07312164384331499},
+        "catastrophic": {"full_cagr": -0.08127133463280767, "full_return": -0.37249958672690653, "full_dd": -0.37249958672690653, "final_return": -0.08917271555096884}
+      }
+    },
+    "crowding": {
+      "candidate": "crowding:crowding_reversal",
+      "status": "rejected_or_needs_iteration",
+      "eligible_before_final": false,
+      "prefinal": {
+        "prefinal_cagr": -0.00031720692221737234,
+        "prefinal_sharpe": -0.09239902676754279,
+        "prefinal_max_drawdown": -0.008930593755709815,
+        "prefinal_turnover": 0.8564018582427521,
+        "worst_severe_segment": -0.007948907380328607,
+        "worst_extreme_segment": -0.012346526708261973
+      },
+      "stress_full": {
+        "annualized_return": -0.0004434446120474833,
+        "total_return": -0.00243550297787809,
+        "max_drawdown": -0.008930593755709815,
+        "sharpe": -0.1359506919567459,
+        "annual_turnover": 0.8509350299809945,
+        "average_gross": 0.00045999771857225017,
+        "max_gross": 0.12368725199792541,
+        "funding_pnl": 5.071848402548785,
+        "costs": 187.1757270187482,
+        "final_equity": 9975.64497022122
+      },
+      "stress_final_2026h1": {
+        "annualized_return": -0.00171902026449533,
+        "total_return": -0.0008512454443040385,
+        "max_drawdown": -0.0009428427471918077,
+        "sharpe": -2.278110488658656,
+        "annual_turnover": 0.797261813450245,
+        "average_gross": 0.00038953596730611486,
+        "max_gross": 0.07635914011695465,
+        "funding_pnl": 0.039413342885737515,
+        "costs": 15.782000304591154,
+        "final_equity": 9991.48754555696
+      },
+      "strict_costs": {
+        "stress": {"full_cagr": -0.0004434446120474833, "full_return": -0.00243550297787809, "full_dd": -0.008930593755709815, "final_return": -0.0008512454443040385},
+        "severe": {"full_cagr": -0.003840900266893321, "full_return": -0.020934603113936467, "full_dd": -0.022072229154890488, "final_return": -0.0024276399796859804},
+        "extreme": {"full_cagr": -0.007227478574319934, "full_return": -0.03909421882578157, "full_dd": -0.03997702480116916, "final_return": -0.0040018649193518385},
+        "super_extreme": {"full_cagr": -0.010603212300635656, "full_return": -0.05692051509366336, "full_dd": -0.05755744828170062, "final_return": -0.005573922841992873},
+        "catastrophic": {"full_cagr": -0.013968134119396236, "full_return": -0.07441954611592283, "full_dd": -0.0748193140996758, "final_return": -0.0071438163236838825}
+      }
+    }
+  },
+  "data_quality": {
+    "symbol": "BTCUSDT",
+    "price_rows": 6387,
+    "metric_5m_rows": 519687,
+    "metric_8h_rows": 5429,
+    "metric_first": "2020-09-01T00:00:00+00:00",
+    "metric_last": "2026-06-30T16:00:00+00:00",
+    "metric_missing_8h": 958,
+    "metric_duplicate_rows_removed": 0,
+    "metric_nonpositive_5m_rows": 323,
+    "metric_nonpositive_5m_cells": 634,
+    "metric_nonpositive_5m_by_column": {
+      "sum_open_interest": 311,
+      "sum_open_interest_value": 323,
+      "count_toptrader_long_short_ratio": 0,
+      "sum_toptrader_long_short_ratio": 0,
+      "count_long_short_ratio": 0
+    },
+    "checksum_available": 2269,
+    "checksum_failed": 0
+  },
+  "decision": "standalone leader must pass every frozen prefinal gate plus positive final stress and severe before V28 integration"
+}
