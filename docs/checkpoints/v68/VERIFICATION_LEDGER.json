@@ -1,0 +1,23 @@
+{
+  "date": "2026-07-25",
+  "parent_main_commit": "6f9f18883265a1c95bbdc2caad43de089b1533f5",
+  "checks": [
+    {"scope": "V26", "type": "archive_verifier", "status": "passed", "log": "logs/v26.log"},
+    {"scope": "V27", "type": "archive_verifier", "status": "passed", "log": "logs/v27.log"},
+    {"scope": "V29-V37", "type": "archive_verifier", "status": "passed", "log": "logs/v29_v37.log"},
+    {"scope": "V44-V46", "type": "archive_verifier", "status": "passed", "log": "logs/v44_v46.log"},
+    {"scope": "V47-V53", "type": "python_compile", "status": "passed", "compiled_files": 38},
+    {"scope": "V54-V68", "type": "archive_verifier", "status": "passed", "log": "logs/v54_v68_verify.log"},
+    {"scope": "V59-V64", "type": "archive_verifier", "status": "passed", "log": "logs/v59_v64.log"},
+    {"scope": "V62-V66", "type": "package_verifier", "status": "passed", "log": "logs/v62_v66.log"},
+    {"scope": "V67-V68", "type": "exact_artifact_reproof", "status": "passed", "report": "v67_v68_verification.json"},
+    {"scope": "V67-V68", "type": "public_actions", "status": "passed", "run": 30131328671, "artifact": 8611212699}
+  ],
+  "not_proved": [
+    "nonzero forward for V65/V67",
+    "real exchange liquidation safety",
+    "venue/custody continuity",
+    "pristine program-level holdout",
+    "raw-data rerun for every V1-V68"
+  ]
+}

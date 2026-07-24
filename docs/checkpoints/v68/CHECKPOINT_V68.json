@@ -1,0 +1,36 @@
+{
+  "checkpoint": "V68",
+  "date": "2026-07-25",
+  "live_ready": false,
+  "parent_main_commit": "6f9f18883265a1c95bbdc2caad43de089b1533f5",
+  "checkpoint_branch": "checkpoint/research-v68-2026-07-25",
+  "primary_growth_benchmark": "V28",
+  "balanced_tier": "V10",
+  "latest_historical_candidate": "V67",
+  "intrabar_audit": "V68",
+  "forward_status": "zero_exposure_2026_ytd_for_V65_V67",
+  "evidence_limitations": {
+    "V11_V17": "legacy_summary_only_no_canonical_artifact_found",
+    "V61": "implementation_present_result_incomplete",
+    "program_level_holdout_pristine": false,
+    "live_authorized": false
+  },
+  "artifact_evidence": {
+    "V51": {"workflow_run": 30123320257, "artifact_id": 8608304038, "sha256": "5d257e2b4453e095d0b578f412d90c6c16cbcd1c4c71dc3393261206e039b947"},
+    "V52": {"workflow_run": 30124022540, "artifact_id": 8608583166, "sha256": "b6c74d40f145ea1d5ebbe427626bf3211985e16cd80d1c4f5d7457d2753d593b"},
+    "V53": {"workflow_run": 30124711240, "artifact_id": 8608815933, "sha256": "c11a798e9a939bf3080a18b683cb5b833f4db04a91319de8242983f19d4557c9"},
+    "V67_V68": {"workflow_run": 30131328671, "artifact_id": 8611212699, "sha256": "686d2f84d0256b603610030c5fea7b1a75f64aca996291c68cc587ecbdad1683", "compute_commit": "51a2ac201884ad1ff40c56fd65b7da091792e5b7"}
+  },
+  "canonical_v67": {
+    "source_sha256": "996c83a5df824b2c23f17871d105148a69a3e52d7ec3f4040e1a4e1329bf1a1a",
+    "selection_proof_internal_sha256": "5795fc62a02e8a8ba423eedc2db4cbbcf6d0028c78e247860bf7fa555b78a6e5",
+    "selection_proof_file_sha256": "5eeb9a00281f290c2781412d77d530a9dedf35bace5944f86cde50862abb555d",
+    "summary_sha256": "46c38f6d435466e1a37e1b486d78b00a4a794db8af4305a09761898c6ad1d74a"
+  },
+  "selected_metrics": {
+    "V28": {"stress_cagr": 0.3017373389411653, "max_drawdown": -0.25293097319546753, "sharpe": 1.3513662741948576},
+    "V65": {"prefinal_cagr": 0.283445579878963, "max_drawdown": -0.24047131706711244, "max_gross": 1.0429026134811705},
+    "V67": {"prefinal_cagr": 0.3139133789666593, "full_40bps_cagr": 0.2919767443580208, "max_drawdown": -0.25116514857258143, "sharpe": 1.096752490056139, "max_gross": 1.0776093067364994, "post_2020_cagr": 0.15312563477798613},
+    "V68": {"status": "intrabar_passed_forward_unproven", "no_liquidations": true, "final_nonzero": false}
+  }
+}

@@ -1,0 +1,32 @@
+name: Research checkpoint V68 reproof
+
+on:
+  push:
+    paths:
+      - "docs/checkpoints/v68/**"
+      - "research/checkpoint_v68/**"
+      - "verify_checkpoint_v68.py"
+      - "MANIFEST.json"
+      - "README.md"
+  pull_request:
+    paths:
+      - "docs/checkpoints/v68/**"
+      - "research/checkpoint_v68/**"
+      - "verify_checkpoint_v68.py"
+      - "MANIFEST.json"
+      - "README.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python verify_checkpoint_v68.py

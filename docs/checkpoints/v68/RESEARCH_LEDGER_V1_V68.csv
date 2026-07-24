@@ -1,0 +1,73 @@
+version,hypothesis,status,decision,evidence_level,canonical_location
+1,AIMR 5m momentum/reversion,rejected,Negative expectancy after realistic costs; momentum excluded.,canonical_main,balkhaev/fin main
+2,4h rotation + shock reversal,rejected,Rotation signal failed doubled costs; shock reversal rejected.,canonical_main,balkhaev/fin main
+3,Daily next-open rotation,rejected,Corrected overnight execution; holdout did not confirm edge.,canonical_main,balkhaev/fin main
+4,Low-turnover trend ensemble,benchmark,Defensive benchmark with moderate return and low turnover.,canonical_main,balkhaev/fin main
+5,Spot/perpetual absolute trend,rejected,Strong early history but 2025 bridge and 2026 H1 failed.,canonical_main,balkhaev/fin main
+6,Cross-sectional spot momentum,rejected standalone,"Retained as a research input, not accepted standalone.",canonical_main,balkhaev/fin main
+7,Spot momentum + BTC/ETH hedge,frozen historical,First directional-plus-hedge candidate; forward unproven.,canonical_main,balkhaev/fin main
+8,V7 + BTC/ETH relative trend + ratchet,frozen benchmark,Growth benchmark lineage; later refined by exact-8h V28.,canonical_main,balkhaev/fin main
+9,Cross-sectional perpetuals,rejected,Severe CAGR negative; drawdown near 56%.,canonical_main,balkhaev/fin main
+10,80% V8 growth / 20% V4 defensive separate accounts,frozen balanced tier,"Merged at checkpoint; defensive allocation tier, not new alpha.",canonical_main,balkhaev/fin main
+11,Multi-asset ETF core,legacy summary only,No independent improvement reported.,legacy_summary_only,checkpoint documentation; no canonical code artifact located in current main
+12,ETF sector rotation,legacy summary only,Reported as failing frozen gates.,legacy_summary_only,checkpoint documentation; no canonical code artifact located in current main
+13,Global ETF long/short trend,legacy summary only,Borrow/cost profile reported insufficient.,legacy_summary_only,checkpoint documentation; no canonical code artifact located in current main
+14,ETF relative value,legacy summary only,Pair families reported as failing.,legacy_summary_only,checkpoint documentation; no canonical code artifact located in current main
+15,Frozen-module allocator,legacy summary only,No robust allocation uplift reported.,legacy_summary_only,checkpoint documentation; no canonical code artifact located in current main
+16,Statistical gate,audit only / legacy summary,"HAC/ES/bootstrap gate, not a strategy.",legacy_summary_only,checkpoint documentation; no canonical code artifact located in current main
+17,Forward/execution protocol,protocol / legacy summary,Protocol for data after 2026-06-30.,legacy_summary_only,checkpoint documentation; no canonical code artifact located in current main
+18,Beta-hedged alt relative momentum,rejected,Insufficient uplift versus V8.,canonical_main,balkhaev/fin main
+19,Higher initial risk scale,rejected,Higher CAGR but unacceptable extreme segments.,canonical_main,balkhaev/fin main
+20,Regime acceleration,rejected,2023 instability and extreme collapse.,canonical_main,balkhaev/fin main
+21,Scheduled volatility targeting,rejected,Worse growth and tails.,canonical_main,balkhaev/fin main
+22,Aggressive + defensive sleeve,rejected near-candidate,Uplift below predeclared threshold.,canonical_main,balkhaev/fin main
+23,Drawdown throttle,rejected,Reduced DD at excessive CAGR cost.,canonical_main,balkhaev/fin main
+24,Deep-drawdown circuit,rejected near-candidate,Failed uplift/tail gates without gate weakening.,canonical_main,balkhaev/fin main
+25,V24 with 1.15 gross cap,rejected,Extra gross did not improve the result.,canonical_main,balkhaev/fin main
+26,Execution-aware no-trade state machine,frozen historical control,Lower turnover and improved historical CAGR.,canonical_main,balkhaev/fin main
+27,V26 + conservative cash sleeve,frozen historical control,Idle cash receives haircut Treasury proxy.,canonical_main,balkhaev/fin main
+28,Exact-8h growth stack,primary frozen benchmark,"~30.17% stress CAGR, ~-25.29% DD; program-level holdout not pristine.",canonical_main,balkhaev/fin main
+29,Negative-funding squeeze,rejected,No standalone edge.,canonical_main,balkhaev/fin main
+30,Funding-aware exit hysteresis,rejected/trivial,Economically indistinguishable from V26.,canonical_main,balkhaev/fin main
+31,Spot/perp router,rejected,No material uplift.,canonical_main,balkhaev/fin main
+32,Dynamic BTC/ETH carry,rejected,Failed heavy costs.,canonical_main,balkhaev/fin main
+33,Multi-asset spot/perp carry,rejected,Basis and costs consumed funding.,canonical_main,balkhaev/fin main
+34,Long negative / short positive funding,rejected,Validation periods negative.,canonical_main,balkhaev/fin main
+35,Funding dispersion,rejected,Low CAGR and negative severe result.,canonical_main,balkhaev/fin main
+36,Basis z-score convergence,rejected,Funding materially below costs.,canonical_main,balkhaev/fin main
+37,Regime-conditioned funding,rejected low-risk effect,Small and cost-sensitive.,canonical_main,balkhaev/fin main
+38,8h session effects,rejected,High turnover; no durable edge.,canonical_main,balkhaev/fin main
+39,8h breakout,rejected,Low CAGR; 2024/final negative.,canonical_main,balkhaev/fin main
+40,Quote-volume/taker-flow continuation,rejected,Flow signal did not survive costs.,canonical_main,balkhaev/fin main
+41,Liquidity exhaustion/reversal,rejected,Near-zero result from near-zero exposure.,canonical_main,balkhaev/fin main
+42,Open-interest regimes,rejected,Prefinal and final negative.,canonical_main,balkhaev/fin main
+43,Crowding/positioning,rejected,Practically no trading.,canonical_main,balkhaev/fin main
+44,Raw on-chain exchange pressure,raw effect only,High gross effect but ~37x turnover and ~-49% DD.,canonical_main,balkhaev/fin main
+45,Miner/flow regime,rejected,No standalone edge.,canonical_main,balkhaev/fin main
+46,Execution-aware on-chain confirmation,rejected high-tail,High CAGR but drawdown near 60%.,canonical_main,balkhaev/fin main
+47,Risk layer on raw V44,rejected,Risk improved but turnover/cost sensitivity remained high.,canonical_main,balkhaev/fin main
+48,Risk layer on V46,rejected near-miss,Missed immutable -35% DD floor.,canonical_main,balkhaev/fin main
+49,Lower-vol V46 budget,historical candidate,Passed historical gates; final exposure zero.,canonical_main,balkhaev/fin main
+50,Vol95 × crash/recovery,historical candidate downgraded,Good DD but 2020 concentration and zero forward.,canonical_main,balkhaev/fin main
+51,Immutable V50 robustness audit,audit concern,Latency robust; post-2020 weak and best-year concentration high.,canonical_main,balkhaev/fin main
+52,75% exchange pressure + 25% valuation,historical on-chain candidate,"~16.64% CAGR, ~-24.61% DD; concentration improved; zero forward.",canonical_main,balkhaev/fin main
+53,Immutable V52 latency/concentration audit,"audit pass, forward-unproven",All latency variants positive; reverse/final zero exposure.,canonical_main,balkhaev/fin main
+54a,On-chain BTC/ETH beta rotation,rejected,Standalone beta rotation rejected.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+54b,On-chain overlay on V26,"historical candidate, zero overlay forward",Historical uplift present but overlay did not activate in final.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+55a,Neighbour beta ensemble,historical candidate,Historical candidate; zero forward.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+55b,V54 cash collateral sleeve,rejected,Failed predeclared selection.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+56,Full neighbour on-chain ensemble,historical candidate,Passed historical/latency/tail gates; zero forward.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+57,ETH/BTC market-neutral proxy,rejected,CAGR around 1.6%; insufficient edge.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+58,Consensus convexity,historical candidate,"~25.1% CAGR, ~-21.1% DD; zero forward.",checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+59,Consensus boundary audit,historical candidate,Neighbour/leaveout/bootstrap robust; zero forward.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+60,Irreversible ratchet on V59,rejected,Vintage DD gate failed and uplift insufficient.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+61,Cash sleeve on V59,implementation incomplete,Source retained; no complete canonical result found. No acceptance/rejection claim.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+62,On-chain spot + small perpetual overlay,historical leverage candidate,"~29.36% CAGR, ~-25.0% DD; zero forward.",checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+63a,V62 eligible plateau ensemble,rejected near-candidate,Reduced single-policy risk but failed strict audit.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+63b,V26 on-chain futures boost,rejected,Failed predeclared checks.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+64a,Funding-aware small-leverage plateau,rejected,Funding-aware plateau missed thresholds.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+64b,V52 spot/perpetual overlay,rejected near-candidate,Strong return but missed immutable Sharpe/DD gates.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+65,Safe-cap spot/perpetual ensemble,frozen historical candidate,"~28.34% CAGR, ~-24.05% DD, max gross ~1.043x; zero forward.",checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+66,Adversarial intrabar audit of V65,"audit pass, forward-unproven",No modelled liquidations; positive buffer.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+67,Blended V52/V62 spot + small perpetual,latest historical candidate,"~31.39% prefinal CAGR, ~-25.12% DD, max gross ~1.078x; zero forward.",checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68
+68,Adversarial intrabar audit of V67,"audit pass, forward-unproven",No modelled liquidations; widened/high-cost scenarios positive.,checkpoint_archive_verified,research/active_v54_v68 and research/checkpoint_v68

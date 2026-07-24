@@ -1,0 +1,7 @@
+ab7dc6196ac983c467b5fff0ab3edeb5cb302711735bfc4fac29b3bfafc116d5  /mnt/data/active-v47-v48-onchain-risk-final.zip
+525b22c6dfa31fb3a16fdd406b5ed9d6724b83dea03847dc4b7e52c00e702c9e  /mnt/data/active-v49-v50-onchain-budget.zip
+5d257e2b4453e095d0b578f412d90c6c16cbcd1c4c71dc3393261206e039b947  /mnt/data/active-v51-exact-v50-audit.zip
+b6c74d40f145ea1d5ebbe427626bf3211985e16cd80d1c4f5d7457d2753d593b  /mnt/data/active-v52-diversified-onchain.zip
+c11a798e9a939bf3080a18b683cb5b833f4db04a91319de8242983f19d4557c9  /mnt/data/active-v53-v52-audit.zip
+fdae6ffdbb417cdb0247f8ba41179b58483f696d70fa139f423c18c79bea2235  /mnt/data/active-v62-v66-onchain-spot-perp-research.zip
+686d2f84d0256b603610030c5fea7b1a75f64aca996291c68cc587ecbdad1683  /mnt/data/active-v67-v68-blended-onchain-spot-perp.zip

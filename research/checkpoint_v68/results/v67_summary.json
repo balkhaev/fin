@@ -1,0 +1,145 @@
+{
+  "candidate": "ACTIVE_V67_BLENDED_ONCHAIN_SPOT_PERP",
+  "status": "historical_small_leverage_candidate_needs_nonzero_forward",
+  "leader": "w80_g115",
+  "leader_policy": {
+    "name": "w80_g115",
+    "long_notional": 0.24,
+    "hedge_notional": 0.12,
+    "gross_cap": 1.15,
+    "initial_margin_ratio": 0.2,
+    "maintenance_margin_ratio": 0.08,
+    "operational_cash_reserve": 0.03,
+    "per_asset_perp_cap": 0.16
+  },
+  "w_v52": 0.8,
+  "checks": {
+    "eligible_before_final": true,
+    "final_nonzero": false,
+    "final_positive": false
+  },
+  "prefinal": {
+    "cagr": 0.3139133789666593,
+    "total_return": 4.143255512618426,
+    "max_drawdown": -0.25116514857258143,
+    "sharpe": 1.096752490056139,
+    "annual_turnover": 5.721077492675438,
+    "average_gross": 0.29906709134337434,
+    "max_gross": 1.0776093067364994,
+    "average_net_beta": 0.29906709134337434,
+    "average_perp_gross": 0.0500903472948464,
+    "funding_pnl": -1300.3139542321128,
+    "costs": 4299.105244558215,
+    "liquidations": 0
+  },
+  "post_2020": {
+    "cagr": 0.15312563477798613,
+    "total_return": 1.0378460566014351,
+    "max_drawdown": -0.24982536559585833,
+    "sharpe": 0.673203781454036,
+    "annual_turnover": 5.816672055178684,
+    "average_gross": 0.2790561947183716,
+    "max_gross": 1.0776093067364994,
+    "average_net_beta": 0.2790561947183716,
+    "average_perp_gross": 0.046249655304768406,
+    "funding_pnl": -409.5728502593911,
+    "costs": 1596.8715958400785,
+    "liquidations": 0
+  },
+  "full_cost_sensitivity": {
+    "stress": {
+      "cagr": 0.2919767443580208,
+      "total_return": 4.143255512618426,
+      "max_drawdown": -0.25116514857258143,
+      "sharpe": 1.0623178166650253,
+      "annual_turnover": 5.3682572961250035,
+      "average_gross": 0.28063144872631707,
+      "max_gross": 1.0776093067364994,
+      "average_net_beta": 0.28063144872631707,
+      "average_perp_gross": 0.047002586160232576,
+      "funding_pnl": -1300.3139542321128,
+      "costs": 4299.105244558216,
+      "liquidations": 0
+    },
+    "severe": {
+      "cagr": 0.26450271266530856,
+      "total_return": 3.4829200270164957,
+      "max_drawdown": -0.2592722552666582,
+      "sharpe": 0.9846115172372277,
+      "annual_turnover": 5.3682572961250035,
+      "average_gross": 0.28063144872631707,
+      "max_gross": 1.0776093067364994,
+      "average_net_beta": 0.28063144872631707,
+      "average_perp_gross": 0.047002586160232576,
+      "funding_pnl": -1230.2792279676905,
+      "costs": 7938.632975514696,
+      "liquidations": 0
+    },
+    "extreme": {
+      "cagr": 0.23759517100222438,
+      "total_return": 2.9070058945659163,
+      "max_drawdown": -0.2781418930375038,
+      "sharpe": 0.9067747778003447,
+      "annual_turnover": 5.368257296125005,
+      "average_gross": 0.28063144872631707,
+      "max_gross": 1.0776093067364994,
+      "average_net_beta": 0.28063144872631707,
+      "average_perp_gross": 0.047002586160232576,
+      "funding_pnl": -1165.7841607829498,
+      "costs": 11010.004170449525,
+      "liquidations": 0
+    },
+    "super_extreme": {
+      "cagr": 0.21124278365759164,
+      "total_return": 2.404765634519077,
+      "max_drawdown": -0.3076897180915814,
+      "sharpe": 0.8288474554474763,
+      "annual_turnover": 5.3682572961250035,
+      "average_gross": 0.28063144872631707,
+      "max_gross": 1.0776093067364994,
+      "average_net_beta": 0.28063144872631707,
+      "average_perp_gross": 0.047002586160232576,
+      "funding_pnl": -1106.3095431895417,
+      "costs": 13592.375759111685,
+      "liquidations": 0
+    },
+    "catastrophic": {
+      "cagr": 0.18543443521506475,
+      "total_return": 1.9668142556067791,
+      "max_drawdown": -0.3360442734228427,
+      "sharpe": 0.7508694484406054,
+      "annual_turnover": 5.368257296125003,
+      "average_gross": 0.28063144872631707,
+      "max_gross": 1.0776093067364991,
+      "average_net_beta": 0.28063144872631707,
+      "average_perp_gross": 0.047002586160232576,
+      "funding_pnl": -1051.38844126275,
+      "costs": 15754.255697722097,
+      "liquidations": 0
+    }
+  },
+  "final": {
+    "cagr": 0.0,
+    "total_return": 0.0,
+    "max_drawdown": 0.0,
+    "sharpe": 0.0,
+    "annual_turnover": 0.0,
+    "average_gross": 0.0,
+    "max_gross": 0.0,
+    "average_net_beta": 0.0,
+    "average_perp_gross": 0.0,
+    "funding_pnl": 0.0,
+    "costs": 0.0,
+    "liquidations": 0
+  },
+  "robust_floors": {
+    "cagr": 0.3077215018231476,
+    "max_drawdown": -0.2634158935086307,
+    "sharpe": 1.0796746434971327
+  },
+  "concentration": {
+    "best_year_share": 0.545916787462041,
+    "worst_loo_cagr": 0.15351177386203818
+  },
+  "selection_proof_sha256": "5795fc62a02e8a8ba423eedc2db4cbbcf6d0028c78e247860bf7fa555b78a6e5"
+}

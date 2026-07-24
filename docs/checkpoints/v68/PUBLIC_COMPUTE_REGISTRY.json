@@ -1,0 +1,27 @@
+{
+  "V28_integrity": {
+    "workflow_run": 30093413034,
+    "status": "success"
+  },
+  "V51": {
+    "workflow_run": 30123320257,
+    "artifact": 8608304038,
+    "sha256": "5d257e2b4453e095d0b578f412d90c6c16cbcd1c4c71dc3393261206e039b947"
+  },
+  "V52": {
+    "workflow_run": 30124022540,
+    "artifact": 8608583166,
+    "sha256": "b6c74d40f145ea1d5ebbe427626bf3211985e16cd80d1c4f5d7457d2753d593b"
+  },
+  "V53": {
+    "workflow_run": 30124711240,
+    "artifact": 8608815933,
+    "sha256": "c11a798e9a939bf3080a18b683cb5b833f4db04a91319de8242983f19d4557c9"
+  },
+  "V67_V68": {
+    "workflow_run": 30131328671,
+    "artifact": 8611212699,
+    "sha256": "686d2f84d0256b603610030c5fea7b1a75f64aca996291c68cc587ecbdad1683",
+    "status": "success"
+  }
+}
