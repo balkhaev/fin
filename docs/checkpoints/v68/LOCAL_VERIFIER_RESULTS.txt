@@ -1,0 +1,11 @@
+V26: passed
+V27: passed
+V29-V37: passed
+V44-V46: passed
+V47-V53 source compilation: passed (38 Python files)
+V54-V68 comprehensive archive: passed
+V59-V64: passed
+V62-V66: passed
+V67 source self-test: passed
+V67/V68 exact public-artifact reproof: passed
+Checkpoint V68 outer verifier: passed

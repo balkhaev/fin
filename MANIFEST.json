@@ -1,0 +1,80 @@
+{
+  "format": "research-checkpoint-v68-lean-github",
+  "generated_at": "2026-07-25",
+  "parent_main_commit": "6f9f18883265a1c95bbdc2caad43de089b1533f5",
+  "full_local_package_sha256": "06a529d9cbba4cbc13ea25d146ab0c3e91b2894cdb9550ff58fc5e37570571e8",
+  "files": {
+    ".github/workflows/research-checkpoint-v68.yml": {
+      "bytes": 684,
+      "sha256": "419ff1f71a5ffcbd047f43212fa0c901858e749663cf90d32812beb258ddaa13"
+    },
+    "README.md": {
+      "bytes": 1748,
+      "sha256": "6baceb907f15b3944badd40e39b212b1d1b2e398188caae0d2def6dae3f43686"
+    },
+    "docs/checkpoints/v68/ANNUAL_RETURNS.csv": {
+      "bytes": 704,
+      "sha256": "c258fa4760d59a3757ef93eea88d9fe2cad0456bb6e6ef13a7a60dd03365e6d5"
+    },
+    "docs/checkpoints/v68/ARTIFACT_SHA256.txt": {
+      "bytes": 786,
+      "sha256": "6edb71ca13be8a68575f38678ab89fd011a6bd00801b53c032dc4d896b8a40d5"
+    },
+    "docs/checkpoints/v68/CHECKPOINT_V68.json": {
+      "bytes": 2530,
+      "sha256": "404885efed0e1248bd265034727ffd0654817a18ea267781318021ce6d864fdf"
+    },
+    "docs/checkpoints/v68/LOCAL_VERIFIER_RESULTS.txt": {
+      "bytes": 292,
+      "sha256": "1665fab7f8861d87582c5d6b775f998fe60662554450b4c8aed95dc95e42b159"
+    },
+    "docs/checkpoints/v68/PUBLIC_COMPUTE_REGISTRY.json": {
+      "bytes": 746,
+      "sha256": "033730dc7f4754c26a657dbc869d68e76198bb04e43905798ea1f527d3187e94"
+    },
+    "docs/checkpoints/v68/RESEARCH_CHECKPOINT_V68_FULL_RU.md": {
+      "bytes": 19045,
+      "sha256": "8a983f818146e04a476d384489c1634721a6ce7fb59ad5d6d404ed6ee820bcd9"
+    },
+    "docs/checkpoints/v68/RESEARCH_LEDGER_V1_V68.csv": {
+      "bytes": 10460,
+      "sha256": "0118112b14e2dcc709e7b8d455abb53959c4f1588370f5d7bef3b9558b0031b0"
+    },
+    "docs/checkpoints/v68/V67_V68_LOCAL_REPROOF.json": {
+      "bytes": 2122,
+      "sha256": "b8076b7d6a5454dfb06181660f0879add783c5105e8ff775c237d32bf69ab10e"
+    },
+    "docs/checkpoints/v68/VERIFICATION_LEDGER.json": {
+      "bytes": 1651,
+      "sha256": "d5320ed24fb09f684fabccb95fa60a467a6674ebf788e8ef7e031b3b91e00db5"
+    },
+    "research/checkpoint_v68/results/v67_selection_proof_before_final.json": {
+      "bytes": 7198,
+      "sha256": "5eeb9a00281f290c2781412d77d530a9dedf35bace5944f86cde50862abb555d"
+    },
+    "research/checkpoint_v68/results/v67_summary.json": {
+      "bytes": 4703,
+      "sha256": "46c38f6d435466e1a37e1b486d78b00a4a794db8af4305a09761898c6ad1d74a"
+    },
+    "research/checkpoint_v68/results/v67_yearly.csv": {
+      "bytes": 169,
+      "sha256": "0a25f5b8fea6ef095fc7795018a068d2deca51f4d9b754223fab263cb2b84f1e"
+    },
+    "research/checkpoint_v68/results/v68_summary.json": {
+      "bytes": 9426,
+      "sha256": "c95b4cfe10317660a65040afbbbbc81c6c2eb97ecefbed4770b09f11b4ff7dd2"
+    },
+    "research/checkpoint_v68/source/v67_blended_onchain_market.py": {
+      "bytes": 8125,
+      "sha256": "996c83a5df824b2c23f17871d105148a69a3e52d7ec3f4040e1a4e1329bf1a1a"
+    },
+    "research/checkpoint_v68/source/v68_v67_intrabar.py": {
+      "bytes": 2865,
+      "sha256": "c8e657688ee00b513ab769e9348c5898c1e1e55b62d12662ba5eae505306b15d"
+    },
+    "verify_checkpoint_v68.py": {
+      "bytes": 2031,
+      "sha256": "cea6d037b1a46ecfb8d4b6c4d556733706bc26ebfa055f1669fec088165485d7"
+    }
+  }
+}
