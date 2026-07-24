@@ -1,0 +1,30 @@
+name: Active V49-V50 archive integrity
+
+on:
+  push:
+    branches: [agent/active-v49-v50-archive]
+    paths:
+      - "research/active_v49_v50/**"
+      - ".github/workflows/active-v49-v50-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/active_v49_v50/**"
+      - ".github/workflows/active-v49-v50-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pandas==2.2.3
+      - name: Verify V49-V50 historical candidate archive
+        run: python research/active_v49_v50/verify_archive.py
