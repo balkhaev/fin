@@ -1,0 +1,28 @@
+name: Active V51 archive integrity
+
+on:
+  push:
+    branches: [agent/active-v51-archive]
+    paths:
+      - "research/active_v51/**"
+      - ".github/workflows/active-v51-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/active_v51/**"
+      - ".github/workflows/active-v51-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python research/active_v51/verify_archive.py
