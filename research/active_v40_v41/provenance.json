@@ -1,0 +1,32 @@
+{
+  "canonical_base_commit": "07d182f3a410f2fbf12aff29fd74395eb96b6698",
+  "public_compute_repo": "balkhaev/trader",
+  "public_compute_pr": 23,
+  "public_compute_commit": "2773eba1ba00bb30ebd63111890a22a3bded90bc",
+  "workflow_run": {
+    "id": 30106779770,
+    "conclusion": "success"
+  },
+  "artifact": {
+    "id": 8601942308,
+    "digest": "sha256:54c055eaf4663db2e5781e93e27ce6308ff60eb28e3608fe6a95d074fcb9f759"
+  },
+  "source_archive": {
+    "format": "base64(tar.bz2)",
+    "encoded_bytes": 15200,
+    "encoded_sha256": "756b98cc4b6fa87aa24002c46ee64308bd82cdd7a58d7fd5ccadd647ae2d2d76",
+    "archive_bytes": 11400,
+    "archive_sha256": "19adfc7abaf7d9a3bdeb11e38d116cee2145d8fafa98831c7d70567b524d3809"
+  },
+  "source_files": {
+    "config.py": "647e1854f98eeda95ddce3c4f069994efb1cd262fef1f4bc141864eac6938129",
+    "data.py": "072c4b90020d87789a4802bc2a199d97b9fc29b1d467b1addc394fe50c929af2",
+    "metrics.py": "b5b9b2b3968b5535e0fca3b3cc015910425c7b33960ba17abe4836e06ae1dacb",
+    "requirements.txt": "a809bbdfc0462992067530cfe2f3e59a17e9ba156c6643b072ffc31f9f2b3177",
+    "run.py": "27563f654bb2c17858b09966f7a2fe8778bda0891bdaa453374c6685fb1c1878",
+    "strategy.py": "42cd66d27317834902e66f65710f137660701d482736167e78fa6f6ec95adde3"
+  },
+  "selection_proof_sha256": "77253002a19a83f748ec43d5f4bce83ca08e4f956f3bc3544eed8aa7b99613f1",
+  "summary_sha256": "76fd64d8245e6aeecc7967ed556e27eab8a2b0a575eb311020835ee82f3e1843",
+  "decision": "rejected_or_needs_iteration"
+}

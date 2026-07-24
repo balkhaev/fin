@@ -1,0 +1,73 @@
+{
+  "candidate": "ACTIVE_V40_V41_EXACT8H_FLOW_LIQUIDITY",
+  "status": "rejected_or_needs_iteration",
+  "selection_proof_sha256": "77253002a19a83f748ec43d5f4bce83ca08e4f956f3bc3544eed8aa7b99613f1",
+  "selection_excludes_2026h1": true,
+  "program_level_holdout_is_pristine": false,
+  "promoted_leaders": [],
+  "leaders": {
+    "flow": {
+      "candidate": "flow:flow_breakout+persistent_flow",
+      "eligible_before_final": false,
+      "prefinal": {
+        "cagr": -0.007748057778376838,
+        "sharpe": -0.17953525797289865,
+        "max_drawdown": -0.19140871743816168,
+        "annual_turnover": 19.762864358939225,
+        "worst_severe_segment": -0.13934699015871088,
+        "worst_extreme_segment": -0.20054076260858156
+      },
+      "stress_full": {
+        "annualized_return": -0.012175445739856183,
+        "total_return": -0.06513017754892336,
+        "max_drawdown": -0.21859973398793242,
+        "sharpe": -0.3107464784188383,
+        "annual_turnover": 19.811580835242076,
+        "average_gross": 0.012004836596931873,
+        "max_gross": 0.10483057405542176,
+        "funding_pnl": -44.229309338639595,
+        "costs": 4651.019851310801,
+        "final_equity": 9348.698224510767
+      },
+      "stress_final_2026h1": {
+        "total_return": -0.028041946464257173,
+        "max_drawdown": -0.03465983655132476,
+        "average_gross": 0.012250403181737975
+      },
+      "severe_full_cagr": -0.08744806837993258,
+      "extreme_full_cagr": -0.1569968581827934
+    },
+    "reversal": {
+      "candidate": "reversal:flow_divergence",
+      "eligible_before_final": false,
+      "prefinal": {
+        "cagr": -0.013213044704837529,
+        "sharpe": -0.7352237335121738,
+        "max_drawdown": -0.07854592837280905,
+        "annual_turnover": 2.1005358512136008,
+        "worst_severe_segment": -0.08919550309113589,
+        "worst_extreme_segment": -0.12223564759408723
+      },
+      "stress_full": {
+        "annualized_return": -0.012021016015329011,
+        "total_return": -0.06432639739464396,
+        "max_drawdown": -0.07854592837280905,
+        "sharpe": -0.7008148187998995,
+        "annual_turnover": 1.9352264081890713,
+        "average_gross": 0.001863888853539159,
+        "max_gross": 0.08292873368448993,
+        "funding_pnl": 28.938858625269972,
+        "costs": 402.900577073839,
+        "final_equity": 9356.73602605356
+      },
+      "stress_final_2026h1": {
+        "total_return": 0.00004128470141462337,
+        "max_drawdown": -0.00023181171220254537,
+        "average_gross": 0.00012925725034892624
+      },
+      "severe_full_cagr": -0.019640949051852208,
+      "extreme_full_cagr": -0.02720317472068079
+    }
+  },
+  "decision": "rejected; no integration with V28"
+}
