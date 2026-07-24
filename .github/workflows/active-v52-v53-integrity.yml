@@ -1,0 +1,29 @@
+name: Active V52-V53 archive integrity
+
+on:
+  push:
+    branches: [agent/active-v52-v53-archive]
+    paths:
+      - "research/active_v52_v53/**"
+      - ".github/workflows/active-v52-v53-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/active_v52_v53/**"
+      - ".github/workflows/active-v52-v53-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify exact V52-V53 evidence bundle
+        run: python research/active_v52_v53/verify_archive.py

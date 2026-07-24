@@ -1,0 +1,31 @@
+{
+  "format": "base64(tar.bz2)",
+  "encoded_bytes": 26032,
+  "encoded_sha256": "6e66b56987ae61554489e152728ecdb5bff3331e8dda9c8239a7d2a5c237212f",
+  "archive_bytes": 19523,
+  "archive_sha256": "8614aa56f6a722e60e2cdf13d80fecac42f8e00f613005de80198f46905bffac",
+  "parts": [
+    {
+      "path": "part_000.b64",
+      "bytes": 7000,
+      "sha256": "75f6427ddd43689ecc4ecc22667766830da1e9d601ed40ef2ec9372e5a72e7e5"
+    },
+    {
+      "path": "part_001.b64",
+      "bytes": 7000,
+      "sha256": "2b59bb3bf27e23eb9e0080ca074cc3d294e5d59196befb90eab347b598e6c2c2"
+    },
+    {
+      "path": "part_002.b64",
+      "bytes": 7000,
+      "sha256": "609a560336b6b3cad5d85a32a06df851d6fbfc119c31de69242268ea1aa355ff"
+    },
+    {
+      "path": "part_003.b64",
+      "bytes": 5032,
+      "sha256": "79f8f91959d5bf5472089003d0014e3671f14396b48248878904090170aea2e1"
+    }
+  ],
+  "v52_source_sha256": "1aad138e8f4fa59262611555c4bd0be62c55c2c5ef8ee11eba8ed87dd60ead81",
+  "v53_source_sha256": "b763d3f0aa92bc29bc660107f8cd45a79c2056dc6d56fdfd06109bd86d6cb83b"
+}
