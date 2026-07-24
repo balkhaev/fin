@@ -1,0 +1,16 @@
+{
+  "repository": "balkhaev/trader",
+  "pull_request": 25,
+  "compute_head_sha": "3d3e1321f356816b9e27c2213b0e861281654e74",
+  "workflow_run_id": 30110715901,
+  "artifact_id": 8603441176,
+  "artifact_digest": "sha256:bf750812874db3e2db6b1f0986deb55c84fa0339491eee6c70825eae3a4f7195",
+  "artifact_name": "active-v42-v43-oi-crowding",
+  "source_archive_sha256": "64fe7fd1081d7d981ea0c7224a52c344109b8a7a24fb894ff1eaa60d3ead0678",
+  "sealed_source_encoded_sha256": "529e36587c9a7cc2d71f2c59d653ad7daa36ab9bba8be2d7b88b402008302fbc",
+  "effective_data_py_sha256": "c85adf9ca57f052eedb8ee06fa627db00b6d9b5ac673d83f9decaff21fe6fcbe",
+  "data_quality_fixes": [
+    "non-positive OI/ratio snapshots are marked unavailable and never forward-filled",
+    "checksum mismatch triggers delete and mandatory redownload"
+  ]
+}
