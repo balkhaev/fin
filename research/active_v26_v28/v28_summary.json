@@ -1,0 +1,71 @@
+{
+  "candidate": "ACTIVE_V28_EXACT8H_BREAKOUT_CARRY_CASH",
+  "status": "frozen_paper_forward_candidate",
+  "selection_excludes_2026h1": true,
+  "program_level_holdout_is_pristine": false,
+  "components": {
+    "base": "V26 execution-aware spot",
+    "breakout_weight": 0.15,
+    "breakout_gate_lookbacks": [63, 126, 252],
+    "breakout_gate_confirmation_days": 10,
+    "perp_execution": ["l1 band .20 age84", "schedule28"],
+    "relative_weight": 0.4,
+    "carry_policies": "four V38 positive-funding cash-and-carry policies",
+    "cash_policy": "V27 upper_b1_14d"
+  },
+  "acceptance_checks": {
+    "prefinal_uplift_vs_v49_ge_1pp": true,
+    "all_stress_segments_positive": true,
+    "worst_severe_segment_gt_minus10": true,
+    "worst_extreme_segment_gt_minus15": true,
+    "worst_super_segment_gt_minus22": true,
+    "worst_catastrophic_segment_gt_minus30": true,
+    "stress_full_dd_gt_minus30": true,
+    "extreme_full_dd_gt_minus36": true,
+    "super_full_dd_gt_minus42": true,
+    "turnover_lt25": true,
+    "avg_missed_lt2pct": true,
+    "p95_missed_lt10pct": true,
+    "final_positive": true,
+    "fund60_full_cagr_gt_v27": true,
+    "margin125_final_positive": true
+  },
+  "prefinal": {
+    "v49_cagr": 0.30550193458656794,
+    "v28_cagr": 0.3181272837726643,
+    "uplift": 0.012625349186096368
+  },
+  "stress_full": {
+    "annualized_return": 0.3017373389411653,
+    "total_return": 3.2599828302421336,
+    "max_drawdown": -0.25293097319546753,
+    "sharpe": 1.3513662741948576,
+    "annual_turnover": 12.756664579685765,
+    "average_gross": 0.5322118949733113,
+    "max_gross": 0.9386544820157718,
+    "final_equity": 42794.66085060306
+  },
+  "stress_final_2026h1": {
+    "annualized_return": 0.2988262848686136,
+    "total_return": 0.1376214901497248,
+    "max_drawdown": -0.128327142860166,
+    "sharpe": 1.1991792672405628,
+    "annual_turnover": 20.536381310947014,
+    "average_gross": 0.6182943432492152,
+    "max_gross": 1.0259276372940789,
+    "final_equity": 11288.642125939012
+  },
+  "strict_costs": {
+    "severe": {"full_cagr": 0.24147346155993166, "full_return": 2.282992398687234, "full_dd": -0.2919553961236794, "final_return": 0.09609850452511148},
+    "extreme": {"full_cagr": 0.18240898071307798, "full_return": 1.511443502071907, "full_dd": -0.32913838553525954, "final_return": 0.056037426852429295},
+    "super_extreme": {"full_cagr": 0.12418924988937619, "full_return": 0.9028647671583705, "full_dd": -0.39205239815233517, "final_return": 0.017394216221596093},
+    "catastrophic": {"full_cagr": 0.0730525686883543, "full_return": 0.47329478669053926, "full_dd": -0.45035388017702904, "final_return": -0.01988152071101812}
+  },
+  "funding_audits": {
+    "fund80": {"full_cagr": 0.29790774045214463, "full_dd": -0.25344484117935495, "final_return": 0.13755919495808877},
+    "fund60": {"full_cagr": 0.29408802154814495, "full_dd": -0.2539583566210276, "final_return": 0.1374969030586466},
+    "entry_delay8h": {"full_cagr": 0.3017373389411653, "full_dd": -0.25293097319546753, "final_return": 0.1376214901497248},
+    "fund80_margin125": {"full_cagr": 0.29413792936507366, "full_dd": -0.25415732737843866, "final_return": 0.09826169996093803}
+  },
+  "selection_proof_sha256": "fcdf6d12bd1ba95374c8866e3a44987e0eea1d187cc2e4100a81f446d20a4828"
+}
