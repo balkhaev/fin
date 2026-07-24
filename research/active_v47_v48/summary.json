@@ -1,0 +1,53 @@
+{
+  "candidate": "ACTIVE_V47_V48_ONCHAIN_RISK_LAYER",
+  "status": "rejected_or_needs_iteration",
+  "selection_excludes_final": true,
+  "program_level_final_is_pristine": false,
+  "promoted_leaders": [],
+  "v47_raw": {
+    "leader": "v44_raw:volatility+crash_recovery",
+    "eligible_before_final": false,
+    "selection_proof_sha256": "c9b2f65009c4b630098fecc7b2c745159f945a6e3d80db97d75ef77751d6b78c",
+    "prefinal_cagr": 0.13659802878071026,
+    "prefinal_sharpe": 0.6769760084326112,
+    "prefinal_max_drawdown": -0.3527104375738007,
+    "prefinal_annual_turnover": 27.710414474632703,
+    "stress_full_cagr": 0.1282691195301493,
+    "severe_full_cagr": 0.01430765888733121,
+    "extreme_full_cagr": -0.08832515441367306,
+    "final_stress_return": -0.0039017638467861993,
+    "final_severe_return": -0.01307984527641215
+  },
+  "v48_confirmation": {
+    "leader": "v46_confirmation:crash_recovery",
+    "eligible_before_final": false,
+    "selection_proof_sha256": "3972c8f3d128fefe632d5058d5215b0289e8ccad0beb3a205b64b069b6ae30bd",
+    "prefinal_cagr": 0.24629569853311128,
+    "prefinal_sharpe": 0.9348015474731471,
+    "prefinal_max_drawdown": -0.4668789593945778,
+    "prefinal_annual_turnover": 3.64147125324033,
+    "stress_full_cagr": 0.2317517626290262,
+    "severe_full_cagr": 0.21484037127502065,
+    "extreme_full_cagr": 0.19813276199565477,
+    "final_stress_return": 0.0,
+    "final_severe_return": 0.0
+  },
+  "best_near_miss": {
+    "candidate": "v46_confirmation:volatility",
+    "prefinal_cagr": 0.126131,
+    "prefinal_sharpe": 0.783928,
+    "prefinal_max_drawdown": -0.354495,
+    "prefinal_annual_turnover": 2.927166,
+    "worst_stress_segment": 0.008980,
+    "worst_severe_segment": -0.020758,
+    "worst_extreme_segment": -0.049656,
+    "failed_gate": "prefinal_max_drawdown_min_-0.35"
+  },
+  "provenance": {
+    "public_compute_commit": "e4231ca36b08b43d78d5d56e9b55013defec501e",
+    "workflow_run": 30119137266,
+    "artifact_id": 8606689835,
+    "artifact_digest": "sha256:ab7dc6196ac983c467b5fff0ab3edeb5cb302711735bfc4fac29b3bfafc116d5",
+    "source_sha256": "2684796bd541c53de3a4d72a1567f4e43dc7d7033c5b87469cd3f81c9d6c0cd2"
+  }
+}

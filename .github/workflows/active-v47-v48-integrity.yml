@@ -1,0 +1,30 @@
+name: Active V47-V48 archive integrity
+
+on:
+  push:
+    branches: [agent/active-v47-v48-archive]
+    paths:
+      - "research/active_v47_v48/**"
+      - ".github/workflows/active-v47-v48-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/active_v47_v48/**"
+      - ".github/workflows/active-v47-v48-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pandas==2.2.3
+      - name: Verify frozen V47-V48 archive
+        run: python research/active_v47_v48/verify_archive.py
