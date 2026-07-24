@@ -1,0 +1,41 @@
+name: Active V10 integrity
+
+on:
+  push:
+    branches:
+      - agent/active-v10-capital-sleeves
+    paths:
+      - "research/active_v10/**"
+      - ".github/workflows/active-v10-integrity.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "research/active_v10/**"
+      - ".github/workflows/active-v10-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deterministic dependency
+        run: python -m pip install numpy==2.3.5
+
+      - name: Compile V10 integrity source
+        run: python -m py_compile research/active_v10/integrity_check.py
+
+      - name: Run frozen-allocation integrity checks
+        run: python research/active_v10/integrity_check.py

@@ -1,0 +1,36 @@
+{
+  "candidate_id": "V10_SEPARATE_ACCOUNTS_V8_80_V4_20",
+  "status": "frozen_paper_forward_candidate",
+  "construction": {
+    "v8_growth_weight": 0.8,
+    "v4_defensive_weight": 0.2,
+    "accounts_are_separate": true,
+    "capital_is_not_rebalanced_between_sleeves": true,
+    "leverage": false
+  },
+  "selection": {
+    "candidate_v4_weights": [0.2, 0.3, 0.4, 0.5],
+    "selection_start": "2021-01-01",
+    "selection_end_exclusive": "2026-01-01",
+    "final_start": "2026-01-01",
+    "final_end_exclusive": "2026-07-01",
+    "final_used_for_selection": false,
+    "costs_bps_per_side": [40, 80]
+  },
+  "source_provenance": {
+    "v8_main_commit": "f6dc25646e2f4d3f96cc3cd5997f11d28198fbb2",
+    "exact_v4_signal_artifact_id": 8581144524,
+    "exact_v4_signal_artifact_sha256": "50de5e0f6913acd0f2148ad9d7a10cdf1f6addc0c18cf5956aecf423fba04f37"
+  },
+  "headline_checks": {
+    "stress_v8_sharpe": 1.212,
+    "stress_v10_sharpe": 1.208,
+    "stress_v8_max_drawdown": -0.2337,
+    "stress_v10_max_drawdown": -0.2109,
+    "severe_v8_max_drawdown": -0.2808,
+    "severe_v10_max_drawdown": -0.2531,
+    "paired_bootstrap_probability_v10_lower_drawdown_min": 0.91,
+    "paired_bootstrap_probability_v10_lower_drawdown_max": 0.94
+  },
+  "decision": "Keep V8 as the growth tier and V10 as the balanced tier. Do not use the final period to change the 80/20 allocation."
+}

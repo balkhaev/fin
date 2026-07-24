@@ -1,0 +1,33 @@
+{
+  "candidate": "V10_SEPARATE_SLEEVES_V8_80_V4_20",
+  "status": "frozen_balanced_paper_forward_candidate",
+  "freeze_date": "2026-07-24",
+  "v8_initial_capital_weight": 0.80,
+  "v4_initial_capital_weight": 0.20,
+  "cross_funding": false,
+  "v8": {
+    "ratchet": true,
+    "initial_scale": 1.50,
+    "first_high_water_multiple": 1.50,
+    "first_scale": 1.00,
+    "second_high_water_multiple": 2.00,
+    "second_scale": 0.75,
+    "target_gross_cap": 0.85
+  },
+  "v4": {
+    "exact_frozen_signal_artifact_id": 8581144524,
+    "artifact_sha256": "50de5e0f6913acd0f2148ad9d7a10cdf1f6addc0c18cf5956aecf423fba04f37",
+    "ratchet": false,
+    "leverage": false
+  },
+  "selection_periods": ["2021-2022", "2023", "2024", "2025"],
+  "selection_excludes_2026h1": true,
+  "program_level_2026h1_is_pristine": false,
+  "cost_scenarios_bps_per_side": {
+    "stress_spot": 40,
+    "stress_perp": 40,
+    "severe_spot": 80,
+    "severe_perp": 80
+  },
+  "forced_delisting_penalty_bps": 100
+}
