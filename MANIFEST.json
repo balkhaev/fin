@@ -21,16 +21,16 @@
       "sha256": "6edb71ca13be8a68575f38678ab89fd011a6bd00801b53c032dc4d896b8a40d5"
     },
     "docs/checkpoints/v68/CHECKPOINT_V68.json": {
-      "bytes": 2530,
-      "sha256": "404885efed0e1248bd265034727ffd0654817a18ea267781318021ce6d864fdf"
+      "bytes": 2860,
+      "sha256": "cac65ac40b23d8071cb99693524f2e84f07fad257684e0688ea10b2be8f77791"
     },
     "docs/checkpoints/v68/LOCAL_VERIFIER_RESULTS.txt": {
       "bytes": 292,
       "sha256": "1665fab7f8861d87582c5d6b775f998fe60662554450b4c8aed95dc95e42b159"
     },
     "docs/checkpoints/v68/PUBLIC_COMPUTE_REGISTRY.json": {
-      "bytes": 746,
-      "sha256": "033730dc7f4754c26a657dbc869d68e76198bb04e43905798ea1f527d3187e94"
+      "bytes": 1129,
+      "sha256": "b2a09f0ca06768cd413ca6746e5e6664d065ce97a70ede660aecec62f8f939cc"
     },
     "docs/checkpoints/v68/RESEARCH_CHECKPOINT_V68_FULL_RU.md": {
       "bytes": 19045,
