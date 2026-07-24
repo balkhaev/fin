@@ -1,0 +1,57 @@
+{
+  "candidate": "ACTIVE_V49_V50_ONCHAIN_RISK_BUDGET",
+  "selection_excludes_final": true,
+  "program_level_final_is_pristine": false,
+  "promoted_leaders": [],
+  "historical_candidates_needing_nonzero_forward": [
+    "v49_vol_budget",
+    "v50_multiplicative"
+  ],
+  "v49": {
+    "status": "historical_risk_candidate_needs_nonzero_forward",
+    "leader": "v49_vol_budget:vol_budget_95",
+    "selection_proof_sha256": "2c99c836e10b8f16dad11723a161a245c66cee93557f128c41ee46269530b804",
+    "prefinal_cagr": 0.12080909806653284,
+    "prefinal_sharpe": 0.7829440534038473,
+    "prefinal_max_drawdown": -0.34076992409378937,
+    "prefinal_annual_turnover": 2.8424697361786335,
+    "stress_full_cagr": 0.11401474152685664,
+    "stress_full_max_drawdown": -0.34076992409378937,
+    "final_2026_ytd_return": 0.0
+  },
+  "v50": {
+    "status": "historical_risk_candidate_needs_nonzero_forward",
+    "leader": "v50_multiplicative:vol95_x_recovery",
+    "selection_proof_sha256": "07afe5ec69b5b3e9db957ad4680c75016b96ea68a799abd9d857beb13267c8f9",
+    "prefinal_cagr": 0.13383444123923982,
+    "prefinal_sharpe": 0.9094354868596214,
+    "prefinal_max_drawdown": -0.2397261973201944,
+    "prefinal_annual_turnover": 2.8034281279485858,
+    "stress_full_cagr": 0.12626712536712104,
+    "stress_full_max_drawdown": -0.2397261973201944,
+    "severe_full_cagr": 0.11436032368639104,
+    "extreme_full_cagr": 0.10257030540868128,
+    "super_extreme_full_cagr": 0.09089600103785433,
+    "catastrophic_full_cagr": 0.0793363502573452,
+    "final_2026_ytd_return": 0.0
+  },
+  "frozen_v50": {
+    "immutable_base": "V46 confirmation",
+    "volatility_budget_multiplier": 0.95,
+    "vol_windows_days": [30, 60, 90],
+    "base_vol_targets": [0.20, 0.30, 0.40],
+    "risk_intersection": "multiplicative crash_recovery ensemble",
+    "crash_recovery_fast_ma": [50, 100],
+    "crash_recovery_slow_ma": [150, 200, 250],
+    "crash_recovery_exit_returns": [-0.10, -0.15],
+    "signal_availability": "completed daily close shifted to next open",
+    "forward_parameters_must_not_change": true
+  },
+  "provenance": {
+    "public_compute_commit": "123c8a8715d3631700f43d071576d3078686bb74",
+    "workflow_run": 30120322889,
+    "artifact_id": 8607140186,
+    "artifact_digest": "sha256:525b22c6dfa31fb3a16fdd406b5ed9d6724b83dea03847dc4b7e52c00e702c9e",
+    "source_sha256": "3e0e1693133b153fd4b7903b0f3cf2bc14a48f45b86cf7583647c2101300c8e3"
+  }
+}
