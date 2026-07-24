@@ -1,0 +1,21 @@
+{
+  "symbol": "BTCUSDT",
+  "price_rows": 6387,
+  "metric_5m_rows": 519687,
+  "metric_8h_rows": 5429,
+  "metric_first": "2020-09-01T00:00:00+00:00",
+  "metric_last": "2026-06-30T16:00:00+00:00",
+  "metric_missing_8h": 958,
+  "metric_duplicate_rows_removed": 0,
+  "metric_nonpositive_5m_rows": 323,
+  "metric_nonpositive_5m_cells": 634,
+  "metric_nonpositive_5m_by_column": {
+    "sum_open_interest": 311,
+    "sum_open_interest_value": 323,
+    "count_toptrader_long_short_ratio": 0,
+    "sum_toptrader_long_short_ratio": 0,
+    "count_long_short_ratio": 0
+  },
+  "checksum_available": 2269,
+  "checksum_failed": 0
+}
