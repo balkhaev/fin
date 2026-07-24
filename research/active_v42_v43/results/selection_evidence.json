@@ -1,0 +1,34 @@
+{
+  "candidate": "ACTIVE_V42_V43_BTC_OI_CROWDING",
+  "status": "rejected_or_needs_iteration",
+  "selection_proof_sha256": "838c3a311302f1a932aee20bcdf7c96f348f3af50241e865c51d5b09c74648fa",
+  "selection_uses_2021_2025_only": true,
+  "final_opened_after_proof": true,
+  "program_level_final_is_pristine": false,
+  "gates": {
+    "all_stress_segments_positive": true,
+    "worst_severe_segment_min": -0.05,
+    "worst_extreme_segment_min": -0.1,
+    "prefinal_cagr_min": 0.08,
+    "prefinal_sharpe_min": 0.7,
+    "prefinal_max_drawdown_min": -0.2,
+    "prefinal_turnover_max": 18.0,
+    "final_stress_positive": true,
+    "final_severe_positive": true
+  },
+  "process_counts": {
+    "oi": 15,
+    "crowding": 15
+  },
+  "leaders": {
+    "oi": {
+      "candidate": "oi:oi_breakout",
+      "eligible_before_final": false
+    },
+    "crowding": {
+      "candidate": "crowding:crowding_reversal",
+      "eligible_before_final": false
+    }
+  },
+  "promoted_leaders": []
+}

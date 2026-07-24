@@ -1,0 +1,27 @@
+name: Active V42-V43 archive integrity
+
+on:
+  push:
+    paths:
+      - "research/active_v42_v43/**"
+      - ".github/workflows/active-v42-v43-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/active_v42_v43/**"
+      - ".github/workflows/active-v42-v43-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python research/active_v42_v43/verify_archive.py
