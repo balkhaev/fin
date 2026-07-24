@@ -1,0 +1,11 @@
+{
+  "repository": "balkhaev/trader",
+  "pull_request": 30,
+  "compute_commit": "c5de4be248858ef4395a1724946dc6caa0d86833",
+  "workflow_run": 30123320257,
+  "workflow_conclusion": "success",
+  "artifact_id": 8608304038,
+  "artifact_digest": "sha256:5d257e2b4453e095d0b578f412d90c6c16cbcd1c4c71dc3393261206e039b947",
+  "exact_v51_source_sha256": "1fa9a53f46eedcdc52e74d444d1577cccbe5fd3e6f546d02efc3fab9cf7d8e51",
+  "v50_selection_proof_sha256": "07afe5ec69b5b3e9db957ad4680c75016b96ea68a799abd9d857beb13267c8f9"
+}

@@ -1,0 +1,144 @@
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import json
+import math
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+EXTRA_PUBLICATION_LAGS = (0, 1, 3, 5)
+EXTRA_EXECUTION_DELAYS = (0, 1, 2)
+AUDIT_COSTS = {"stress": 40.0, "severe": 80.0, "extreme": 120.0}
+AUDIT_PERIODS = {
+    "reverse_2017_2018": ("2017-08-17", "2019-01-01"),
+    "prefinal_2019_2025": ("2019-01-01", "2026-01-01"),
+    "post_2020_2021_2025": ("2021-01-01", "2026-01-01"),
+    "final_2026_ytd": ("2026-01-01", "2026-05-25"),
+    "full": ("2017-08-17", "2026-05-25"),
+}
+
+
+def load_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def build_exact_v50(raw_v44: pd.Series, close: pd.Series, v46, v49, extra_publication_lag: int = 0) -> pd.Series:
+    delayed_raw = raw_v44.shift(extra_publication_lag).fillna(0.0)
+    confirmation = v46.build_books(delayed_raw)["confirmation"]
+    return v49.build_v50_processes(confirmation, close)["vol95_x_recovery"].clip(0.0, 1.0)
+
+
+def annualized_from_returns(returns: pd.Series) -> float:
+    r = returns.dropna()
+    if r.empty:
+        return 0.0
+    growth = float((1.0 + r).prod())
+    years = len(r) / 365.0
+    return growth ** (1.0 / years) - 1.0 if growth > 0 and years > 0 else -1.0
+
+
+def contribution_audit(account: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    daily = account.equity.pct_change().fillna(0.0)
+    yearly_rows = []
+    for year, group in daily.groupby(daily.index.year):
+        yearly_rows.append({"year": int(year), "return": float((1.0 + group).prod() - 1.0)})
+    yearly = pd.DataFrame(yearly_rows)
+    positive_logs = [math.log1p(x) for x in yearly["return"] if x > 0]
+    best_positive_log_share = (
+        max(positive_logs) / sum(positive_logs) if positive_logs and sum(positive_logs) > 0 else 0.0
+    )
+    loo = []
+    for year in yearly.year:
+        subset = daily[daily.index.year != int(year)]
+        loo.append({"excluded_year": int(year), "cagr": annualized_from_returns(subset)})
+    loo_df = pd.DataFrame(loo)
+    post_2020 = daily[(daily.index >= pd.Timestamp("2021-01-01", tz="UTC")) & (daily.index < pd.Timestamp("2026-01-01", tz="UTC"))]
+    summary = {
+        "best_positive_year_log_growth_share": float(best_positive_log_share),
+        "post_2020_cagr": float(annualized_from_returns(post_2020)),
+        "worst_leave_one_year_out_cagr": float(loo_df.cagr.min()) if not loo_df.empty else 0.0,
+        "best_leave_one_year_out_cagr": float(loo_df.cagr.max()) if not loo_df.empty else 0.0,
+    }
+    return yearly, {"summary": summary, "leave_one_year_out": loo_df.to_dict(orient="records")}
+
+
+def self_test() -> None:
+    idx = pd.date_range("2016-01-01", periods=1800, freq="1D", tz="UTC")
+    rng = np.random.default_rng(51)
+    raw = pd.Series((np.sin(np.arange(len(idx)) / 80.0) > 0).astype(float), index=idx)
+    close = pd.Series(100.0 * np.exp(np.cumsum(rng.normal(0.0005, 0.025, len(idx)))), index=idx)
+
+    class V46:
+        @staticmethod
+        def build_books(signal):
+            confirmed = (signal.rolling(3, min_periods=3).mean() >= 2 / 3).astype(float)
+            return {"confirmation": confirmed}
+
+    class V49:
+        @staticmethod
+        def build_v50_processes(signal, px):
+            vol = np.log(px).diff().rolling(30, min_periods=30).std() * np.sqrt(365.0)
+            risk = (0.285 / vol.replace(0.0, np.nan)).clip(upper=1.0).shift(1).fillna(0.0)
+            return {"vol95_x_recovery": signal * risk}
+
+    base = build_exact_v50(raw, close, V46, V49, 0)
+    for lag in EXTRA_PUBLICATION_LAGS:
+        out = build_exact_v50(raw, close, V46, V49, lag)
+        assert ((out >= 0.0) & (out <= 1.0)).all()
+    changed = close.copy()
+    changed.iloc[-1] *= 10.0
+    assert np.allclose(base, build_exact_v50(raw, changed, V46, V49, 0), equal_nan=True)
+    assert build_exact_v50(raw, close, V46, V49, 5).iloc[:5].eq(0.0).all()
+    print("Active V51 immutable V50 robustness self-test passed")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--v44-source", type=Path)
+    parser.add_argument("--v46-source", type=Path)
+    parser.add_argument("--v49-source", type=Path)
+    parser.add_argument("--cache", type=Path)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return
+    if None in (args.v44_source, args.v46_source, args.v49_source, args.cache, args.output):
+        raise SystemExit("all source/cache/output arguments are required")
+
+    args.output.mkdir(parents=True, exist_ok=True)
+    sys.path.insert(0, str(args.v44_source.resolve()))
+    from config import Config
+    from data import load
+    from metrics import metrics
+    from strategy import build_families, simulate
+
+    v46 = load_module("frozen_v46_audit", args.v46_source.resolve())
+    v49 = load_module("frozen_v49_audit", args.v49_source.resolve())
+    cfg = Config()
+    dataset, manifest, quality = load(cfg, args.cache)
+    spot, _ = build_families(dataset)
+    raw_v44 = spot["exchange_pressure"]
+    close = dataset.spot_close.ffill()
+
+    rows: list[dict] = []
+    accounts: dict[tuple[int, int, str, str], pd.DataFrame] = {}
+    for publication_lag in EXTRA_PUBLICATION_LAGS:
+        exact_signal = build_exact_v50(raw_v44, close, v46, v49, publication_lag)
+        for execution_delay in EXTRA_EXECUTION_DELAYS:
+            signal = exact_signal.shift(execution_delay).fillna(0.0)
+            for scenario, bps in AUDIT_COSTS.items():
+                for period, (start, end) in AUDIT_PERIODS.items():
+                    account = simulate(dataset, signal, start, end, bps, "spot", 1.0, cfg.forced_exit_bps)
+      
