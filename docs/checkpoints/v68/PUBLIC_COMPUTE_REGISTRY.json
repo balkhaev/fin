@@ -23,5 +23,14 @@
     "artifact": 8611212699,
     "sha256": "686d2f84d0256b603610030c5fea7b1a75f64aca996291c68cc587ecbdad1683",
     "status": "success"
+  },
+  "CHECKPOINT_V68_PUBLIC_REPROOF": {
+    "repository": "balkhaev/trader",
+    "pull_request": 34,
+    "workflow_run": 30134353937,
+    "head_commit": "6b799d513364849199ae0126b346aac42cf73a79",
+    "checkpoint_commit": "b4d59f268e493e7f3defb9b87481e18a4e8c3274",
+    "archive_sha256": "fded3ac08f838f7bff7818acf3d4cd43aa332062b0bf11b8afc9dc8269df4255",
+    "status": "success"
   }
 }
