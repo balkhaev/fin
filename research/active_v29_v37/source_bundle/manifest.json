@@ -1,0 +1,91 @@
+{
+  "format": "base64(tar.bz2)",
+  "parts": [
+    {
+      "path": "part_000.b64",
+      "bytes": 7000,
+      "sha256": "ea14d2d47472d4a0093d63fa95865465677ddf14685eb3dd58bcb41179c20ac0"
+    },
+    {
+      "path": "part_001.b64",
+      "bytes": 7000,
+      "sha256": "700be0213d6a754ee05ad2a2c79e71a27cda0a3ccd2d71d9910e317108ba999c"
+    },
+    {
+      "path": "part_002.b64",
+      "bytes": 7000,
+      "sha256": "e53968e8ad958be0f2f5bf7c63a4ada8f216d3863890c311a58835d48c939b54"
+    },
+    {
+      "path": "part_003.b64",
+      "bytes": 6348,
+      "sha256": "69ee835bf6f35359b077dca9c5f2ce708db7fb8f3b6171c36ebb881fdf14e338"
+    }
+  ],
+  "encoded_bytes": 27348,
+  "encoded_sha256": "f6146d659acf6640f9c9e47dc001738e7b99f03ecc32625160d80cffac252e94",
+  "archive_bytes": 20509,
+  "archive_sha256": "7073025420393e2d194177a6576671d18320c61aba7c47e725fe7acb5a0925bd",
+  "source_files": {
+    "RUNTIME.txt": {
+      "bytes": 78,
+      "sha256": "5e742e764d905afbf8cdd29fcaee34868af30b0669ea37877fb2afcf199d48bb"
+    },
+    "v29_negative_funding_fast.py": {
+      "bytes": 7758,
+      "sha256": "43b7b36854d39780cd8538d882fce8a0ee7fcdcd1666460de96da6f7b8cb8d2e"
+    },
+    "v30_funding_exit_hysteresis.py": {
+      "bytes": 5753,
+      "sha256": "c53b7f51062c618764ad18ebbd11418b61c5103420f79d095204f91a02d324f2"
+    },
+    "v31_instrument_router.py": {
+      "bytes": 6251,
+      "sha256": "21a3c01564aa1d478c61af1dfb1a88d71868cca059dba3f783671fa1fbf359ff"
+    },
+    "v32_dynamic_carry.py": {
+      "bytes": 6531,
+      "sha256": "74e8fcce2d564d82a18c544332ce77ed4f7df310b4a46dfb3aabd5469c682f54"
+    },
+    "v33/config.py": {
+      "bytes": 1437,
+      "sha256": "8e3cad2a11046a527d9204c35f50a698a8bd48deb1e9a96df4c8e15b8f7154d1"
+    },
+    "v33/data.py": {
+      "bytes": 8564,
+      "sha256": "cd5ee1faba9e4f82242ecbb80cdd760385fd7a7db9fa5c26679d18213a00c556"
+    },
+    "v33/metrics.py": {
+      "bytes": 1500,
+      "sha256": "b5b9b2b3968b5535e0fca3b3cc015910425c7b33960ba17abe4836e06ae1dacb"
+    },
+    "v33/requirements.txt": {
+      "bytes": 41,
+      "sha256": "5894fa88c9d85e38c4e37661b93e7923d2e9221a55246d2726726a47bb0c0368"
+    },
+    "v33/run.py": {
+      "bytes": 10451,
+      "sha256": "b0bc0c30988a8248c625cee3fff64ad13da3c588a9e82151e9f9de6b11f6c0f6"
+    },
+    "v33/strategy.py": {
+      "bytes": 7986,
+      "sha256": "11bb264ff67ac23b428b6200cac05182bcc2287baf4281dc2fc959f12b8e68d5"
+    },
+    "v34_funding_contrarian.py": {
+      "bytes": 10268,
+      "sha256": "0561ef250779a77297e607512b5fbc12d3b0fb97c9f337ed2958ffd133e6c03e"
+    },
+    "v35_funding_dispersion.py": {
+      "bytes": 9934,
+      "sha256": "a805025c6abe98ab6ff4329e7206e8d52a66c9893e5df3b09d94e2cd3b83c076"
+    },
+    "v36_basis_convergence.py": {
+      "bytes": 8988,
+      "sha256": "4f86ccc1f797b78cdc91a0723458f16dfab45179843b79523188676b09e81c04"
+    },
+    "v37_regime_funding.py": {
+      "bytes": 10497,
+      "sha256": "afca83a63247d6a555c66c227597b31e9bac7562ff71070cee50262aaf30a1dc"
+    }
+  }
+}
