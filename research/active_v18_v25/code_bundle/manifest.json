@@ -1,0 +1,30 @@
+{
+  "format": "base64(tar.bz2)",
+  "parts": [
+    {
+      "path": "part_00.b64",
+      "bytes": 7000,
+      "sha256": "5a926eb6caa2405b4d2c51391de509a9bc4941a08700d3abe458caf9d7c1c18c"
+    },
+    {
+      "path": "part_01.b64",
+      "bytes": 6816,
+      "sha256": "3cacfc11930b360380ccc834c0fe7323c784d716d7f3ea4e346dae5edd0473b8"
+    }
+  ],
+  "encoded_bytes": 13816,
+  "encoded_sha256": "87f6cd0a0da8f963ff1ba29f8e8b9cccd572c527fc3486c8e62a8480a2c4a923",
+  "archive_bytes": 10362,
+  "archive_sha256": "a8d1917fcf0180d075d11799116d95f305ac8a81ace1cb93d7c9043f792f605d",
+  "reconstruct": "cat part_*.b64 | base64 -d > v18_v25_code.tar.bz2 && tar -xjf v18_v25_code.tar.bz2",
+  "contents": [
+    "v18_beta_hedged_alt_relative.py",
+    "v19_static_return_tier.py",
+    "v20_conditional_acceleration.py",
+    "v21_monthly_vol_target.py",
+    "v22_v4_barbell.py",
+    "v23_early_drawdown_hysteresis.py",
+    "v24_deep_drawdown_circuit.py",
+    "v25_deep_circuit_cap115.py"
+  ]
+}
