@@ -1,0 +1,12 @@
+{
+  "format": "base64(tar.bz2)",
+  "encoded_bytes": 12352,
+  "encoded_sha256": "9516367073b2cf534baeb438f8787e5b5f18975c0feb244438040a25458f5c11",
+  "archive_bytes": 9264,
+  "archive_sha256": "ef995ac28f552a9d6e79b0244c990383ed8bd4a843597cfa172bd38574f303d0",
+  "parts": [
+    {"path": "part_000.b64", "bytes": 7000, "sha256": "47ef3f11ad3ef101aaef683dd40eeee33adf939c92731bc0b3cc77b889a8281e"},
+    {"path": "part_001.b64", "bytes": 5352, "sha256": "7d3670d42c713b609d9be49587701e28c3f84038490f77fd153f3e4e71bf070b"}
+  ],
+  "source_sha256": "2684796bd541c53de3a4d72a1567f4e43dc7d7033c5b87469cd3f81c9d6c0cd2"
+}
