@@ -1,0 +1,90 @@
+               rows.append({
+                        "extra_publication_lag_days": publication_lag,
+                        "extra_execution_delay_days": execution_delay,
+                        "scenario": scenario,
+                        "period": period,
+                        **metrics(account),
+                    })
+                    accounts[(publication_lag, execution_delay, scenario, period)] = account
+
+    table = pd.DataFrame(rows)
+    table.to_csv(args.output / "robustness_metrics.csv", index=False)
+    exact_full = accounts[(0, 0, "stress", "full")]
+    yearly, contribution = contribution_audit(exact_full)
+    yearly.to_csv(args.output / "exact_v50_yearly.csv", index=False)
+    (args.output / "contribution_audit.json").write_text(json.dumps(contribution, indent=2))
+
+    lag_summary = []
+    for publication_lag in EXTRA_PUBLICATION_LAGS:
+        for execution_delay in EXTRA_EXECUTION_DELAYS:
+            subset = table[(table.extra_publication_lag_days == publication_lag) & (table.extra_execution_delay_days == execution_delay)]
+            def pick(scenario, period):
+                return subset[(subset.scenario == scenario) & (subset.period == period)].iloc[0]
+            pre = pick("stress", "prefinal_2019_2025")
+            reverse = pick("stress", "reverse_2017_2018")
+            post = pick("stress", "post_2020_2021_2025")
+            lag_summary.append({
+                "extra_publication_lag_days": publication_lag,
+                "extra_execution_delay_days": execution_delay,
+                "prefinal_cagr": float(pre.annualized_return),
+                "prefinal_dd": float(pre.max_drawdown),
+                "prefinal_sharpe": float(pre.sharpe),
+                "reverse_total_return": float(reverse.total_return),
+                "reverse_dd": float(reverse.max_drawdown),
+                "post_2020_cagr": float(post.annualized_return),
+                "post_2020_total_return": float(post.total_return),
+                "severe_prefinal_cagr": float(pick("severe", "prefinal_2019_2025").annualized_return),
+                "extreme_prefinal_cagr": float(pick("extreme", "prefinal_2019_2025").annualized_return),
+                "final_total_return": float(pick("stress", "final_2026_ytd").total_return),
+                "final_average_gross": float(pick("stress", "final_2026_ytd").average_gross),
+            })
+    lag_df = pd.DataFrame(lag_summary)
+    lag_df.to_csv(args.output / "lag_delay_summary.csv", index=False)
+
+    exact = lag_df[(lag_df.extra_publication_lag_days == 0) & (lag_df.extra_execution_delay_days == 0)].iloc[0]
+    all_lag_prefinal_positive = bool((lag_df.prefinal_cagr > 0).all())
+    all_lag_reverse_positive = bool((lag_df.reverse_total_return > 0).all())
+    publication_lag_floor = float(lag_df[lag_df.extra_execution_delay_days == 0].prefinal_cagr.min())
+    execution_delay_floor = float(lag_df[lag_df.extra_publication_lag_days == 0].prefinal_cagr.min())
+    concentration = contribution["summary"]
+    audit_checks = {
+        "exact_reverse_holdout_positive": float(exact.reverse_total_return) > 0,
+        "all_publication_and_execution_audits_prefinal_positive": all_lag_prefinal_positive,
+        "all_publication_and_execution_audits_reverse_positive": all_lag_reverse_positive,
+        "publication_lag_prefinal_cagr_floor_gt_8pct": publication_lag_floor > 0.08,
+        "execution_delay_prefinal_cagr_floor_gt_8pct": execution_delay_floor > 0.08,
+        "post_2020_cagr_gt_5pct": float(exact.post_2020_cagr) > 0.05,
+        "best_positive_year_log_share_lt_60pct": concentration["best_positive_year_log_growth_share"] < 0.60,
+        "final_has_nonzero_exposure": float(exact.final_average_gross) > 0.001,
+    }
+    if all(audit_checks.values()):
+        status = "robust_nonzero_forward_candidate"
+    elif all(value for key, value in audit_checks.items() if key != "final_has_nonzero_exposure"):
+        status = "historically_robust_but_forward_unproven"
+    else:
+        status = "historical_concentration_or_latency_concern"
+
+    summary = {
+        "candidate": "ACTIVE_V51_EXACT_V50_ROBUSTNESS_AUDIT",
+        "status": status,
+        "parameters_changed": False,
+        "exact_v50": {
+            "immutable_base": "V46 confirmation",
+            "vol_budget_multiplier": 0.95,
+            "risk_intersection": "multiplicative crash_recovery",
+        },
+        "audit_checks": audit_checks,
+        "exact_metrics": exact.to_dict(),
+        "publication_lag_prefinal_cagr_floor": publication_lag_floor,
+        "execution_delay_prefinal_cagr_floor": execution_delay_floor,
+        "contribution": concentration,
+        "data_quality": quality,
+        "decision": "No parameter selection. The audit may only upgrade or downgrade the already frozen V50 evidence.",
+    }
+    (args.output / "summary.json").write_text(json.dumps(summary, indent=2, default=float))
+    pd.DataFrame(manifest).to_csv(args.output / "data_manifest.csv", index=False)
+    print(json.dumps(summary, indent=2, default=float))
+
+
+if __name__ == "__main__":
+    main()
