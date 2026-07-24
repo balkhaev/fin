@@ -1,0 +1,47 @@
+{
+  "candidate_family": "ACTIVE_V54_V68_ONCHAIN_SPOT_PERPETUAL_INTEGRATION",
+  "status": "research_complete_forward_unproven",
+  "active_growth_benchmark": "V28",
+  "promoted_live_candidates": [],
+  "frozen_forward_candidates": {
+    "V65": {
+      "role": "conservative small-leverage on-chain sleeve",
+      "target_gross_cap": 1.1,
+      "observed_max_gross": 1.0429026134811705,
+      "average_perp_gross": 0.027070269204672134,
+      "prefinal_cagr": 0.283445579878963,
+      "prefinal_max_drawdown": -0.24047131706711244,
+      "prefinal_sharpe": 1.102976222340209,
+      "post_2020_cagr": 0.13031331036113292,
+      "full_200bps_cagr": 0.17202112842378936,
+      "liquidations": 0,
+      "final_nonzero": false
+    },
+    "V67": {
+      "role": "higher-return blended on-chain spot/perpetual sleeve",
+      "blend": "80% V52 diversified + 20% exchange pressure",
+      "target_gross_cap": 1.15,
+      "observed_max_gross": 1.0776093067364994,
+      "average_perp_gross": 0.0500903472948464,
+      "prefinal_cagr": 0.3139133789666593,
+      "prefinal_max_drawdown": -0.25116514857258143,
+      "prefinal_sharpe": 1.096752490056139,
+      "post_2020_cagr": 0.15312563477798613,
+      "full_200bps_cagr": 0.18543443521506475,
+      "robust_cagr_floor": 0.3077215018231476,
+      "liquidations": 0,
+      "final_nonzero": false
+    }
+  },
+  "margin_audits": {
+    "V66": "intrabar_margin_audit_passed_forward_unproven",
+    "V68": "intrabar_passed_forward_unproven"
+  },
+  "rejected_or_not_promoted": {
+    "V54": "on-chain overlay was zero in final and did not beat V28 overall",
+    "V55": "cash sleeve improved history but failed predeclared selection and overlay final was zero",
+    "V63": "eligible plateau slightly missed an extreme audit; not promoted",
+    "V64": "strong near-candidate but missed immutable DD/Sharpe gates"
+  },
+  "decision": "V28 remains the active growth benchmark. V65 and V67 are frozen for the first nonzero forward on-chain window; no live leverage authorization."
+}
