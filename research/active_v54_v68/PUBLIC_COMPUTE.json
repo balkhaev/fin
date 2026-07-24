@@ -1,0 +1,20 @@
+{
+  "v62_v66": {
+    "repo": "balkhaev/trader",
+    "pr": 32,
+    "head_commit": "d52892230e52c4781365b278e4457e19247e2878",
+    "workflow_run": 30130463092,
+    "artifact_id": 8611054896,
+    "artifact_digest": "sha256:9b6a1b86b7a458a13b4a910998a3efaedf0c17a8f80965f165490516fc483573",
+    "source_archive_sha256": "0da769fc32ed2adb7e61de3287e352c2716e9f3dc9549279913bee9f3dd0882a"
+  },
+  "v67_v68": {
+    "repo": "balkhaev/trader",
+    "pr": 33,
+    "head_commit": "fba943dfead7aaddd3b7023fabc404f31324d687",
+    "workflow_run": 30131328671,
+    "artifact_id": 8611212699,
+    "artifact_digest": "sha256:686d2f84d0256b603610030c5fea7b1a75f64aca996291c68cc587ecbdad1683",
+    "v67_selection_proof": "b7f60a308b9cb97a8e9f3568413765e807c8bd5ed349ab51aeecb28d58c6dcde"
+  }
+}
