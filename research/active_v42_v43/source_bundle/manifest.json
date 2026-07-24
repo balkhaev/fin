@@ -1,0 +1,20 @@
+{
+  "format": "base64(tar.bz2)",
+  "parts": [
+    {"path": "part_000.b64", "bytes": 7000, "sha256": "e7285658dd93633afcf8560108605529af8dc113062527e38e8a22ad341a8e3e"},
+    {"path": "part_001.b64", "bytes": 7000, "sha256": "1600d272c8c9b7c02c643c0bc66a0bb4b1efb1a439a2f63e1cbc37ff4853992d"},
+    {"path": "part_002.b64", "bytes": 780, "sha256": "8f40a85f3961b34b03ed7add181702e4385e96ac7f27c794753e103382dde81e"}
+  ],
+  "encoded_bytes": 14780,
+  "encoded_sha256": "0699765475d1c92da4c6f9d1f5c57260b8e7550508a5264378c282dd861d9ea3",
+  "archive_bytes": 11085,
+  "archive_sha256": "3204946d7a7f982e4f3cb77c608528eaaf3c69205809605e4c09df6c7cabf0b6",
+  "source_files": {
+    "config.py": {"bytes": 1366, "sha256": "ade6d5cee785aebaf97db2fd056107dc214713803da23daa900df2d5f9dd8424"},
+    "data.py": {"bytes": 12631, "sha256": "c85adf9ca57f052eedb8ee06fa627db00b6d9b5ac673d83f9decaff21fe6fcbe"},
+    "metrics.py": {"bytes": 1396, "sha256": "6a0dc5b8f7daac97d3259c507c76cf2c7196aa0697c4af2fc7788f6d52e641d9"},
+    "requirements.txt": {"bytes": 41, "sha256": "a809bbdfc0462992067530cfe2f3e59a17e9ba156c6643b072ffc31f9f2b3177"},
+    "run.py": {"bytes": 11832, "sha256": "bf02ce2eafb41bf6a57b6d200b7d58109023cdef041f3c2fc1c84391dda981c8"},
+    "strategy.py": {"bytes": 9030, "sha256": "4d5d537894da0bfebd9b950dd900ac83dd12eba1cceab14672e80555e2f9971f"}
+  }
+}
