@@ -1,7 +1,0 @@
-{
-  "format": "base64(tar.bz2)",
-  "encoded_bytes": 80504,
-  "encoded_sha256": "e12f4332e36de3b6fb72576f4a88f130e47d6af82ad49f65bcfd17f3ce2296db",
-  "archive_bytes": 60377,
-  "archive_sha256": "2a601f600529a06c479119122125e9ecb862ee7a068a6041656719bff1ce7b39"
-}
