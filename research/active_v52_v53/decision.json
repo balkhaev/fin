@@ -1,0 +1,59 @@
+{
+  "candidate": "ACTIVE_V52_DIVERSIFIED_ONCHAIN_BASE",
+  "status": "historically_robust_but_forward_unproven",
+  "leader": "exchange75_valuation25",
+  "base_weights": {
+    "exchange_pressure": 0.75,
+    "valuation_cycle": 0.25
+  },
+  "execution": "V46 confirmation",
+  "risk": "V50 vol95_x_recovery",
+  "selection_excludes_final": true,
+  "program_level_final_is_pristine": false,
+  "prefinal": {
+    "annualized_return": 0.16643290722908355,
+    "total_return": 1.9380833143904828,
+    "max_drawdown": -0.24606808167817762,
+    "sharpe": 0.9692329191496902,
+    "annual_turnover": 2.6870390961193125,
+    "average_gross": 0.2365024399622454
+  },
+  "concentration": {
+    "post_2020_cagr": 0.07779319513576977,
+    "best_positive_year_log_share": 0.5424474920307291,
+    "worst_leave_one_year_out_cagr": 0.07783388989571893
+  },
+  "full_cost_cagr": {
+    "40_bps": 0.15689842425674083,
+    "80_bps": 0.14517712931265825,
+    "120_bps": 0.133568377586615,
+    "160_bps": 0.12207113885411869,
+    "200_bps": 0.11068439191773294
+  },
+  "final_2026_ytd": {
+    "total_return": 0.0,
+    "average_gross": 0.0
+  },
+  "v53_audit": {
+    "status": "historically_robust_but_forward_unproven",
+    "parameters_changed": false,
+    "publication_lag_cagr_floor": 0.14830130017010767,
+    "execution_delay_cagr_floor": 0.16197428940090464,
+    "post_2020_cagr": 0.07746312183754633,
+    "best_positive_year_log_share": 0.5424474920307291,
+    "worst_leave_one_year_out_cagr": 0.05959428876205353,
+    "reverse_has_nonzero_exposure": false,
+    "final_has_nonzero_exposure": false
+  },
+  "provenance": {
+    "public_compute_pr": 31,
+    "v52_workflow": 30124022540,
+    "v52_artifact": 8608583166,
+    "v52_artifact_digest": "sha256:b6c74d40f145ea1d5ebbe427626bf3211985e16cd80d1c4f5d7457d2753d593b",
+    "v52_selection_proof": "4cb6808336fb7951276b71a13e08dcd8fb4cd4c5c449de5fcbda8413889bcee1",
+    "v53_workflow": 30124711240,
+    "v53_artifact": 8608815933,
+    "v53_artifact_digest": "sha256:c11a798e9a939bf3080a18b683cb5b833f4db04a91319de8242983f19d4557c9"
+  },
+  "decision": "Freeze for the first nonzero forward window; do not replace V28 and do not treat zero exposure as validation."
+}
