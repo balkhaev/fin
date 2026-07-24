@@ -1,0 +1,33 @@
+name: Active V18-V25 integrity
+
+on:
+  push:
+    branches:
+      - agent/active-v18-v25-return-research
+    paths:
+      - "research/active_v18_v25/**"
+      - ".github/workflows/active-v18-v25-integrity.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "research/active_v18_v25/**"
+      - ".github/workflows/active-v18-v25-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify archive and compile source
+        run: python research/active_v18_v25/verify_archive.py

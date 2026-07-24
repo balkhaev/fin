@@ -1,0 +1,29 @@
+{
+  "research_archive": {
+    "local_zip": "active-research-v18-v25.zip",
+    "bytes": 38436,
+    "sha256": "e957aa44784787f34b80b03b61f38af9971a87c6211a9216ce87e7d201a6f36f"
+  },
+  "code_bundle": {
+    "archive_format": "tar.bz2",
+    "archive_bytes": 10362,
+    "archive_sha256": "a8d1917fcf0180d075d11799116d95f305ac8a81ace1cb93d7c9043f792f605d",
+    "encoded_bytes": 13816,
+    "encoded_sha256": "87f6cd0a0da8f963ff1ba29f8e8b9cccd572c527fc3486c8e62a8480a2c4a923"
+  },
+  "source_files": {
+    "v18_beta_hedged_alt_relative.py": "a739df8914803d4d8a7bfbd8fa865704b608f3d4acb766cd71237c080cc65d47",
+    "v19_static_return_tier.py": "e75e19732f1b8bb3d53ef8c76cb36e111ca31af05b4bbae21482a625de81bd84",
+    "v20_conditional_acceleration.py": "ef89e733c0bc99129f964648d60751fe72977afd1c728d203468a35baeaf0994",
+    "v21_monthly_vol_target.py": "106847b812b8109711728b04b12313b371683a959851886295ecaf77287957a0",
+    "v22_v4_barbell.py": "89c093dfe54f7f8afb9dffca72c56742d3a728a50b776aa865351c5299b32e79",
+    "v23_early_drawdown_hysteresis.py": "e04363c8fc81f934edd05e843dd3dcc8b0c7747efb44e67d203416142f0a4de3",
+    "v24_deep_drawdown_circuit.py": "720dbc8c8cda0f6c8c8455769c803122453b93e6b926142a426743c193014f6e",
+    "v25_deep_circuit_cap115.py": "5ee1f35200d582b4cefb579f7d851025e605ac13aadba0832c863efd24887ccb"
+  },
+  "result_files": {
+    "candidate_matrix.csv": "645191be2d48594c19d2907cce21cc3a5d377edec14dec197c7fd5ae25aadb84",
+    "best_near_candidate_v24.json": "6c261c4e5c417818eaa9214e0e5c35d6d4efbbdf0fb45ff10ff72b88a9081627",
+    "selection_policy.json": "2d62e6b27df0c20ea6f0705a8c6453a9c9c312e7a2c3ba4638a102f2d5ce1a71"
+  }
+}
