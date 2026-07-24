@@ -1,0 +1,29 @@
+name: Active V44-V46 archive integrity
+
+on:
+  push:
+    branches: [agent/active-v44-v46-archive]
+    paths:
+      - "research/active_v44_v46/**"
+      - ".github/workflows/active-v44-v46-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/active_v44_v46/**"
+      - ".github/workflows/active-v44-v46-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify frozen on-chain archive
+        run: python research/active_v44_v46/verify_archive.py
