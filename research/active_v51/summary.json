@@ -1,0 +1,62 @@
+{
+  "candidate": "ACTIVE_V51_EXACT_V50_ROBUSTNESS_AUDIT",
+  "status": "historical_concentration_or_latency_concern",
+  "parameters_changed": false,
+  "exact_v50": {
+    "immutable_base": "V46 confirmation",
+    "vol_budget_multiplier": 0.95,
+    "risk_intersection": "multiplicative crash_recovery"
+  },
+  "audit_checks": {
+    "exact_reverse_holdout_positive": false,
+    "all_publication_and_execution_audits_prefinal_positive": true,
+    "all_publication_and_execution_audits_reverse_positive": false,
+    "publication_lag_prefinal_cagr_floor_gt_8pct": true,
+    "execution_delay_prefinal_cagr_floor_gt_8pct": true,
+    "post_2020_cagr_gt_5pct": false,
+    "best_positive_year_log_share_lt_60pct": false,
+    "final_has_nonzero_exposure": false
+  },
+  "exact_metrics": {
+    "extra_publication_lag_days": 0.0,
+    "extra_execution_delay_days": 0.0,
+    "prefinal_cagr": 0.13383444123923982,
+    "prefinal_dd": -0.2397261973201944,
+    "prefinal_sharpe": 0.9094354868596205,
+    "reverse_total_return": 0.0,
+    "reverse_dd": 0.0,
+    "post_2020_cagr": 0.045675826989899804,
+    "post_2020_total_return": 0.2501786154085084,
+    "severe_prefinal_cagr": 0.12117637163391204,
+    "extreme_prefinal_cagr": 0.10864995663448829,
+    "final_total_return": 0.0,
+    "final_average_gross": 0.0
+  },
+  "publication_lag_prefinal_cagr_floor": 0.12885706070229364,
+  "execution_delay_prefinal_cagr_floor": 0.13383444123923982,
+  "contribution": {
+    "best_positive_year_log_growth_share": 0.7119359887389927,
+    "post_2020_cagr": 0.04601760233160834,
+    "worst_leave_one_year_out_cagr": 0.031155809496394404,
+    "best_leave_one_year_out_cagr": 0.12182013494449362
+  },
+  "data_quality": {
+    "index_rows": 4162,
+    "spot_rows": 3203,
+    "perp_rows": 2336,
+    "onchain_rows": 4161,
+    "onchain_missing": 1,
+    "binance_checksum_available": 260,
+    "binance_checksum_failed": 0,
+    "coinmetrics": {
+      "url": "https://raw.githubusercontent.com/coinmetrics/data/f1a36afb962731c387bb03982758ab0103063da5/csv/btc.csv",
+      "commit": "f1a36afb962731c387bb03982758ab0103063da5",
+      "git_blob_sha": "5e50f336d268e1f3a38e9885b5aaef36de529700",
+      "git_blob_verified": true,
+      "bytes": 2482497,
+      "sha256": "06495ff8e643432e6948b7b4686ce44fc106217287dabdc1b38351d9ddec46c3",
+      "rows": 4962
+    }
+  },
+  "decision": "No parameter selection. The audit may only upgrade or downgrade the already frozen V50 evidence."
+}
