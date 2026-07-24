@@ -1,0 +1,31 @@
+{
+  "canonical_base_commit": "8bd116ce467dc1a2873ed00e2125c16f22286c3b",
+  "public_compute_repo": "balkhaev/trader",
+  "artifacts": {
+    "V33": {
+      "id": 8598042473,
+      "digest": "sha256:151e77878be4ac509c95dac2cbd97e13e08de97ed8fd7eb0f0fbd987951c2b8c"
+    },
+    "V34": {
+      "id": 8598263462,
+      "digest": "sha256:08ad20ab75308a24249d8ad0776e3c9de9427dfb97f065c7020194d48b25328d"
+    },
+    "V35": {
+      "id": 8598488881,
+      "digest": "sha256:df299b65cfd90f48ce41d6601c0651f88f1853f7d9b78f0621b197d0ab632920"
+    },
+    "V36": {
+      "id": 8598619828,
+      "digest": "sha256:abcdab2c709034942bb73d64598c33f8454434d9cc61e8d7f2d9fe4c771265c6"
+    },
+    "V37": {
+      "id": 8598837556,
+      "digest": "sha256:5041a4944629db621708430d117009d07142595cde43f409b13b75ec8dc60add"
+    }
+  },
+  "source_archive_sha256": "7073025420393e2d194177a6576671d18320c61aba7c47e725fe7acb5a0925bd",
+  "encoded_sha256": "f6146d659acf6640f9c9e47dc001738e7b99f03ecc32625160d80cffac252e94",
+  "decision": "all_rejected_v28_remains_benchmark",
+  "results_archive_sha256": "760198dfc21a287d2eb2e9dcc48842898caed51d28b50b220f6c415b1e96f883",
+  "results_encoded_sha256": "2c0495073fb3271629492c99c30f531bad593e8e6a69691ec9a70c790c72d526"
+}
