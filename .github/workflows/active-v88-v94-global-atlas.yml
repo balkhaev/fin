@@ -1,0 +1,106 @@
+name: Active V88-V94 Global ATLAS research
+
+on:
+  push:
+    branches: [agent/active-v88-v94-global-atlas]
+    paths:
+      - "research/active_v88_v94/**"
+      - ".github/workflows/active-v88-v94-global-atlas.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "research/active_v88_v94/**"
+      - ".github/workflows/active-v88-v94-global-atlas.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Reconstruct readable source and exact compact ATLAS input
+        run: |
+          set -euxo pipefail
+          mkdir -p research/active_v88_v94/source research/active_v88_v94/inputs/atlas
+          cat research/active_v88_v94/source_parts/part_*.txt > research/active_v88_v94/source/run_research.py
+          echo "c9495ba4b9cd67d950c2489d641763e33e7f8042975a92f3b940503a13b2cde7  research/active_v88_v94/source/run_research.py" | sha256sum -c -
+          cat research/active_v88_v94/input_parts/v75_compact_*.b64 | base64 -d > /tmp/v75_stress_compact.csv.xz
+          echo "a074b0334a90b4ce8686c3ffb74bbdf2ec4b296972c899315a05924c3db2a5af  /tmp/v75_stress_compact.csv.xz" | sha256sum -c -
+          xz -t /tmp/v75_stress_compact.csv.xz
+          xz -dc /tmp/v75_stress_compact.csv.xz > research/active_v88_v94/inputs/atlas/v75_stress_compact.csv
+          echo "587d54817ce30bbc42fb457a358455e0eb722a3614b88f0fba7172e468b5dca8  research/active_v88_v94/inputs/atlas/v75_stress_compact.csv" | sha256sum -c -
+          python -m py_compile research/active_v88_v94/source/run_research.py
+      - name: Install dependencies and run causal self-test
+        run: |
+          python -m pip install -r research/active_v88_v94/requirements.txt
+          python research/active_v88_v94/source/run_research.py --self-test
+      - name: Restore external market-data cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v88_v94
+          key: global-atlas-yahoo-ecb-2007-2026-v1
+      - name: Run full V88-V94 research
+        run: |
+          mkdir -p artifacts/active_v88_v94
+          python research/active_v88_v94/source/run_research.py \
+            --atlas-stress research/active_v88_v94/inputs/atlas/v75_stress_compact.csv \
+            --atlas-no-cash research/active_v88_v94/inputs/atlas/v75_stress_compact.csv \
+            --cache .cache/v88_v94 \
+            --output artifacts/active_v88_v94 | tee artifacts/active_v88_v94/run.log
+      - name: Materialize readable source, data and results
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v88_v94/results research/active_v88_v94/inputs/external
+          mkdir -p research/active_v88_v94/results research/active_v88_v94/inputs/external/raw/yahoo research/active_v88_v94/inputs/external/raw/ecb
+          cp -r artifacts/active_v88_v94/. research/active_v88_v94/results/
+          cp artifacts/active_v88_v94/etf_adjusted_close.csv research/active_v88_v94/inputs/external/
+          cp artifacts/active_v88_v94/fx_reference_prices.csv research/active_v88_v94/inputs/external/
+          cp .cache/v88_v94/yahoo/*.json research/active_v88_v94/inputs/external/raw/yahoo/
+          cp .cache/v88_v94/ecb/g10_reference_rates.csv research/active_v88_v94/inputs/external/raw/ecb/
+          cp research/active_v88_v94/README.md research/active_v88_v94/requirements.txt research/active_v88_v94/source/
+          rm -rf research/active_v88_v94/source_parts research/active_v88_v94/input_parts
+          find research/active_v88_v94 -type d -name '__pycache__' -prune -exec rm -rf {} +
+          find research/active_v88_v94 -type f -name '*.pyc' -delete
+      - name: Verify immutable research result
+        run: |
+          set -euxo pipefail
+          python -m py_compile research/active_v88_v94/source/run_research.py
+          python research/active_v88_v94/source/run_research.py --self-test
+          test -f research/active_v88_v94/results/summary.json
+          test -f research/active_v88_v94/results/selection_proof_before_final.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary=json.loads(Path('research/active_v88_v94/results/summary.json').read_text())
+          proof=json.loads(Path('research/active_v88_v94/results/selection_proof_before_final.json').read_text())
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['selection_proof_sha256'] == proof['sha256']
+          print(json.dumps(summary, indent=2))
+          PY
+      - name: Commit readable V88-V94 sources, inputs and results
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v88_v94
+          git commit -m "Add readable V88-V94 Global ATLAS research [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v88-v94-global-atlas-diagnostic
+          path: artifacts/active_v88_v94
+          if-no-files-found: warn
+          retention-days: 30

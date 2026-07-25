@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import hashlib
+import io
+import itertools
+import json
+import math
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Iterable
+
+import numpy as np
+import pandas as pd
+import requests
+
+UTC = "UTC"
+EXTERNAL_SELECTION_START = pd.Timestamp("2008-01-01", tz=UTC)
+EXTERNAL_SELECTION_END = pd.Timestamp("2021-01-01", tz=UTC)
+PREFINAL_START = pd.Timestamp("2021-01-01", tz=UTC)
+PREFINAL_END = pd.Timestamp("2026-01-01", tz=UTC)
+FINAL_START = pd.Timestamp("2026-01-01", tz=UTC)
+FINAL_END = pd.Timestamp("2026-07-01", tz=UTC)
+FULL_END = FINAL_END
+
+ETF_TICKERS = (
+    "SPY", "QQQ", "IWM", "EFA", "EEM",
+    "TLT", "IEF", "HYG", "GLD", "DBC", "VNQ",
+    "UUP", "FXE", "FXY",
+)
+ETF_GROUPS = {
+    "equity": ("SPY", "QQQ", "IWM", "EFA", "EEM"),
+    "rates": ("TLT", "IEF", "HYG"),
+    "real": ("GLD", "DBC", "VNQ"),
+    "currency": ("UUP", "FXE", "FXY"),
+}
+FX_CURRENCIES = ("EUR", "GBP", "JPY", "CHF", "AUD", "CAD", "NZD", "NOK", "SEK")
+
+
+@dataclass(frozen=True)
+class CostScenario:
+    name: str
+    external_bps: float
+    blend_bps: float
+    financing_rate: float
+    fx_carry_drag: float
+
+
+SCENARIOS = (
+    CostScenario("stress", 10.0, 5.0, 0.05, 0.03),
+    CostScenario("severe", 20.0, 10.0, 0.08, 0.045),
+    CostScenario("extreme", 40.0, 20.0, 0.12, 0.06),
+)
+
+
+@dataclass(frozen=True)
+class MacroPolicy:
+    name: str
+    rebalance_days: int
+    vol_window: int
+    target_vol: float
+    gross_cap: float
+    top_n: int
+    require_ema: bool
+
+
+@dataclass(frozen=True)
+class FxPolicy:
+    name: str
+    rebalance_days: int
+    vol_window: int
+    target_vol: float
+    gross_cap: float
+    threshold: float
+
+
+@dataclass(frozen=True)
+class BlendPolicy:
+    name: str
+    atlas_weight: float
+    macro_weight: float
+    fx_weight: float
+    target_vol: float
+    leverage_cap: float
+    rebalance_days: int
+    drawdown_soft: float
+    drawdown_hard: float
+
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def utc_index(values: Iterable) -> pd.DatetimeIndex:
+    return pd.to_datetime(values, utc=True)
+
+
+def utc(value: str | pd.Timestamp) -> pd.Timestamp:
+    out = pd.Timestamp(value)
+    return out.tz_localize(UTC) if out.tzinfo is None else out.tz_convert(UTC)
+
+
+def subset(series: pd.Series, start: str | pd.Timestamp, end: str | pd.Timestamp) -> pd.Series:
+    return series[(series.index >= utc(start)) & (series.index < utc(end))]
+
+
+def download_json(url: str, destination: Path, attempts: int = 5) -> dict:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists() and destination.stat().st_size > 0:
+        return json.loads(destination.read_text())
+    headers = {"User-Agent": "Mozilla/5.0 fin-systematic-research/1.0"}
+    last: Exception | None = None
+    for attempt in range(attempts):
+        try:
+            response = requests.get(url, headers=headers, timeout=90)
+            response.raise_for_status()
+            payload = response.json()
+            destination.write_text(json.dumps(payload))
+            return payload
+        except Exception as exc:
+            last = exc
+            time.sleep(2.0 * (attempt + 1))
+    raise RuntimeError(f"download failed: {url}") from last
+
+
+def download_text(url: str, destination: Path, attempts: int = 5) -> str:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists() and destination.stat().st_size > 0:
+        return destination.read_text()
+    headers = {
+        "User-Agent": "Mozilla/5.0 fin-systematic-research/1.0",
+        "Accept": "text/csv,application/vnd.sdmx.data+csv;version=2.0.0,*/*",
+    }
+    last: Exception | None = None
+    for attempt in range(attempts):
+        try:
+            response = requests.get(url, headers=headers, timeout=90)
+            response.raise_for_status()
+            destination.write_bytes(response.content)
+            return response.text
+        except Exception as exc:
+            last = exc
+            time.sleep(2.0 * (attempt + 1))
+    raise RuntimeError(f"download failed: {url}") from last
+
+
+def yahoo_adjusted_close(tickers: Iterable[str], start: str, end: str, cache: Path) -> tuple[pd.DataFrame, list[dict]]:
+    start_unix = int(utc(start).timestamp())
+    end_unix = int(utc(end).timestamp())
+    series: dict[str, pd.Series] = {}
+    manifest: list[dict] = []
+    for ticker in tickers:
+        url = (
+            f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}"
+            f"?period1={start_unix}&period2={end_unix}&interval=1d"
+            "&events=div%2Csplits&includeAdjustedClose=true"
+        )
+        path = cache / "yahoo" / f"{ticker}.json"
+        payload = download_json(url, path)
+        result = payload["chart"]["result"][0]
+        timestamps = utc_index(result["timestamp"]).normalize()
+        adjusted = result["indicators"].get("adjclose", [{}])[0].get("adjclose")
+        if adjusted is None:
+            adjusted = result["indicators"]["quote"][0]["close"]
+        values = pd.Series(adjusted, index=timestamps, dtype=float)
+        values = values[~values.index.duplicated(keep="last")].sort_index()
+        if values.notna().sum() < 1000:
+            raise RuntimeError(f"insufficient Yahoo history for {ticker}")
+        series[ticker] = values
+        manifest.append({"source": "yahoo_chart", "ticker": ticker, "url": url, "path": str(path), "sha256": sha256(path), "rows": int(values.notna().sum())})
+    return pd.DataFrame(series).sort_index().ffill(limit=5), manifest
+
+
+def ecb_fx_prices(start: str, end: str, cache: Path) -> tuple[pd.DataFrame, list[dict]]:
+    query = "USD+JPY+GBP+CHF+AUD+CAD+NZD+NOK+SEK"
+    url = (
+        "https://data-api.ecb.europa.eu/service/data/EXR/"
+        f"D.{query}.EUR.SP00.A?startPeriod={start}&endPeriod={end}&format=csvdata"
+    )
+    path =

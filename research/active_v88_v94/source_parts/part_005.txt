@@ -1,0 +1,86 @@
+pre["cagr"]
+        rows.append({"policy": policy.name, "eligible": eligible, "score": score, "uplift_vs_v75": uplift, "dd_improvement_vs_v75": dd_improvement, **{f"prefinal_{k}": v for k, v in pre.items()}, **{f"final_{k}": v for k, v in final.items()}, "severe_cagr": severe_pre["cagr"], "severe_dd": severe_pre["max_drawdown"], "extreme_cagr": extreme_pre["cagr"], "extreme_dd": extreme_pre["max_drawdown"], "worst_year": float(years["return"].min())})
+        maps[policy.name] = (policy, stress, severe, extreme)
+    ranking = pd.DataFrame(rows).sort_values(["eligible", "score"], ascending=[False, False])
+    ranking.to_csv(args.output / "v90_v93_blend_ranking.csv", index=False)
+    non_baseline = ranking[~ranking.policy.str.startswith("blend_a100_")]
+    selected_row = non_baseline[non_baseline.eligible].iloc[0] if non_baseline.eligible.any() else non_baseline.iloc[0]
+    selected_name = str(selected_row.policy)
+    selected_policy, stress, severe, extreme = maps[selected_name]
+    sret, sturn, sgross, sweights = stress
+    sret.to_csv(args.output / "selected_daily_returns.csv", header=["return"])
+    sweights.to_csv(args.output / "selected_sleeve_weights.csv")
+    pd.DataFrame({"equity": (1.0 + sret).cumprod() * 10000.0, "turnover": sturn, "gross": sgross}).to_csv(args.output / "selected_equity.csv")
+    yearly_returns(sret).to_csv(args.output / "selected_yearly_returns.csv", index=False)
+
+    selection_payload = {
+        "candidate": "ACTIVE_V88_V94_GLOBAL_ATLAS",
+        "external_selection_end": str(EXTERNAL_SELECTION_END),
+        "blend_selection_end": str(PREFINAL_END),
+        "final_opened_after_selection": True,
+        "program_level_holdout_pristine": False,
+        "selected_macro": asdict(macro_selected),
+        "macro_eligible": macro_eligible,
+        "selected_fx": asdict(fx_selected),
+        "fx_eligible": fx_eligible,
+        "selected_blend": asdict(selected_policy),
+        "selected_blend_eligible": bool(selected_row.eligible),
+        "baseline_prefinal": baseline_pre,
+        "gates": {"uplift_or_dd": "+1pp CAGR or +2pp drawdown", "sharpe_floor_vs_v75": -0.03, "max_dd": -0.27, "severe_cagr": 0.18, "extreme_cagr": 0.10, "positive_final": True, "max_gross": 1.20},
+    }
+    selection_proof_hash = hashlib.sha256(json.dumps(selection_payload, sort_keys=True, default=float).encode()).hexdigest()
+    selection_payload["sha256"] = selection_proof_hash
+    (args.output / "selection_proof_before_final.json").write_text(json.dumps(selection_payload, indent=2, default=float))
+
+    audit_rows = []
+    for delay, scenario in itertools.product((0, 1, 2, 3, 5), SCENARIOS):
+        result = blend(atlas_ret, macro_daily, fx_daily, selected_policy, scenario, delay=delay)
+        r, t, g, _ = result
+        audit_rows.append({"delay_days": delay, "scenario": scenario.name, **metrics(r, t, g)})
+    audit = pd.DataFrame(audit_rows)
+    audit.to_csv(args.output / "v94_latency_cost_audit.csv", index=False)
+    bootstrap = [block_bootstrap(subset(sret, PREFINAL_START, PREFINAL_END), block, horizon) for block, horizon in itertools.product((14, 30, 60, 120), (365, 730))]
+    pd.DataFrame(bootstrap).to_csv(args.output / "v94_block_bootstrap.csv", index=False)
+    conc = concentration(subset(sret, PREFINAL_START, PREFINAL_END))
+    (args.output / "v94_concentration.json").write_text(json.dumps(conc, indent=2))
+
+    selected_pre = metrics(subset(sret, PREFINAL_START, PREFINAL_END), subset(sturn, PREFINAL_START, PREFINAL_END), subset(sgross, PREFINAL_START, PREFINAL_END))
+    selected_final = metrics(subset(sret, FINAL_START, FINAL_END), subset(sturn, FINAL_START, FINAL_END), subset(sgross, FINAL_START, FINAL_END))
+    selected_full = metrics(sret, sturn, sgross)
+    summary = {
+        "candidate": "ACTIVE_V93_GLOBAL_ATLAS",
+        "audit": "ACTIVE_V94_GLOBAL_ATLAS_IMMUTABLE_AUDIT",
+        "status": "frozen_historical_candidate_needs_execution_grade_forward" if bool(selected_row.eligible) else "rejected_or_needs_iteration",
+        "live_ready": False,
+        "real_leverage_authorized": False,
+        "selected_macro": asdict(macro_selected),
+        "macro_eligible": macro_eligible,
+        "selected_fx": asdict(fx_selected),
+        "fx_eligible": fx_eligible,
+        "selected_blend": asdict(selected_policy),
+        "selected_blend_eligible": bool(selected_row.eligible),
+        "v75_prefinal": baseline_pre,
+        "v75_final_2026h1": baseline_final,
+        "candidate_prefinal": selected_pre,
+        "candidate_final_2026h1": selected_final,
+        "candidate_full": selected_full,
+        "audit_floors": {"min_cagr": float(audit.cagr.min()), "worst_drawdown": float(audit.max_drawdown.min()), "min_sharpe": float(audit.sharpe.min())},
+        "concentration": conc,
+        "selection_proof_sha256": selection_proof_hash,
+        "data_manifest": yahoo_manifest + ecb_manifest + [{"path": str(args.atlas_stress), "sha256": sha256(args.atlas_stress)}, {"path": str(args.atlas_no_cash), "sha256": sha256(args.atlas_no_cash)}],
+        "limitations": [
+            "Yahoo adjusted prices are not exchange-native executable quotes.",
+            "ECB reference rates are informational and not executable FX prices.",
+            "FX carry is approximated with a conservative gross drag, not observed futures basis or spot swap.",
+            "The blend is selected on 2021-2025, already known to the broader research program.",
+            "No broker margin engine, continuous-futures roll, partial fills, or counterparty failure is modeled.",
+        ],
+    }
+    (args.output / "summary.json").write_text(json.dumps(summary, indent=2, default=float))
+    pd.DataFrame(yahoo_manifest + ecb_manifest).to_csv(args.output / "data_manifest.csv", index=False)
+    print(json.dumps(summary, indent=2, default=float))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
