@@ -1,0 +1,108 @@
+one_year_out_cagr"], "segments": json.dumps(segment_values, sort_keys=True)})
+        data[policy.name] = (returns, turnover, gross, executed)
+    ranking = pd.DataFrame(rows).sort_values(["eligible", "score"], ascending=[False, False])
+    ranking.to_csv(output / f"{name}_pre2021_ranking.csv", index=False)
+    selected_name = str(ranking.iloc[0]["policy"])
+    selected = next(policy for policy in policies if policy.name == selected_name)
+    returns, turnover, gross, executed = data[selected_name]
+    return selected, returns, turnover, gross, executed, ranking
+
+
+def atlas_returns(stress: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Series]:
+    returns = stress["equity"].pct_change().fillna(stress["equity"].iloc[0] / 10000.0 - 1.0)
+    return returns, stress["turnover"].fillna(0.0), stress["gross"].fillna(0.0)
+
+
+def rolling_scale(unscaled: pd.Series, target_vol: float, cap: float, window: int = 126) -> pd.Series:
+    vol = unscaled.rolling(window, min_periods=max(42, window // 2)).std(ddof=1) * np.sqrt(365.0)
+    return (target_vol / vol.replace(0.0, np.nan)).clip(lower=0.50, upper=cap).shift(1).fillna(1.0)
+
+
+def blend(atlas: pd.Series, macro: pd.Series, fx: pd.Series, policy: BlendPolicy, scenario: CostScenario, delay: int = 0) -> tuple[pd.Series, pd.Series, pd.Series, pd.DataFrame]:
+    index = atlas.index.intersection(macro.index).intersection(fx.index)
+    sleeves = pd.DataFrame({"atlas": atlas.reindex(index).fillna(0.0), "macro": macro.reindex(index).fillna(0.0), "fx": fx.reindex(index).fillna(0.0)}, index=index)
+    base = pd.Series([policy.atlas_weight, policy.macro_weight, policy.fx_weight], index=sleeves.columns, dtype=float)
+    weights = pd.DataFrame(np.tile(base.to_numpy(), (len(index), 1)), index=index, columns=sleeves.columns)
+    current = base.copy()
+    mask = rebalance_mask(index, policy.rebalance_days)
+    for i, _ in enumerate(index):
+        if mask[i] and i >= 126:
+            trailing = sleeves.iloc[i - 126 : i]
+            vol = trailing.std(ddof=1) * np.sqrt(365.0)
+            adjust = base / vol.replace(0.0, np.nan)
+            adjust = adjust.replace([np.inf, -np.inf], np.nan).fillna(0.0)
+            if adjust.sum() > 0:
+                current = adjust / adjust.sum()
+                current["atlas"] = min(current["atlas"], 0.92)
+                current["macro"] = min(current["macro"], 0.30)
+                current["fx"] = min(current["fx"], 0.20)
+                current /= current.sum()
+        weights.iloc[i] = current
+    if delay:
+        weights = weights.shift(delay).fillna(base)
+    raw = (weights.shift(1).fillna(base) * sleeves).sum(axis=1)
+    scale_target = rolling_scale(raw, policy.target_vol, policy.leverage_cap)
+    equity = high = 10000.0
+    out = []
+    scales = []
+    previous_scale = 1.0
+    weight_turn = weights.diff().abs().sum(axis=1).fillna(0.0)
+    for i in range(len(index)):
+        desired = float(scale_target.iloc[i])
+        dd = equity / high - 1.0
+        if dd <= policy.drawdown_hard:
+            desired = min(desired, 0.75)
+        elif dd <= policy.drawdown_soft:
+            desired = min(desired, 1.0)
+        execution = (abs(desired - previous_scale) + desired * float(weight_turn.iloc[i])) * scenario.blend_bps / 10000.0
+        daily = desired * float(raw.iloc[i]) - max(0.0, desired - 1.0) * scenario.financing_rate / 365.0 - execution
+        daily = max(daily, -0.95)
+        equity *= 1.0 + daily
+        high = max(high, equity)
+        out.append(daily)
+        scales.append(desired)
+        previous_scale = desired
+    scale = pd.Series(scales, index=index)
+    turnover = weight_turn * scale + scale.diff().abs().fillna(0.0)
+    return pd.Series(out, index=index), turnover, scale, weights
+
+
+def blend_grid(macro_eligible: bool, fx_eligible: bool) -> list[BlendPolicy]:
+    bases = [(1.0, 0.0, 0.0)]
+    if macro_eligible:
+        bases += [(0.90, 0.10, 0.0), (0.85, 0.15, 0.0), (0.80, 0.20, 0.0), (0.75, 0.25, 0.0)]
+    if fx_eligible:
+        bases += [(0.90, 0.0, 0.10), (0.85, 0.0, 0.15)]
+    if macro_eligible and fx_eligible:
+        bases += [(0.85, 0.10, 0.05), (0.80, 0.15, 0.05), (0.80, 0.10, 0.10), (0.75, 0.15, 0.10), (0.70, 0.20, 0.10)]
+    policies = []
+    for (a, m, f), tv, cap, reb, soft, hard in itertools.product(bases, (0.22, 0.25, 0.28, 0.30), (1.0, 1.10, 1.20), (21, 42), (-0.10, -0.12), (-0.17, -0.20)):
+        policies.append(BlendPolicy(f"blend_a{int(a*100)}_m{int(m*100)}_f{int(f*100)}_t{int(tv*100)}_c{int(cap*100)}_r{reb}_d{int(abs(soft)*100)}_{int(abs(hard)*100)}", a, m, f, tv, cap, reb, soft, hard))
+    return policies
+
+
+def block_bootstrap(returns: pd.Series, block: int, horizon: int, draws: int = 3000, seed: int = 88) -> dict:
+    values = returns.dropna().to_numpy(float)
+    if len(values) < block:
+        return {}
+    rng = np.random.default_rng(seed + block + horizon)
+    cagrs, dds = [], []
+    for _ in range(draws):
+        sample: list[float] = []
+        while len(sample) < horizon:
+            start = int(rng.integers(0, len(values) - block + 1))
+            sample.extend(values[start : start + block])
+        arr = np.asarray(sample[:horizon])
+        eq = np.cumprod(1.0 + arr)
+        cagrs.append(float(eq[-1] ** (365.0 / horizon) - 1.0))
+        dds.append(float((eq / np.maximum.accumulate(eq) - 1.0).min()))
+    return {"block": block, "horizon_days": horizon, "median_cagr": float(np.median(cagrs)), "p05_cagr": float(np.quantile(cagrs, 0.05)), "probability_positive": float(np.mean(np.asarray(cagrs) > 0)), "median_max_drawdown": float(np.median(dds)), "p05_max_drawdown": float(np.quantile(dds, 0.05))}
+
+
+def self_test() -> None:
+    index = pd.date_range("2010-01-01", periods=1000, freq="1D", tz=UTC)
+    rng = np.random.default_rng(88)
+    prices = pd.DataFrame(100.0 * np.exp(np.cumsum(rng.normal(0.0002, 0.01, (len(index), 6)), axis=0)), index=index, columns=[f"A{i}" for i in range(6)])
+    fx = FxPolicy("test", 20, 63, 0.10, 1.25, 0.0)
+    targets = build_fx_targets(prices, fx)
+    assert tar
