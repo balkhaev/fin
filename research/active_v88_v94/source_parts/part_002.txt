@@ -1,0 +1,93 @@
+igned = current.reindex(cov.index).fillna(0.0)
+                port_vol = float(np.sqrt(max(0.0, aligned.to_numpy() @ cov.to_numpy() @ aligned.to_numpy())))
+                current *= min(policy.gross_cap, policy.target_vol / port_vol) if port_vol > 0 else 0.0
+        target.iloc[i] = current
+    return target
+
+
+def build_fx_targets(prices: pd.DataFrame, policy: FxPolicy) -> pd.DataFrame:
+    prices = prices.dropna(how="all").ffill(limit=5)
+    returns = prices.pct_change(fill_method=None)
+    vol = returns.rolling(policy.vol_window, min_periods=max(42, policy.vol_window // 2)).std(ddof=1) * np.sqrt(252.0)
+    score = sum(coef * prices.pct_change(lb, fill_method=None) / vol.replace(0.0, np.nan) for lb, coef in ((63, 0.30), (126, 0.30), (252, 0.40)))
+    target = pd.DataFrame(0.0, index=prices.index, columns=prices.columns)
+    current = pd.Series(0.0, index=prices.columns)
+    mask = rebalance_mask(prices.index, policy.rebalance_days)
+    for i, date in enumerate(prices.index):
+        if mask[i]:
+            active = score.iloc[i].replace([np.inf, -np.inf], np.nan)
+            active = active[active.abs() >= policy.threshold].dropna()
+            current[:] = 0.0
+            if not active.empty:
+                inverse = 1.0 / vol.loc[date, active.index].clip(lower=0.035)
+                signed = np.sign(active) * inverse
+                current.loc[active.index] = signed / signed.abs().sum()
+                cov = returns.loc[:date].tail(policy.vol_window).cov() * 252.0
+                aligned = current.reindex(cov.index).fillna(0.0)
+                port_vol = float(np.sqrt(max(0.0, aligned.to_numpy() @ cov.to_numpy() @ aligned.to_numpy())))
+                current *= min(policy.gross_cap, policy.target_vol / port_vol) if port_vol > 0 else 0.0
+        target.iloc[i] = current
+    return target
+
+
+def simulate_targets(prices: pd.DataFrame, signal_targets: pd.DataFrame, scenario: CostScenario, carry_drag_rate: float = 0.0, execution_delay: int = 0) -> tuple[pd.Series, pd.Series, pd.Series, pd.DataFrame]:
+    returns = prices.pct_change(fill_method=None).fillna(0.0)
+    signal_targets = signal_targets.reindex(returns.index).fillna(0.0)
+    executed = signal_targets.shift(1 + execution_delay).fillna(0.0)
+    turnover = executed.diff().abs().sum(axis=1).fillna(executed.abs().sum(axis=1))
+    gross = executed.abs().sum(axis=1)
+    pnl = (executed * returns).sum(axis=1)
+    trading_cost = turnover * scenario.external_bps / 10000.0
+    financing = (gross - 1.0).clip(lower=0.0) * scenario.financing_rate / 365.0
+    carry_drag = gross * carry_drag_rate / 365.0
+    return pnl - trading_cost - financing - carry_drag, turnover, gross, executed
+
+
+def external_policy_grid() -> tuple[list[MacroPolicy], list[FxPolicy]]:
+    macro = [
+        MacroPolicy(f"macro_r{r}_v{v}_t{int(t*100)}_g{int(g*100)}_n{n}_{'ema' if e else 'raw'}", r, v, t, g, n, e)
+        for r, v, t, g, n, e in itertools.product((10, 21, 42), (63, 126), (0.08, 0.10, 0.12, 0.14), (1.0, 1.25, 1.5), (5, 8, 12), (True, False))
+    ]
+    fx = [
+        FxPolicy(f"fx_r{r}_v{v}_t{int(t*100)}_g{int(g*100)}_z{str(z).replace('.', '')}", r, v, t, g, z)
+        for r, v, t, g, z in itertools.product((5, 10, 20), (63, 126), (0.06, 0.08, 0.10, 0.12), (0.75, 1.0, 1.25), (0.0, 0.15, 0.30))
+    ]
+    return macro, fx
+
+
+def select_external(name: str, prices: pd.DataFrame, policies: Iterable[MacroPolicy | FxPolicy], builder, carry_drag: float, output: Path) -> tuple[object, pd.Series, pd.Series, pd.Series, pd.DataFrame, pd.DataFrame]:
+    segments = {
+        "dev_2008_2012": ("2008-01-01", "2013-01-01"),
+        "val_2013_2016": ("2013-01-01", "2017-01-01"),
+        "val_2017_2020": ("2017-01-01", "2021-01-01"),
+    }
+    rows = []
+    data: dict[str, tuple[pd.Series, pd.Series, pd.Series, pd.DataFrame]] = {}
+    for policy in policies:
+        targets = builder(prices, policy)
+        stress = simulate_targets(prices, targets, SCENARIOS[0], carry_drag)
+        severe = simulate_targets(prices, targets, SCENARIOS[1], carry_drag * 1.5)
+        returns, turnover, gross, executed = stress
+        sret, sturn, sgross, _ = severe
+        full = metrics(subset(returns, EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END), subset(turnover, EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END), subset(gross, EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END))
+        severe_full = metrics(subset(sret, EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END), subset(sturn, EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END), subset(sgross, EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END))
+        years = yearly_returns(subset(returns, EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END))
+        segment_values = {}
+        all_positive = True
+        for segment, (start, end) in segments.items():
+            value = metrics(subset(returns, start, end), subset(turnover, start, end), subset(gross, start, end))
+            segment_values[segment] = value
+            all_positive &= value["total_return"] > 0.0
+        conc = concentration(subset(returns, EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END))
+        eligible = bool(
+            all_positive
+            and full["cagr"] >= 0.05
+            and full["sharpe"] >= 0.60
+            and full["max_drawdown"] >= -0.15
+            and severe_full["cagr"] > 0.0
+            and float(years["return"].min()) > -0.12
+            and conc["best_positive_year_log_share"] < 0.50
+            and conc["worst_leave_one_year_out_cagr"] > 0.0
+        )
+        score = full["cagr"] + 0.08 * full["sharpe"] - 0.20 * abs(full["max_drawdown"]) + 0.10 * float(years["return"].min()) - 0.001 * full["annual_turnover"]
+        rows.append({"policy": policy.name, "eligible": eligible, "score": score, **{f"full_{k}": v for k, v in full.items()}, "severe_cagr": severe_full["cagr"], "severe_dd": severe_full["max_drawdown"], "worst_year": float(years["return"].min()), "best_year_share": conc["best_positive_year_log_share"], "worst_loo_cagr": conc["worst_leave_
