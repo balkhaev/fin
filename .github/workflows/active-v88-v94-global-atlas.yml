@@ -38,10 +38,21 @@ jobs:
         run: |
           set -euxo pipefail
           mkdir -p /tmp/fin-v87
-          cat .bootstrap_v87b/payload/part_*.txt | tr -d '\r\n' | base64 -d > /tmp/fin-v87.tar.xz
-          xz -t /tmp/fin-v87.tar.xz
-          tar -xJf /tmp/fin-v87.tar.xz -C /tmp/fin-v87
-          root=$(dirname "$(find /tmp/fin-v87 -type f -name AGENTS.md | head -1)")
+          cat .bootstrap_v87b/payload/part_*.txt | tr -d '\r\n' | base64 -d > /tmp/fin-v87.xz
+          xz -t /tmp/fin-v87.xz
+          xz -dc /tmp/fin-v87.xz > /tmp/fin-v87.payload
+          file /tmp/fin-v87.payload
+          if tar -tf /tmp/fin-v87.payload >/tmp/fin-v87.list 2>/dev/null; then
+            tar -xf /tmp/fin-v87.payload -C /tmp/fin-v87
+          elif unzip -t /tmp/fin-v87.payload >/tmp/fin-v87.list 2>/dev/null; then
+            unzip -q /tmp/fin-v87.payload -d /tmp/fin-v87
+          else
+            echo "Unknown V87 payload format"; xxd -l 128 /tmp/fin-v87.payload; exit 1
+          fi
+          head -100 /tmp/fin-v87.list || true
+          find /tmp/fin-v87 -maxdepth 5 -type f | sort | head -200
+          root=$(find /tmp/fin-v87 -type d -path '*/research/active_v69_v76' -printf '%h\n' | head -1)
+          if test -z "$root"; then root=$(dirname "$(find /tmp/fin-v87 -type f -name pyproject.toml | head -1)"); fi
           test -n "$root"
           rsync -a --exclude='.git' "$root/" ./
           mkdir -p research/active_v88_v94/inputs/atlas research/active_v88_v94/source
