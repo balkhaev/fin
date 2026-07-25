@@ -36,12 +36,14 @@ jobs:
           python -m py_compile /tmp/run_research.py
       - name: Reconstruct canonical V87 tree and recover ATLAS inputs
         run: |
+          mkdir -p artifacts/active_v88_v94
+          exec > >(tee artifacts/active_v88_v94/reconstruction.log) 2>&1
           set -euxo pipefail
           mkdir -p /tmp/fin-v87
           cat .bootstrap_v87b/payload/part_*.txt | tr -d '\r\n' | base64 -d > /tmp/fin-v87.outer
           python - <<'PY'
           from __future__ import annotations
-          import base64, bz2, gzip, io, lzma, os, string, tarfile, zipfile
+          import base64, bz2, gzip, io, lzma, string, tarfile, zipfile
           from pathlib import Path
 
           source = Path('/tmp/fin-v87.outer').read_bytes()
@@ -55,7 +57,8 @@ jobs:
           def printable_ratio(data: bytes) -> float:
               if not data:
                   return 0.0
-              return sum(chr(b) in string.printable for b in data[:10000]) / min(len(data), 10000)
+              sample = data[:10000]
+              return sum(chr(b) in string.printable for b in sample) / len(sample)
 
           data = source
           for layer in range(12):
