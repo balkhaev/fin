@@ -1,0 +1,120 @@
+ cache / "ecb" / "g10_reference_rates.csv"
+    text = download_text(url, path)
+    frame = pd.read_csv(io.StringIO(text))
+    required = {"TIME_PERIOD", "OBS_VALUE"}
+    if not required.issubset(frame.columns):
+        raise RuntimeError(f"unexpected ECB columns: {list(frame.columns)}")
+    if "CURRENCY" not in frame.columns:
+        if "KEY" not in frame.columns:
+            raise RuntimeError("ECB response does not identify currency")
+        frame["CURRENCY"] = frame["KEY"].astype(str).str.split(".").str[1]
+    frame["TIME_PERIOD"] = pd.to_datetime(frame["TIME_PERIOD"], utc=True)
+    pivot = frame.pivot_table(index="TIME_PERIOD", columns="CURRENCY", values="OBS_VALUE", aggfunc="last").sort_index().ffill(limit=5)
+    if "USD" not in pivot:
+        raise RuntimeError("ECB USD series missing")
+    prices = pd.DataFrame(index=pivot.index)
+    prices["EUR"] = pivot["USD"]
+    for currency in FX_CURRENCIES:
+        if currency == "EUR":
+            continue
+        if currency not in pivot:
+            raise RuntimeError(f"ECB {currency} series missing")
+        prices[currency] = pivot["USD"] / pivot[currency]
+    prices = prices.replace([np.inf, -np.inf], np.nan).ffill(limit=5)
+    return prices, [{"source": "ecb_reference", "url": url, "path": str(path), "sha256": sha256(path), "rows": int(len(frame))}]
+
+
+def read_account(path: Path) -> pd.DataFrame:
+    frame = pd.read_csv(path, index_col=0, parse_dates=True)
+    frame.index = utc_index(frame.index)
+    return frame.sort_index()
+
+
+def metrics(returns: pd.Series, turnover: pd.Series | None = None, gross: pd.Series | None = None) -> dict:
+    returns = returns.fillna(0.0).astype(float)
+    if returns.empty:
+        return {"total_return": 0.0, "cagr": 0.0, "max_drawdown": 0.0, "sharpe": 0.0, "annual_turnover": 0.0, "average_gross": 0.0, "max_gross": 0.0, "final_equity": 10000.0}
+    equity = (1.0 + returns).cumprod() * 10000.0
+    years = max(((equity.index[-1] - equity.index[0]).days + 1) / 365.0, 1 / 365.0)
+    drawdown = equity / equity.cummax() - 1.0
+    sd = float(returns.std(ddof=1))
+    return {
+        "total_return": float(equity.iloc[-1] / 10000.0 - 1.0),
+        "cagr": float((equity.iloc[-1] / 10000.0) ** (1.0 / years) - 1.0),
+        "max_drawdown": float(drawdown.min()),
+        "sharpe": float(returns.mean() / sd * np.sqrt(365.0)) if sd > 0 else 0.0,
+        "annual_turnover": float(turnover.fillna(0.0).sum() / years) if turnover is not None else 0.0,
+        "average_gross": float(gross.fillna(0.0).mean()) if gross is not None else 0.0,
+        "max_gross": float(gross.fillna(0.0).max()) if gross is not None else 0.0,
+        "final_equity": float(equity.iloc[-1]),
+    }
+
+
+def yearly_returns(returns: pd.Series) -> pd.DataFrame:
+    rows = []
+    for year, group in returns.fillna(0.0).groupby(returns.index.year):
+        rows.append({"year": int(year), "return": float((1.0 + group).prod() - 1.0)})
+    return pd.DataFrame(rows)
+
+
+def concentration(returns: pd.Series) -> dict:
+    annual = yearly_returns(returns)
+    positive_logs = [math.log1p(float(x)) for x in annual["return"] if x > 0]
+    best_share = max(positive_logs) / sum(positive_logs) if positive_logs and sum(positive_logs) > 0 else 0.0
+    loo = []
+    for year in annual["year"]:
+        sample = returns[returns.index.year != int(year)]
+        loo.append({"excluded_year": int(year), "cagr": metrics(sample)["cagr"]})
+    return {
+        "best_positive_year_log_share": float(best_share),
+        "worst_leave_one_year_out_cagr": float(min((x["cagr"] for x in loo), default=0.0)),
+        "leave_one_year_out": loo,
+    }
+
+
+def rebalance_mask(index: pd.DatetimeIndex, every: int) -> np.ndarray:
+    return np.arange(len(index)) % int(every) == 0
+
+
+def cap_group(weights: pd.Series, columns: Iterable[str], cap: float) -> None:
+    cols = [c for c in columns if c in weights.index]
+    gross = float(weights.loc[cols].abs().sum())
+    if gross > cap and gross > 0:
+        weights.loc[cols] *= cap / gross
+
+
+def build_macro_targets(prices: pd.DataFrame, policy: MacroPolicy) -> pd.DataFrame:
+    prices = prices.dropna(how="all").ffill(limit=5)
+    returns = prices.pct_change(fill_method=None)
+    vol = returns.rolling(policy.vol_window, min_periods=max(42, policy.vol_window // 2)).std(ddof=1) * np.sqrt(252.0)
+    score = (
+        0.35 * prices.pct_change(63, fill_method=None)
+        + 0.30 * prices.pct_change(126, fill_method=None)
+        + 0.35 * prices.pct_change(252, fill_method=None)
+    ) / vol.replace(0.0, np.nan)
+    ema200 = prices.ewm(span=200, min_periods=160, adjust=False).mean()
+    r63 = prices.pct_change(63, fill_method=None)
+    r126 = prices.pct_change(126, fill_method=None)
+    r252 = prices.pct_change(252, fill_method=None)
+    target = pd.DataFrame(0.0, index=prices.index, columns=prices.columns)
+    current = pd.Series(0.0, index=prices.columns)
+    mask = rebalance_mask(prices.index, policy.rebalance_days)
+    for i, date in enumerate(prices.index):
+        if mask[i]:
+            eligible = (r63.iloc[i] > 0) & (r126.iloc[i] > 0) & (r252.iloc[i] > 0)
+            if policy.require_ema:
+                eligible &= prices.iloc[i] > ema200.iloc[i]
+            candidates = score.iloc[i].replace([np.inf, -np.inf], np.nan)[eligible].dropna().sort_values(ascending=False).head(policy.top_n)
+            current[:] = 0.0
+            if not candidates.empty:
+                inverse = 1.0 / vol.loc[date, candidates.index].clip(lower=0.06)
+                current.loc[candidates.index] = inverse / inverse.sum()
+                cap_group(current, ETF_GROUPS["equity"], 0.50)
+                cap_group(current, ETF_GROUPS["rates"], 0.40)
+                cap_group(current, ETF_GROUPS["real"], 0.35)
+                cap_group(current, ETF_GROUPS["currency"], 0.25)
+                gross = float(current.abs().sum())
+                if gross > 0:
+                    current /= gross
+                cov = returns.loc[:date].tail(policy.vol_window).cov() * 252.0
+                al
