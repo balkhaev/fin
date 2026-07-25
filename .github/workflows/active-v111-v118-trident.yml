@@ -1,0 +1,100 @@
+name: Active V111-V118 TRIDENT research
+
+on:
+  push:
+    branches: [agent/active-v111-v118-trident]
+    paths:
+      - "research/active_v111_v118/**"
+      - ".github/workflows/active-v111-v118-trident.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v111-v118-trident
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Assert direct readable sleeve inputs
+        run: |
+          set -euxo pipefail
+          test -s research/active_v88_v94/inputs/atlas/v75_stress_equity.csv
+          test -s research/active_v95_v102/results/v95_stress_equity.csv
+          test -s research/active_v103_v110/results/v103_stress_equity.csv
+          bad=$(find research/active_v111_v118 -type f \( -name '*.zip' -o -name '*.b64' -o -name '*.pyfrag' \) -print || true)
+          test -z "$bad"
+
+      - name: Install dependencies, compile and self-test
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v111_v118/requirements.txt
+          python -m compileall -q research/active_v111_v118
+          cd research/active_v111_v118
+          python run_research.py --self-test
+
+      - name: Run full V111-V118 research
+        run: |
+          set -euxo pipefail
+          rm -rf artifacts/active_v111_v118
+          mkdir -p artifacts/active_v111_v118
+          cd research/active_v111_v118
+          python run_research.py \
+            --atlas ../active_v88_v94/inputs/atlas/v75_stress_equity.csv \
+            --crisis ../active_v95_v102/results/v95_stress_equity.csv \
+            --rotation ../active_v103_v110/results/v103_stress_equity.csv \
+            --output ../../../artifacts/active_v111_v118 \
+            2>&1 | tee ../../../artifacts/active_v111_v118/run.log
+
+      - name: Materialize readable results
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v111_v118/results
+          mkdir -p research/active_v111_v118/results
+          cp -r artifacts/active_v111_v118/. research/active_v111_v118/results/
+          find research/active_v111_v118 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v111_v118 -type f -name '*.pyc' -delete || true
+
+      - name: Verify frozen result contract
+        run: |
+          set -euxo pipefail
+          test -s research/active_v111_v118/results/summary.json
+          test -s research/active_v111_v118/results/selection_proof_before_holdout.json
+          test -s research/active_v111_v118/results/v117_yearly.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary=json.loads(Path('research/active_v111_v118/results/summary.json').read_text())
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['selection_proof_sha256']
+          print(json.dumps(summary,indent=2))
+          PY
+
+      - name: Commit source and results directly to fin
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v111_v118
+          git commit -m "Add Active V111-V118 TRIDENT results [skip ci]"
+          git push origin HEAD:agent/active-v111-v118-trident
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v111-v118-trident
+          path: artifacts/active_v111_v118
+          if-no-files-found: warn
+          retention-days: 30
