@@ -1,0 +1,100 @@
+name: Active V95-V102 global crisis-alpha research
+
+on:
+  push:
+    branches: [agent/active-v95-v102-crisis-alpha]
+    paths:
+      - "research/active_v95_v102/**"
+      - ".github/workflows/active-v95-v102-crisis-alpha.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v95-v102-crisis-alpha
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Assert canonical direct inputs
+        run: |
+          set -euxo pipefail
+          test -s research/active_v88_v94/inputs/external/etf_adjusted_close.csv
+          test -s research/active_v88_v94/inputs/external/fx_reference_prices.csv
+          test -s research/active_v88_v94/inputs/atlas/v75_stress_equity.csv
+          bad=$(find research/active_v95_v102 -type f \( -name '*.zip' -o -name '*.b64' -o -name '*.pyfrag' \) -print || true)
+          test -z "$bad"
+
+      - name: Install dependencies and compile source
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v95_v102/requirements.txt
+          python -m compileall -q research/active_v95_v102
+          cd research/active_v95_v102
+          python run_research.py --self-test
+
+      - name: Run full V95-V102 research
+        run: |
+          set -euxo pipefail
+          rm -rf artifacts/active_v95_v102
+          mkdir -p artifacts/active_v95_v102
+          cd research/active_v95_v102
+          python run_research.py \
+            --etf ../active_v88_v94/inputs/external/etf_adjusted_close.csv \
+            --fx ../active_v88_v94/inputs/external/fx_reference_prices.csv \
+            --atlas ../active_v88_v94/inputs/atlas/v75_stress_equity.csv \
+            --output ../../../artifacts/active_v95_v102 \
+            2>&1 | tee ../../../artifacts/active_v95_v102/run.log
+
+      - name: Materialize readable results
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v95_v102/results
+          mkdir -p research/active_v95_v102/results
+          cp -r artifacts/active_v95_v102/. research/active_v95_v102/results/
+          find research/active_v95_v102 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v95_v102 -type f -name '*.pyc' -delete || true
+
+      - name: Verify frozen result contract
+        run: |
+          set -euxo pipefail
+          test -s research/active_v95_v102/results/summary.json
+          test -s research/active_v95_v102/results/selection_proof_before_post2020.json
+          test -s research/active_v95_v102/results/v95_yearly.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary=json.loads(Path('research/active_v95_v102/results/summary.json').read_text())
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['selection_proof_sha256']
+          print(json.dumps(summary,indent=2))
+          PY
+
+      - name: Commit source and results directly to fin
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v95_v102
+          git commit -m "Add Active V95-V102 crisis-alpha results [skip ci]"
+          git push origin HEAD:agent/active-v95-v102-crisis-alpha
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v95-v102-crisis-alpha
+          path: artifacts/active_v95_v102
+          if-no-files-found: warn
+          retention-days: 30
