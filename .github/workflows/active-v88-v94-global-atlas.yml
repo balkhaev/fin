@@ -40,7 +40,10 @@ jobs:
           exec > >(tee artifacts/active_v88_v94/reconstruction.log) 2>&1
           set -euxo pipefail
           mkdir -p /tmp/fin-v87
-          cat .bootstrap_v87b/payload/part_*.txt | tr -d '\r\n' | base64 -d > /tmp/fin-v87.outer
+          : > /tmp/fin-v87.outer
+          for part in .bootstrap_v87b/payload/part_*.txt; do
+            tr -d '\r\n' < "$part" | base64 -d >> /tmp/fin-v87.outer
+          done
           python - <<'PY'
           from __future__ import annotations
           import base64, bz2, gzip, io, lzma, string, tarfile, zipfile
