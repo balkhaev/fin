@@ -1,0 +1,49 @@
+name: Canonical V87 repository verification
+
+on:
+  push:
+    branches: [agent/canonical-research-v87-handoff]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Assert canonical handoff structure
+        run: |
+          set -euxo pipefail
+          test -f AGENTS.md
+          test -f pyproject.toml
+          test -f docs/HANDOFF.md
+          test -f docs/checkpoints/v87/CHECKPOINT_V87.json
+          test -f scripts/verify_repository.py
+          test -d src
+          test -d tests
+          test -d research/active_v69_v76
+          test -d research/active_v77_v87
+      - name: Reject opaque canonical evidence
+        run: |
+          set -euxo pipefail
+          bad=$(find src tests scripts docs research inputs results -type f \( -iname '*.zip' -o -iname '*.tar' -o -iname '*.tgz' -o -iname '*.bz2' -o -iname '*.gz' -o -iname '*.b64' -o -iname '*.pyfrag' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+      - name: Install package and development dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[dev]'
+      - name: Compile all Python source
+        run: python -m compileall -q src tests scripts research/active_v69_v76 research/active_v77_v87
+      - name: Run unit and causal tests
+        run: python -m pytest -q
+      - name: Verify repository manifest and deterministic replays
+        run: python scripts/verify_repository.py --full
