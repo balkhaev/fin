@@ -1,0 +1,135 @@
+name: Active V88-V94 direct Global ATLAS research
+
+on:
+  push:
+    branches: [agent/active-v88-v94-global-atlas]
+    paths:
+      - "research/active_v88_v94/**"
+      - ".github/workflows/active-v88-v94-direct.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v88-v94-global-atlas
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Reconstruct readable research source
+        run: |
+          set -euxo pipefail
+          mkdir -p research/active_v88_v94/source
+          cat research/active_v88_v94/source_parts/part_*.txt > research/active_v88_v94/source/run_research.py
+          echo "c9495ba4b9cd67d950c2489d641763e33e7f8042975a92f3b940503a13b2cde7  research/active_v88_v94/source/run_research.py" | sha256sum -c -
+          cp research/active_v88_v94/README.md research/active_v88_v94/requirements.txt research/active_v88_v94/source/
+          python -m py_compile research/active_v88_v94/source/run_research.py
+
+      - name: Validate direct ATLAS inputs
+        run: |
+          set -euxo pipefail
+          mkdir -p research/active_v88_v94/inputs/atlas
+          stress=research/active_v88_v94/inputs/atlas/v75_stress_equity.csv
+          nocash=research/active_v88_v94/inputs/atlas/v75_no_cash_yield_equity.csv
+          if ! test -s "$stress" && test -s "$nocash"; then cp "$nocash" "$stress"; fi
+          if ! test -s "$nocash" && test -s "$stress"; then cp "$stress" "$nocash"; fi
+          test -s "$stress"
+          test -s "$nocash"
+          python - <<'PY'
+          import pandas as pd
+          from pathlib import Path
+          for name in ('v75_stress_equity.csv','v75_no_cash_yield_equity.csv'):
+              p=Path('research/active_v88_v94/inputs/atlas')/name
+              f=pd.read_csv(p,index_col=0,parse_dates=True)
+              assert len(f)>1000, (name,len(f))
+              assert 'equity' in f.columns, (name,f.columns.tolist())
+              assert f.index.is_monotonic_increasing
+              assert f['equity'].gt(0).all()
+              print(name,len(f),f.index.min(),f.index.max())
+          PY
+
+      - name: Install dependencies and run causal self-test
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v88_v94/requirements.txt
+          python research/active_v88_v94/source/run_research.py --self-test
+
+      - name: Restore external market-data cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v88_v94
+          key: global-atlas-yahoo-ecb-2007-2026-v2
+
+      - name: Run full V88-V94 research
+        run: |
+          set -euxo pipefail
+          rm -rf artifacts/active_v88_v94
+          mkdir -p artifacts/active_v88_v94
+          python research/active_v88_v94/source/run_research.py \
+            --atlas-stress research/active_v88_v94/inputs/atlas/v75_stress_equity.csv \
+            --atlas-no-cash research/active_v88_v94/inputs/atlas/v75_no_cash_yield_equity.csv \
+            --cache .cache/v88_v94 \
+            --output artifacts/active_v88_v94 \
+            2>&1 | tee artifacts/active_v88_v94/run.log
+
+      - name: Materialize readable data, source and results
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v88_v94/results research/active_v88_v94/inputs/external
+          mkdir -p research/active_v88_v94/results \
+                   research/active_v88_v94/inputs/external/raw/yahoo \
+                   research/active_v88_v94/inputs/external/raw/ecb
+          cp -r artifacts/active_v88_v94/. research/active_v88_v94/results/
+          cp artifacts/active_v88_v94/etf_adjusted_close.csv research/active_v88_v94/inputs/external/
+          cp artifacts/active_v88_v94/fx_reference_prices.csv research/active_v88_v94/inputs/external/
+          cp .cache/v88_v94/yahoo/*.json research/active_v88_v94/inputs/external/raw/yahoo/
+          cp .cache/v88_v94/ecb/g10_reference_rates.csv research/active_v88_v94/inputs/external/raw/ecb/
+          rm -rf research/active_v88_v94/source_parts
+          rm -f .github/workflows/active-v88-v94-global-atlas.yml
+          find research/active_v88_v94 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v88_v94 -type f -name '*.pyc' -delete || true
+
+      - name: Verify frozen result contract
+        run: |
+          set -euxo pipefail
+          python -m py_compile research/active_v88_v94/source/run_research.py
+          python research/active_v88_v94/source/run_research.py --self-test
+          test -f research/active_v88_v94/results/summary.json
+          test -f research/active_v88_v94/results/selection_proof_before_final.json
+          test -f research/active_v88_v94/results/yearly_returns.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('research/active_v88_v94/results/summary.json').read_text())
+          assert s['live_ready'] is False
+          assert s['real_leverage_authorized'] is False
+          print(json.dumps(s,indent=2))
+          PY
+
+      - name: Commit canonical readable research to fin
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "Add readable Active V88-V94 Global ATLAS results [skip ci]"
+          git push origin HEAD:agent/active-v88-v94-global-atlas
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v88-v94-direct-diagnostic
+          path: artifacts/active_v88_v94
+          if-no-files-found: warn
+          retention-days: 30
