@@ -1,0 +1,87 @@
+gets.abs().sum(axis=1).max() <= 1.250001
+    second_prices = prices.copy(); second_prices.iloc[-1] *= 8.0
+    second = build_fx_targets(second_prices, fx)
+    pd.testing.assert_frame_equal(targets.iloc[:-1], second.iloc[:-1])
+    returns, _, _, executed = simulate_targets(prices, targets, SCENARIOS[0])
+    assert executed.iloc[0].abs().sum() == 0
+    assert len(returns) == len(prices)
+    print("Active V88-V94 causal self-test passed")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--atlas-stress", type=Path)
+    parser.add_argument("--atlas-no-cash", type=Path)
+    parser.add_argument("--cache", type=Path, default=Path(".cache/v88_v94"))
+    parser.add_argument("--output", type=Path, default=Path("artifacts/active_v88_v94"))
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.self_test:
+        self_test(); return 0
+    if args.atlas_stress is None or args.atlas_no_cash is None:
+        raise SystemExit("--atlas-stress and --atlas-no-cash are required")
+    args.output.mkdir(parents=True, exist_ok=True); args.cache.mkdir(parents=True, exist_ok=True)
+
+    atlas_stress = read_account(args.atlas_stress)
+    atlas_no_cash = read_account(args.atlas_no_cash).reindex(atlas_stress.index)
+    atlas_ret, atlas_turn, atlas_gross = atlas_returns(atlas_stress)
+    atlas_ret = subset(atlas_ret, PREFINAL_START, FULL_END)
+    atlas_turn = atlas_turn.reindex(atlas_ret.index).fillna(0.0)
+    atlas_gross = atlas_gross.reindex(atlas_ret.index).fillna(0.0)
+    baseline_pre = metrics(subset(atlas_ret, PREFINAL_START, PREFINAL_END), subset(atlas_turn, PREFINAL_START, PREFINAL_END), subset(atlas_gross, PREFINAL_START, PREFINAL_END))
+    baseline_final = metrics(subset(atlas_ret, FINAL_START, FINAL_END), subset(atlas_turn, FINAL_START, FINAL_END), subset(atlas_gross, FINAL_START, FINAL_END))
+
+    etf_prices, yahoo_manifest = yahoo_adjusted_close(ETF_TICKERS, "2007-01-01", "2026-07-02", args.cache)
+    fx_prices, ecb_manifest = ecb_fx_prices("1999-01-01", "2026-07-01", args.cache)
+    etf_prices.to_csv(args.output / "etf_adjusted_close.csv")
+    fx_prices.to_csv(args.output / "fx_reference_prices.csv")
+
+    macro_policies, fx_policies = external_policy_grid()
+    macro_selected, macro_ret, macro_turn, macro_gross, macro_exec, macro_rank = select_external("v88_macro", etf_prices, macro_policies, build_macro_targets, 0.0, args.output)
+    fx_selected, fx_ret, fx_turn, fx_gross, fx_exec, fx_rank = select_external("v89_fx", fx_prices, fx_policies, build_fx_targets, SCENARIOS[0].fx_carry_drag, args.output)
+    macro_eligible = bool(macro_rank.iloc[0]["eligible"])
+    fx_eligible = bool(fx_rank.iloc[0]["eligible"])
+    macro_exec.to_csv(args.output / "v88_selected_targets.csv")
+    fx_exec.to_csv(args.output / "v89_selected_targets.csv")
+
+    external_rows = []
+    for name, prices, builder, selected, carry in (("macro", etf_prices, build_macro_targets, macro_selected, 0.0), ("fx", fx_prices, build_fx_targets, fx_selected, SCENARIOS[0].fx_carry_drag)):
+        targets = builder(prices, selected)
+        for scenario in SCENARIOS:
+            returns, turnover, gross, _ = simulate_targets(prices, targets, scenario, carry * (1.0 if scenario.name == "stress" else 1.5))
+            for period, start, end in (("pre2021", EXTERNAL_SELECTION_START, EXTERNAL_SELECTION_END), ("oos_2021_2025", PREFINAL_START, PREFINAL_END), ("final_2026h1", FINAL_START, FINAL_END), ("full", EXTERNAL_SELECTION_START, FULL_END)):
+                external_rows.append({"sleeve": name, "scenario": scenario.name, "period": period, **metrics(subset(returns, start, end), subset(turnover, start, end), subset(gross, start, end))})
+    pd.DataFrame(external_rows).to_csv(args.output / "external_sleeve_metrics.csv", index=False)
+
+    macro_daily = macro_ret.reindex(atlas_ret.index).fillna(0.0)
+    fx_daily = fx_ret.reindex(atlas_ret.index).fillna(0.0)
+    policies = blend_grid(macro_eligible, fx_eligible)
+    rows, maps = [], {}
+    baseline_years = yearly_returns(subset(atlas_ret, PREFINAL_START, PREFINAL_END))
+    for policy in policies:
+        stress = blend(atlas_ret, macro_daily, fx_daily, policy, SCENARIOS[0])
+        severe = blend(atlas_ret, macro_daily, fx_daily, policy, SCENARIOS[1])
+        extreme = blend(atlas_ret, macro_daily, fx_daily, policy, SCENARIOS[2])
+        sret, sturn, sgross, sweights = stress
+        vret, vturn, vgross, _ = severe
+        eret, eturn, egross, _ = extreme
+        pre = metrics(subset(sret, PREFINAL_START, PREFINAL_END), subset(sturn, PREFINAL_START, PREFINAL_END), subset(sgross, PREFINAL_START, PREFINAL_END))
+        final = metrics(subset(sret, FINAL_START, FINAL_END), subset(sturn, FINAL_START, FINAL_END), subset(sgross, FINAL_START, FINAL_END))
+        severe_pre = metrics(subset(vret, PREFINAL_START, PREFINAL_END), subset(vturn, PREFINAL_START, PREFINAL_END), subset(vgross, PREFINAL_START, PREFINAL_END))
+        extreme_pre = metrics(subset(eret, PREFINAL_START, PREFINAL_END), subset(eturn, PREFINAL_START, PREFINAL_END), subset(egross, PREFINAL_START, PREFINAL_END))
+        years = yearly_returns(subset(sret, PREFINAL_START, PREFINAL_END))
+        uplift = pre["cagr"] - baseline_pre["cagr"]
+        dd_improvement = pre["max_drawdown"] - baseline_pre["max_drawdown"]
+        eligible = bool(
+            policy.name.startswith("blend_a100_") or (
+                (uplift >= 0.01 or dd_improvement >= 0.02)
+                and pre["sharpe"] >= baseline_pre["sharpe"] - 0.03
+                and pre["max_drawdown"] >= -0.27
+                and severe_pre["cagr"] >= 0.18
+                and extreme_pre["cagr"] >= 0.10
+                and float(years["return"].min()) > -0.10
+                and final["total_return"] > 0.0
+                and pre["max_gross"] <= 1.20 + 1e-9
+            )
+        )
+        score = pre["cagr"] + 0.10 * pre["sharpe"] - 0.20 * abs(pre["max_drawdown"]) + 0.08 * float(years["return"].min()) + 0.05 * severe_
