@@ -38,19 +38,75 @@ jobs:
         run: |
           set -euxo pipefail
           mkdir -p /tmp/fin-v87
-          cat .bootstrap_v87b/payload/part_*.txt | tr -d '\r\n' | base64 -d > /tmp/fin-v87.xz
-          xz -t /tmp/fin-v87.xz
-          xz -dc /tmp/fin-v87.xz > /tmp/fin-v87.payload
-          file /tmp/fin-v87.payload
-          if tar -tf /tmp/fin-v87.payload >/tmp/fin-v87.list 2>/dev/null; then
-            tar -xf /tmp/fin-v87.payload -C /tmp/fin-v87
-          elif unzip -t /tmp/fin-v87.payload >/tmp/fin-v87.list 2>/dev/null; then
-            unzip -q /tmp/fin-v87.payload -d /tmp/fin-v87
-          else
-            echo "Unknown V87 payload format"; xxd -l 128 /tmp/fin-v87.payload; exit 1
-          fi
-          head -100 /tmp/fin-v87.list || true
-          find /tmp/fin-v87 -maxdepth 5 -type f | sort | head -200
+          cat .bootstrap_v87b/payload/part_*.txt | tr -d '\r\n' | base64 -d > /tmp/fin-v87.outer
+          python - <<'PY'
+          from __future__ import annotations
+          import base64, bz2, gzip, io, lzma, os, string, tarfile, zipfile
+          from pathlib import Path
+
+          source = Path('/tmp/fin-v87.outer').read_bytes()
+          destination = Path('/tmp/fin-v87')
+          destination.mkdir(parents=True, exist_ok=True)
+
+          def safe_name(name: str) -> bool:
+              path = Path(name)
+              return not path.is_absolute() and '..' not in path.parts
+
+          def printable_ratio(data: bytes) -> float:
+              if not data:
+                  return 0.0
+              return sum(chr(b) in string.printable for b in data[:10000]) / min(len(data), 10000)
+
+          data = source
+          for layer in range(12):
+              print(f'layer={layer} bytes={len(data)} magic={data[:16]!r}')
+              if data.startswith(b'\xfd7zXZ\x00'):
+                  data = lzma.decompress(data); print('decoded=xz'); continue
+              if data.startswith(b'BZh'):
+                  data = bz2.decompress(data); print('decoded=bz2'); continue
+              if data.startswith(b'\x1f\x8b'):
+                  data = gzip.decompress(data); print('decoded=gzip'); continue
+              try:
+                  with tarfile.open(fileobj=io.BytesIO(data), mode='r:*') as archive:
+                      members = archive.getmembers()
+                      if not all(safe_name(member.name) for member in members):
+                          raise RuntimeError('unsafe tar member')
+                      archive.extractall(destination, filter='data')
+                      print(f'extracted=tar members={len(members)}')
+                      break
+              except tarfile.TarError:
+                  pass
+              if data.startswith(b'PK'):
+                  with zipfile.ZipFile(io.BytesIO(data)) as archive:
+                      if not all(safe_name(name) for name in archive.namelist()):
+                          raise RuntimeError('unsafe zip member')
+                      archive.extractall(destination)
+                      print(f'extracted=zip members={len(archive.namelist())}')
+                      break
+              stripped = b''.join(data.split())
+              decoded = None
+              if printable_ratio(stripped) > 0.95:
+                  for label, decoder in (
+                      ('base64', lambda x: base64.b64decode(x, validate=True)),
+                      ('base85', base64.b85decode),
+                      ('ascii85', base64.a85decode),
+                  ):
+                      try:
+                          candidate = decoder(stripped)
+                          if candidate and candidate != data:
+                              decoded = candidate
+                              print(f'decoded={label}')
+                              break
+                      except Exception:
+                          continue
+              if decoded is None:
+                  Path('/tmp/fin-v87.unknown').write_bytes(data)
+                  raise RuntimeError(f'unknown payload at layer {layer}: {data[:64]!r}')
+              data = decoded
+          else:
+              raise RuntimeError('too many payload layers')
+          PY
+          find /tmp/fin-v87 -maxdepth 6 -type f | sort | head -300
           root=$(find /tmp/fin-v87 -type d -path '*/research/active_v69_v76' -printf '%h\n' | head -1)
           if test -z "$root"; then root=$(dirname "$(find /tmp/fin-v87 -type f -name pyproject.toml | head -1)"); fi
           test -n "$root"
