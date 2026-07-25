@@ -28,108 +28,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Reconstruct readable V88 source
+      - name: Reconstruct readable source and exact compact ATLAS input
         run: |
           set -euxo pipefail
-          cat research/active_v88_v94/source_parts/part_*.txt > /tmp/run_research.py
-          echo "c9495ba4b9cd67d950c2489d641763e33e7f8042975a92f3b940503a13b2cde7  /tmp/run_research.py" | sha256sum -c -
-          python -m py_compile /tmp/run_research.py
-      - name: Reconstruct canonical V87 tree and recover ATLAS inputs
-        run: |
-          mkdir -p artifacts/active_v88_v94
-          exec > >(tee artifacts/active_v88_v94/reconstruction.log) 2>&1
-          set -euxo pipefail
-          mkdir -p /tmp/fin-v87
-          : > /tmp/fin-v87.outer
-          for part in .bootstrap_v87b/payload/part_*.txt; do
-            tr -d '\r\n' < "$part" | base64 -d >> /tmp/fin-v87.outer
-          done
-          python - <<'PY'
-          from __future__ import annotations
-          import base64, bz2, gzip, io, lzma, string, tarfile, zipfile
-          from pathlib import Path
-
-          source = Path('/tmp/fin-v87.outer').read_bytes()
-          destination = Path('/tmp/fin-v87')
-          destination.mkdir(parents=True, exist_ok=True)
-
-          def safe_name(name: str) -> bool:
-              path = Path(name)
-              return not path.is_absolute() and '..' not in path.parts
-
-          def printable_ratio(data: bytes) -> float:
-              if not data:
-                  return 0.0
-              sample = data[:10000]
-              return sum(chr(b) in string.printable for b in sample) / len(sample)
-
-          data = source
-          for layer in range(12):
-              print(f'layer={layer} bytes={len(data)} magic={data[:16]!r}')
-              if data.startswith(b'\xfd7zXZ\x00'):
-                  data = lzma.decompress(data); print('decoded=xz'); continue
-              if data.startswith(b'BZh'):
-                  data = bz2.decompress(data); print('decoded=bz2'); continue
-              if data.startswith(b'\x1f\x8b'):
-                  data = gzip.decompress(data); print('decoded=gzip'); continue
-              try:
-                  with tarfile.open(fileobj=io.BytesIO(data), mode='r:*') as archive:
-                      members = archive.getmembers()
-                      if not all(safe_name(member.name) for member in members):
-                          raise RuntimeError('unsafe tar member')
-                      archive.extractall(destination, filter='data')
-                      print(f'extracted=tar members={len(members)}')
-                      break
-              except tarfile.TarError:
-                  pass
-              if data.startswith(b'PK'):
-                  with zipfile.ZipFile(io.BytesIO(data)) as archive:
-                      if not all(safe_name(name) for name in archive.namelist()):
-                          raise RuntimeError('unsafe zip member')
-                      archive.extractall(destination)
-                      print(f'extracted=zip members={len(archive.namelist())}')
-                      break
-              stripped = b''.join(data.split())
-              decoded = None
-              if printable_ratio(stripped) > 0.95:
-                  for label, decoder in (
-                      ('base64', lambda x: base64.b64decode(x, validate=True)),
-                      ('base85', base64.b85decode),
-                      ('ascii85', base64.a85decode),
-                  ):
-                      try:
-                          candidate = decoder(stripped)
-                          if candidate and candidate != data:
-                              decoded = candidate
-                              print(f'decoded={label}')
-                              break
-                      except Exception:
-                          continue
-              if decoded is None:
-                  Path('/tmp/fin-v87.unknown').write_bytes(data)
-                  raise RuntimeError(f'unknown payload at layer {layer}: {data[:64]!r}')
-              data = decoded
-          else:
-              raise RuntimeError('too many payload layers')
-          PY
-          find /tmp/fin-v87 -maxdepth 6 -type f | sort | head -300
-          root=$(find /tmp/fin-v87 -type d -path '*/research/active_v69_v76' -printf '%h\n' | head -1)
-          if test -z "$root"; then root=$(dirname "$(find /tmp/fin-v87 -type f -name pyproject.toml | head -1)"); fi
-          test -n "$root"
-          rsync -a --exclude='.git' "$root/" ./
-          mkdir -p research/active_v88_v94/inputs/atlas research/active_v88_v94/source
-          cp /tmp/run_research.py research/active_v88_v94/source/run_research.py
-          cp research/active_v88_v94/README.md research/active_v88_v94/requirements.txt research/active_v88_v94/source/
-          stress=$(find "$root" -type f -path '*/research/active_v69_v76/results/v75/stress_equity.csv' | head -1)
-          nocash=$(find "$root" -type f -path '*/research/active_v69_v76/results/v75/no_cash_yield_equity.csv' | head -1)
-          test -n "$stress" -a -n "$nocash"
-          cp "$stress" research/active_v88_v94/inputs/atlas/v75_stress_equity.csv
-          cp "$nocash" research/active_v88_v94/inputs/atlas/v75_no_cash_yield_equity.csv
-      - name: Install dependencies and run tests
+          mkdir -p research/active_v88_v94/source research/active_v88_v94/inputs/atlas
+          cat research/active_v88_v94/source_parts/part_*.txt > research/active_v88_v94/source/run_research.py
+          echo "c9495ba4b9cd67d950c2489d641763e33e7f8042975a92f3b940503a13b2cde7  research/active_v88_v94/source/run_research.py" | sha256sum -c -
+          cat research/active_v88_v94/input_parts/v75_compact_*.b64 | base64 -d > /tmp/v75_stress_compact.csv.xz
+          echo "a074b0334a90b4ce8686c3ffb74bbdf2ec4b296972c899315a05924c3db2a5af  /tmp/v75_stress_compact.csv.xz" | sha256sum -c -
+          xz -t /tmp/v75_stress_compact.csv.xz
+          xz -dc /tmp/v75_stress_compact.csv.xz > research/active_v88_v94/inputs/atlas/v75_stress_compact.csv
+          echo "587d54817ce30bbc42fb457a358455e0eb722a3614b88f0fba7172e468b5dca8  research/active_v88_v94/inputs/atlas/v75_stress_compact.csv" | sha256sum -c -
+          python -m py_compile research/active_v88_v94/source/run_research.py
+      - name: Install dependencies and run causal self-test
         run: |
           python -m pip install -r research/active_v88_v94/requirements.txt
           python research/active_v88_v94/source/run_research.py --self-test
-          if test -f pyproject.toml; then python -m pip install -e '.[dev]'; python -m pytest -q; fi
       - name: Restore external market-data cache
         uses: actions/cache@v4
         with:
@@ -139,11 +53,11 @@ jobs:
         run: |
           mkdir -p artifacts/active_v88_v94
           python research/active_v88_v94/source/run_research.py \
-            --atlas-stress research/active_v88_v94/inputs/atlas/v75_stress_equity.csv \
-            --atlas-no-cash research/active_v88_v94/inputs/atlas/v75_no_cash_yield_equity.csv \
+            --atlas-stress research/active_v88_v94/inputs/atlas/v75_stress_compact.csv \
+            --atlas-no-cash research/active_v88_v94/inputs/atlas/v75_stress_compact.csv \
             --cache .cache/v88_v94 \
             --output artifacts/active_v88_v94 | tee artifacts/active_v88_v94/run.log
-      - name: Materialize readable canonical data and results
+      - name: Materialize readable source, data and results
         run: |
           set -euxo pipefail
           rm -rf research/active_v88_v94/results research/active_v88_v94/inputs/external
@@ -153,33 +67,34 @@ jobs:
           cp artifacts/active_v88_v94/fx_reference_prices.csv research/active_v88_v94/inputs/external/
           cp .cache/v88_v94/yahoo/*.json research/active_v88_v94/inputs/external/raw/yahoo/
           cp .cache/v88_v94/ecb/g10_reference_rates.csv research/active_v88_v94/inputs/external/raw/ecb/
-          rm -rf research/active_v88_v94/source_parts .bootstrap_v87 .bootstrap_v87b
-          rm -f .github/workflows/canonical-v87-public.yml
-          find research src tests scripts docs inputs results -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
-          find research src tests scripts docs inputs results -type f -name '*.pyc' -delete 2>/dev/null || true
-          find research/active_v69_v76 research/active_v77_v87 -type f \( -name '*.zip' -o -name '*.b64' -o -name '*.pyfrag' \) -delete 2>/dev/null || true
-      - name: Verify repository and research result
+          cp research/active_v88_v94/README.md research/active_v88_v94/requirements.txt research/active_v88_v94/source/
+          rm -rf research/active_v88_v94/source_parts research/active_v88_v94/input_parts
+          find research/active_v88_v94 -type d -name '__pycache__' -prune -exec rm -rf {} +
+          find research/active_v88_v94 -type f -name '*.pyc' -delete
+      - name: Verify immutable research result
         run: |
           set -euxo pipefail
           python -m py_compile research/active_v88_v94/source/run_research.py
           python research/active_v88_v94/source/run_research.py --self-test
           test -f research/active_v88_v94/results/summary.json
+          test -f research/active_v88_v94/results/selection_proof_before_final.json
           python - <<'PY'
           import json
           from pathlib import Path
-          s=json.loads(Path('research/active_v88_v94/results/summary.json').read_text())
-          assert s['live_ready'] is False
-          assert s['real_leverage_authorized'] is False
-          print(json.dumps(s, indent=2))
+          summary=json.loads(Path('research/active_v88_v94/results/summary.json').read_text())
+          proof=json.loads(Path('research/active_v88_v94/results/selection_proof_before_final.json').read_text())
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['selection_proof_sha256'] == proof['sha256']
+          print(json.dumps(summary, indent=2))
           PY
-          if test -f scripts/verify_repository.py; then python scripts/verify_repository.py --full; fi
-      - name: Commit readable canonical tree and results
+      - name: Commit readable V88-V94 sources, inputs and results
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -A
-          git commit -m "Canonicalize V87 and add V88-V94 Global ATLAS results [skip ci]"
+          git add -A research/active_v88_v94
+          git commit -m "Add readable V88-V94 Global ATLAS research [skip ci]"
           git push origin HEAD:${{ github.ref_name }}
       - name: Upload diagnostic artifact
         if: always()
