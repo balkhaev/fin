@@ -1,0 +1,103 @@
+name: Active V197 actual depth schema probe
+
+on:
+  push:
+    branches: [agent/active-v197-v204-depth-replenishment]
+    paths:
+      - 'research/active_v197_v204/**'
+      - '.github/workflows/active-v197-depth-probe.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v197_v204/**'
+      - '.github/workflows/active-v197-depth-probe.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v197-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v197-v204-depth-replenishment
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v197_v204/requirements.txt
+          python -m compileall -q research/active_v197_v204
+          python research/active_v197_v204/probe.py --self-test
+
+      - name: Run frozen checksum-aware schema probe
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v197_v204/probe_results \
+                 research/active_v197_v204/MANIFEST.json
+          python research/active_v197_v204/probe.py \
+            --root research/active_v197_v204 \
+            2>&1 | tee research/active_v197_v204/probe.log
+
+      - name: Verify no-PnL and safety invariants
+        run: |
+          set -euxo pipefail
+          test -s research/active_v197_v204/probe_results/FROZEN_DECISION.json
+          test -s research/active_v197_v204/probe_results/schema_gate.json
+          test -s research/active_v197_v204/probe_results/coverage.csv
+          test -s research/active_v197_v204/probe_results/REPORT_RU.md
+          test -s research/active_v197_v204/MANIFEST.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('research/active_v197_v204/probe_results')
+          decision = json.loads((root / 'FROZEN_DECISION.json').read_text())
+          assert decision['selection_run'] is False
+          assert decision['full_backtest_run'] is False
+          assert decision['integration_permitted'] is False
+          assert decision['live_ready'] is False
+          assert decision['real_leverage_authorized'] is False
+          assert decision['profitability_proven'] is False
+          print(json.dumps(decision, indent=2))
+          PY
+
+      - name: Commit direct V197 evidence
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          find research/active_v197_v204 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v197_v204 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v197_v204
+          if git diff --cached --quiet; then
+            echo 'No V197 changes'
+          else
+            git commit -m 'Archive V197 depth schema probe [skip ci]'
+            git push origin HEAD:agent/active-v197-v204-depth-replenishment
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v197-depth-schema-probe
+          path: |
+            research/active_v197_v204/probe_results
+            research/active_v197_v204/probe.log
+            research/active_v197_v204/MANIFEST.json
+          if-no-files-found: warn
+          retention-days: 30
