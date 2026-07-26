@@ -21,7 +21,7 @@ NEW_FUNCTION = r'''def _funding_blocks(
 
     values = frame.copy()
     values["timestamp"] = pd.to_datetime(
-        values["timestamp"], utc=True, errors="coerce"
+        values["timestamp"], utc=True, errors="coerce", format="mixed"
     )
     values["rate"] = pd.to_numeric(values["rate"], errors="coerce")
     values = values.dropna(subset=["timestamp", "rate"]).copy()
@@ -99,6 +99,9 @@ NEW_COMPLETENESS = '''    required_hours = float(BLOCK_HOURS) - 1e-6
     )
 '''
 
+OLD_CACHE_PARSE = 'pd.to_datetime(frame["timestamp"], utc=True)'
+NEW_CACHE_PARSE = 'pd.to_datetime(frame["timestamp"], utc=True, format="mixed")'
+
 
 def main() -> int:
     source = TARGET.read_text()
@@ -108,8 +111,17 @@ def main() -> int:
     if OLD_COMPLETENESS not in source:
         raise SystemExit("expected funding completeness block not found")
     source = source.replace(OLD_COMPLETENESS, NEW_COMPLETENESS, 1)
+
+    parse_count = source.count(OLD_CACHE_PARSE)
+    if parse_count < 3:
+        raise SystemExit(f"expected cached timestamp parsers, found {parse_count}")
+    source = source.replace(OLD_CACHE_PARSE, NEW_CACHE_PARSE)
+
     TARGET.write_text(source)
-    print("V179 funding schedule normalization applied")
+    print(
+        "V179 funding schedule normalization applied; "
+        f"mixed timestamp parsers updated: {parse_count}"
+    )
     return 0
 
 
