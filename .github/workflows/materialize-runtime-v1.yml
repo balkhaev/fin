@@ -35,7 +35,44 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Verify and reconstruct runtime source tree
+      - name: Verify every small transport chunk
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import json
+          import subprocess
+          root = Path('.bootstrap_runtime_v1_small')
+          manifest = json.loads((root / 'manifest.json').read_text())
+          for item in manifest['parts']:
+              path = root / item['path']
+              data = path.read_bytes()
+              actual_sha = hashlib.sha256(data).hexdigest()
+              git_sha = subprocess.check_output(['git', 'hash-object', str(path)], text=True).strip()
+              print(path, len(data), actual_sha, git_sha, flush=True)
+              assert len(data) == item['bytes'], (path, len(data), item['bytes'])
+              assert actual_sha == item['sha256'], (path, actual_sha, item['sha256'])
+              assert git_sha == item['git_blob_sha1'], (path, git_sha, item['git_blob_sha1'])
+          PY
+
+      - name: Assemble and verify encoded payload
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import json
+          root = Path('.bootstrap_runtime_v1_small')
+          manifest = json.loads((root / 'manifest.json').read_text())
+          encoded = b''.join((root / item['path']).read_bytes() for item in manifest['parts'])
+          print('encoded', len(encoded), hashlib.sha256(encoded).hexdigest(), flush=True)
+          assert len(encoded) == manifest['encoded_bytes']
+          assert hashlib.sha256(encoded).hexdigest() == manifest['encoded_sha256']
+          Path('/tmp/runtime-v1.b64').write_bytes(encoded)
+          PY
+
+      - name: Decode and verify runtime archive
         run: |
           set -euxo pipefail
           python - <<'PY'
@@ -43,31 +80,25 @@ jobs:
           import base64
           import hashlib
           import json
-          import subprocess
-          import tarfile
-
-          root = Path('.bootstrap_runtime_v1_small')
-          manifest = json.loads((root / 'manifest.json').read_text())
-          chunks = []
-          for item in manifest['parts']:
-              path = root / item['path']
-              data = path.read_bytes()
-              assert len(data) == item['bytes'], (path, len(data), item['bytes'])
-              assert hashlib.sha256(data).hexdigest() == item['sha256'], path
-              git_sha = subprocess.check_output(['git', 'hash-object', str(path)], text=True).strip()
-              assert git_sha == item['git_blob_sha1'], (path, git_sha, item['git_blob_sha1'])
-              chunks.append(data)
-          encoded = b''.join(chunks)
-          assert len(encoded) == manifest['encoded_bytes']
-          assert hashlib.sha256(encoded).hexdigest() == manifest['encoded_sha256']
-          archive = base64.b64decode(encoded, validate=True)
+          manifest = json.loads(Path('.bootstrap_runtime_v1_small/manifest.json').read_text())
+          archive = base64.b64decode(Path('/tmp/runtime-v1.b64').read_bytes(), validate=True)
+          print('archive', len(archive), hashlib.sha256(archive).hexdigest(), flush=True)
           assert len(archive) == manifest['archive_bytes']
           assert hashlib.sha256(archive).hexdigest() == manifest['archive_sha256']
-          archive_path = Path('/tmp/runtime-v1.tar.gz')
-          archive_path.write_bytes(archive)
+          Path('/tmp/runtime-v1.tar.gz').write_bytes(archive)
+          PY
+          tar -tzf /tmp/runtime-v1.tar.gz > /tmp/runtime-v1-tree.txt
+          test -s /tmp/runtime-v1-tree.txt
+
+      - name: Extract canonical runtime source tree
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import tarfile
           destination = Path('/tmp/runtime-v1-tree')
           destination.mkdir(parents=True, exist_ok=True)
-          with tarfile.open(archive_path, 'r:gz') as handle:
+          with tarfile.open('/tmp/runtime-v1.tar.gz', 'r:gz') as handle:
               for member in handle.getmembers():
                   member_path = Path(member.name)
                   assert not member_path.is_absolute(), member.name
