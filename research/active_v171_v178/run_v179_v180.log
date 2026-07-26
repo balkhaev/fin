@@ -1,3 +1,13 @@
+loading BTC
+loading ETH
+loading SOL
+loading XRP
+loading DOGE
+processed 10/54 policies
+processed 20/54 policies
+processed 30/54 policies
+processed 40/54 policies
+processed 50/54 policies
 {
   "candidate": "ACTIVE_V171_BINANCE_HYPERLIQUID_FUNDING",
   "status": "rejected_or_needs_iteration",

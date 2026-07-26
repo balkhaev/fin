@@ -1,0 +1,17 @@
+{
+  "trade_mean": {
+    "trade_count": 17,
+    "mean": 0.0010461154805689941,
+    "ci_05": 0.0006081985182213329,
+    "ci_95": 0.0015217792226222817
+  },
+  "oos_circular_block": {
+    "observations": 1638,
+    "block_size": 21,
+    "samples": 3000,
+    "probability_positive": 0.0,
+    "p05": 0.0,
+    "p50": 0.0,
+    "p95": 0.0
+  }
+}

@@ -1,6 +1,6 @@
 {
   "candidate": "ACTIVE_V171_BINANCE_HYPERLIQUID_FUNDING",
-  "status": "data_access_insufficient",
+  "status": "rejected_or_needs_iteration",
   "standalone_selection_passed": false,
   "integration_permitted": false,
   "promoted_candidates": [],
