@@ -1,15 +1,17 @@
-name: Active V147 CME dated-contract access probe
+name: Active V147 CME dated-contract access evidence
 
 on:
   push:
     branches: [agent/active-v147-v154-cme-dated-contracts]
     paths:
-      - 'research/active_v147_v154/**'
+      - 'research/active_v147_v154/cme_access_probe.py'
+      - 'research/active_v147_v154/requirements.txt'
       - '.github/workflows/active-v147-cme-access-probe.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'research/active_v147_v154/**'
+      - 'research/active_v147_v154/cme_access_probe.py'
+      - 'research/active_v147_v154/requirements.txt'
       - '.github/workflows/active-v147-cme-access-probe.yml'
   workflow_dispatch:
 
@@ -47,7 +49,7 @@ jobs:
           python research/active_v147_v154/cme_access_probe.py \
             --output artifacts/v147_cme_probe \
             2>&1 | tee artifacts/v147_probe.log
-      - name: Materialize probe evidence
+      - name: Materialize and validate access evidence
         if: always()
         run: |
           set -euxo pipefail
@@ -59,8 +61,12 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          path=Path('research/active_v147_v154/probe_results/summary.json')
-          value=json.loads(path.read_text())
+          value=json.loads(Path('research/active_v147_v154/probe_results/summary.json').read_text())
+          assert value['status'] in {
+              'official_dated_settlement_access_confirmed',
+              'official_dated_settlement_access_partial',
+              'official_dated_settlement_access_blocked',
+          }
           assert value['live_ready'] is False
           assert value['real_leverage_authorized'] is False
           print(json.dumps(value,indent=2))
@@ -77,7 +83,7 @@ jobs:
           if git diff --cached --quiet; then
             echo 'No probe changes to commit'
           else
-            git commit -m 'Record V147 official CME access probe [skip ci]'
+            git commit -m 'Record V147 official CME access evidence [skip ci]'
             git push origin HEAD:agent/active-v147-v154-cme-dated-contracts
           fi
       - uses: actions/upload-artifact@v4
@@ -89,13 +95,3 @@ jobs:
             artifacts/v147_probe.log
           if-no-files-found: warn
           retention-days: 30
-      - name: Enforce access outcome
-        if: always()
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          value=json.loads(Path('research/active_v147_v154/probe_results/summary.json').read_text())
-          if value['status'] == 'official_dated_settlement_access_blocked':
-              raise SystemExit('official CME dated settlement access is blocked from this runner')
-          PY
