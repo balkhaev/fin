@@ -1,0 +1,75 @@
+{
+  "root_argument": "--atlas-root",
+  "expected_layout": "dependencies/atlas",
+  "files": {
+    "inputs/asset/v27_asset_weights.csv": {
+      "bytes": 960146,
+      "sha256": "44d93d30e6e7329b26ace2fbdcad2dc418c802d3888793d01d6bdbf43a4ba677"
+    },
+    "inputs/asset/v4_frozen_signal.csv": {
+      "bytes": 172754,
+      "sha256": "1d3ea18c8e6ba155d3349420ccf2581f049cbbd0f05077ceba66cdc21ae46ab6"
+    },
+    "inputs/asset/v5/processed/funding_BTCUSDT.csv": {
+      "bytes": 272467,
+      "sha256": "3b74232634f1201f40c7e5883a0c824befe89b4683ab72f7a3817d86d6207df3"
+    },
+    "inputs/asset/v5/processed/funding_ETHUSDT.csv": {
+      "bytes": 272607,
+      "sha256": "75ba5f5f7b4d59f137d1975e3280fee1b633c15d006d2b450388f89d1f10baa1"
+    },
+    "inputs/asset/v5/processed/perp_BTCUSDT_8h.csv": {
+      "bytes": 863172,
+      "sha256": "01346cc0e6182a6e61e8f09a0997899e53932a57fbfbdce59f4a803d8f08f073"
+    },
+    "inputs/asset/v5/processed/perp_ETHUSDT_8h.csv": {
+      "bytes": 862706,
+      "sha256": "6a3fab67d7875b717eb67a565765ce68d487bcebd844d8e99d09f38809fbcccb"
+    },
+    "inputs/asset/v6/processed_ADAUSDT_1d.csv": {
+      "bytes": 276070,
+      "sha256": "ca723a1779e0a83b8206d2095e36144acbb8a5b37be839389ee80c5f7f26b9dc"
+    },
+    "inputs/asset/v6/processed_BCHUSDT_1d.csv": {
+      "bytes": 259781,
+      "sha256": "a660df3789d086afd514c579b49fce7510fda555e2bdbc9785db9384f1f772e5"
+    },
+    "inputs/asset/v6/processed_BNBUSDT_1d.csv": {
+      "bytes": 271085,
+      "sha256": "1caff73e786f06a4e5d1e89b6c4da4a7974a5553cc1c3a0b57cecebb80b2d3b2"
+    },
+    "inputs/asset/v6/processed_BTCUSDT_1d.csv": {
+      "bytes": 312454,
+      "sha256": "c25d6932de47dacbb075191a8740357ed6a97f18394ad98eb13b6b22028e6b1e"
+    },
+    "inputs/asset/v6/processed_DOGEUSDT_1d.csv": {
+      "bytes": 290916,
+      "sha256": "b1bebb0f8b05d18cecb02e70a639d79905cb5811a8e6c4889a1dbf6934a45279"
+    },
+    "inputs/asset/v6/processed_EOSUSDT_1d.csv": {
+      "bytes": 217810,
+      "sha256": "04748276c445cb03dc2e92e6a4f4a70ddc466304d819ebdec94ffbef844a778b"
+    },
+    "inputs/asset/v6/processed_ETHUSDT_1d.csv": {
+      "bytes": 298042,
+      "sha256": "d4a8dac718d69ed8c18042038f68acb136e6ec1a0304581cd412e428a90f3826"
+    },
+    "inputs/asset/v6/processed_LTCUSDT_1d.csv": {
+      "bytes": 267849,
+      "sha256": "3fce93a1a844a38120f0fa6846fb2bdc1eac87c6de6317f4a62b5e6cdd2c5fec"
+    },
+    "inputs/asset/v6/processed_XRPUSDT_1d.csv": {
+      "bytes": 278757,
+      "sha256": "f299dc068e461e53ba7a79e33b8d85df15e0a34c2fdbb32125a0ad68b7056960"
+    },
+    "inputs/asset/v67_leader_equity.csv": {
+      "bytes": 464752,
+      "sha256": "068fa4818d54cd5b04c1fea41ffe438c5a6b6751a8bf7ea1c29cd97d33f47fab"
+    },
+    "source/v75_operational_feedback_engine.py": {
+      "bytes": 17495,
+      "sha256": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc"
+    }
+  },
+  "note": "The large market-data files are not duplicated in this compact research commit. Regenerate or provide exact files matching these hashes before a full replay."
+}

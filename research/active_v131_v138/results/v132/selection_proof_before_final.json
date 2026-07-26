@@ -1,0 +1,83 @@
+{
+  "candidate": "ACTIVE_V89_BREADTH_PLATEAU_ENSEMBLE",
+  "discovery": "V88 exploratory prefinal screen",
+  "selection_uses_2021_2025_only": true,
+  "program_level_final_pristine": false,
+  "components": [
+    {
+      "name": "breadth_defensive_relative_adaptive_frozen",
+      "signal_family": "breadth",
+      "style": "defensive",
+      "allocation": "relative",
+      "risk_mode": "adaptive",
+      "long_budget": 0.05,
+      "short_budget": 0.15,
+      "extra_headroom": 0.1
+    },
+    {
+      "name": "breadth_symmetric_relative_adaptive_frozen",
+      "signal_family": "breadth",
+      "style": "symmetric",
+      "allocation": "relative",
+      "risk_mode": "adaptive",
+      "long_budget": 0.1,
+      "short_budget": 0.1,
+      "extra_headroom": 0.1
+    },
+    {
+      "name": "breadth_growth_balanced_adaptive_frozen",
+      "signal_family": "breadth",
+      "style": "growth",
+      "allocation": "balanced",
+      "risk_mode": "adaptive",
+      "long_budget": 0.15,
+      "short_budget": 0.05,
+      "extra_headroom": 0.1
+    },
+    {
+      "name": "breadth_symmetric_balanced_adaptive_frozen",
+      "signal_family": "breadth",
+      "style": "symmetric",
+      "allocation": "balanced",
+      "risk_mode": "adaptive",
+      "long_budget": 0.1,
+      "short_budget": 0.1,
+      "extra_headroom": 0.1
+    }
+  ],
+  "ensemble_policy": {
+    "name": "V89_BREADTH_PLATEAU_ENSEMBLE",
+    "signal_family": "breadth",
+    "style": "plateau",
+    "allocation": "mixed",
+    "risk_mode": "adaptive",
+    "long_budget": 0.1,
+    "short_budget": 0.1,
+    "extra_headroom": 0.1
+  },
+  "baseline_prefinal": {
+    "total_return": 3.153005875083082,
+    "cagr": 0.3292442197512311,
+    "max_drawdown": -0.21591803526892273,
+    "sharpe": 1.362407800189897,
+    "annual_turnover": 11.04809674930646,
+    "average_gross": 0.4387444557094354,
+    "max_gross": 1.0431405191032543,
+    "average_perp_gross": 0.16677602459616556,
+    "costs": 5625.109455727841,
+    "funding_pnl": 28.835116464895705,
+    "liquidations": 0,
+    "min_margin_buffer": 0.20112017258685158,
+    "average_regime_overlay_gross": 0.0
+  },
+  "gates": {
+    "cagr_uplift_min": 0.005,
+    "max_drawdown_min": -0.25,
+    "sharpe_min": 1.25,
+    "worst_segment_min": -0.03,
+    "severe_cagr_min": 0.18,
+    "severe_dd_min": -0.35,
+    "turnover_max": 15
+  },
+  "sha256": "b1a4aa38ccfb2b50f00e908e7a6431c5a029a8e8dd439907104188b3d85e30d4"
+}
