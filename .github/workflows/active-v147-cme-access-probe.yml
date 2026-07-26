@@ -1,0 +1,91 @@
+name: Active V147 CME dated-contract access probe
+
+on:
+  push:
+    branches: [agent/active-v147-v154-cme-dated-contracts]
+    paths:
+      - 'research/active_v147_v154/**'
+      - '.github/workflows/active-v147-cme-access-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v147-v154-cme-dated-contracts
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install and compile
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v147_v154/requirements.txt
+          python -m py_compile research/active_v147_v154/cme_access_probe.py
+      - name: Probe official CME pages and dated settlement JSON
+        id: probe
+        continue-on-error: true
+        run: |
+          rm -rf artifacts/v147_cme_probe
+          python research/active_v147_v154/cme_access_probe.py \
+            --output artifacts/v147_cme_probe \
+            2>&1 | tee artifacts/v147_probe.log
+      - name: Materialize probe evidence
+        if: always()
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v147_v154/probe_results
+          mkdir -p research/active_v147_v154/probe_results
+          cp -r artifacts/v147_cme_probe/. research/active_v147_v154/probe_results/ 2>/dev/null || true
+          cp artifacts/v147_probe.log research/active_v147_v154/probe_results/run.log 2>/dev/null || true
+          test -s research/active_v147_v154/probe_results/summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('research/active_v147_v154/probe_results/summary.json')
+          value=json.loads(path.read_text())
+          assert value['live_ready'] is False
+          assert value['real_leverage_authorized'] is False
+          print(json.dumps(value,indent=2))
+          PY
+          find research/active_v147_v154 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v147_v154 -type f -name '*.pyc' -delete || true
+      - name: Commit direct probe evidence
+        if: always()
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v147_v154
+          if git diff --cached --quiet; then
+            echo 'No probe changes to commit'
+          else
+            git commit -m 'Record V147 official CME access probe [skip ci]'
+            git push origin HEAD:agent/active-v147-v154-cme-dated-contracts
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v147-cme-dated-contract-access-probe
+          path: |
+            artifacts/v147_cme_probe
+            artifacts/v147_probe.log
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Enforce access outcome
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          value=json.loads(Path('research/active_v147_v154/probe_results/summary.json').read_text())
+          if value['status'] == 'official_dated_settlement_access_blocked':
+              raise SystemExit('official CME dated settlement access is blocked from this runner')
+          PY
