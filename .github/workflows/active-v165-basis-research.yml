@@ -6,6 +6,7 @@ on:
     paths:
       - 'research/active_v163_v170/basis_*.py'
       - 'research/active_v163_v170/run_basis_research.py'
+      - 'research/active_v163_v170/run_basis_research_sanitized.py'
       - 'research/active_v163_v170/enforce_basis_coverage.py'
       - 'research/active_v163_v170/V165_BASIS_DESIGN.json'
       - 'research/active_v163_v170/requirements.txt'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'research/active_v163_v170/basis_*.py'
       - 'research/active_v163_v170/run_basis_research.py'
+      - 'research/active_v163_v170/run_basis_research_sanitized.py'
       - 'research/active_v163_v170/enforce_basis_coverage.py'
       - 'research/active_v163_v170/V165_BASIS_DESIGN.json'
       - 'research/active_v163_v170/requirements.txt'
@@ -43,7 +45,7 @@ jobs:
           python -m pip install -r research/active_v163_v170/requirements.txt
           python -m compileall -q research/active_v163_v170
           cd research/active_v163_v170
-          python run_basis_research.py --self-test
+          python run_basis_research_sanitized.py --self-test
       - name: Restore immutable download cache
         uses: actions/cache@v4
         with:
@@ -55,7 +57,7 @@ jobs:
           rm -rf research/active_v163_v170/results \
                  research/active_v163_v170/inputs/processed \
                  research/active_v163_v170/inputs/provenance.json
-          python research/active_v163_v170/run_basis_research.py \
+          python research/active_v163_v170/run_basis_research_sanitized.py \
             --root research/active_v163_v170 \
             --cache .cache/v165_basis \
             --atlas research/active_v139_v146/inputs/v75_stress_equity.csv \
