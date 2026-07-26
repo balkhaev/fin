@@ -536,7 +536,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 341,
+    "bytes": 361,
     "reason": "missing_archive_or_checksum"
   },
   {
@@ -546,7 +546,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 341,
+    "bytes": 361,
     "reason": "missing_archive_or_checksum"
   },
   {
@@ -586,7 +586,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 361,
+    "bytes": 341,
     "reason": "missing_archive_or_checksum"
   },
   {
@@ -596,7 +596,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 341,
+    "bytes": 361,
     "reason": "missing_archive_or_checksum"
   },
   {
@@ -1126,7 +1126,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 341,
+    "bytes": 361,
     "reason": "missing_archive_or_checksum"
   },
   {
@@ -1146,7 +1146,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 341,
+    "bytes": 361,
     "reason": "missing_archive_or_checksum"
   },
   {
@@ -1176,7 +1176,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 341,
+    "bytes": 361,
     "reason": "missing_archive_or_checksum"
   },
   {
@@ -1196,7 +1196,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 361,
+    "bytes": 341,
     "reason": "missing_archive_or_checksum"
   },
   {
@@ -1216,7 +1216,7 @@
     "valid": false,
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 361,
+    "bytes": 341,
     "reason": "missing_archive_or_checksum"
   }
 ]

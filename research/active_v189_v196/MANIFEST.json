@@ -9,6 +9,10 @@
       "bytes": 2919,
       "sha256": "63c18ba80bf3d651886c46dbdbe6f5f0cde9225642431f485a703a464f294d5b"
     },
+    "boundary_scan.py": {
+      "bytes": 10582,
+      "sha256": "9ce08fd89b6b437053627c475a1286ff64dec6204283e46cb2f7639e036ffe3b"
+    },
     "probe.log": {
       "bytes": 759,
       "sha256": "3f760bbef69fb193f0a2f16923f87d4d6932db5841e93b8cc6b1e0cd219f28cc"
@@ -27,7 +31,7 @@
     },
     "probe_results/coverage.csv": {
       "bytes": 2090,
-      "sha256": "b41492cf0ce009255624e6fb214d28a3bfaf4c8049675a7f03ff52b2dac12783"
+      "sha256": "06242d70b550d1484f86c9cf35849601f21826f51c44f2c21e309435f18c28b2"
     },
     "probe_results/executability_gate.json": {
       "bytes": 1099,
@@ -35,7 +39,7 @@
     },
     "probe_results/raw_probe.json": {
       "bytes": 30788,
-      "sha256": "5d0e662dfbc960af6b38124fb0c880a680a5935d169b1c353620606765002ec0"
+      "sha256": "a1010f857fba9bc583a239fa4267edc444ece930f9b7424ab84a50b95626218d"
     },
     "requirements.txt": {
       "bytes": 18,
