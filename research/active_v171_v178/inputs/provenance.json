@@ -1,0 +1,4774 @@
+{
+  "assets": {
+    "BTC": {
+      "binance_funding": {
+        "venue": "binance_usdm",
+        "asset": "BTC",
+        "symbol": "BTCUSDT",
+        "dataset": "checksum_verified_monthly_fundingRate",
+        "requests": [
+          {
+            "month": "2023-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 983,
+            "sha256": "5d026fece46df86293054c8c56c2c8de575d30161b82979b11831831217a246e",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 845,
+            "sha256": "3ffdde6f1dc9c3c065d77ae43f3ba64d19d4cb76512d4bc1d541933d4fb2e6f7",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 861,
+            "sha256": "0304baed9fd407293a8a8040b30a1b68bd344803b630d33530375b421733a930",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 846,
+            "sha256": "516a8f50631c6ede6a9642f6d1590b6a22c33ba09935501d2ace8dc1396501fd",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 914,
+            "sha256": "3fd9df6fd1eef33cf5fe625c27012359bc6d64a68c109305d7b44a0354f533c2",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 865,
+            "sha256": "03105cc140150bffca834bcccbddc6cfee245e079d2df1759653243bd6e92448",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 696,
+            "sha256": "8015d2997f8d5e757ff3707ee87800ca30a74da0129daa747b64117f07bcc186",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 810,
+            "sha256": "8f02fdd2a2da261bbf13ab301c74bdb57fae005f19d5088e9ece5f8824c1a2a7",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 696,
+            "sha256": "3e0d30870672aa8f0f937881056e3cfd55913ae5c780cd50b33f2763aa0ba58e",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 776,
+            "sha256": "daf1e4901e3d6436d82ad60f90d007eb5300be8047cfef121007203a7212cde6",
+            "checksum_valid": true,
+            "rows": 87,
+            "valid": true
+          },
+          {
+            "month": "2024-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 939,
+            "sha256": "711dcaf2a341aedfd06447b4117b540f60adb0784c5e64a313c718e4cf092bc3",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 842,
+            "sha256": "6d220b8e2815362a11d294d35dbca28568370d8295351937eceec10f2b359b85",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 830,
+            "sha256": "aef8c5fdce1493fd570b5829a72f2f17c7e459483390f25544d16c2a30be592e",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 721,
+            "sha256": "43fc4473820d1fb4fe340d1b1951a87555f6841aa352e684fa95d6adffce04c6",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 847,
+            "sha256": "acab0593c1452660ce74a6c239fb215c1192b0a9c6e8c1689e6495de40a0174b",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 904,
+            "sha256": "7003d29a43dd5f9357f838da8766834954939e22c1d80af682d9f33984f67b71",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 924,
+            "sha256": "6ef23b02392b481ef9c3855434bf3644289fb6e228b4f7d9a0dfc6d3cdff1116",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 801,
+            "sha256": "26db65ac8020d80ece35df79c254c5f7e24427529bcceeb2972748c4fe2d2707",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 746,
+            "sha256": "e1b19cccfe2cdcba48b022790789b7b01edd86c075f39bc152e44c267d43bd51",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2024-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 808,
+            "sha256": "069409f525ebf6370ee1c7defe475167de4b97284c5ac8e68768652968cd3dc9",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 825,
+            "sha256": "df725010d55458866eb5a47e9ee708c6796c9d7e77b14c38342cea11f381815e",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 854,
+            "sha256": "e918b90fb33df3a3317feea13807a892047f1ec86eeac100bdb7b3dd83285d46",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2025-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 938,
+            "sha256": "a3b95cfb315641fbfddc61eb32adf2a2588afb7a3973a61f464aca007ad43e3f",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 929,
+            "sha256": "01dbb7bd0135f98bd63bdde6b943cde1accc1770cabf92f68a1ec0653ced3888",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 943,
+            "sha256": "e7355e2775b88009c984db1783bb8ed6b5f24ede2b52bb764151b5722d6a5e42",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 946,
+            "sha256": "a1f4a40953740fa83ee9ad97776ff8325d1958654a67f1325614071a983819d4",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 796,
+            "sha256": "b097dff828f6e43fece23db0d3cb98042a9d7bc19693b8cbfd051d88eb973b7b",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 927,
+            "sha256": "1180129860b6e196e8d70bb9719e81573aa6b4acb423ba5ee7f82f10c836f7ab",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 941,
+            "sha256": "21dc6570fc6bffad0e7b5f9e99211b82ad07c95ab4f18c3a2daa3b95ec98344c",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 944,
+            "sha256": "9ecdedab6344fc4cdb154763266b8e09627a71c3cc5574cf868158b541c259c2",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 941,
+            "sha256": "23735400405627d610123e3a43db3e98ae7addb93459cd670e65a7659a5f081b",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 963,
+            "sha256": "35318b789f020b0e04c9043112480743855554e52e1d188437cbdaa67246d51d",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2026-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 965,
+            "sha256": "fcdc796484f395830d418588a34a26baed8849dbef0ff2b56173247e493ff51f",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2026-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 937,
+            "sha256": "80df1dd669dc1e3afc360c9da8b9a949a127fce088eedbf5bf708bd37b0a1f58",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2026-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2026-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 1008,
+            "sha256": "5c069d5e9597a44fd0e213395082e59ff223fb99c9eab3a2a5a2a5622ba7867c",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2026-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 960,
+            "sha256": "51cdeb4de7d5ef1d4eece80b6115e391bdf7a2d0803bf9ad8371ab23340b22d3",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2026-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2026-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 980,
+            "sha256": "445b65fd6b17bfcfb5e4d035db29fad34f729fa078f0449024db42621be84e6e",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2026-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 964,
+            "sha256": "cff97ce688329592bccbbf5873b5c7021649e093f5f5806e332c5b4fb7fd6a00",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          }
+        ],
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00.004000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00"
+      },
+      "hyperliquid_funding": {
+        "venue": "hyperliquid",
+        "asset": "BTC",
+        "dataset": "public_fundingHistory",
+        "requests": [
+          {
+            "page": 0,
+            "start_time": 1682899200000,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44817,
+            "sha256": "aff6213fba21d02999686abd7f69f427f67233fe856359876c1ff98815db7999",
+            "rows": 500
+          },
+          {
+            "page": 1,
+            "start_time": 1687687200202,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44831,
+            "sha256": "e790c98a361e55a9ddc34e80de7155dc452bd41b6fe18534b040fec78fd81f38",
+            "rows": 500
+          },
+          {
+            "page": 2,
+            "start_time": 1689490800165,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45260,
+            "sha256": "cd1d3b7a7e3aa726564b43470cd8edb697624351884eda3da58d5bdddd02313f",
+            "rows": 500
+          },
+          {
+            "page": 3,
+            "start_time": 1691290800173,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45601,
+            "sha256": "d43aec647cd6f4840c05c70c937ef5a9ae5a88e298ab4ab737abdd4cf894a667",
+            "rows": 500
+          },
+          {
+            "page": 4,
+            "start_time": 1693094400088,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45383,
+            "sha256": "3b68e1c115438fad7c38678abb26c3b80e5aa88fc9c4375ace9a6f3a2cf83784",
+            "rows": 500
+          },
+          {
+            "page": 5,
+            "start_time": 1694894400124,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44089,
+            "sha256": "7203964adcf1ea9756b0e3399043f920a050fd9e4ba61778c13ae6e828309879",
+            "rows": 500
+          },
+          {
+            "page": 6,
+            "start_time": 1696694400118,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44293,
+            "sha256": "f5f7eab5a2d67fc6b48a79cff16448eb9dcb158f34b71ae3067a0010f17ed472",
+            "rows": 500
+          },
+          {
+            "page": 7,
+            "start_time": 1698494400150,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44602,
+            "sha256": "a59bda4e94962252943903fba77afd258d7bc4e1f3df5cf7be6b84e17882ddc9",
+            "rows": 500
+          },
+          {
+            "page": 8,
+            "start_time": 1700294400123,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44090,
+            "sha256": "c3ee56e988849e0f83d352431e663f4bc7436c3ed79544ef75a5fc7a705c3eef",
+            "rows": 500
+          },
+          {
+            "page": 9,
+            "start_time": 1702094400123,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44549,
+            "sha256": "c4f94aac350d8cf933c5306abe603ea40a65c0d1d6d72479311297cafa6751ed",
+            "rows": 500
+          },
+          {
+            "page": 10,
+            "start_time": 1703894400341,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44574,
+            "sha256": "ea631c490a8468918c545182ed398073533ec0ad36e7b94f2acd79de6700ecfe",
+            "rows": 500
+          },
+          {
+            "page": 11,
+            "start_time": 1705694400194,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44447,
+            "sha256": "556d1dcc06ff6739cb96fde42124bc28301ef0af63840b5f34e891000163d144",
+            "rows": 500
+          },
+          {
+            "page": 12,
+            "start_time": 1707494400389,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44346,
+            "sha256": "5e344bfd031b33a93f15e3d60a54948b2150dca19d1009891d996c0cd54f147c",
+            "rows": 500
+          },
+          {
+            "page": 13,
+            "start_time": 1709294400135,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44718,
+            "sha256": "1ddf246642ce9e4bc77651ba061bdd493b016de240ae4368a426514c53aa1d2b",
+            "rows": 500
+          },
+          {
+            "page": 14,
+            "start_time": 1711094400048,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44437,
+            "sha256": "3eec40792fed45de0650138892761a72508512dfb516bbd1dd13732267df2881",
+            "rows": 500
+          },
+          {
+            "page": 15,
+            "start_time": 1712894400130,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44195,
+            "sha256": "ce8ff432851e2a9191b3ad445c487d4699525ec838d64c5f6d947040b9f47739",
+            "rows": 500
+          },
+          {
+            "page": 16,
+            "start_time": 1714694400215,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43982,
+            "sha256": "99f5a16c04b1817e7a31953a30a0eb681b9e3f9d1ab8aa6263e619e64c07488b",
+            "rows": 500
+          },
+          {
+            "page": 17,
+            "start_time": 1716494400061,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44266,
+            "sha256": "53ef0669aae66733dd7bf500dbde123713911e1ccc510ff2c141c603b2c39e1c",
+            "rows": 500
+          },
+          {
+            "page": 18,
+            "start_time": 1718294400094,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43962,
+            "sha256": "731a08826d600d9c65520992af6d35681754f7e09b7235056f721a6476a8d4f1",
+            "rows": 500
+          },
+          {
+            "page": 19,
+            "start_time": 1720094400121,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44196,
+            "sha256": "62a6a1e9d7c89126898296dc8a16d9908a1f18b6dda20cfdefe66df9d3d913bb",
+            "rows": 500
+          },
+          {
+            "page": 20,
+            "start_time": 1721894400145,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43964,
+            "sha256": "955f8ac5b8bc35e4fbb44198db226ff2d800c5b84f3b9d4944c33054427c7878",
+            "rows": 500
+          },
+          {
+            "page": 21,
+            "start_time": 1723694400096,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44132,
+            "sha256": "d47c1aee480652757323bd5951f4a17dacc18c6fec54895d6c838d8eaeafc417",
+            "rows": 500
+          },
+          {
+            "page": 22,
+            "start_time": 1725498000152,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44153,
+            "sha256": "f49c4169a3d62aef72424c72bb8253652c41055e36163ab8c5f8fb2f0102f507",
+            "rows": 500
+          },
+          {
+            "page": 23,
+            "start_time": 1727298000105,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44035,
+            "sha256": "1df77f8ac3d656c86f2ffdcec5af8f3bb5a0db11ae2c6374b5765e8fc651d925",
+            "rows": 500
+          },
+          {
+            "page": 24,
+            "start_time": 1729098000101,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43857,
+            "sha256": "7925fdca96b1e713190484e79c0c8ed4b98c16854f2cd595191e5445850df6f4",
+            "rows": 500
+          },
+          {
+            "page": 25,
+            "start_time": 1730898000029,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44633,
+            "sha256": "3be87128b8f6d38141e445710dc44fca74223c1eb2917010861d5c6c22a2d084",
+            "rows": 500
+          },
+          {
+            "page": 26,
+            "start_time": 1732698000043,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44580,
+            "sha256": "b2d1cb6ce725e213d4587cea972c59c86df21b2512c3c2d3bb39ff6cc61857a5",
+            "rows": 500
+          },
+          {
+            "page": 27,
+            "start_time": 1734498000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43946,
+            "sha256": "1b99f5ce85f17b1793144e6c0de27d38c2048f98131f9766cd4955845d3ce4a6",
+            "rows": 500
+          },
+          {
+            "page": 28,
+            "start_time": 1736298000062,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44059,
+            "sha256": "5e61cb31e4adbdf94f6913937cad8dc0acb193f441b3b9cd9d616782d3df03b1",
+            "rows": 500
+          },
+          {
+            "page": 29,
+            "start_time": 1738098000037,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43806,
+            "sha256": "9988c7fb3b5bb2bc8a13339976d0507a28ec03999cec25e02ed4c08468e05a52",
+            "rows": 500
+          },
+          {
+            "page": 30,
+            "start_time": 1739898000030,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44286,
+            "sha256": "3e0277309ced1f2d49d6264acfebe95200e6497ee17eeab188ddbb4a88d38697",
+            "rows": 500
+          },
+          {
+            "page": 31,
+            "start_time": 1741698000041,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45055,
+            "sha256": "455aa40c6b1db1fb95e58f39fcfda129d2daccc2f4c8c1d02940045c7c82f400",
+            "rows": 500
+          },
+          {
+            "page": 32,
+            "start_time": 1743498000075,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44536,
+            "sha256": "d7e8a3220481df9529baf1db002eb7cf6adaac6b547ae1d753f807929a440421",
+            "rows": 500
+          },
+          {
+            "page": 33,
+            "start_time": 1745298000087,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44393,
+            "sha256": "dfd15532796bb462d74ab91739647b89fa7417f9518e0eb9ebc31edbbf9a9fd0",
+            "rows": 500
+          },
+          {
+            "page": 34,
+            "start_time": 1747098000085,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44018,
+            "sha256": "0b8d16bf1e06a8d60d66b727e4dc2cf02e5bfd7a5b8fdd1f0f6882b446f63de0",
+            "rows": 500
+          },
+          {
+            "page": 35,
+            "start_time": 1748898000036,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44442,
+            "sha256": "faa33ddd087eba3fc80db68ac105ccafd2382a8d85d02ad43f6c7dc54cb95295",
+            "rows": 500
+          },
+          {
+            "page": 36,
+            "start_time": 1750698000061,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44266,
+            "sha256": "1a3954b019ec8fab578587972a41c366d8c681936b2707ad2ab7d0424822836f",
+            "rows": 500
+          },
+          {
+            "page": 37,
+            "start_time": 1752498000003,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44397,
+            "sha256": "19b2b3b8a5ce4eb703b425de4c9146a593150620ecc22b8d94ffd0631fdc2e5f",
+            "rows": 500
+          },
+          {
+            "page": 38,
+            "start_time": 1754298000058,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44136,
+            "sha256": "0457fbdb3635926f968acf726dc4add05d023873f15d98302ad1a336a2a83faa",
+            "rows": 500
+          },
+          {
+            "page": 39,
+            "start_time": 1756098000005,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43832,
+            "sha256": "d8c0b4407c6e39d6e99ea2bea59928f5f539278b72778086c0b2e02cd82794e6",
+            "rows": 500
+          },
+          {
+            "page": 40,
+            "start_time": 1757898000016,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44049,
+            "sha256": "e6dc362eb197054dac49672aa08379d1e5c1b1ecbbc63d47d8758b98e61831b8",
+            "rows": 500
+          },
+          {
+            "page": 41,
+            "start_time": 1759698000109,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44247,
+            "sha256": "20151f598b9a832cc330fc56b46fc25a3c83125ad40cf976cb652cae2a2a3122",
+            "rows": 500
+          },
+          {
+            "page": 42,
+            "start_time": 1761498000075,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43928,
+            "sha256": "77e7747973d8b54397ab218fae6044b5aea31bd98b8ea9668a76d34671dc0ab5",
+            "rows": 500
+          },
+          {
+            "page": 43,
+            "start_time": 1763298000044,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44693,
+            "sha256": "acebf363130f36ae9d0f6b20b80313a84194630cbaf60e22ec84d5a77e0f3b22",
+            "rows": 500
+          },
+          {
+            "page": 44,
+            "start_time": 1765098000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44734,
+            "sha256": "d58fea08ecd0d920fd5bc3c276574de35124ba9475ed8cc296c638f82288a24a",
+            "rows": 500
+          },
+          {
+            "page": 45,
+            "start_time": 1766898000063,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44167,
+            "sha256": "04edf26648c44d840efd7bfec87bcd69e6fa7950c45fb44b38a88733912d9461",
+            "rows": 500
+          },
+          {
+            "page": 46,
+            "start_time": 1768698000118,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45003,
+            "sha256": "5f6f13d15239dd4a1a58761143d1c86e72a3fe80c4106fb32810ef23d8c296ab",
+            "rows": 500
+          },
+          {
+            "page": 47,
+            "start_time": 1770498000090,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45169,
+            "sha256": "ffb66fa52c081f7daeaa740d2224860912ea6e3c2a04d43b2f57497805d3dd38",
+            "rows": 500
+          },
+          {
+            "page": 48,
+            "start_time": 1772298000026,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45382,
+            "sha256": "24d7c5b1643bc888cb55a283929d660a8614f33a1e80172289c2fb4b440e8b75",
+            "rows": 500
+          },
+          {
+            "page": 49,
+            "start_time": 1774098000016,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45260,
+            "sha256": "3cdaf0d6110fd74712852ed1f65e6e0ca8f342d32912ca77f1559748cb5aa712",
+            "rows": 500
+          },
+          {
+            "page": 50,
+            "start_time": 1775898000043,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45508,
+            "sha256": "81b0fbed529ea23d4efccb28d67eebcb52e39431eb362b2c3a4800a35ec37ee9",
+            "rows": 500
+          },
+          {
+            "page": 51,
+            "start_time": 1777698000005,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45037,
+            "sha256": "794226309f24d62f70d325227c79c3dd475dc0c1b040929945b2601e33e311c7",
+            "rows": 500
+          },
+          {
+            "page": 52,
+            "start_time": 1779498000003,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44981,
+            "sha256": "17323af42725be9635af9ccdcaca6ceed3690ce4adf318f8fd566dd8ef5d2fd1",
+            "rows": 500
+          },
+          {
+            "page": 53,
+            "start_time": 1781298000027,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 39125,
+            "sha256": "1bac0a5a0e4949e5dd09dc885ac3d13f6cb2c7d3a09fb816a6f4eba1e48b055d",
+            "rows": 434
+          }
+        ],
+        "rows": 26934,
+        "timestamp_min": "2023-05-12T00:00:00.048000+00:00",
+        "timestamp_max": "2026-06-30T23:00:00.048000+00:00"
+      },
+      "hyperliquid_prices": {
+        "venue": "hyperliquid",
+        "asset": "BTC",
+        "dataset": "public_candleSnapshot_8h",
+        "request": {
+          "type": "candleSnapshot",
+          "req": {
+            "coin": "BTC",
+            "interval": "8h",
+            "startTime": 1682899200000,
+            "endTime": 1782863999000
+          }
+        },
+        "status": 200,
+        "bytes": 486779,
+        "sha256": "0d89593b5e1945ecd0d27ce619c41b84743dcff6b9ee68374d99df37782159e7",
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00"
+      },
+      "binance_price_source": "research/active_v163_v170/inputs/processed/BTC_hourly.csv",
+      "rows": 3471,
+      "usable_rows": 2765,
+      "price_coverage": 1.0,
+      "funding_coverage": 0.7966004033419763,
+      "usable_timestamp_min": "2023-06-08T00:00:00+00:00",
+      "usable_timestamp_max": "2026-06-30T16:00:00+00:00"
+    },
+    "ETH": {
+      "binance_funding": {
+        "venue": "binance_usdm",
+        "asset": "ETH",
+        "symbol": "ETHUSDT",
+        "dataset": "checksum_verified_monthly_fundingRate",
+        "requests": [
+          {
+            "month": "2023-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 990,
+            "sha256": "bf890ea68d979942ed296b058390eb98b0b495547fee2117d3b76d5e7f629b24",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 888,
+            "sha256": "b3ddac1309f9a684f4e811776a6c09fb2239bb8d1ae0ff4bd342a1c32a5e171f",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 861,
+            "sha256": "82577976d8acd886fda84179ee38c9e7ef445732c3b6a062d6ffd2a9e3cc30bf",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 897,
+            "sha256": "cf749429c366cef3302a804b3e702937e5f1a77aeddc5b628dca7da547a8935a",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 902,
+            "sha256": "41ac7eb67a46d14d97daec4c37e8229df5ac6b165639ad4b2c54bc7374930341",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 849,
+            "sha256": "ccaf4474f0dc94adedd4330c14995f338186caa2cc9fd0d2e2c55f74cf263a5c",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 699,
+            "sha256": "153ec1450eb5d999ce253e2c7ca2e81b79a523ff52dd18b14faefab8212b999b",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 801,
+            "sha256": "91bdf41566cebb86c6f0e3646b0037de9c22e14ee2f592c5722c7e4a19c91119",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 685,
+            "sha256": "5a71469b0b363886df904e784dddefc484dd943334b1fb7454713ce4ed715a4b",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 770,
+            "sha256": "915fad950c48935f3875d88992b8d78290bc8a6fada44408e3ed14aef9a56670",
+            "checksum_valid": true,
+            "rows": 87,
+            "valid": true
+          },
+          {
+            "month": "2024-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 941,
+            "sha256": "e9c1d0f3e7e3b493277c7f826afb223482d56bdc7611144d398ac10e47307907",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 834,
+            "sha256": "b54c9f05af116ccd921b32b25960ae26954c4983992d44f2390bf1de08b2c724",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 836,
+            "sha256": "8350ab4d61b12ec61539611e30809039f54814213bc4c937609360b1ff28b5e0",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 758,
+            "sha256": "def13f4a478c28b0111fb24c57f95fcee80e71982ed74f12e465d20d328e2275",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 831,
+            "sha256": "9d236281ab6430250ad2b472cbbf03812a40aed42e73c8339fc6be55a2417a82",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 944,
+            "sha256": "e17684bc761924eb5e1912c52cfa997eddeb99da303e68e28f6f37369f672b9d",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 908,
+            "sha256": "ffb6e7441053137cb7ca81cc83bcdd996612f7dbb15aa2e168a7ee521f8cbbca",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 748,
+            "sha256": "2124978c335473a5d9c0f0e9f238193d56c21ac7e250e065a36e9d1201beb049",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 809,
+            "sha256": "636a4c7c86445c2774b4eae8598c480fcbc57de7dde5d40f6937c7fac510797c",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2024-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 837,
+            "sha256": "11a0847e8aacb32eeb725611fda4fe6a8419c03eb0c16e14dfc3b9287e78ecc9",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 768,
+            "sha256": "88c95b99d2784a7baac529fe578563d7e05038a1b8a498b2f59bf81b216fee20",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 868,
+            "sha256": "9e116dd6754484a19ecc41ced40b8dfa7f62c33d41cdc3317336b1e1f043767f",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2025-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 934,
+            "sha256": "62464a8bfb7ba515628acb76d3e2172d33b88805faa2e701a22537c51a17d139",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 940,
+            "sha256": "7db62cb5e9f32397dacabb3d571b96397024bda3810bde0799c90f61cb773679",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 919,
+            "sha256": "996aff38f046b50510301532ac5cbdca115afca971c49cb548f50e5d70e18d99",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 928,
+            "sha256": "ae7ca242249ca3df06d1222a0c264fe83b18c4b2c19fe656e864f7d081d5e198",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 854,
+            "sha256": "5f2d840c5669ca946529c33f6df32433c5d0cd973eb4adfd40459270c460e7f8",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 922,
+            "sha256": "c3fca21c71afb4962e89f8e3d84afe5832019ed8f570ee7c7c299f2436a28b62",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 934,
+            "sha256": "2fa09df245aadc73cf43f837a72c3009fcd7d10c8c4e3db48b2d1021c331841a",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 953,
+            "sha256": "1ae86c5fb1f15d8792906b746cc7598ebe7e6e7194b74501db79c874e37d7e14",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 956,
+            "sha256": "a3a8abb219373ec1e02e8d1a47015665d180d6130cfe1df71d2fa8fc9de59e59",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 985,
+            "sha256": "ef9e84f53a5fa07702958c8700077c8be0a90ec8b3e25110f5611109c3c0090c",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 979,
+            "sha256": "830cf7797ea6ecdc554ac2d9047a141df1a6a544f4ea58e7028227930462b139",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 939,
+            "sha256": "e445f00c81a7fa8361d99b3660f24b4f58e5d952fe301d70bbc72c319bc01a77",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2026-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 1002,
+            "sha256": "9f5625846c503a1e94fcdecd2deb37dc8852e341add353fa48c2b9a0cc70df6a",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 963,
+            "sha256": "86160f455478a8b262d96d1516f583355e6e0cec7beeb5784e69dda76f599e98",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2026-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 980,
+            "sha256": "ff926ad3fc48493c26c85af16620b19c695cc1854faa1e7f0ea2ab9fdafc2084",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 967,
+            "sha256": "cc6fb028a811bc423b711f6b89de067bf92a2eda61303e1ce0b219b5d3210e47",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          }
+        ],
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00.004000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00"
+      },
+      "hyperliquid_funding": {
+        "venue": "hyperliquid",
+        "asset": "ETH",
+        "dataset": "public_fundingHistory",
+        "requests": [
+          {
+            "page": 0,
+            "start_time": 1682899200000,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44781,
+            "sha256": "a90be3d7dd565c3f2a47bca535888d8a5f82f0931eb69ceaf00aab25df19e089",
+            "rows": 500
+          },
+          {
+            "page": 1,
+            "start_time": 1687687200202,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44860,
+            "sha256": "c58659f77dde9c405daa90cf15c3c8c69c7481507d70986cba0ec8ce76e2c377",
+            "rows": 500
+          },
+          {
+            "page": 2,
+            "start_time": 1689490800165,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44909,
+            "sha256": "30eaab24540f81e9944dcb2a0647753b4670c060e3d43e89a3f16b8e4e616466",
+            "rows": 500
+          },
+          {
+            "page": 3,
+            "start_time": 1691290800173,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45082,
+            "sha256": "4a3739c3764aae40a4eb2d8edc255816c693f0a0113428bd52064d75d0395fc9",
+            "rows": 500
+          },
+          {
+            "page": 4,
+            "start_time": 1693094400088,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44701,
+            "sha256": "42d5119b7048b768190792ecafed3f1d7388e152abf117679efc6110c705d7d1",
+            "rows": 500
+          },
+          {
+            "page": 5,
+            "start_time": 1694894400124,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44098,
+            "sha256": "3f05122ddb4b830dc01b7f9aad0757640bd948111612ce150d741138f020c952",
+            "rows": 500
+          },
+          {
+            "page": 6,
+            "start_time": 1696694400118,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44451,
+            "sha256": "e17317e95a432978e7b5ec9c050386be90c4d79a6518d4c4aafd9a4cc73dc667",
+            "rows": 500
+          },
+          {
+            "page": 7,
+            "start_time": 1698494400150,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44759,
+            "sha256": "4b4303ee7560faab27863b3738f4bd8d49b3ea9b901ddc674e629d0ee7444912",
+            "rows": 500
+          },
+          {
+            "page": 8,
+            "start_time": 1700294400123,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44347,
+            "sha256": "3d5be0ee905e261801c2c704a352a21ff47433448c6e081a02eb129bdb3392c9",
+            "rows": 500
+          },
+          {
+            "page": 9,
+            "start_time": 1702094400123,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44660,
+            "sha256": "57952fba0c907d2aabfe1d6ac1ddbc4445f751bc0d9f774cb46d306ef7806354",
+            "rows": 500
+          },
+          {
+            "page": 10,
+            "start_time": 1703894400341,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44321,
+            "sha256": "53418ba1bf812de6a6971682468df47c2ce8d9ca57b9ae7606a2e6512500a0ca",
+            "rows": 500
+          },
+          {
+            "page": 11,
+            "start_time": 1705694400194,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44295,
+            "sha256": "40390b1ff31b25a13f21c4c24df6a41e72d2c4ded9c87983452cd5c51e685106",
+            "rows": 500
+          },
+          {
+            "page": 12,
+            "start_time": 1707494400389,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44531,
+            "sha256": "721e07d2c6199c5f2920fd1d0d30a2d20784a4491675071c7bd591a2591eeebe",
+            "rows": 500
+          },
+          {
+            "page": 13,
+            "start_time": 1709294400135,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44763,
+            "sha256": "43566902293ec503f8bb3a1efec20e76d75ea7f1fa672c383acf05511da4ac3a",
+            "rows": 500
+          },
+          {
+            "page": 14,
+            "start_time": 1711094400048,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44403,
+            "sha256": "adf45e3c380d48ca3d149bc957d4a4bc7993495d4077c319d7a7708884a96b60",
+            "rows": 500
+          },
+          {
+            "page": 15,
+            "start_time": 1712894400130,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44079,
+            "sha256": "f1cc74cd2fe10a343907df532c82a8136e94ebbe4b42359001ef62de8bfefd8c",
+            "rows": 500
+          },
+          {
+            "page": 16,
+            "start_time": 1714694400215,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44420,
+            "sha256": "c5f523c32797191593010bb0d8070bb8766fcf3e51f21573a97aca22bcb33530",
+            "rows": 500
+          },
+          {
+            "page": 17,
+            "start_time": 1716494400061,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44363,
+            "sha256": "d5f54b40ab91c34ddb409484b84110d38f60603d88fec19bd8567fdb219ebf63",
+            "rows": 500
+          },
+          {
+            "page": 18,
+            "start_time": 1718294400094,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44042,
+            "sha256": "c13a7fceab0f1dd6b9dd2114fd7e12b5458dfc200ca63feac7d4229fb45c2594",
+            "rows": 500
+          },
+          {
+            "page": 19,
+            "start_time": 1720094400121,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44133,
+            "sha256": "a56a8778cce6f0abfdd3e67b2e0aa3184b9da7b820b7d49fad48d652277d4477",
+            "rows": 500
+          },
+          {
+            "page": 20,
+            "start_time": 1721894400145,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44323,
+            "sha256": "4184d52a11c9d2db974ddbda7ad3ea586259a6dc886e124c89262375b426b306",
+            "rows": 500
+          },
+          {
+            "page": 21,
+            "start_time": 1723694400096,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44627,
+            "sha256": "0e24eeb556278e0838db03dad598872d74bab3bc87eddd0746fceb48d525e902",
+            "rows": 500
+          },
+          {
+            "page": 22,
+            "start_time": 1725498000152,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44187,
+            "sha256": "a71aa18ff28aad01d4290db3ab5f8ff95919883ba740964e29445b907be461dd",
+            "rows": 500
+          },
+          {
+            "page": 23,
+            "start_time": 1727298000105,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44354,
+            "sha256": "0e5170dcea06fe8100ca18c101cc97ff3b48df156ea3287b4f7fb3c315bfa3e6",
+            "rows": 500
+          },
+          {
+            "page": 24,
+            "start_time": 1729098000101,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44078,
+            "sha256": "30a76a219f642813f60aab815af1b5fe8227968d2898aad86ba91637576e1b5d",
+            "rows": 500
+          },
+          {
+            "page": 25,
+            "start_time": 1730898000029,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44725,
+            "sha256": "46ccae75f006a4bc4de226d10440a1324abffaa8bab5e9eb3c1d9c2529d58156",
+            "rows": 500
+          },
+          {
+            "page": 26,
+            "start_time": 1732698000043,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44579,
+            "sha256": "90e873653c2a41c8ea7c7291d71abba7c0026ac453116bd6ba4ff1c105da0ea2",
+            "rows": 500
+          },
+          {
+            "page": 27,
+            "start_time": 1734498000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43992,
+            "sha256": "519cdb554b0e8382fa2d0628c262a46a1617c636848a9b71aeab9d66a7248d8f",
+            "rows": 500
+          },
+          {
+            "page": 28,
+            "start_time": 1736298000062,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44151,
+            "sha256": "ad3f054116e01153fa3d4c841cacf328b03009cc33ca92add4a8084e6bc94a17",
+            "rows": 500
+          },
+          {
+            "page": 29,
+            "start_time": 1738098000037,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44338,
+            "sha256": "6e95e6ee89c15baa4131d5abcdb129922ca67f18761a24256772537a17843351",
+            "rows": 500
+          },
+          {
+            "page": 30,
+            "start_time": 1739898000030,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44857,
+            "sha256": "bd0b72b8122e67c52bf1e45a5abe4e03121a50d801cdd7b1f6db1a56327d2d99",
+            "rows": 500
+          },
+          {
+            "page": 31,
+            "start_time": 1741698000041,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45116,
+            "sha256": "b47bc5d22bd126243cd9c748c1a56cb9a24f01fa87c6939ef09ee153f98d3502",
+            "rows": 500
+          },
+          {
+            "page": 32,
+            "start_time": 1743498000075,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45518,
+            "sha256": "8d27ac38a8fba332ff7211db0c0c08332c67599624b302b4b0d8218039e68290",
+            "rows": 500
+          },
+          {
+            "page": 33,
+            "start_time": 1745298000087,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44863,
+            "sha256": "1c8c4309b00b3bfbdcba962a0a40d906ea66a54ab7da0186a4576793683e7a08",
+            "rows": 500
+          },
+          {
+            "page": 34,
+            "start_time": 1747098000085,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43939,
+            "sha256": "a19c937e7cd22fc84baaaeeda995845b56467c381c498e4d8d5d1ae1415a59ca",
+            "rows": 500
+          },
+          {
+            "page": 35,
+            "start_time": 1748898000036,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44546,
+            "sha256": "f2db21306c98d6594087c25532b20285d578a51120b02b24da5acc7aa8c38a18",
+            "rows": 500
+          },
+          {
+            "page": 36,
+            "start_time": 1750698000061,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44358,
+            "sha256": "3fb0c46c4143183d43568b243d088095370b15933bf989b23e341ac01fb8b7f0",
+            "rows": 500
+          },
+          {
+            "page": 37,
+            "start_time": 1752498000003,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44554,
+            "sha256": "e1ce6020e939710e09fa718706661364f15c9b435b54044f4953f739cf0a0130",
+            "rows": 500
+          },
+          {
+            "page": 38,
+            "start_time": 1754298000058,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44315,
+            "sha256": "1381680c1dbb9e8eceba81a06ed0138e8fff6a24276ec2012a3726b59961df39",
+            "rows": 500
+          },
+          {
+            "page": 39,
+            "start_time": 1756098000005,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44377,
+            "sha256": "029b031103f13e05a8c721fbf11c729bf1f29919494bfb41745616e9dd9cfc3f",
+            "rows": 500
+          },
+          {
+            "page": 40,
+            "start_time": 1757898000016,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44251,
+            "sha256": "1fab016f21e41108e0dd06ded5d1496c5dee03dc3d159ca627f083a4a75d859c",
+            "rows": 500
+          },
+          {
+            "page": 41,
+            "start_time": 1759698000109,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44467,
+            "sha256": "9edeec48db0b2f9f6306110ab28b69f1935bcca06b49b911a938f874414c2322",
+            "rows": 500
+          },
+          {
+            "page": 42,
+            "start_time": 1761498000075,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44457,
+            "sha256": "92fda1e40fc9dbe70a814af80af742927a88e2c1a8831a5f50e1ba4f1c0d8e26",
+            "rows": 500
+          },
+          {
+            "page": 43,
+            "start_time": 1763298000044,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44434,
+            "sha256": "92370ac80597331a873f1a9751d0e119ad5b6b83b5003f8b10c3efdfc8b4a684",
+            "rows": 500
+          },
+          {
+            "page": 44,
+            "start_time": 1765098000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44199,
+            "sha256": "4218313e78b416e48512924582772b6639c1382f4641b6cca4a9667e6855d23e",
+            "rows": 500
+          },
+          {
+            "page": 45,
+            "start_time": 1766898000063,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44223,
+            "sha256": "c4e8d39fd340abdf42156b2bd422ad4ba912326acb4c94a49ea945d2ce49749e",
+            "rows": 500
+          },
+          {
+            "page": 46,
+            "start_time": 1768698000118,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44890,
+            "sha256": "b10f89984bb4244de821cbfbbd35b68f27d8d541f90ab96a45003ec7079b9467",
+            "rows": 500
+          },
+          {
+            "page": 47,
+            "start_time": 1770498000090,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45088,
+            "sha256": "fee80afbb6fd4a06f32ed6eb36dacc6f097db3fd852eaedf4304a363acc20e1a",
+            "rows": 500
+          },
+          {
+            "page": 48,
+            "start_time": 1772298000026,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45210,
+            "sha256": "d09ecf6966d1d1928644c107213afeb2d4dd565a4f267bc2966fa4a678ae79d4",
+            "rows": 500
+          },
+          {
+            "page": 49,
+            "start_time": 1774098000016,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45171,
+            "sha256": "2a2ebbae91efb240eecd55ecf1c69432811559de08909320500bd1d4794c7101",
+            "rows": 500
+          },
+          {
+            "page": 50,
+            "start_time": 1775898000043,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45534,
+            "sha256": "99eeedb0144b442495afce17bfcada7370970dc9a5d61ad57a183b31d2996e5f",
+            "rows": 500
+          },
+          {
+            "page": 51,
+            "start_time": 1777698000005,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44626,
+            "sha256": "eea477aea7eed9da0956a90f120372b7210f59d35de7e24e8cd86d786805ff2b",
+            "rows": 500
+          },
+          {
+            "page": 52,
+            "start_time": 1779498000003,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44919,
+            "sha256": "7cfc7357b52d2df7a15a7e9a9b6c62f528c85371b1a06a40f02dd66edddfaeaa",
+            "rows": 500
+          },
+          {
+            "page": 53,
+            "start_time": 1781298000027,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 38957,
+            "sha256": "d713db5063f5b31bb4094ea4252fc61dfe5e00c4703ad7bb33f1a4a9c0eef54a",
+            "rows": 434
+          }
+        ],
+        "rows": 26934,
+        "timestamp_min": "2023-05-12T00:00:00.048000+00:00",
+        "timestamp_max": "2026-06-30T23:00:00.048000+00:00"
+      },
+      "hyperliquid_prices": {
+        "venue": "hyperliquid",
+        "asset": "ETH",
+        "dataset": "public_candleSnapshot_8h",
+        "request": {
+          "type": "candleSnapshot",
+          "req": {
+            "coin": "ETH",
+            "interval": "8h",
+            "startTime": 1682899200000,
+            "endTime": 1782863999000
+          }
+        },
+        "status": 200,
+        "bytes": 470647,
+        "sha256": "579cbb111ddc1ab883b3bd655bf8c4d9b6694a06f0d676c4749e5d51630fec08",
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00"
+      },
+      "binance_price_source": "research/active_v163_v170/inputs/processed/ETH_hourly.csv",
+      "rows": 3471,
+      "usable_rows": 2765,
+      "price_coverage": 1.0,
+      "funding_coverage": 0.7966004033419763,
+      "usable_timestamp_min": "2023-06-08T00:00:00+00:00",
+      "usable_timestamp_max": "2026-06-30T16:00:00+00:00"
+    },
+    "SOL": {
+      "binance_funding": {
+        "venue": "binance_usdm",
+        "asset": "SOL",
+        "symbol": "SOLUSDT",
+        "dataset": "checksum_verified_monthly_fundingRate",
+        "requests": [
+          {
+            "month": "2023-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 916,
+            "sha256": "b644431236540c0fa4573e96b9357077755d53440427fb2419e68272ea653137",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 881,
+            "sha256": "63de6ffcbab1fec0b83807efde188fdafb06d4ed0f947c4df86d757f894d88c9",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 818,
+            "sha256": "7323f1cf79a8dfeb78dd7bd8cd2940a7db00ee023739430435b1cc25cecadcae",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 897,
+            "sha256": "87ce0395cf9d1fa9ea4849b4811d366c1867d4159f3c1a2b4a3e0656972be2a0",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 927,
+            "sha256": "7a8c1135aa165e9399a274acf1f330bbf6bae594266582fc1cfc91b950f73e75",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 902,
+            "sha256": "a56852237de6b69483565853858901ce7e4c611d3950d485a064bf90069958ba",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 735,
+            "sha256": "1cbd9c6b802cdf035ba408c03e82aab678c2a994c2c6860386a4226ba104e252",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 841,
+            "sha256": "debe51eb20a3b7d6093baec3b609e7a9f746c64635cfa77aa761e88e84454902",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 697,
+            "sha256": "6b514b6c2bb67ff04df97d747efb9c6e4bb1bb27e889f1dc51a42ab1419a3d24",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 802,
+            "sha256": "7ccaf8d60ddf07e03eba0589ec4f75abfc2a842217722aaefe996ee1bc095706",
+            "checksum_valid": true,
+            "rows": 87,
+            "valid": true
+          },
+          {
+            "month": "2024-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 946,
+            "sha256": "ff3041b6119af926fc55fc722332240037f1aee9b3a2db25f9cb801ba8e2992c",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 869,
+            "sha256": "591e7c4993e59b60966213efd938f48420cd9b63db815240ffc070ec40470e53",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 810,
+            "sha256": "cdd788722e8b85fd6c9d992e7c1c767be87afc91db5b8c07751f898b373cbf29",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 803,
+            "sha256": "8da6c97d67718422a5df9a0d50e37849521fb54de87cbb3b3397e441439dfcc9",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 850,
+            "sha256": "2585a0db933c70b62c87cac509de42ac09b98d370238c0d8c68249a20bd2b9a3",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 940,
+            "sha256": "ef076200aab768d33f71449957f6cd9c96c0da696708a5f561b97e7a0995e8d2",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 880,
+            "sha256": "7666e4d3e6ea6dd28011c508cf01421007521e98e96ea551f809836441b43ca0",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 839,
+            "sha256": "dbece64e8c5bc69c487cc03c00f6a4d4da2cad9152c73860386fcdc7d2ec9d05",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 790,
+            "sha256": "f53a9b637d695a251200e48929a573b4bf04cc2d99d5a3a09fe7bdca622918aa",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2024-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 893,
+            "sha256": "bae83020ac2ccfa6dd8d1362d373a92b4d5a7e396cef52e78dc2e7d81e63f621",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 916,
+            "sha256": "314888152c16bc2d846f9aaa9ea3ebeec7c67d235ef2671f1a5e6fe0a8b4dbf2",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 872,
+            "sha256": "eeade74c1ca2a6dc9d78ba0d7a1ff145c323be72cfa2c09fcef9edab88baef9f",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2025-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 938,
+            "sha256": "3f77a33779c946da6f3082d14fb9a5497e7e4a4e3fff4d68967e6ddf96cf99ea",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 920,
+            "sha256": "6cd3fb27bae9313e15734d7214f4a83dc37a7a199cfc12c23f7777a5e27f7fd7",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 940,
+            "sha256": "eb03fd0d0b31eef9ee05544ea8dcce097a807d3475f67d0a5f0859c487c5f5c3",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 939,
+            "sha256": "4ccee0a6fd67cb775be49d124b9eb038f26acd09426fcb9aaf9d3de74cf3a24e",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 876,
+            "sha256": "66ce38d1a8bc4bdd53af29d8ea5c72493ed48fe9894ee5e9ff4600ccec864c4f",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 917,
+            "sha256": "fe9efc3abe1e4be2a2fa9a4008e6957856387f6783a06b97cac3ee271746915f",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 947,
+            "sha256": "f953315124d20dab98ba710d108103fb4cf054d1535787fd76d35d6b9c18e534",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 976,
+            "sha256": "d80c5be7660a950ad673a0e82488877c6ca0eb81f084d4c844320f892ad2c020",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 963,
+            "sha256": "5134fdf4319d629473f8cff1e66dc74180844ae2846ab41a8128466ab3682c2f",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 957,
+            "sha256": "01db13c460b0190736e1da019c7fcd7ea0abbf3b047e16d3aa8a9e9acec3101f",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 962,
+            "sha256": "c53be79aae38a1f35e94880f106df4eceab57bfa74a0b5fc5852fdfabf57ab8e",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 942,
+            "sha256": "84cb9bcf44ba1364b37db876e7c852aa1b831371556b610e2387115addec9d5f",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2026-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 1010,
+            "sha256": "75cfaea075d97779a577c3744ea63e3d83704f281806fb5f76f2d3e0f089fd2c",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 944,
+            "sha256": "951a280e98b6d20fe4be25bf2b71f3cda1c07c7583a88cb874151e2b1fe941f1",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2026-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 979,
+            "sha256": "c13066e5f7c5d161dbebd488cbeaab1205688c6dc7f9fafcc8f94296f2c1e47b",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 973,
+            "sha256": "8d32fa3153d54c58667650e8b2c65e489b3a433b775052a93208bf60541a40d3",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          }
+        ],
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00.004000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00"
+      },
+      "hyperliquid_funding": {
+        "venue": "hyperliquid",
+        "asset": "SOL",
+        "dataset": "public_fundingHistory",
+        "requests": [
+          {
+            "page": 0,
+            "start_time": 1682899200000,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45639,
+            "sha256": "36092646bbbd2f5a66607f71b5f7af26c22a402b1516b2208841e27a89f0fda9",
+            "rows": 500
+          },
+          {
+            "page": 1,
+            "start_time": 1687687200202,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44982,
+            "sha256": "db98e92e84d9e934648f20cc0fb567f5b0fea55c1bd0c355620fab11c2cd25cf",
+            "rows": 500
+          },
+          {
+            "page": 2,
+            "start_time": 1689490800165,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44301,
+            "sha256": "0413ad7eb7a2d685ea0e9e774228e2b710d8e29d80876202d89229096b4a4ad0",
+            "rows": 500
+          },
+          {
+            "page": 3,
+            "start_time": 1691290800173,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45485,
+            "sha256": "3dedaea8169db180c3708dc47db2b861149502079b497804144da5c045479867",
+            "rows": 500
+          },
+          {
+            "page": 4,
+            "start_time": 1693094400088,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45733,
+            "sha256": "2ee12c9c61dff5cd596fa083b4ab523fe8d18e336402d9ffb941cfa31aab42ea",
+            "rows": 500
+          },
+          {
+            "page": 5,
+            "start_time": 1694894400124,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45096,
+            "sha256": "88c1932020ab3e8c6f07a89d52c91e04de459ccf923433c444256c170b3e6019",
+            "rows": 500
+          },
+          {
+            "page": 6,
+            "start_time": 1696694400118,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45082,
+            "sha256": "d27020e6436341e03f4adfb55847d1e109acf8375569a7b32584ec25364209dc",
+            "rows": 500
+          },
+          {
+            "page": 7,
+            "start_time": 1698494400150,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44658,
+            "sha256": "c0654a82e2ebd1d8564a740c92fc9d262d04c7bf0a294bec903861bdc3b38c29",
+            "rows": 500
+          },
+          {
+            "page": 8,
+            "start_time": 1700294400123,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44577,
+            "sha256": "672f1413bb781acc604e15b1f34754a7812c7dcb8d9dc5504e9ce940a2c9633c",
+            "rows": 500
+          },
+          {
+            "page": 9,
+            "start_time": 1702094400123,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44638,
+            "sha256": "5465d201828d466eeda98fec24f7924f19a6d416c2923764b55d40ed426ea745",
+            "rows": 500
+          },
+          {
+            "page": 10,
+            "start_time": 1703894400341,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44546,
+            "sha256": "6548d4b08c872cdd07dd8bbd6505ed6fc3f84ee5c51fdbd439be72fb82cee763",
+            "rows": 500
+          },
+          {
+            "page": 11,
+            "start_time": 1705694400194,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44510,
+            "sha256": "31209c42c3bdf73748d4d0f2144e36ae8dbcefe415172d6b33a30c7caefc907d",
+            "rows": 500
+          },
+          {
+            "page": 12,
+            "start_time": 1707494400389,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44686,
+            "sha256": "44492371c63af5bdb465cfb5ec257e6ee4612c76e5c251a5aace1a2a7f046696",
+            "rows": 500
+          },
+          {
+            "page": 13,
+            "start_time": 1709294400135,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44692,
+            "sha256": "ebaffd31093d8a2ced7ed9201b42f9075f50ed269e1146665a5d1fedc7372bbb",
+            "rows": 500
+          },
+          {
+            "page": 14,
+            "start_time": 1711094400048,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44421,
+            "sha256": "522cab926d3508a90f58ab0bbb8aed07fd084ddfc05f674d2c242de315bcdc40",
+            "rows": 500
+          },
+          {
+            "page": 15,
+            "start_time": 1712894400130,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44125,
+            "sha256": "20c33cf993d13aabd3d71fe9973d4d59b1da7d35cfd0b7250d3b82bfd0d85ec6",
+            "rows": 500
+          },
+          {
+            "page": 16,
+            "start_time": 1714694400215,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44244,
+            "sha256": "c1ce604e6b6fe4ecfda95b85362df10883cccfbbc2551f320de6651dcb1bd84b",
+            "rows": 500
+          },
+          {
+            "page": 17,
+            "start_time": 1716494400061,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44272,
+            "sha256": "1ca282869a756c952642b81a99add5ea50f03d02446fc32a6953e400fb60e0af",
+            "rows": 500
+          },
+          {
+            "page": 18,
+            "start_time": 1718294400094,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44198,
+            "sha256": "d484a2f8bf7eab09c017b9e8dcced50a808f6fdb11e6ba3649a4d6591ea6ce41",
+            "rows": 500
+          },
+          {
+            "page": 19,
+            "start_time": 1720094400121,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44196,
+            "sha256": "f13c4fcc0d499ad8b42d7730fab2cf7e585f169982bf7219c999853f0d74dff4",
+            "rows": 500
+          },
+          {
+            "page": 20,
+            "start_time": 1721894400145,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44474,
+            "sha256": "6cfb7e72d0c92f844a0727b38e35ec68580ef637ada86284afed920e418ac964",
+            "rows": 500
+          },
+          {
+            "page": 21,
+            "start_time": 1723694400096,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44696,
+            "sha256": "1872c8ee5535807b9d75622cbdf121bbb1630d861129320bd56846f6e13cc905",
+            "rows": 500
+          },
+          {
+            "page": 22,
+            "start_time": 1725498000152,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43949,
+            "sha256": "c35c17687de11ec3bcb656f154dc839d5bcaf02f448083b38abc9d289435d49e",
+            "rows": 500
+          },
+          {
+            "page": 23,
+            "start_time": 1727298000105,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43921,
+            "sha256": "2896e77dc2967daabd12254405e315dc426109d9556dbf3a68f2198bb2bdb1f8",
+            "rows": 500
+          },
+          {
+            "page": 24,
+            "start_time": 1729098000101,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44036,
+            "sha256": "795cdf2d07d640a4919de5bfca4463a6d2dee9b3670c921be8e5e06adf1b5aef",
+            "rows": 500
+          },
+          {
+            "page": 25,
+            "start_time": 1730898000029,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44749,
+            "sha256": "1e37ae12b94a3e00f61a60f1f343d828c3854504d4b6d110341e79fb4d966aa3",
+            "rows": 500
+          },
+          {
+            "page": 26,
+            "start_time": 1732698000043,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44517,
+            "sha256": "42c122b24e789b95a13fbb00fcc1f8369e93ecbc831981f9b868e76af2600a31",
+            "rows": 500
+          },
+          {
+            "page": 27,
+            "start_time": 1734498000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44154,
+            "sha256": "cbf78ac5210a648d8f6e9c2521749b49681c2f5df761e8842922bc1c2b6588bb",
+            "rows": 500
+          },
+          {
+            "page": 28,
+            "start_time": 1736298000062,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44246,
+            "sha256": "b31373ab3a78a5e4963d0c8cd8fd2559120a4218a6ad243e11396715d70663f5",
+            "rows": 500
+          },
+          {
+            "page": 29,
+            "start_time": 1738098000037,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44560,
+            "sha256": "39a1f63d48efd0740bf8ccea9d0928b62c43d6119ab1d7cc310ef866767c23cd",
+            "rows": 500
+          },
+          {
+            "page": 30,
+            "start_time": 1739898000030,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44736,
+            "sha256": "be297a4572a078e021c56d04d1ecdc861ba7696601ae1eaada489de25337eaf8",
+            "rows": 500
+          },
+          {
+            "page": 31,
+            "start_time": 1741698000041,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45128,
+            "sha256": "f1205e404c03552ffcc9b038b105c4668664cc8a1d27cddd0b6352fdb988fc26",
+            "rows": 500
+          },
+          {
+            "page": 32,
+            "start_time": 1743498000075,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45285,
+            "sha256": "48da9ba5db38ca838f44b3c4618b2c863264c84921f7101da51e1c989d17b8c1",
+            "rows": 500
+          },
+          {
+            "page": 33,
+            "start_time": 1745298000087,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44530,
+            "sha256": "91b4ffcb603de4d4ddc838f4b8611212533ab6d5db4a411fe2214fa31d8e4c66",
+            "rows": 500
+          },
+          {
+            "page": 34,
+            "start_time": 1747098000085,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44497,
+            "sha256": "a599b6e3a110a0e03240934ad81ccc4e050d7216061723477aa498662518c1bd",
+            "rows": 500
+          },
+          {
+            "page": 35,
+            "start_time": 1748898000036,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44564,
+            "sha256": "27f09f581cd8c93060cab369a69d7356c52e0249a5da0d3969768b58636f885e",
+            "rows": 500
+          },
+          {
+            "page": 36,
+            "start_time": 1750698000061,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44564,
+            "sha256": "31abd533fd033a514ba008b4e3c6fe5d4f552f7ac45d53be31b2d2a6b81b6175",
+            "rows": 500
+          },
+          {
+            "page": 37,
+            "start_time": 1752498000003,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44409,
+            "sha256": "69fd4072e2ad839b27596f489a6231494d6d9080ad3e286997da3d706ca20591",
+            "rows": 500
+          },
+          {
+            "page": 38,
+            "start_time": 1754298000058,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44307,
+            "sha256": "463a7e23aa38bfe1259d14df6911995a623ba2c3e5fb7c9a6be4eecb464b2e84",
+            "rows": 500
+          },
+          {
+            "page": 39,
+            "start_time": 1756098000005,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43955,
+            "sha256": "ab6662d54166f586fb3991a003d09929f0f35ce435a2072931a56cac7bb83cf7",
+            "rows": 500
+          },
+          {
+            "page": 40,
+            "start_time": 1757898000016,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44414,
+            "sha256": "d5d740755592acd4d9d0170a34538aa5ae8dac3f273caab3c908c663da632e9e",
+            "rows": 500
+          },
+          {
+            "page": 41,
+            "start_time": 1759698000109,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44850,
+            "sha256": "807a122daaff35d298143c202a17def4d6e98a1b5f2baa0980a7c7cb87648a82",
+            "rows": 500
+          },
+          {
+            "page": 42,
+            "start_time": 1761498000075,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44905,
+            "sha256": "51b6d00e6953b04c8ad5f475bdf53d07deb1becd1c595d15ddd02db178f5af18",
+            "rows": 500
+          },
+          {
+            "page": 43,
+            "start_time": 1763298000044,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45343,
+            "sha256": "fb0d583f455463f41ada191455d4159de97c586083d8ca662d4ebedf23ba0398",
+            "rows": 500
+          },
+          {
+            "page": 44,
+            "start_time": 1765098000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44714,
+            "sha256": "7117f98d8d3a0a12e34b7e7f69d48ba605f60ddb484c47543202ba281bc07a22",
+            "rows": 500
+          },
+          {
+            "page": 45,
+            "start_time": 1766898000063,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44332,
+            "sha256": "dcffe28cfc964b09b66f9b06836f8f29dc3dc6d9d2e9e7bcb1e06629736a185d",
+            "rows": 500
+          },
+          {
+            "page": 46,
+            "start_time": 1768698000118,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45358,
+            "sha256": "fe29cb18911dd2a16857b1140cb3b7e2d6164b6522b6ca90ca0a4a341589d7fe",
+            "rows": 500
+          },
+          {
+            "page": 47,
+            "start_time": 1770498000090,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45766,
+            "sha256": "44dcd2dce3c02f4a3a1d748b21ac7a29ad2c5b1461ca9d6792f18a45208b4c85",
+            "rows": 500
+          },
+          {
+            "page": 48,
+            "start_time": 1772298000026,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45659,
+            "sha256": "95d1087f2a9340eeec06bbe67b3a86534968fef652aa405d720ff95c6d7e56b6",
+            "rows": 500
+          },
+          {
+            "page": 49,
+            "start_time": 1774098000016,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45522,
+            "sha256": "7bfbb57d821584c0bd3ec075bcb1e9d4812554866153213102b058f16213d807",
+            "rows": 500
+          },
+          {
+            "page": 50,
+            "start_time": 1775898000043,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45357,
+            "sha256": "cc8d48f1ee19948d4f1b3c3e8edfcb82fffd6241ef0d70d4e21fe1df4fa6e38c",
+            "rows": 500
+          },
+          {
+            "page": 51,
+            "start_time": 1777698000005,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44886,
+            "sha256": "657ecc4bb63692a87e9d296bf095a5878e4718f79076f3ae7620b45b8bfce9c9",
+            "rows": 500
+          },
+          {
+            "page": 52,
+            "start_time": 1779498000003,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45383,
+            "sha256": "ac87bb895a42169856ff2a67ab29b726f56ccc18b9e71f0795550c691e77d32d",
+            "rows": 500
+          },
+          {
+            "page": 53,
+            "start_time": 1781298000027,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 39080,
+            "sha256": "ab412593be38822c4d3ea7686672a4c0e40eafd0f788953a2238309c2f09b9ea",
+            "rows": 434
+          }
+        ],
+        "rows": 26934,
+        "timestamp_min": "2023-05-12T00:00:00.048000+00:00",
+        "timestamp_max": "2026-06-30T23:00:00.048000+00:00"
+      },
+      "hyperliquid_prices": {
+        "venue": "hyperliquid",
+        "asset": "SOL",
+        "dataset": "public_candleSnapshot_8h",
+        "request": {
+          "type": "candleSnapshot",
+          "req": {
+            "coin": "SOL",
+            "interval": "8h",
+            "startTime": 1682899200000,
+            "endTime": 1782863999000
+          }
+        },
+        "status": 200,
+        "bytes": 470331,
+        "sha256": "0ed7ce71d640ece4cd873b21022a775b5d30f8b37d8fc213f7bef1b749868796",
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00"
+      },
+      "binance_price_source": "research/active_v163_v170/inputs/processed/SOL_hourly.csv",
+      "rows": 3471,
+      "usable_rows": 2765,
+      "price_coverage": 1.0,
+      "funding_coverage": 0.7966004033419763,
+      "usable_timestamp_min": "2023-06-08T00:00:00+00:00",
+      "usable_timestamp_max": "2026-06-30T16:00:00+00:00"
+    },
+    "XRP": {
+      "binance_funding": {
+        "venue": "binance_usdm",
+        "asset": "XRP",
+        "symbol": "XRPUSDT",
+        "dataset": "checksum_verified_monthly_fundingRate",
+        "requests": [
+          {
+            "month": "2023-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 921,
+            "sha256": "d3e2b728cb6e493672b359004946f0737506ed4b153f61354478dedd20a50da7",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 867,
+            "sha256": "a83e74907e437eac3f8db466fda62cdb7c487a096bdaa69a9b797e1507431502",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 792,
+            "sha256": "5348dd7a724fdb991788703b14b5c134711ec173b2bc821e13da18a46042c1f3",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 816,
+            "sha256": "491f029d456a47cc58f5888c4e9a91deac419c5242c27fde744a971716391fa6",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 868,
+            "sha256": "5a06068aef716c54685ac57fde85ca9fc3b718659fcf90e83af9350f7de05553",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 816,
+            "sha256": "ca0b78ee32f1b2a301e39cdeae50a466ad9bd1d153d0f7d070bbdb90d9203c30",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 735,
+            "sha256": "17b4f9e2a7800265378e3e293295d58ccc8875e037d4286873250541b0a196b0",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 868,
+            "sha256": "49fd3c811e1388693e7dd482972f8b525ba10a90c01d77b04ec9b0631d43feb8",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 673,
+            "sha256": "fac75e242671739980886a0f39159562dde076d49244e6f2803c407dc0112570",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 755,
+            "sha256": "e38e130c6361e5e9d5c67109f22f72812457f2461332a9304d715215576d2d0e",
+            "checksum_valid": true,
+            "rows": 87,
+            "valid": true
+          },
+          {
+            "month": "2024-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 957,
+            "sha256": "31a841c4eaebbb192448838f37819fcc6263ac149df469463c11126b70717e59",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 881,
+            "sha256": "d7586ec30b20ca06772ac7fb52dd027e913ce0a26a93669e3a4276522bff9ab5",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 783,
+            "sha256": "4ca09712c976062effee663d005c27420089003ed5a1c95d8c2b4937fe05fa01",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 753,
+            "sha256": "fd9055cb8a05ce268c24b91800682091232f0dc285b1240f57e2d66396eb6a5f",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 786,
+            "sha256": "68c8ac31b16c4b1f81a3b70860175e5163e76652ddea9ef1bb6e6f01a369a33e",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 925,
+            "sha256": "fa1318b6213cae7ff5ead4110c4d7c97c3103203b56b2607678e4527dd8ad906",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 861,
+            "sha256": "69faf312921ce5c88092d8c328b04dc006ea42dabfe68ad5fee542d28c0ae2ca",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 740,
+            "sha256": "f9d62565da4bf7d1caddc9cb09b1a73a4a312a7419c5c0439c662fc3f58dd993",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 771,
+            "sha256": "95c733e5ad58f4c26c75b71a2081de8f692a4ce271006b7f5b3c87854a848c70",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2024-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 805,
+            "sha256": "be526ba15c6c4c3ae8cddda1411a13f665f635be444c992efd2f66e6bbfa37d8",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 743,
+            "sha256": "b14759b7a99d6111f819790de938b2b0f3eeeaac57402c2e1ef71fd38302d26d",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 862,
+            "sha256": "927da57e3d0a92fa6e024c00397abac93ab5722ca7a353e92e493cfd28de2f3c",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2025-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 951,
+            "sha256": "690fb0f227c2b8b1467428b2e3340ea9928d8ef81ac461bd6f641f100dd21d66",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 907,
+            "sha256": "d47ea402f11ad727be1c1b4adfa8483698151509d90e9cb53b84b0a43ca67de8",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 895,
+            "sha256": "7c664b87b0ae630b033f67ab334a46d433374927e74445c56f4b3be7b9b23092",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 907,
+            "sha256": "5bfb1683c2b8c738a0059ee02078706585b62c1e430685af76e3796a0ee58613",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 817,
+            "sha256": "039ff5c8dab9d9f2633f1bd4d191e6a727d6d169d897b6cbcd7fc162ff374723",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 910,
+            "sha256": "07a8182394836928094bb6b476fef9e8858e234d0ff05ef41114ff25bab923ba",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 881,
+            "sha256": "1f09cb45eadb64731acaaae997167c54b76c3a08b367cd5acbd89f8562593ee3",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 952,
+            "sha256": "3fc5b1bcac5579e6cc49e17457282c6bfb970932d2aefcbc0c896d660b81a939",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 983,
+            "sha256": "22040d49b1cdce5337571f5641008a81f1374680226b7c7a5ae63d37dcc449fd",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 1007,
+            "sha256": "21c4a5933de28ec693fbe3a43d9ae4504b762e70e7cc0e0de4afd46104abe7f0",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 990,
+            "sha256": "618977f8e0c4d048292fae038094ea9624c96debfbb1d2bd6463ffcdce2fcd2a",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 939,
+            "sha256": "8d8be995b48b2085a8384d9e417bfeef2d213b35478baa88cbe5001d0497535d",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2026-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 999,
+            "sha256": "e3399c2e5fd5c18a2716b26530bcedc7fb9ce8adb2641c0882c8ba6e0a336567",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 974,
+            "sha256": "0e586915d578a977ad69482ddc52c11d9c2c1a767d3865078553b3e91fb7716a",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2026-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 1002,
+            "sha256": "f8c0c09953b112a7f5ac203a826811ead1ac43db8c075b17b2ca69e837828255",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 962,
+            "sha256": "f5d1b51767ddc812c4608080adf54cfca0db7cba592d3e62d7416cd358a3ebde",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          }
+        ],
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00.004000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00"
+      },
+      "hyperliquid_funding": {
+        "venue": "hyperliquid",
+        "asset": "XRP",
+        "dataset": "public_fundingHistory",
+        "requests": [
+          {
+            "page": 0,
+            "start_time": 1682899200000,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45888,
+            "sha256": "1885e0be7cc22fc49262237ef9db94841ec206aa15b48c5bab072341f1775f4d",
+            "rows": 500
+          },
+          {
+            "page": 1,
+            "start_time": 1688846400203,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45242,
+            "sha256": "63b4784c4bff6cb2482c07ba38cb84a5416d6f7825a0326e0111e1c2504707f7",
+            "rows": 500
+          },
+          {
+            "page": 2,
+            "start_time": 1690646400092,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45435,
+            "sha256": "c5205e168c755ad26d876f1b882899ac0d66b3a2c3df1e0588e9aac813252b58",
+            "rows": 500
+          },
+          {
+            "page": 3,
+            "start_time": 1692446400200,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45846,
+            "sha256": "c7c4c3e45e012e89294add2450c7dcd9b9ad6bd2310e40f1e8793afb91317480",
+            "rows": 500
+          },
+          {
+            "page": 4,
+            "start_time": 1694250000403,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45682,
+            "sha256": "e913796af505ecd27d11f67f0e4ff857dd4a044d071c4e1774f2b2f35a4b9d50",
+            "rows": 500
+          },
+          {
+            "page": 5,
+            "start_time": 1696050000031,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45348,
+            "sha256": "298b2abb2323bc9feebfacc7cc266a2201dd49f9eb6b089b423cdb4190e6ea57",
+            "rows": 500
+          },
+          {
+            "page": 6,
+            "start_time": 1697850000181,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44541,
+            "sha256": "cbd322dd27242c9ba35f9f8d241e04fb2d8bc74b450dbca09a4198d126c1e4f5",
+            "rows": 500
+          },
+          {
+            "page": 7,
+            "start_time": 1699650000080,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43999,
+            "sha256": "f145b685aa1b1182413b75460d681c6c29e23717fd8d515020aaea52b53d7683",
+            "rows": 500
+          },
+          {
+            "page": 8,
+            "start_time": 1701450000310,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44581,
+            "sha256": "e6bf90080b282ba656009ef6376be599d9bfe5db5634f23af24ed7416dec1bf1",
+            "rows": 500
+          },
+          {
+            "page": 9,
+            "start_time": 1703250000432,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44351,
+            "sha256": "6f173597e848ac845c2e66c2f2e0d7ed9f3fcbb390a449d717519f54d47da8b7",
+            "rows": 500
+          },
+          {
+            "page": 10,
+            "start_time": 1705050000258,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43588,
+            "sha256": "5f243892abc31967c4e1a2bdbe21d0ddf6c7af6d5af1614a93b88b8b4745662d",
+            "rows": 500
+          },
+          {
+            "page": 11,
+            "start_time": 1706850000222,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44209,
+            "sha256": "f6dbd431f21bc4bbaba766c70e657621a140e19edad2e7e5c9be4cb1767ef4a1",
+            "rows": 500
+          },
+          {
+            "page": 12,
+            "start_time": 1708650000266,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44779,
+            "sha256": "49eb36561b3fdaad3b2e52e4989001d2fd71e9edf64bf1cbc9f30cb0dd636635",
+            "rows": 500
+          },
+          {
+            "page": 13,
+            "start_time": 1710450000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44235,
+            "sha256": "8c18203cb71e8bd6338d16e67a5c08ccbab9f72a983a61e5cb5150329ca176c1",
+            "rows": 500
+          },
+          {
+            "page": 14,
+            "start_time": 1712250000088,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44420,
+            "sha256": "92ae8d8a62ba876e1c86c6bc5c0db4bea78f40d4114bd05540ff4dbc4eacecc5",
+            "rows": 500
+          },
+          {
+            "page": 15,
+            "start_time": 1714050000110,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44994,
+            "sha256": "f612e668999a63a214d80a3ffdc02dae4ddce81b3f6601da3149207501aa51a0",
+            "rows": 500
+          },
+          {
+            "page": 16,
+            "start_time": 1715850000037,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43926,
+            "sha256": "82f7b180cdf1cd01cddeb5405544584bc88294510aab9a3af17e5b1a3eb97823",
+            "rows": 500
+          },
+          {
+            "page": 17,
+            "start_time": 1717650000115,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43930,
+            "sha256": "68ff2f053cc98a675beda1c407d145ea6b442087c2dfd915f0f16130e1376044",
+            "rows": 500
+          },
+          {
+            "page": 18,
+            "start_time": 1719450000073,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44352,
+            "sha256": "fa89099ef29350e1d27028135119161f830715bd054b6b803b97e9c73a9b0fcf",
+            "rows": 500
+          },
+          {
+            "page": 19,
+            "start_time": 1721250000148,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44164,
+            "sha256": "0ab30a70085a16b223ac7535142cd449c08f019a80cc887c1ee74b69c6eb16f2",
+            "rows": 500
+          },
+          {
+            "page": 20,
+            "start_time": 1723050000102,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44525,
+            "sha256": "2121e03d2df80bb81127b9ee08742819dd90433ce59877644f3bfb974682d50a",
+            "rows": 500
+          },
+          {
+            "page": 21,
+            "start_time": 1724853600031,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44122,
+            "sha256": "769960c82a4303ef27ea90dfc8e005e124ac4e99b38af20ef11ca44ea07d7179",
+            "rows": 500
+          },
+          {
+            "page": 22,
+            "start_time": 1726653600092,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44034,
+            "sha256": "77bc24112da93ec9fadbea2eecb6015bb13ade911f3eef51de52cd3a727c583a",
+            "rows": 500
+          },
+          {
+            "page": 23,
+            "start_time": 1728453600025,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44411,
+            "sha256": "5d5b324cad0ced9ae045eb86055f75f849c0161db555d373dfbea90970ae29d0",
+            "rows": 500
+          },
+          {
+            "page": 24,
+            "start_time": 1730253600098,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44298,
+            "sha256": "f9a66d88811383facf3b70fed84b9b73a9bb4ccd1c094e1c596e7882e4ce4ad6",
+            "rows": 500
+          },
+          {
+            "page": 25,
+            "start_time": 1732053600127,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44551,
+            "sha256": "991bc2a2fb657856b7f3eced84b0cfd456b6748d1cd89c4ba8735a4e461f6934",
+            "rows": 500
+          },
+          {
+            "page": 26,
+            "start_time": 1733853600202,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44030,
+            "sha256": "887124daad44e90631137c7140f1c935dcd8b4a3488f5b0a3d3d9122ebbf4aad",
+            "rows": 500
+          },
+          {
+            "page": 27,
+            "start_time": 1735653600002,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44086,
+            "sha256": "b28f8c36a1e26f3db65333f33c905928a41d02abd9f0f7a738b3743e672fbc92",
+            "rows": 500
+          },
+          {
+            "page": 28,
+            "start_time": 1737453600002,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44025,
+            "sha256": "4cd59b32572ed046c196c3be313930065c6a1e24d34f8b5cc40297f24d205f9d",
+            "rows": 500
+          },
+          {
+            "page": 29,
+            "start_time": 1739253600031,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43999,
+            "sha256": "dc38ddbeb6f91b5181ee17a194a3522cf1b7752f39fad22b2e106d7e6a3d73ab",
+            "rows": 500
+          },
+          {
+            "page": 30,
+            "start_time": 1741053600092,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45365,
+            "sha256": "47c1ef4152e1150976fef5694adbf8bd97bfae208de8e7bfee2950825dd8d73a",
+            "rows": 500
+          },
+          {
+            "page": 31,
+            "start_time": 1742853600031,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45440,
+            "sha256": "924bcd6c566f9054b8b8c95d214ff249fbea2208246098a32299f105b5abc93a",
+            "rows": 500
+          },
+          {
+            "page": 32,
+            "start_time": 1744653600044,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44494,
+            "sha256": "18befe4a413606a2eea6de1a678cc47462852a2aa1b157176880d7d5ac2f87ec",
+            "rows": 500
+          },
+          {
+            "page": 33,
+            "start_time": 1746453600012,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44321,
+            "sha256": "67ef82591d4f9b3ea9a6f531769d39055f138a3225fec848a8378271b421db19",
+            "rows": 500
+          },
+          {
+            "page": 34,
+            "start_time": 1748253600014,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43991,
+            "sha256": "6e306bb8d39a52c45818c11cf67fbfca22ddfb16539bf56b1fcd7786fb597236",
+            "rows": 500
+          },
+          {
+            "page": 35,
+            "start_time": 1750053600024,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44387,
+            "sha256": "6f1f3a8cd98eb662428b13090d6faf2cc9c94dfaa450f308eff401ce8a643e05",
+            "rows": 500
+          },
+          {
+            "page": 36,
+            "start_time": 1751853600147,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44415,
+            "sha256": "923b565c7346c27a9cc1b44cce6cd5183863d7015aee339090bc48702fe5486f",
+            "rows": 500
+          },
+          {
+            "page": 37,
+            "start_time": 1753653600040,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44113,
+            "sha256": "fef2fdecf1c0f4fd0a32cbd95a8e687dd9a5e7c2c06ef45a6f5ac8f186b133c5",
+            "rows": 500
+          },
+          {
+            "page": 38,
+            "start_time": 1755453600080,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44173,
+            "sha256": "55f090f3fbb1df3dc861eea3fdec2853f28355dbec077545773c4f487a52d7c2",
+            "rows": 500
+          },
+          {
+            "page": 39,
+            "start_time": 1757253600012,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 43865,
+            "sha256": "2cfa777fb473b6d39304a34bce978d47c3f0a12217adfaa4d0fbaf5d30c33789",
+            "rows": 500
+          },
+          {
+            "page": 40,
+            "start_time": 1759053600028,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44652,
+            "sha256": "79be14a03164aba2c1d3157027829888cdc43bee8e6af98ebdd1057a41dd75f0",
+            "rows": 500
+          },
+          {
+            "page": 41,
+            "start_time": 1760853600049,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45130,
+            "sha256": "13c47dad65fa480286180c2be8db925ae4eff2024384af1f545a9242de96d9ba",
+            "rows": 500
+          },
+          {
+            "page": 42,
+            "start_time": 1762653600186,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44134,
+            "sha256": "81385bbb9c250157905733cf347df10921a0c5e7f0aa0bd6ba754256eb2b1e96",
+            "rows": 500
+          },
+          {
+            "page": 43,
+            "start_time": 1764453600036,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44457,
+            "sha256": "7db55138ca71fdbd1b38b49be55288d82c53ec34b1e316c84e929ae760347ef5",
+            "rows": 500
+          },
+          {
+            "page": 44,
+            "start_time": 1766253600004,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44568,
+            "sha256": "592116ecae121e0b556151c22148b4dbf1436ab1bf433fa467378117ed1698fb",
+            "rows": 500
+          },
+          {
+            "page": 45,
+            "start_time": 1768053600052,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44761,
+            "sha256": "2967fc796c88e6a706145d49fec42f9cc6caafc6e323c9d45305522cd4b6e90f",
+            "rows": 500
+          },
+          {
+            "page": 46,
+            "start_time": 1769853600023,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45730,
+            "sha256": "2c8b0a463d48447bacc3d706ff6bc530baecdba1e0a91da998114a9b225238a9",
+            "rows": 500
+          },
+          {
+            "page": 47,
+            "start_time": 1771653600035,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45574,
+            "sha256": "de892d48fc1bdf98f1ff95289cfad4d7f476ffab210a50586e25fe060aed1a43",
+            "rows": 500
+          },
+          {
+            "page": 48,
+            "start_time": 1773453600101,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45580,
+            "sha256": "ff526184c1cab930e19e9a33514308f396575a34e7b84e2e77e63bec1e258510",
+            "rows": 500
+          },
+          {
+            "page": 49,
+            "start_time": 1775253600032,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45273,
+            "sha256": "9d1dabadfed661fb3b6a29383e4fbf74aea7f2e89cc007e8fa645dbd8ac80528",
+            "rows": 500
+          },
+          {
+            "page": 50,
+            "start_time": 1777053600038,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45282,
+            "sha256": "4576662e9879cc54a2e3f79b2fbf04edc67e3efa1c9ef9c87f7ce37db5aa958a",
+            "rows": 500
+          },
+          {
+            "page": 51,
+            "start_time": 1778853600007,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45549,
+            "sha256": "4f6602c0fe7f2b7c8bfc136482d6f48770467190787f1e6a12aa52c1e2a11300",
+            "rows": 500
+          },
+          {
+            "page": 52,
+            "start_time": 1780653600051,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45433,
+            "sha256": "008a859bcdfb74461be17f45e2fe5a4381301a45bfc9dcd280b0140fa8cf1caf",
+            "rows": 500
+          },
+          {
+            "page": 53,
+            "start_time": 1782453600031,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 10361,
+            "sha256": "969dbdc528d49d2c6d4fe4502dc3d97fcd922a1cfe43a033eecd45df5a697dd9",
+            "rows": 113
+          }
+        ],
+        "rows": 26613,
+        "timestamp_min": "2023-06-18T00:00:00.182000+00:00",
+        "timestamp_max": "2026-06-30T23:00:00.048000+00:00"
+      },
+      "hyperliquid_prices": {
+        "venue": "hyperliquid",
+        "asset": "XRP",
+        "dataset": "public_candleSnapshot_8h",
+        "request": {
+          "type": "candleSnapshot",
+          "req": {
+            "coin": "XRP",
+            "interval": "8h",
+            "startTime": 1682899200000,
+            "endTime": 1782863999000
+          }
+        },
+        "status": 200,
+        "bytes": 468445,
+        "sha256": "1d6bb9e8886c96bb2f49f2401f55359813e15ec8b451938255efaa81a2e56e12",
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00"
+      },
+      "binance_price_source": "research/active_v163_v170/inputs/processed/XRP_hourly.csv",
+      "rows": 3471,
+      "usable_rows": 2737,
+      "price_coverage": 1.0,
+      "funding_coverage": 0.7885335638144627,
+      "usable_timestamp_min": "2023-06-18T00:00:00+00:00",
+      "usable_timestamp_max": "2026-06-30T16:00:00+00:00"
+    },
+    "DOGE": {
+      "binance_funding": {
+        "venue": "binance_usdm",
+        "asset": "DOGE",
+        "symbol": "DOGEUSDT",
+        "dataset": "checksum_verified_monthly_fundingRate",
+        "requests": [
+          {
+            "month": "2023-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 896,
+            "sha256": "1c388110bc5e1a69d76c7a41e4945396427fad064a593fbf5edecae338584322",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 827,
+            "sha256": "50cbca0534f27a63cc9146c22559764010fffdffeef8f48e9e8c97fbf4372ea6",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 783,
+            "sha256": "2e92a749e0886d0cfba0d9ebe7061ed0abadf9fc4d16e12d2d00fed555d666dc",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 845,
+            "sha256": "7cdad830df4e60545d222744d9194bbe6044bf3af32b6b1b8dcc9d0649b5aa81",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 846,
+            "sha256": "b3e9ca4090ad3a7a105ece3ca234f06db8502007cbbd6c478b9a953cf87f2d40",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 835,
+            "sha256": "fcaed5a50bb0720e286527ebbfa3675aab166715dfd0a0f26e8372213c53b3ce",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2023-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 785,
+            "sha256": "57d8a846e36374ca253c597256c2a795561df0a316887faf1106465ee7ab09e5",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2023-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 832,
+            "sha256": "d49fa428e457f93c96f6888b589c01372aa6b331da7578b880d103e64a8e9faf",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 670,
+            "sha256": "08193c8953cef5f0366877b66391483f4076c5927d433af5fbcbb680b407767c",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 764,
+            "sha256": "769f0fe177bd531b65ab9a0e15d4b3814deb241e27806f8decfd45735456a823",
+            "checksum_valid": true,
+            "rows": 87,
+            "valid": true
+          },
+          {
+            "month": "2024-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 942,
+            "sha256": "7c8400239b28b1e96439b229bb483cd7de8637bf58f321547f46ceee160dae61",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 904,
+            "sha256": "b09c688e8f524d879b901f1cba4a15836180af254868b22feabb324268b521cf",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 786,
+            "sha256": "5df5a4bb6733899a885591106626242a3aab4b5ada077b62dd44ac27d14a9e7c",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 785,
+            "sha256": "c6ba303e7c28db0a2bf2f8121482c7b8813793b860d2ef22ecd08dcd95e8185e",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 816,
+            "sha256": "4e9db7b8df1c75627ce56d4010fa84a93fce0162112a93696e98da5138d0f380",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 935,
+            "sha256": "7b44b34f863c02066dfbcf3d343e746ea84058a5d76a94d64c256b78358b89ac",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 862,
+            "sha256": "92bc33954530f8d7bcf13a41d736a9480f4082cd1220d976d4a01bdbb52452b4",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 763,
+            "sha256": "c038f18bf93552ca8432d04482839ab50d5b6e903c1b63083c335d479236ba22",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2024-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 798,
+            "sha256": "45d7e6671e7bb1efc2ed557fd7139135468d0bea7dbc7906fe0c8b727c2777a0",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2024-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2024-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 897,
+            "sha256": "5b94b4960510e5e217048ee5268038d60a6dbcf45755063790f9c35602231983",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 871,
+            "sha256": "be2ccf953a2fa5e84f49be601917340ba1b220b7ca42566f4066173633c80107",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 872,
+            "sha256": "fa3a34848d0a10af64b9e534bf9209ac317fe0da05378d622dc9d406ca88f69d",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2025-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 958,
+            "sha256": "3d9ac62d34961c5bd7b2e2b9f33abef0bcb295fdfae421bd38abab67598b2482",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 895,
+            "sha256": "ef81cc81573c727ba251f68e73593322ccf16db7055de77856b4dd5cd1e7cfc8",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 912,
+            "sha256": "408322bd25a392d3fb10b66ebf214e2d7c0426456bfa1d3dab79da804a511188",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 945,
+            "sha256": "5a18b464cd2d6a6e106c497a5e265327762cff0ee86ebcf8fd20e0150d5a67a5",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-07",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-07.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 827,
+            "sha256": "e56f1173899b2be5b35e14cdd61d6549dfed04bd2eacc1673285fbc067affe11",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-08",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-08.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 892,
+            "sha256": "c73e14c91a6e44f2a7a4795c845f54f0c82fac1529dd0852c66c52175d76ff53",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-09",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-09.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 882,
+            "sha256": "1105b391de748f50048b5590f6a5265fcb2a6354ec8a6ac3ba79b5ca734aa9cc",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-10",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-10.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 944,
+            "sha256": "6217d0bc8ab8abe35dd0c56d18cc008e8a8e36adef2be37ed9ccbf3c91c71d0a",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2025-11",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-11.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 967,
+            "sha256": "ea4b56653bb13210c5fbdeceb668f632b15a8fe6e7676d1afcbbcb5a019d92f4",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2025-12",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-12.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 990,
+            "sha256": "8e84dea86eb7fe0cb7b2f9278f0df0479b68ae10ac9b6ade872372888769f874",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-01",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2026-01.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 978,
+            "sha256": "73c2760e0bf4a5dd8af31d1f03ba1e6d213aa1ed42da17a8c537f28c7f033f44",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-02",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2026-02.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 943,
+            "sha256": "5a82031b9e3009265751cf02853ded1e1649bd3c2c3c764d5e50e64edc944a6e",
+            "checksum_valid": true,
+            "rows": 84,
+            "valid": true
+          },
+          {
+            "month": "2026-03",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2026-03.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 996,
+            "sha256": "f4b2222b88d3cf518939c38a20fdd224629c3844a8d2f710c8c14e4fe9409d85",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-04",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2026-04.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 893,
+            "sha256": "1a041267001c6417220e595f9c723919eec3b2e317012a8cfd22f95ac8105ceb",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          },
+          {
+            "month": "2026-05",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2026-05.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 979,
+            "sha256": "99411bbfdc7508a498204faf9ce3f02958f484828a5ffd309b6c267b89c89ba6",
+            "checksum_valid": true,
+            "rows": 93,
+            "valid": true
+          },
+          {
+            "month": "2026-06",
+            "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2026-06.zip",
+            "checksum_status": 200,
+            "http_status": 200,
+            "bytes": 961,
+            "sha256": "b701956a49aa6e9daf692eccbe0c79be94dd3e0dbacde8996852f551a5fbfdba",
+            "checksum_valid": true,
+            "rows": 90,
+            "valid": true
+          }
+        ],
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00.004000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00"
+      },
+      "hyperliquid_funding": {
+        "venue": "hyperliquid",
+        "asset": "DOGE",
+        "dataset": "public_fundingHistory",
+        "requests": [
+          {
+            "page": 0,
+            "start_time": 1682899200000,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 46309,
+            "sha256": "a59222406294bfa3da4dc09af7cece29bf572360fb28ff15be781237da696715",
+            "rows": 500
+          },
+          {
+            "page": 1,
+            "start_time": 1687687200202,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 46218,
+            "sha256": "c280a047d87fa4f2e5904093bd5faf7eec2351cfc9e66bb14ac00f3a245f730d",
+            "rows": 500
+          },
+          {
+            "page": 2,
+            "start_time": 1689490800165,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 46019,
+            "sha256": "0edfde850e67063704106dd7746581ba9cbfe5ac10bbd4e32bfb88d5767f2574",
+            "rows": 500
+          },
+          {
+            "page": 3,
+            "start_time": 1691290800173,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45976,
+            "sha256": "ad365ad7b334cfe54e8a2790666b4bdd15e6b179630ff5c19c5857f3d63e0b04",
+            "rows": 500
+          },
+          {
+            "page": 4,
+            "start_time": 1693094400088,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 46177,
+            "sha256": "a0476bbe77ada54f176809f5467b1ed4070cd6eade18bf9755a0d3804ecb50ad",
+            "rows": 500
+          },
+          {
+            "page": 5,
+            "start_time": 1694894400124,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45904,
+            "sha256": "c106e9307e3992703b493d8c9d5ea9914d5dbf53681115ca6caa8ba04ce8d5f3",
+            "rows": 500
+          },
+          {
+            "page": 6,
+            "start_time": 1696694400118,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45666,
+            "sha256": "d9587da180b06c5a33b4f65de4743226a9eadc3c2974c77cf197e176917596bb",
+            "rows": 500
+          },
+          {
+            "page": 7,
+            "start_time": 1698494400150,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45304,
+            "sha256": "989b6076012bd4776225392fef43784c980816b3ba644b7449fec44e71cb8445",
+            "rows": 500
+          },
+          {
+            "page": 8,
+            "start_time": 1700294400123,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45236,
+            "sha256": "6b3a19c33c2415f340479c4e2962efe3b110a19e004fd36f8b12cace3a0c821b",
+            "rows": 500
+          },
+          {
+            "page": 9,
+            "start_time": 1702094400123,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45181,
+            "sha256": "b1546812b699f9e7d882bf4b6865c17dc305f5f8a7156121d192227309bf3eba",
+            "rows": 500
+          },
+          {
+            "page": 10,
+            "start_time": 1703894400341,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44816,
+            "sha256": "88569bdd618adb101ff01bd073847afa651e39209bff2c24cdd74705a2024daa",
+            "rows": 500
+          },
+          {
+            "page": 11,
+            "start_time": 1705694400194,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44801,
+            "sha256": "cc9d20d714784b7a0009df532bc0b88e599ba6b94ed0ed0f162805b71084990e",
+            "rows": 500
+          },
+          {
+            "page": 12,
+            "start_time": 1707494400389,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45339,
+            "sha256": "bd7ac09fabe1a10523606afca53f43b4b808a24e376a755ce60e911c16955eb9",
+            "rows": 500
+          },
+          {
+            "page": 13,
+            "start_time": 1709294400135,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45179,
+            "sha256": "d410eb13a3014cc692220431e8fcd16037a3b3dffd93eddd06bca2425c0625ef",
+            "rows": 500
+          },
+          {
+            "page": 14,
+            "start_time": 1711094400048,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45105,
+            "sha256": "ade8301ff20d32a3dee35239d201f22bc9ac1f56fd412afd524c1c4ee689445c",
+            "rows": 500
+          },
+          {
+            "page": 15,
+            "start_time": 1712894400130,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44544,
+            "sha256": "47868a02fc96fca8a404958f6e87cf8198932a94e01d832d07f3539d2c8bcf43",
+            "rows": 500
+          },
+          {
+            "page": 16,
+            "start_time": 1714694400215,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44754,
+            "sha256": "62c014bfaff84d3265e8ae20660d9dfaa1b33ddd039b0f7e17365e04cff65951",
+            "rows": 500
+          },
+          {
+            "page": 17,
+            "start_time": 1716494400061,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44743,
+            "sha256": "203a8f1fc61a71de1d4b095cca469d081b992d53df77cc124e920a040c3d1a67",
+            "rows": 500
+          },
+          {
+            "page": 18,
+            "start_time": 1718294400094,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44889,
+            "sha256": "fc2355ffb01f8f4e9f3f1eb4342a2c33a944a4f99b753894c3e55740c275faff",
+            "rows": 500
+          },
+          {
+            "page": 19,
+            "start_time": 1720094400121,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44456,
+            "sha256": "c8d38a617b22a4e29fe4416cba42ce068a2f72c4bf9c27b86d44c5f47c43e314",
+            "rows": 500
+          },
+          {
+            "page": 20,
+            "start_time": 1721894400145,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44780,
+            "sha256": "33e9dde974094ca92d384efdb51e04be67d1b3464a0534e78a8e696db8061e60",
+            "rows": 500
+          },
+          {
+            "page": 21,
+            "start_time": 1723694400096,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44887,
+            "sha256": "c1ecc79211eb1d157ac70318b6bf6cb80d3f2e9255bf20c8f1232639edf77dc9",
+            "rows": 500
+          },
+          {
+            "page": 22,
+            "start_time": 1725498000152,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44602,
+            "sha256": "ed1dcedf77b2d496d5d2cdb78758ba774f3d684a241619578f441468f84e178e",
+            "rows": 500
+          },
+          {
+            "page": 23,
+            "start_time": 1727298000105,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44599,
+            "sha256": "76a50250afde9564c42fcfef2aff9dcfe614708202d0464cf7b8bdb593818f8d",
+            "rows": 500
+          },
+          {
+            "page": 24,
+            "start_time": 1729098000101,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44755,
+            "sha256": "51a4e4188002bcb88494227caba54b45fbd93c11141f56c39a948d295567402d",
+            "rows": 500
+          },
+          {
+            "page": 25,
+            "start_time": 1730898000029,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45233,
+            "sha256": "726f840fa2f0fa89d6f68cf532d42ca92a2665efc2ef8fc6a97b14e9ee97b86b",
+            "rows": 500
+          },
+          {
+            "page": 26,
+            "start_time": 1732698000043,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45050,
+            "sha256": "5342cd94536dd665647595a625c0e5dab5158dbdcf31f42be3aef958a24e2787",
+            "rows": 500
+          },
+          {
+            "page": 27,
+            "start_time": 1734498000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45067,
+            "sha256": "4dc3996eac3bfd8c0f887cbda7c008fd9e3f83fbb7762e140e6fa1a106a0fa55",
+            "rows": 500
+          },
+          {
+            "page": 28,
+            "start_time": 1736298000062,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44829,
+            "sha256": "69021ff1dac9c71c70ec5866aad4f8e6729a8faaab090289fa540e21c2f087c9",
+            "rows": 500
+          },
+          {
+            "page": 29,
+            "start_time": 1738098000037,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45008,
+            "sha256": "7ce8eddb46380746d42d67472cd07b97c45c5197d953bd14d7628b7df1e62de4",
+            "rows": 500
+          },
+          {
+            "page": 30,
+            "start_time": 1739898000030,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45439,
+            "sha256": "4f5876699ad4264462aae108c349b23bc53ba8d62cfa80cec39d406c455727d2",
+            "rows": 500
+          },
+          {
+            "page": 31,
+            "start_time": 1741698000041,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45381,
+            "sha256": "55159f814be37805319af4425cc5fc13ed3a1d3b1beffb6893359d24d277cab9",
+            "rows": 500
+          },
+          {
+            "page": 32,
+            "start_time": 1743498000075,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45647,
+            "sha256": "b6798182d3f51515220bf181948956f4b21bd38b4ea6e2a32a555840cf3d7ffe",
+            "rows": 500
+          },
+          {
+            "page": 33,
+            "start_time": 1745298000087,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44586,
+            "sha256": "211c8a8dc0d7180072263030fb6d4d63b7cbe8394bdf6bb4e56509c34c6e84c5",
+            "rows": 500
+          },
+          {
+            "page": 34,
+            "start_time": 1747098000085,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44600,
+            "sha256": "4994de4a38b2418081bacf78bb7e2f3a38e68143eab1648a8ce183a42f2c9761",
+            "rows": 500
+          },
+          {
+            "page": 35,
+            "start_time": 1748898000036,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44730,
+            "sha256": "aed187d63905dc62cc6470a276d48a4701fb0b944685cb1717c49210d8dbbd6b",
+            "rows": 500
+          },
+          {
+            "page": 36,
+            "start_time": 1750698000061,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45059,
+            "sha256": "bf22e52f890232ef9d0ae645ea8421fddb5e6b32e7a7294830a558df9734f767",
+            "rows": 500
+          },
+          {
+            "page": 37,
+            "start_time": 1752498000003,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45146,
+            "sha256": "92c78c676ea3d769e940f32e18fc6432d6327386cdc27df4d5c5c8d20cf7afdd",
+            "rows": 500
+          },
+          {
+            "page": 38,
+            "start_time": 1754298000058,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44679,
+            "sha256": "1e15499cbfa6eb71f775cf08979fb33120061333451e4d6c321e9fa7709c0655",
+            "rows": 500
+          },
+          {
+            "page": 39,
+            "start_time": 1756098000005,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44549,
+            "sha256": "424ce108f2b1a167ed0b4e3207fcd4c9cb8de0bdcac960a8d439b889c1e7d88f",
+            "rows": 500
+          },
+          {
+            "page": 40,
+            "start_time": 1757898000016,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44595,
+            "sha256": "27757cb7bd08a46c50155f3cf2f40bb29d9df48fa550f12d2061dac5ec4be759",
+            "rows": 500
+          },
+          {
+            "page": 41,
+            "start_time": 1759698000109,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45764,
+            "sha256": "baa47c9851999e649c2a9b6203b4a888bc310cbf8d8e947f70a836231dee42f5",
+            "rows": 500
+          },
+          {
+            "page": 42,
+            "start_time": 1761498000075,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45129,
+            "sha256": "16a2cd791990247dadb43355b4b827e6d46077d01ac4cebcc94ccfb01dbe1c98",
+            "rows": 500
+          },
+          {
+            "page": 43,
+            "start_time": 1763298000044,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45197,
+            "sha256": "a33ddd7032f2660451cffeac4064cb67d42707a2d01d06df10c85e592cd34ed8",
+            "rows": 500
+          },
+          {
+            "page": 44,
+            "start_time": 1765098000034,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45913,
+            "sha256": "93ff3dba03f403b8082d595ce1adcecba5a6b362606b179bd9fe767fb2f78f83",
+            "rows": 500
+          },
+          {
+            "page": 45,
+            "start_time": 1766898000063,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44527,
+            "sha256": "d0633dd0f22ed336405151409dabc0ab9e2cc11cedaf317b88ccd3c24be03e76",
+            "rows": 500
+          },
+          {
+            "page": 46,
+            "start_time": 1768698000118,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45917,
+            "sha256": "101aa81e5df6f3b647d290f8cd3020aef5a5eb92a46fd8abe03ea0b6f8252b59",
+            "rows": 500
+          },
+          {
+            "page": 47,
+            "start_time": 1770498000090,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45875,
+            "sha256": "2c31fffd9317eda5b44d43e8e6a6405e9ac30d84b8b623f15c5055e2c86dc4dd",
+            "rows": 500
+          },
+          {
+            "page": 48,
+            "start_time": 1772298000026,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45901,
+            "sha256": "276c367aa64860db01c721e75368eb72946ca51b6bfb1da485eaa6ba2653be40",
+            "rows": 500
+          },
+          {
+            "page": 49,
+            "start_time": 1774098000016,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45615,
+            "sha256": "bc962daeff604ecc74b9b404f3efddbaca00a4f833716b8b252b76769e32420c",
+            "rows": 500
+          },
+          {
+            "page": 50,
+            "start_time": 1775898000043,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44804,
+            "sha256": "96636661f43695375c6a4c4f2e0703a1e1b101c94f1cbf032920eb2aa6d10eb3",
+            "rows": 500
+          },
+          {
+            "page": 51,
+            "start_time": 1777698000005,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 44767,
+            "sha256": "e69b83d85a15d3027357005184b99b3aefe06bd28a882905809bd31f3e5e45f2",
+            "rows": 500
+          },
+          {
+            "page": 52,
+            "start_time": 1779498000003,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 45399,
+            "sha256": "610d76d8c589c9a77fff4dc6a915f0fc1d2e69b17b37aec8d343fc6ff3d6dff8",
+            "rows": 500
+          },
+          {
+            "page": 53,
+            "start_time": 1781298000027,
+            "end_time": 1782863999000,
+            "status": 200,
+            "bytes": 39832,
+            "sha256": "85e642d32e489579f1c5ab7b8770ea2d74cfe3b269bbae34dc5bfa0a0d863abd",
+            "rows": 434
+          }
+        ],
+        "rows": 26934,
+        "timestamp_min": "2023-05-12T00:00:00.048000+00:00",
+        "timestamp_max": "2026-06-30T23:00:00.048000+00:00"
+      },
+      "hyperliquid_prices": {
+        "venue": "hyperliquid",
+        "asset": "DOGE",
+        "dataset": "public_candleSnapshot_8h",
+        "request": {
+          "type": "candleSnapshot",
+          "req": {
+            "coin": "DOGE",
+            "interval": "8h",
+            "startTime": 1682899200000,
+            "endTime": 1782863999000
+          }
+        },
+        "status": 200,
+        "bytes": 488553,
+        "sha256": "30d1ccf892bf03d8fa8eab91c66687f332e11e506ad05cc14e8999524aed8bc2",
+        "rows": 3471,
+        "timestamp_min": "2023-05-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00"
+      },
+      "binance_price_source": "research/active_v163_v170/inputs/processed/DOGE_hourly.csv",
+      "rows": 3471,
+      "usable_rows": 2765,
+      "price_coverage": 1.0,
+      "funding_coverage": 0.7966004033419763,
+      "usable_timestamp_min": "2023-06-08T00:00:00+00:00",
+      "usable_timestamp_max": "2026-06-30T16:00:00+00:00"
+    }
+  }
+}

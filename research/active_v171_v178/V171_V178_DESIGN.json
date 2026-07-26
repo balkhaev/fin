@@ -1,0 +1,137 @@
+{
+  "candidate": "ACTIVE_V171_BINANCE_HYPERLIQUID_FUNDING",
+  "frozen_before_external_profit_results": true,
+  "frozen_at_utc": "2026-07-26T20:45:00Z",
+  "versions": {
+    "V171": "public access, provenance and coverage gate",
+    "V172": "8h normalization and causal funding timestamp alignment",
+    "V173": "frozen 54-policy funding-spread grid",
+    "V174": "fees, slippage, basis, missing-data and execution-delay audits",
+    "V175": "immutable development-only selection",
+    "V176": "2025 holdout",
+    "V177": "2026 H1 final and guarded V75 integration",
+    "V178": "checkpoint, frozen decision and forward protocol"
+  },
+  "economic_hypothesis": {
+    "positive_spread": "long Hyperliquid perpetual and short Binance USD-M perpetual when lagged Binance funding exceeds lagged Hyperliquid funding",
+    "negative_spread": "long Binance USD-M perpetual and short Hyperliquid perpetual when lagged Hyperliquid funding exceeds lagged Binance funding",
+    "return_sources": [
+      "realized funding cashflows on both venues",
+      "cross-venue basis P&L",
+      "fees and slippage charged on both legs"
+    ]
+  },
+  "fixed_universe": {
+    "assets": ["BTC", "ETH", "SOL", "XRP", "DOGE"],
+    "venues": ["binance_usdm", "hyperliquid"],
+    "unavailable_assets_are_not_replaced": true,
+    "minimum_full_assets": 3
+  },
+  "data": {
+    "start": "2023-05-01T00:00:00Z",
+    "end": "2026-06-30T23:59:59Z",
+    "bar": "8h",
+    "binance_prices": "checksum-verified Binance 1h klines already materialized by Active V165, sampled at 8h boundaries",
+    "binance_funding": "checksum-verified monthly Binance fundingRate public archive",
+    "hyperliquid_prices": "public candleSnapshot 8h observations",
+    "hyperliquid_funding": "public fundingHistory hourly observations aggregated into causal 8h blocks",
+    "boundary_rule": "funding stamped exactly at a boundary belongs to the holding interval that just ended; entries execute after that boundary payment",
+    "funding_completeness": {
+      "binance_events_per_block_min": 1,
+      "hyperliquid_events_per_block_min": 8
+    },
+    "coverage_gate": {
+      "usable_rows_min": 2800,
+      "price_coverage_min": 0.95,
+      "funding_coverage_min": 0.9,
+      "latest_acceptable_start": "2023-08-01T00:00:00Z",
+      "earliest_acceptable_end": "2026-06-20T00:00:00Z"
+    }
+  },
+  "causal_forecast": {
+    "decision_information": "only completed prior 8h funding blocks and current executable-boundary public opens",
+    "lookback_blocks": [3, 6, 12],
+    "forecast": "sign-consistent conservative minimum of absolute last realized spread and rolling median realized spread",
+    "future_realized_funding_forbidden": true
+  },
+  "policy_grid": {
+    "lookback_blocks": [3, 6, 12],
+    "minimum_predicted_portfolio_funding_edge_bps": [16, 24, 32],
+    "hold_blocks": [1, 2, 3],
+    "maximum_absolute_entry_basis_bps": [20, 40],
+    "policy_count": 54
+  },
+  "portfolio": {
+    "maximum_concurrent_assets": 1,
+    "equal_base_quantity_across_venues": true,
+    "target_total_gross": 1.0,
+    "target_leg_gross": 0.5,
+    "gross_above_equity_authorized": false,
+    "cross_venue_collateral_transfers_during_trade": false
+  },
+  "cost_audits": {
+    "base": {
+      "fee_bps_per_side": 5.0,
+      "slippage_bps_per_side": 2.5,
+      "execution_delay_blocks": 0
+    },
+    "severe": {
+      "fee_bps_per_side": 5.5,
+      "slippage_bps_per_side": 6.0,
+      "execution_delay_blocks": 0
+    },
+    "extreme": {
+      "fee_bps_per_side": 7.5,
+      "slippage_bps_per_side": 10.0,
+      "execution_delay_blocks": 0
+    },
+    "delay_8h": {
+      "fee_bps_per_side": 5.0,
+      "slippage_bps_per_side": 2.5,
+      "execution_delay_blocks": 1
+    },
+    "missing_funding_penalty_bps": 8.0,
+    "forced_exit_extra_bps": 15.0
+  },
+  "selection": {
+    "development": ["2023-05-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "holdout_and_final_excluded_from_selection": true,
+    "maximum_selected_components": 3,
+    "ranking_score": "CAGR + 0.08*Sharpe + 0.12*MaxDD - 0.0003*annual_turnover"
+  },
+  "development_gates": {
+    "cagr_min": 0.05,
+    "sharpe_min": 0.75,
+    "max_drawdown_min": -0.1,
+    "all_calendar_years_positive": true,
+    "trade_count_min": 20,
+    "annual_turnover_max": 40.0
+  },
+  "post_selection_gates": {
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "severe_full_cagr_positive": true,
+    "delay_full_cagr_positive": true,
+    "worst_year_min": -0.08,
+    "trade_count_min": 30,
+    "zero_forced_exits": true
+  },
+  "integration": {
+    "permitted_only_after_all_standalone_gates": true,
+    "v75_weights": [0.05, 0.1, 0.15]
+  },
+  "known_limitations": [
+    "Hyperliquid hourly funding inside each 8h block is valued at the block-end boundary price rather than every hourly mark",
+    "public candles are not synchronized executable bid/ask quotes",
+    "venue outage, liquidation-engine, collateral and transfer risk are not fully modeled",
+    "program-level 2025-2026 holdout is not pristine"
+  ],
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "historical_pass_requires_forward_paper": true
+  }
+}

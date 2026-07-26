@@ -1,0 +1,20 @@
+{
+  "venue": "hyperliquid",
+  "asset": "SOL",
+  "dataset": "public_candleSnapshot_8h",
+  "request": {
+    "type": "candleSnapshot",
+    "req": {
+      "coin": "SOL",
+      "interval": "8h",
+      "startTime": 1682899200000,
+      "endTime": 1782863999000
+    }
+  },
+  "status": 200,
+  "bytes": 470331,
+  "sha256": "0ed7ce71d640ece4cd873b21022a775b5d30f8b37d8fc213f7bef1b749868796",
+  "rows": 3471,
+  "timestamp_min": "2023-05-01T00:00:00+00:00",
+  "timestamp_max": "2026-06-30T16:00:00+00:00"
+}
