@@ -1,0 +1,111 @@
+{
+  "candidate": "V165_CROSS_VENUE_BASIS_CONVERGENCE",
+  "selection_cutoff": "2025-12-31T23:59:59Z",
+  "selection_uses_2026": false,
+  "program_level_final_pristine": false,
+  "policy_count": 162,
+  "eligible_policy_count": 0,
+  "selected": [
+    {
+      "lookback_hours": 168,
+      "entry_abs_z": 5.0,
+      "entry_abs_spread_bps": 60.0,
+      "max_hold_hours": 4,
+      "stability_bars": 1,
+      "name": "basis_l168_z5_s60_h4_c1"
+    },
+    {
+      "lookback_hours": 336,
+      "entry_abs_z": 5.0,
+      "entry_abs_spread_bps": 60.0,
+      "max_hold_hours": 4,
+      "stability_bars": 1,
+      "name": "basis_l336_z5_s60_h4_c1"
+    },
+    {
+      "lookback_hours": 168,
+      "entry_abs_z": 3.0,
+      "entry_abs_spread_bps": 60.0,
+      "max_hold_hours": 2,
+      "stability_bars": 1,
+      "name": "basis_l168_z3_s60_h2_c1"
+    }
+  ],
+  "gates": {
+    "cagr_min": 0.05,
+    "sharpe_min": 0.75,
+    "max_drawdown_min": -0.12,
+    "all_years_positive": true,
+    "annual_turnover_max": 30.0
+  },
+  "ranking_sha256": "6ca0b00e5db4e757d7210b0a511b8fcb50dc44308f15e5754efcf6b730d130d1",
+  "design_sha256": "059285329f989815ed5386a32078493cfd4add52a67c55a9571bd7ce20f71b7f",
+  "data_coverage_gate": {
+    "required_start": "2021-01-01T00:00:00+00:00",
+    "required_end": "2026-06-30T00:00:00+00:00",
+    "start_tolerance_days": 7,
+    "end_tolerance_days": 7,
+    "min_aligned_rows": 35000,
+    "min_full_assets": 2,
+    "full_assets": [
+      "BTC",
+      "DOGE",
+      "ETH",
+      "XRP"
+    ],
+    "passed": true,
+    "assets": [
+      {
+        "asset": "BTC",
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "aligned_rows": 48166,
+        "starts_on_time": true,
+        "ends_on_time": true,
+        "enough_rows": true,
+        "full_coverage": true
+      },
+      {
+        "asset": "ETH",
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "aligned_rows": 48168,
+        "starts_on_time": true,
+        "ends_on_time": true,
+        "enough_rows": true,
+        "full_coverage": true
+      },
+      {
+        "asset": "SOL",
+        "timestamp_min": "2021-01-22T07:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "aligned_rows": 47506,
+        "starts_on_time": false,
+        "ends_on_time": true,
+        "enough_rows": true,
+        "full_coverage": false
+      },
+      {
+        "asset": "XRP",
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "aligned_rows": 48044,
+        "starts_on_time": true,
+        "ends_on_time": true,
+        "enough_rows": true,
+        "full_coverage": true
+      },
+      {
+        "asset": "DOGE",
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "aligned_rows": 48166,
+        "starts_on_time": true,
+        "ends_on_time": true,
+        "enough_rows": true,
+        "full_coverage": true
+      }
+    ]
+  },
+  "selection_proof_sha256": "d18414da5877ee9fb6d5f4b6d3955cf206dfaf41c016d5a4385e8034b3a8c042"
+}
