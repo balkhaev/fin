@@ -6,6 +6,11 @@ on:
     paths:
       - 'research/active_v171_v178/**'
       - '.github/workflows/active-v179-v180-funding-normalization.yml'
+  pull_request:
+    branches: [agent/active-v171-v178-hyperliquid-funding]
+    paths:
+      - 'research/active_v171_v178/**'
+      - '.github/workflows/active-v179-v180-funding-normalization.yml'
   workflow_dispatch:
 
 concurrency:
