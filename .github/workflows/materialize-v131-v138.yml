@@ -34,7 +34,7 @@ jobs:
           set -euxo pipefail
           python - <<'PY'
           from pathlib import Path
-          import hashlib,json
+          import base64,hashlib,json
           root=Path('.bootstrap_v138')
           m=json.loads((root/'manifest.json').read_text())
           parts=[]
@@ -47,7 +47,6 @@ jobs:
           enc=b''.join(parts)
           assert len(enc)==m['encoded_bytes']
           assert hashlib.sha256(enc).hexdigest()==m['encoded_sha256']
-          import base64
           arc=base64.b64decode(enc,validate=True)
           assert len(arc)==m['archive_bytes']
           assert hashlib.sha256(arc).hexdigest()==m['archive_sha256']
@@ -56,46 +55,7 @@ jobs:
           xz -t /tmp/v138.tar.xz
           mkdir -p /tmp/v138-tree
           tar -xJf /tmp/v138.tar.xz -C /tmp/v138-tree
-          rsync -a /tmp/v138-tree/ ./
-      - name: Replace bootstrap workflow with canonical direct-file CI
-        run: |
-          set -euxo pipefail
-          cat > .github/workflows/active-v131-v138-integrity.yml <<'YAML'
-          name: Active V131-V138 integrity
-          on:
-            push:
-              branches: [main]
-              paths:
-                - 'research/active_v131_v138/**'
-                - 'docs/checkpoints/v138/**'
-                - 'scripts/verify_v138.py'
-                - '.github/workflows/active-v131-v138-integrity.yml'
-            pull_request:
-              branches: [main]
-              paths:
-                - 'research/active_v131_v138/**'
-                - 'docs/checkpoints/v138/**'
-                - 'scripts/verify_v138.py'
-                - '.github/workflows/active-v131-v138-integrity.yml'
-            workflow_dispatch:
-          permissions:
-            contents: read
-          jobs:
-            verify:
-              runs-on: ubuntu-latest
-              timeout-minutes: 30
-              steps:
-                - uses: actions/checkout@v4
-                - uses: actions/setup-python@v5
-                  with:
-                    python-version: '3.12'
-                - run: python -m pip install -r research/active_v131_v138/requirements.txt
-                - run: python -m compileall -q research/active_v131_v138/source scripts/verify_v138.py
-                - run: python research/active_v131_v138/source/run_research.py --self-test
-                - run: python scripts/verify_v138.py
-          YAML
-          rm -rf .bootstrap_v138
-          rm -f .github/workflows/materialize-v131-v138.yml
+          rsync -a --exclude='.github' /tmp/v138-tree/ ./
           find research/active_v131_v138 scripts -type d -name '__pycache__' -prune -exec rm -rf {} + || true
           find research/active_v131_v138 scripts -type f -name '*.pyc' -delete || true
       - name: Verify direct research tree before commit
@@ -113,6 +73,6 @@ jobs:
           set -euxo pipefail
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -A
+          git add research/active_v131_v138 docs/checkpoints/v138 scripts/verify_v138.py
           git commit -m 'Add Active V131-V138 regime and execution research [skip ci]'
           git push origin HEAD:agent/active-v131-v138-regime-execution
