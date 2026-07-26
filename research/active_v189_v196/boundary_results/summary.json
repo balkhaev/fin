@@ -1,0 +1,96 @@
+{
+  "candidate": "V190_OPTIONS_EOH_ARCHIVE_BOUNDARY",
+  "scan_start": "2022-01-01",
+  "scan_end": "2026-06-30",
+  "underlyings": {
+    "BTCUSDT": {
+      "attempted_days": 1642,
+      "archive_days": 147,
+      "first_archive_date": "2023-05-18",
+      "last_archive_date": "2023-10-23",
+      "monthly_counts": {
+        "2023-05": 14,
+        "2023-06": 30,
+        "2023-07": 31,
+        "2023-08": 31,
+        "2023-09": 18,
+        "2023-10": 23
+      },
+      "periods": {
+        "development": {
+          "months": 12,
+          "months_with_archive": 4,
+          "month_coverage": 0.3333333333333333,
+          "archive_days": 103
+        },
+        "validation": {
+          "months": 6,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        },
+        "holdout": {
+          "months": 12,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        },
+        "final": {
+          "months": 6,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        }
+      },
+      "live_through_final": false,
+      "gate_passed": false,
+      "request_errors": 0
+    },
+    "ETHUSDT": {
+      "attempted_days": 1642,
+      "archive_days": 147,
+      "first_archive_date": "2023-05-18",
+      "last_archive_date": "2023-10-23",
+      "monthly_counts": {
+        "2023-05": 14,
+        "2023-06": 30,
+        "2023-07": 31,
+        "2023-08": 31,
+        "2023-09": 18,
+        "2023-10": 23
+      },
+      "periods": {
+        "development": {
+          "months": 12,
+          "months_with_archive": 4,
+          "month_coverage": 0.3333333333333333,
+          "archive_days": 103
+        },
+        "validation": {
+          "months": 6,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        },
+        "holdout": {
+          "months": 12,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        },
+        "final": {
+          "months": 6,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        }
+      },
+      "live_through_final": false,
+      "gate_passed": false,
+      "request_errors": 0
+    }
+  },
+  "cross_underlying_last_date_gap_days": 0,
+  "aligned_last_boundary": true,
+  "continuous_research_permitted": false
+}

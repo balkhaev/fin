@@ -9,13 +9,37 @@
       "bytes": 2919,
       "sha256": "63c18ba80bf3d651886c46dbdbe6f5f0cde9225642431f485a703a464f294d5b"
     },
+    "boundary_results/FROZEN_DECISION.json": {
+      "bytes": 332,
+      "sha256": "75b362f3fa2ed75f3cf865207e3e8ed4de7ffbb3ee70c0917571501e73877efa"
+    },
+    "boundary_results/REPORT_RU.md": {
+      "bytes": 511,
+      "sha256": "1baeb427f2b15cd5c32202ae8c240857fc0f3c1f94849ec23eb739cf73849ba2"
+    },
+    "boundary_results/boundary_scan.json": {
+      "bytes": 438289,
+      "sha256": "2bdd6007f9f88b6b26e47d5f1ff9cc2cde804e6c5d5ed3aba410a72f4e14ab90"
+    },
+    "boundary_results/daily_availability.csv": {
+      "bytes": 123659,
+      "sha256": "e4e4e27a07731e14448f309494fe77c0257dc864c60c7e8f50c36a26a9435cd3"
+    },
+    "boundary_results/summary.json": {
+      "bytes": 2423,
+      "sha256": "9cf584424e4e406006998a94b69a0e7562e8ee4dada20e0c564d692cd0a8c106"
+    },
+    "boundary_scan.log": {
+      "bytes": 249,
+      "sha256": "61b5e7dc56b14c67e25e36f1171aff503e6ff27fd9c57a22119d025b714dabdd"
+    },
     "boundary_scan.py": {
       "bytes": 10582,
       "sha256": "9ce08fd89b6b437053627c475a1286ff64dec6204283e46cb2f7639e036ffe3b"
     },
     "probe.log": {
-      "bytes": 759,
-      "sha256": "3f760bbef69fb193f0a2f16923f87d4d6932db5841e93b8cc6b1e0cd219f28cc"
+      "bytes": 2407,
+      "sha256": "bab50a07151da412faf06e5b4085982ffe1e8f25329efb9d2137f8c4c226247e"
     },
     "probe.py": {
       "bytes": 16035,
