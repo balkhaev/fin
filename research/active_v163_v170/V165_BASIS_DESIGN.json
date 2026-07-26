@@ -12,7 +12,10 @@
     "availability_rule": "completed information only",
     "binance_source": "checksum verified public data archive",
     "okx_source": "public history-candles endpoint",
-    "funding_rule": "conservative fixed buffer per completed trade; no realized future funding used for signal"
+    "funding_rule": "conservative fixed buffer per completed trade; no realized future funding used for signal",
+    "max_abs_synchronized_spread_bps": 300.0,
+    "rows_above_spread_cap_are_missing": true,
+    "minimum_full_coverage_assets": 2
   },
   "signal": {
     "spread": "log(okx_close) - log(binance_close)",
