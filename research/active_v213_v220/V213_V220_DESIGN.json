@@ -1,0 +1,50 @@
+{
+  "candidate": "ACTIVE_V213_SPOT_PERP_LEAD_LAG",
+  "frozen_before_profit_results": true,
+  "assets": ["BTC", "ETH"],
+  "markets": ["Binance spot", "Binance USD-M perpetual"],
+  "bar": "5m",
+  "chronology": {
+    "development": ["2021-01-01", "2023-12-31"],
+    "validation": ["2024-01-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "selection_uses_2024_2026": false,
+    "program_level_holdout_pristine": false
+  },
+  "families": [
+    "spot_lead_continuation",
+    "perp_unconfirmed_reversal",
+    "basis_flow_convergence",
+    "reversed_spot_lead_control"
+  ],
+  "grid": {
+    "shock_z": [1.5, 2.0, 2.5],
+    "cross_market_gap_z": [0.5, 1.0],
+    "hold_bars": [1, 3, 12],
+    "persistence": [1, 2],
+    "policy_count": 144
+  },
+  "execution": {
+    "signal": "completed 5m close and completed taker-flow fields",
+    "entry": "next 5m open",
+    "target_gross": 0.2,
+    "one_position_at_a_time": true,
+    "basis_family_equal_base_notional": true
+  },
+  "audits": {
+    "base_single_round_trip_bps": 12,
+    "base_spot_perp_pair_round_trip_bps": 34,
+    "severe_single_round_trip_bps": 20,
+    "severe_pair_round_trip_bps": 50,
+    "extreme_single_round_trip_bps": 35,
+    "extreme_pair_round_trip_bps": 75,
+    "latency": "+1 completed 5m bar"
+  },
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "integration_permitted_before_standalone_pass": false
+  }
+}
