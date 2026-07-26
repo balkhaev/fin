@@ -1,0 +1,45 @@
+{
+  "candidate": "V189_EOH_EXECUTABILITY_GATE",
+  "sample_dates": [
+    "2023-07-15",
+    "2023-10-15",
+    "2024-01-15",
+    "2024-04-15",
+    "2024-07-15",
+    "2024-10-15",
+    "2025-01-15",
+    "2025-04-15",
+    "2025-07-15",
+    "2025-10-15",
+    "2026-01-15",
+    "2026-04-15"
+  ],
+  "details": [
+    {
+      "underlying": "BTCUSDT",
+      "attempted": 12,
+      "valid": 2,
+      "availability": 0.16666666666666666,
+      "executable_files": 0,
+      "executable_ratio": 0.0,
+      "schema_count": 1,
+      "row_count_min": 5652,
+      "row_count_max": 6112,
+      "gate_passed": false
+    },
+    {
+      "underlying": "ETHUSDT",
+      "attempted": 12,
+      "valid": 2,
+      "availability": 0.16666666666666666,
+      "executable_files": 0,
+      "executable_ratio": 0.0,
+      "schema_count": 1,
+      "row_count_min": 6996,
+      "row_count_max": 7968,
+      "gate_passed": false
+    }
+  ],
+  "passed": false,
+  "settlement_and_multiplier_rule": "Even when quote semantics pass, V190 must add an official deterministic contract multiplier and expiry-settlement source before any P&L."
+}

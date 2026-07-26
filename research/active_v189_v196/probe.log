@@ -1,0 +1,83 @@
+probe 1/24: BTCUSDT 2023-07-15
+probe 2/24: BTCUSDT 2023-10-15
+probe 3/24: BTCUSDT 2024-01-15
+probe 4/24: BTCUSDT 2024-04-15
+probe 5/24: BTCUSDT 2024-07-15
+probe 6/24: BTCUSDT 2024-10-15
+probe 7/24: BTCUSDT 2025-01-15
+probe 8/24: BTCUSDT 2025-04-15
+probe 9/24: BTCUSDT 2025-07-15
+probe 10/24: BTCUSDT 2025-10-15
+probe 11/24: BTCUSDT 2026-01-15
+probe 12/24: BTCUSDT 2026-04-15
+probe 13/24: ETHUSDT 2023-07-15
+probe 14/24: ETHUSDT 2023-10-15
+probe 15/24: ETHUSDT 2024-01-15
+probe 16/24: ETHUSDT 2024-04-15
+probe 17/24: ETHUSDT 2024-07-15
+probe 18/24: ETHUSDT 2024-10-15
+probe 19/24: ETHUSDT 2025-01-15
+probe 20/24: ETHUSDT 2025-04-15
+probe 21/24: ETHUSDT 2025-07-15
+probe 22/24: ETHUSDT 2025-10-15
+probe 23/24: ETHUSDT 2026-01-15
+probe 24/24: ETHUSDT 2026-04-15
+{
+  "decision": {
+    "candidate": "ACTIVE_V189_DEFINED_RISK_OPTIONS_VRP",
+    "status": "eoh_data_not_execution_grade",
+    "executability_gate_passed": false,
+    "selection_run": false,
+    "full_backtest_run": false,
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "design_sha256": "63c18ba80bf3d651886c46dbdbe6f5f0cde9225642431f485a703a464f294d5b"
+  },
+  "gate": {
+    "candidate": "V189_EOH_EXECUTABILITY_GATE",
+    "sample_dates": [
+      "2023-07-15",
+      "2023-10-15",
+      "2024-01-15",
+      "2024-04-15",
+      "2024-07-15",
+      "2024-10-15",
+      "2025-01-15",
+      "2025-04-15",
+      "2025-07-15",
+      "2025-10-15",
+      "2026-01-15",
+      "2026-04-15"
+    ],
+    "details": [
+      {
+        "underlying": "BTCUSDT",
+        "attempted": 12,
+        "valid": 2,
+        "availability": 0.16666666666666666,
+        "executable_files": 0,
+        "executable_ratio": 0.0,
+        "schema_count": 1,
+        "row_count_min": 5652,
+        "row_count_max": 6112,
+        "gate_passed": false
+      },
+      {
+        "underlying": "ETHUSDT",
+        "attempted": 12,
+        "valid": 2,
+        "availability": 0.16666666666666666,
+        "executable_files": 0,
+        "executable_ratio": 0.0,
+        "schema_count": 1,
+        "row_count_min": 6996,
+        "row_count_max": 7968,
+        "gate_passed": false
+      }
+    ],
+    "passed": false,
+    "settlement_and_multiplier_rule": "Even when quote semantics pass, V190 must add an official deterministic contract multiplier and expiry-settlement source before any P&L."
+  }
+}

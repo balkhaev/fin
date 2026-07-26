@@ -1,0 +1,45 @@
+{
+  "candidate": "ACTIVE_V189_DEFINED_RISK_OPTIONS_VRP",
+  "files": {
+    "README.md": {
+      "bytes": 3835,
+      "sha256": "20545fbdc05e6cdba8fd358719dbb02c943afa6bd8a76fcc890ce8c7c23ac56c"
+    },
+    "V189_V196_DESIGN.json": {
+      "bytes": 2919,
+      "sha256": "63c18ba80bf3d651886c46dbdbe6f5f0cde9225642431f485a703a464f294d5b"
+    },
+    "probe.log": {
+      "bytes": 759,
+      "sha256": "3f760bbef69fb193f0a2f16923f87d4d6932db5841e93b8cc6b1e0cd219f28cc"
+    },
+    "probe.py": {
+      "bytes": 16035,
+      "sha256": "391dfc32334059075820a8570ecf2b840f9dc431ecb080ad065763d0183f7a03"
+    },
+    "probe_results/FROZEN_DECISION.json": {
+      "bytes": 410,
+      "sha256": "6b1c759d184086af715a1836f5feefaf8b94ca0e5bfb5b32dce5791a4841d24f"
+    },
+    "probe_results/REPORT_RU.md": {
+      "bytes": 470,
+      "sha256": "dc10db8e669bb2f45c380f3d091c0d4a8c207655262aeafc3b5bcfb2327d2a10"
+    },
+    "probe_results/coverage.csv": {
+      "bytes": 2090,
+      "sha256": "b41492cf0ce009255624e6fb214d28a3bfaf4c8049675a7f03ff52b2dac12783"
+    },
+    "probe_results/executability_gate.json": {
+      "bytes": 1099,
+      "sha256": "de806fe2365e23de427efa945d7a93dde6f38cdb6a1cdbd56497940656c1403b"
+    },
+    "probe_results/raw_probe.json": {
+      "bytes": 30788,
+      "sha256": "5d0e662dfbc960af6b38124fb0c880a680a5935d169b1c353620606765002ec0"
+    },
+    "requirements.txt": {
+      "bytes": 18,
+      "sha256": "a8dc766995bf9cf7992e2132f14c5b2a868a212513a0da7dd2c40458bda55332"
+    }
+  }
+}
