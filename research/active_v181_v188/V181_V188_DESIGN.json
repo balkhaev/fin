@@ -1,0 +1,78 @@
+{
+  "candidate": "ACTIVE_V181_COINM_LIQUIDATION_FLOW",
+  "frozen_before_profit_results": true,
+  "frozen_at_utc": "2026-07-27T00:00:00Z",
+  "objective": "independent intraday P&L from actual forced-liquidation observations",
+  "universe": {
+    "venue": "binance_coin_m",
+    "symbols": ["BTCUSD_PERP", "ETHUSD_PERP"],
+    "replacement_after_results": false
+  },
+  "sources": {
+    "liquidations": "data.binance.vision futures/cm daily liquidationSnapshot",
+    "metrics": "data.binance.vision futures/cm daily metrics",
+    "prices": "data.binance.vision futures/cm daily markPriceKlines 1m",
+    "checksum_required": true,
+    "raw_payload_sha256_required": true
+  },
+  "periods": {
+    "development": ["2021-01-01", "2023-12-31"],
+    "validation": ["2024-01-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "program_level_holdout_pristine": false
+  },
+  "availability": {
+    "event_bucket": "completed_1m",
+    "execution": "next_available_1m_open",
+    "future_event_totals_forbidden": true,
+    "future_extrema_forbidden": true,
+    "missing_critical_input": "no_new_risk"
+  },
+  "grid": {
+    "rolling_intensity_percentile": [95.0, 97.5, 99.0],
+    "minimum_cluster_minutes": [1, 3],
+    "holding_minutes": [1, 5, 15, 60],
+    "reaction": ["continuation", "reversal"],
+    "liquidated_side": ["long", "short"],
+    "policy_count": 96
+  },
+  "risk": {
+    "target_gross": 0.25,
+    "max_concurrent_trades": 1,
+    "leverage_above_equity": false,
+    "same_minute_reentry": false
+  },
+  "audits": {
+    "base_round_trip_bps": 15.0,
+    "severe_round_trip_bps": 30.0,
+    "extreme_round_trip_bps": 50.0,
+    "latency_minutes": 1,
+    "forced_missing_exit_extra_bps": 20.0
+  },
+  "standalone_gates": {
+    "development_cagr_min": 0.05,
+    "development_sharpe_min": 1.0,
+    "development_max_drawdown_min": -0.12,
+    "development_closed_trades_min": 150,
+    "btc_return_positive": true,
+    "eth_return_positive": true,
+    "validation_return_positive": true,
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "severe_full_cagr_positive": true,
+    "delay_full_cagr_positive": true,
+    "worst_calendar_year_min": -0.08,
+    "top_month_positive_pnl_share_max": 0.35,
+    "unexplained_events_max": 0
+  },
+  "integration": {
+    "permitted_only_after_standalone_pass": true,
+    "v75_weights_to_test": [0.05, 0.1, 0.15]
+  },
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
