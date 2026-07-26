@@ -13,10 +13,6 @@ on:
       - '.github/workflows/active-v164-history-access.yml'
   workflow_dispatch:
 
-concurrency:
-  group: active-v164-history-access-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: write
 
