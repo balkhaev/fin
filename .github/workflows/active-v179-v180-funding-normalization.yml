@@ -1,0 +1,183 @@
+name: Active V179-V180 funding schedule reproof
+
+on:
+  push:
+    branches: [agent/active-v179-v180-funding-normalization]
+    paths:
+      - 'research/active_v171_v178/**'
+      - '.github/workflows/active-v179-v180-funding-normalization.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v179-v180-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  reproof:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v179-v180-funding-normalization
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply predeclared schedule normalization
+        run: |
+          set -euxo pipefail
+          python research/active_v171_v178/apply_v179_boundary_fix.py
+          rm research/active_v171_v178/apply_v179_boundary_fix.py
+          grep -q 'funding_hours_hyperliquid' research/active_v171_v178/data.py
+
+      - name: Install and compile
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v171_v178/requirements.txt
+          python -m compileall -q research/active_v171_v178
+
+      - name: Verify boundary and schedule semantics
+        run: |
+          set -euxo pipefail
+          cd research/active_v171_v178
+          python - <<'PY'
+          import pandas as pd
+          from data import _funding_blocks
+
+          jittered = pd.DataFrame({
+              'timestamp': pd.to_datetime(['2024-01-01T08:00:00.005Z']),
+              'rate': [0.001],
+              'interval_hours': [8.0],
+          })
+          result = _funding_blocks(jittered, 'binance')
+          assert result.loc[0, 'timestamp'] == pd.Timestamp('2024-01-01T00:00:00Z')
+          assert result.loc[0, 'funding_hours_binance'] == 8.0
+
+          hourly = pd.DataFrame({
+              'timestamp': pd.to_datetime([
+                  f'2024-01-01T{hour:02d}:00:00.005Z' for hour in range(1, 9)
+              ]),
+              'rate': [0.00001] * 8,
+          })
+          result = _funding_blocks(hourly, 'hyperliquid')
+          row = result[result.timestamp.eq(pd.Timestamp('2024-01-01T00:00:00Z'))].iloc[0]
+          assert row.funding_count_hyperliquid == 8
+          assert row.funding_hours_hyperliquid == 8.0
+
+          eight_hour = pd.DataFrame({
+              'timestamp': pd.to_datetime([
+                  '2023-06-06T00:00:00.100Z',
+                  '2023-06-06T08:00:00.200Z',
+                  '2023-06-06T16:00:00.300Z',
+              ]),
+              'rate': [0.0001, 0.0002, 0.0003],
+          })
+          result = _funding_blocks(eight_hour, 'hyperliquid')
+          assert (result.funding_hours_hyperliquid == 8.0).all()
+          print(result.to_string(index=False))
+          PY
+          python run_research.py --self-test
+
+      - name: Run frozen grid from committed observations
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v171_v178/results \
+                 research/active_v171_v178/inputs/normalized \
+                 research/active_v171_v178/inputs/provenance.json \
+                 research/active_v171_v178/MANIFEST.json \
+                 docs/checkpoints/v180
+          python research/active_v171_v178/run_research.py \
+            --root research/active_v171_v178 \
+            --raw-cache research/active_v171_v178/inputs/raw \
+            --v165-processed research/active_v163_v170/inputs/processed \
+            --atlas research/active_v139_v146/inputs/v75_stress_equity.csv \
+            2>&1 | tee research/active_v171_v178/run_v179_v180.log
+
+      - name: Materialize V179 normalization proof and V180 checkpoint
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          root = Path('research/active_v171_v178')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = {
+              'candidate': 'V179_FUNDING_SCHEDULE_NORMALIZATION',
+              'method': 'round_to_nearest_hour_with_30m_tolerance_then_assign_payment_to_completed_8h_block',
+              'coverage_unit': 'hours',
+              'required_hours_per_venue_per_block': 8.0,
+              'assets': {},
+              'coverage_gate': summary['coverage_gate'],
+          }
+          for path in sorted((root / 'inputs/normalized').glob('*_8h.csv')):
+              asset = path.stem.replace('_8h', '')
+              frame = pd.read_csv(path)
+              proof['assets'][asset] = {
+                  'rows': int(len(frame)),
+                  'complete_blocks': int(frame['funding_complete'].astype(bool).sum()),
+                  'funding_coverage': float(frame['funding_complete'].astype(bool).mean()),
+                  'max_binance_jitter_seconds': float(frame['funding_max_jitter_seconds_binance'].max()),
+                  'max_hyperliquid_jitter_seconds': float(frame['funding_max_jitter_seconds_hyperliquid'].max()),
+              }
+          (root / 'results/V179_NORMALIZATION_PROOF.json').write_text(
+              json.dumps(proof, indent=2) + '\n'
+          )
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+
+          test -s research/active_v171_v178/results/summary.json
+          test -s research/active_v171_v178/results/FROZEN_DECISION.json
+          test -s research/active_v171_v178/results/V179_NORMALIZATION_PROOF.json
+          test -s research/active_v171_v178/results/selection_proof_before_holdout.json
+          test -s research/active_v171_v178/results/ANNUAL_RETURNS.csv
+
+          mkdir -p docs/checkpoints/v180
+          cp research/active_v171_v178/results/summary.json \
+             docs/checkpoints/v180/CHECKPOINT_V180.json
+          cp research/active_v171_v178/results/REPORT_RU.md \
+             docs/checkpoints/v180/RESEARCH_CHECKPOINT_V180_RU.md
+          cp research/active_v171_v178/results/ANNUAL_RETURNS.csv \
+             docs/checkpoints/v180/ANNUAL_RETURNS.csv
+          cp research/active_v171_v178/results/V179_NORMALIZATION_PROOF.json \
+             docs/checkpoints/v180/V179_NORMALIZATION_PROOF.json
+
+      - name: Commit corrected source and frozen evidence
+        run: |
+          set -euxo pipefail
+          find research/active_v171_v178 docs/checkpoints/v180 \
+            -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v171_v178 docs/checkpoints/v180 \
+            -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v171_v178 docs/checkpoints/v180
+          if git diff --cached --quiet; then
+            echo 'No V179-V180 changes'
+          else
+            git commit -m 'Archive V179-V180 funding schedule reproof [skip ci]'
+            git push origin HEAD:agent/active-v179-v180-funding-normalization
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v179-v180-funding-schedule-reproof
+          path: |
+            research/active_v171_v178/results
+            research/active_v171_v178/run_v179_v180.log
+            docs/checkpoints/v180
+          if-no-files-found: warn
+          retention-days: 30
