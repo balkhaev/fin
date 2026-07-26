@@ -1,0 +1,44 @@
+{
+  "candidate": "ACTIVE_V139_V146_GLOBAL_FUTURES_PROXY",
+  "selection_cutoff": "2020-12-31",
+  "selection_uses_2021_or_later": false,
+  "universe_fixed_before_fetch": [
+    "ES=F",
+    "NQ=F",
+    "RTY=F",
+    "ZN=F",
+    "ZB=F",
+    "GC=F",
+    "SI=F",
+    "CL=F",
+    "NG=F",
+    "6E=F",
+    "6J=F",
+    "6B=F",
+    "6A=F",
+    "6C=F",
+    "6S=F",
+    "ZC=F",
+    "ZW=F",
+    "ZS=F"
+  ],
+  "policy_count": 192,
+  "gates": {
+    "prefinal_cagr_min": 0.05,
+    "prefinal_sharpe_min": 0.6,
+    "prefinal_dd_min": -0.2,
+    "turnover_max": 15.0,
+    "both_validations_positive": true,
+    "stress_prefinal_positive": true,
+    "stress_dd_min": -0.25,
+    "zero_liquidations": true,
+    "positive_margin_buffer": true
+  },
+  "selected": [
+    "slow_trend_v12_g100_r10_b5_micro",
+    "slow_trend_v12_g125_r10_b5_micro",
+    "slow_trend_v15_g100_r10_b5_micro"
+  ],
+  "selected_all_eligible": false,
+  "ranking_sha256": "e3eb3d859688b792d9b470d30f182525a1e03db38b9d303476ef6212eab9a68b"
+}
