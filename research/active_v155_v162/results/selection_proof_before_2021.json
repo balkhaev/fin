@@ -1,0 +1,57 @@
+{
+  "candidate": "ACTIVE_V155_V162_VIX_CARRY_CONVEXITY",
+  "selection_cutoff": "2020-12-31",
+  "selection_uses_2021_or_later": false,
+  "hypothesis_inspired_by_post_2020_v154_failure": true,
+  "policy_count": 116,
+  "eligible_policy_count": 0,
+  "selected": [
+    {
+      "name": "switch_ca04_cv04_c06_s20_h7",
+      "family": "carry_convex_switch",
+      "carry_budget": 0.04,
+      "convex_budget": 0.04,
+      "contango_threshold": 0.06,
+      "crisis_threshold": 0.0,
+      "spike_threshold": 0.2,
+      "confirm_days": 2,
+      "hold_days": 7
+    },
+    {
+      "name": "defensive_ca02_cv06_c05_b03_h7",
+      "family": "defensive_switch",
+      "carry_budget": 0.02,
+      "convex_budget": 0.06,
+      "contango_threshold": 0.05,
+      "crisis_threshold": 0.03,
+      "spike_threshold": 0.15,
+      "confirm_days": 2,
+      "hold_days": 7
+    },
+    {
+      "name": "carry_b04_c06_q3_h7",
+      "family": "carry_only",
+      "carry_budget": 0.04,
+      "convex_budget": 0.0,
+      "contango_threshold": 0.06,
+      "crisis_threshold": 0.0,
+      "spike_threshold": 0.15,
+      "confirm_days": 3,
+      "hold_days": 7
+    }
+  ],
+  "standalone_gates": {
+    "prefinal_cagr_min": 0.025,
+    "prefinal_sharpe_min": 0.6,
+    "prefinal_max_drawdown_min": -0.15,
+    "annual_turnover_max": 15.0,
+    "validation_2011_2014_min": 0.0,
+    "validation_2015_2018_min": 0.0,
+    "bridge_2019_2020_min": 0.0,
+    "stress_prefinal_cagr_min": 0.0,
+    "stress_prefinal_max_drawdown_min": -0.2,
+    "synthetic_overnight_loss_min": -0.075
+  },
+  "ranking_sha256": "67476ab768dd91bb3ef49fb4797633c15903ab428f6190697c5cc7776fc8400a",
+  "selection_proof_sha256": "a00fdd414c69ab59258c4db9af9397d6bd4c122699f66652b12c3322cfa0794e"
+}

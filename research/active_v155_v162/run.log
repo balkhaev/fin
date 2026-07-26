@@ -1,0 +1,180 @@
+evaluated 24/116 carry/convex policies
+evaluated 48/116 carry/convex policies
+evaluated 72/116 carry/convex policies
+evaluated 96/116 carry/convex policies
+{
+  "candidate": "ACTIVE_V155_V162_VIX_CARRY_CONVEXITY",
+  "status": "rejected_or_needs_iteration",
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "original_v75": {
+    "total_return": 3.3554131438812718,
+    "annualized_return": 0.3068209897853704,
+    "max_drawdown": -0.21591803526892284,
+    "sharpe": 1.3294516915576948,
+    "annual_turnover": 10.643693754982161,
+    "average_gross": 0.419673257646428,
+    "max_gross": 1.0431405191032543
+  },
+  "selection": {
+    "selection_cutoff": "2020-12-31",
+    "selection_uses_2021_or_later": false,
+    "hypothesis_inspired_by_post_2020_v154_failure": true,
+    "policy_count": 116,
+    "eligible_policy_count": 0,
+    "selected": [
+      {
+        "name": "switch_ca04_cv04_c06_s20_h7",
+        "family": "carry_convex_switch",
+        "carry_budget": 0.04,
+        "convex_budget": 0.04,
+        "contango_threshold": 0.06,
+        "crisis_threshold": 0.0,
+        "spike_threshold": 0.2,
+        "confirm_days": 2,
+        "hold_days": 7
+      },
+      {
+        "name": "defensive_ca02_cv06_c05_b03_h7",
+        "family": "defensive_switch",
+        "carry_budget": 0.02,
+        "convex_budget": 0.06,
+        "contango_threshold": 0.05,
+        "crisis_threshold": 0.03,
+        "spike_threshold": 0.15,
+        "confirm_days": 2,
+        "hold_days": 7
+      },
+      {
+        "name": "carry_b04_c06_q3_h7",
+        "family": "carry_only",
+        "carry_budget": 0.04,
+        "convex_budget": 0.0,
+        "contango_threshold": 0.06,
+        "crisis_threshold": 0.0,
+        "spike_threshold": 0.15,
+        "confirm_days": 3,
+        "hold_days": 7
+      }
+    ],
+    "selection_proof_sha256": "70ef5cc077a91f9768ffcfbcd2901d774b2ab0e60d1fc33a37eed98cb8e6d6d5"
+  },
+  "selected_sleeve": {
+    "full": {
+      "total_return": -0.14655459525227887,
+      "annualized_return": -0.007093322249532963,
+      "max_drawdown": -0.2709789950825876,
+      "sharpe": -0.07458934900010973,
+      "annual_turnover": 1.7729177043938829,
+      "average_gross": 0.02508631978406217,
+      "max_gross": 0.06624133977969397,
+      "costs": 798.4321700174031,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8793234870264298,
+      "observations_per_year": 247.10355337596852
+    },
+    "prefinal_2006_2020": {
+      "total_return": 0.07679094359095662,
+      "annualized_return": 0.0049469227635063895,
+      "max_drawdown": -0.1758782795404603,
+      "sharpe": 0.09547848621617498,
+      "annual_turnover": 1.752493575010367,
+      "average_gross": 0.025312081954846313,
+      "max_gross": 0.06624133977969397,
+      "costs": 554.6963675535958,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8793234870264298,
+      "observations_per_year": 245.1847023374726
+    },
+    "holdout_2021_2023": {
+      "total_return": -0.07867616210624662,
+      "annualized_return": -0.02710907399599294,
+      "max_drawdown": -0.07832293027401982,
+      "sharpe": -1.2886216251327722,
+      "annual_turnover": 1.8523745329378078,
+      "average_gross": 0.02619724019869204,
+      "max_gross": 0.04324141499584875,
+      "costs": 102.98309010252107,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8860410256410257,
+      "observations_per_year": 252.55059917355373
+    },
+    "holdout_2024_2025": {
+      "total_return": -0.04721101657739957,
+      "annualized_return": -0.023938975163082632,
+      "max_drawdown": -0.056171838320208556,
+      "sharpe": -0.8966298674450595,
+      "annual_turnover": 1.952373494254466,
+      "average_gross": 0.025770209961265153,
+      "max_gross": 0.045914267315082594,
+      "costs": 68.33958438361549,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8826068485002975,
+      "observations_per_year": 252.0123148148148
+    },
+    "final_2026h1": {
+      "total_return": -0.0026942454894151036,
+      "annualized_return": -0.005489797383312567,
+      "max_drawdown": -0.020032253518862175,
+      "sharpe": -0.2259770705898653,
+      "annual_turnover": 1.7196260088773967,
+      "average_gross": 0.026166773525939185,
+      "max_gross": 0.03902045782332996,
+      "costs": 14.487452211646305,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8863552311435523,
+      "observations_per_year": 250.97668994413408
+    },
+    "severe_full": {
+      "total_return": -0.4783482159538244,
+      "annualized_return": -0.028808637803034776,
+      "max_drawdown": -0.516387488720025,
+      "sharpe": -0.3854279239354528,
+      "annual_turnover": 1.7674646122821258,
+      "average_gross": 0.02506469821401257,
+      "max_gross": 0.06624133977969397,
+      "costs": 3674.469969812398,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8251821232366363,
+      "observations_per_year": 247.10355337596852
+    },
+    "synthetic_overnight_audit": {
+      "worst_up_shock_return": -0.008333333333333333,
+      "worst_down_shock_return": -0.016666666666666666,
+      "worst_synthetic_overnight_return": -0.016666666666666666,
+      "max_synthetic_gain": 0.03333333333333333
+    },
+    "post_selection_checks": {
+      "holdout_2021_2023": false,
+      "holdout_2024_2025": false,
+      "final_2026h1": false,
+      "severe_full_cagr": false,
+      "worst_year": true,
+      "best_year_concentration": false
+    },
+    "vxm_integer_feasibility": {
+      "active_days": 1286,
+      "fraction_days_one_contract_feasible": 0.0,
+      "median_fractional_contracts": 0.14395410978443723,
+      "median_one_contract_weight": 0.2184984533035127
+    }
+  },
+  "standalone_selection_passed": false,
+  "integration_permitted": false,
+  "integration_weight": null,
+  "integration_checks": {},
+  "integration_passed": false,
+  "promoted_candidates": [],
+  "source_data": {
+    "contracts_sha256": "09cef89e518becfd11c422733a87b7466b06db25d08ecce24915fbc1398c3bd2",
+    "features_sha256": "daaf8ed1889576a9d34caab8fceb8589b07e752f41c64d06c4bc57d8dd2ca249",
+    "official_contract_rows": 44997,
+    "official_expiries": 264
+  },
+  "evidence_limits": {
+    "program_level_holdout_pristine": false,
+    "historical_bid_ask_available": false,
+    "historical_broker_margin_available": false,
+    "real_execution_authorized": false
+  }
+}
