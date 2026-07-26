@@ -1,0 +1,21 @@
+{
+  "checkpoint": "V138",
+  "files": {
+    "ANNUAL_RETURNS.csv": {
+      "bytes": 516,
+      "sha256": "d280cd1df0707157b45a9a28a2cd9aec33dec58e2f97a83ea201857ea656565d"
+    },
+    "CHECKPOINT_V138.json": {
+      "bytes": 8891,
+      "sha256": "8f7663ab93fa08291fd84425d362338c00d20e29e5e4f6daf6cd8e319e184690"
+    },
+    "HANDOFF.md": {
+      "bytes": 460,
+      "sha256": "d190fa1ab393afc83410f8c3a6c17ae9ced500ba227943a145646076359c8e7c"
+    },
+    "RESEARCH_CHECKPOINT_V138_RU.md": {
+      "bytes": 2579,
+      "sha256": "198ff79d652adb4d576b706c29d7dd36ccc68453cf23599d45ac8d941f7da2ab"
+    }
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "research_cycle": "V131-V138",
+  "files": {
+    "ANNUAL_RETURNS.csv": {
+      "bytes": 516,
+      "sha256": "d280cd1df0707157b45a9a28a2cd9aec33dec58e2f97a83ea201857ea656565d"
+    },
+    "FROZEN_DECISION.json": {
+      "bytes": 8891,
+      "sha256": "8f7663ab93fa08291fd84425d362338c00d20e29e5e4f6daf6cd8e319e184690"
+    },
+    "README.md": {
+      "bytes": 1012,
+      "sha256": "b9db4297f60577b1d51f8503a5d09644ebfde0c941ec9671fa1ce51bd956c9c0"
+    },
+    "REPORT_RU.md": {
+      "bytes": 2579,
+      "sha256": "198ff79d652adb4d576b706c29d7dd36ccc68453cf23599d45ac8d941f7da2ab"
+    },
+    "dependencies/atlas/inputs/asset/v27_asset_weights.csv": {
+      "bytes": 960146,
+      "sha256": "44d93d30e6e7329b26ace2fbdcad2dc418c802d3888793d01d6bdbf43a4ba677"
+    },
+    "dependencies/atlas/inputs/asset/v4_frozen_signal.csv": {
+      "bytes": 172754,
+      "sha256": "1d3ea18c8e6ba155d3349420ccf2581f049cbbd0f05077ceba66cdc21ae46ab6"
+    },
+    "dependencies/atlas/inputs/asset/v5/processed/funding_BTCUSDT.csv": {
+      "bytes": 272467,
+      "sha256": "3b74232634f1201f40c7e5883a0c824befe89b4683ab72f7a3817d86d6207df3"
+    },
+    "dependencies/atlas/inputs/asset/v5/processed/funding_ETHUSDT.csv": {
+      "bytes": 272607,
+      "sha256": "75ba5f5f7b4d59f137d1975e3280fee1b633c15d006d2b450388f89d1f10baa1"
+    },
+    "dependencies/atlas/inputs/asset/v5/processed/perp_BTCUSDT_8h.csv": {
+      "bytes": 863172,
+      "sha256": "01346cc0e6182a6e61e8f09a0997899e53932a57fbfbdce59f4a803d8f08f073"
+    },
+    "dependencies/atlas/inputs/asset/v5/processed/perp_ETHUSDT_8h.csv": {
+      "bytes": 862706,
+      "sha256": "6a3fab67d7875b717eb67a565765ce68d487bcebd844d8e99d09f38809fbcccb"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_ADAUSDT_1d.csv": {
+      "bytes": 276070,
+      "sha256": "ca723a1779e0a83b8206d2095e36144acbb8a5b37be839389ee80c5f7f26b9dc"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_BCHUSDT_1d.csv": {
+      "bytes": 259781,
+      "sha256": "a660df3789d086afd514c579b49fce7510fda555e2bdbc9785db9384f1f772e5"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_BNBUSDT_1d.csv": {
+      "bytes": 271085,
+      "sha256": "1caff73e786f06a4e5d1e89b6c4da4a7974a5553cc1c3a0b57cecebb80b2d3b2"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_BTCUSDT_1d.csv": {
+      "bytes": 312454,
+      "sha256": "c25d6932de47dacbb075191a8740357ed6a97f18394ad98eb13b6b22028e6b1e"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_DOGEUSDT_1d.csv": {
+      "bytes": 290916,
+      "sha256": "b1bebb0f8b05d18cecb02e70a639d79905cb5811a8e6c4889a1dbf6934a45279"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_EOSUSDT_1d.csv": {
+      "bytes": 217810,
+      "sha256": "04748276c445cb03dc2e92e6a4f4a70ddc466304d819ebdec94ffbef844a778b"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_ETHUSDT_1d.csv": {
+      "bytes": 298042,
+      "sha256": "d4a8dac718d69ed8c18042038f68acb136e6ec1a0304581cd412e428a90f3826"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_LTCUSDT_1d.csv": {
+      "bytes": 267849,
+      "sha256": "3fce93a1a844a38120f0fa6846fb2bdc1eac87c6de6317f4a62b5e6cdd2c5fec"
+    },
+    "dependencies/atlas/inputs/asset/v6/processed_XRPUSDT_1d.csv": {
+      "bytes": 278757,
+      "sha256": "f299dc068e461e53ba7a79e33b8d85df15e0a34c2fdbb32125a0ad68b7056960"
+    },
+    "dependencies/atlas/inputs/asset/v67_leader_equity.csv": {
+      "bytes": 464752,
+      "sha256": "068fa4818d54cd5b04c1fea41ffe438c5a6b6751a8bf7ea1c29cd97d33f47fab"
+    },
+    "dependencies/atlas/source/v75_operational_feedback_engine.py": {
+      "bytes": 17495,
+      "sha256": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc"
+    },
+    "requirements.txt": {
+      "bytes": 29,
+      "sha256": "321449af8d7f9338d4fa581ea6d7a712133a9cb08fff5ba948b7f808c6d4461c"
+    },
+    "results/v132/annual_returns.csv": {
+      "bytes": 300,
+      "sha256": "9713e8f781ca5fb4ff334bbda6e9f8a998ba5ab98028ad9fcdeac4d1d23c5724"
+    },
+    "results/v132/audit_metrics.csv": {
+      "bytes": 3709,
+      "sha256": "865a3a9acb45417f3fd0f7c29bab0ee6d574c384bcf8adc05de4e3d7884ad510"
+    },
+    "results/v132/candidate_comparison.csv": {
+      "bytes": 666,
+      "sha256": "f9953f39dde07b966578051f030794a82a3be95ba305c06a58db744648687106"
+    },
+    "results/v132/frozen_component_prefinal.csv": {
+      "bytes": 2437,
+      "sha256": "4c9f7b59c53d064d1a98cc658cc81cdc407d3db1abaa7a2c18535e5b93d1a257"
+    },
+    "results/v132/selection_proof_before_final.json": {
+      "bytes": 2401,
+      "sha256": "12acf9e838d39a587b4bd9cb53593b544c71e88771597d5317b96d70c0287139"
+    },
+    "results/v132/stress_equity.csv": {
+      "bytes": 474153,
+      "sha256": "200f6d33b6761ac6cefcfbbaf9e2aeb307a1d2f6ef3cd682f090b32843846e4d"
+    },
+    "results/v132/summary.json": {
+      "bytes": 13847,
+      "sha256": "a76058245195e8150b0c84ecd93538c142c35cd0cc00ce23e0209e4588e78dc2"
+    },
+    "results/v132/v75_original_annual_returns.csv": {
+      "bytes": 167,
+      "sha256": "e3de37108b5d459ad9f8324388a3a34571f29c5c594a77d82477cb812c8e0d25"
+    },
+    "results/v132/v75_original_stress_equity.csv": {
+      "bytes": 522305,
+      "sha256": "0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b"
+    },
+    "results/v134/annual_returns.csv": {
+      "bytes": 302,
+      "sha256": "be48f2ce2642b3ffe7474f2478b33fb97155be541e38cc2ef909b5f50a25c290"
+    },
+    "results/v134/audit_metrics.csv": {
+      "bytes": 3702,
+      "sha256": "4f7173f65c9008287fbc24a89fd8db82d09283b9742540d647ff0162342ae101"
+    },
+    "results/v134/candidate_comparison.csv": {
+      "bytes": 659,
+      "sha256": "4846bccfac9a5c6b6cf7eae551db13b0ab2031a739abd5a6e1302d7bb3599fd2"
+    },
+    "results/v134/selection_proof_before_final.json": {
+      "bytes": 1913,
+      "sha256": "1fc6e40b1b691c3bac8f0908241b8c77388d42f05845fe07a214ecb653ae3a0d"
+    },
+    "results/v134/selection_ranking_before_final.csv": {
+      "bytes": 3251,
+      "sha256": "f71234234a6d061db0a8f11cc076ce339526d7dfff22ff5d419d88714a4029de"
+    },
+    "results/v134/stress_equity.csv": {
+      "bytes": 444504,
+      "sha256": "0f2597a577c4fb1d009000af77086115a86e1a9ab4301e41f2a099bd74000410"
+    },
+    "results/v134/summary.json": {
+      "bytes": 13917,
+      "sha256": "6d1128483a940aa87e507371b0065fb8f934bfd16696f46b5f2d4ff1f4bbe8ea"
+    },
+    "results/v134/v75_original_annual_returns.csv": {
+      "bytes": 167,
+      "sha256": "e3de37108b5d459ad9f8324388a3a34571f29c5c594a77d82477cb812c8e0d25"
+    },
+    "results/v134/v75_original_stress_equity.csv": {
+      "bytes": 522305,
+      "sha256": "0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b"
+    },
+    "results/v136/annual_returns.csv": {
+      "bytes": 300,
+      "sha256": "f644d79cdf703a49a1a9c6e6dae777c37da7088de4961cdf43049a4c1205ec54"
+    },
+    "results/v136/audit_metrics.csv": {
+      "bytes": 3583,
+      "sha256": "c5039392b820792a4de49fd371d12497ad6def20a8e4f06fa0aa37bfe2a0cdc0"
+    },
+    "results/v136/candidate_comparison.csv": {
+      "bytes": 652,
+      "sha256": "1b159ad7b02db285af7592814cff3d69562bf5f2b9453a70a4ebd659a447c2af"
+    },
+    "results/v136/selection_proof_before_final.json": {
+      "bytes": 1655,
+      "sha256": "430ea1d19629d89c496d8523e005cd15ec1734801fd6218e19fd0892c13e0b85"
+    },
+    "results/v136/selection_ranking_before_final.csv": {
+      "bytes": 3815,
+      "sha256": "3ca185a9e50a4d24f7d18dd0fc1c7d3c77b11b640052dce095ffe8facd6abe68"
+    },
+    "results/v136/stress_equity.csv": {
+      "bytes": 424458,
+      "sha256": "1b6b206ed8ca022efc3faf70e7a52e0401ad36b81772c23379bc6b71ec0ff820"
+    },
+    "results/v136/summary.json": {
+      "bytes": 14192,
+      "sha256": "4928dcf2d3b7c8caa6e318bef317448f0a85557b4bbdd3c8836adfc560b7cfaf"
+    },
+    "results/v136/v75_original_annual_returns.csv": {
+      "bytes": 167,
+      "sha256": "e3de37108b5d459ad9f8324388a3a34571f29c5c594a77d82477cb812c8e0d25"
+    },
+    "results/v136/v75_original_stress_equity.csv": {
+      "bytes": 522305,
+      "sha256": "0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b"
+    },
+    "source/run_execution_layer.py": {
+      "bytes": 12011,
+      "sha256": "0918e588dae21e5b41fe9585ce9baf0f57907eb58a259dff4b524b1e559adc82"
+    },
+    "source/run_frozen_breadth.py": {
+      "bytes": 6467,
+      "sha256": "2ba11060148761276e6530d3049986e652992ca9f46190cecc818b44f41ec81d"
+    },
+    "source/run_hysteresis.py": {
+      "bytes": 7973,
+      "sha256": "5c88dae42faddfab2d5a2d3b678d7c881eb81aeb7e7a4dfd18ef343ef089390c"
+    },
+    "source/run_research.py": {
+      "bytes": 23567,
+      "sha256": "fc26c84e0785fc386b9023281b713d69f9291e805bfbd0b872ad13298d5290b8"
+    }
+  }
+}
