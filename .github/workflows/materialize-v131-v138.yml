@@ -6,6 +6,11 @@ on:
     paths:
       - '.bootstrap_v138/**'
       - '.github/workflows/materialize-v131-v138.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.bootstrap_v138/**'
+      - '.github/workflows/materialize-v131-v138.yml'
   workflow_dispatch:
 
 permissions:
