@@ -1,53 +1,45 @@
 {
-  "candidate": "ACTIVE_V171_BINANCE_HYPERLIQUID_FUNDING",
-  "selection_cutoff": "2024-12-31T23:59:59Z",
-  "selection_uses_2025": false,
-  "selection_uses_2026": false,
-  "program_level_holdout_pristine": false,
-  "policy_count": 54,
-  "eligible_policy_count": 0,
-  "selected": [
-    {
-      "lookback_blocks": 3,
-      "min_predicted_edge_bps": 32.0,
-      "hold_blocks": 3,
-      "max_abs_basis_bps": 40.0,
-      "name": "fund_l3_e32_h3_b40"
+  "candidate": "V179_FUNDING_SCHEDULE_NORMALIZATION",
+  "method": "round_to_nearest_hour_with_30m_tolerance_then_assign_payment_to_completed_8h_block",
+  "coverage_unit": "hours",
+  "required_hours_per_venue_per_block": 8.0,
+  "assets": {
+    "BTC": {
+      "rows": 3471,
+      "complete_blocks": 3434,
+      "funding_coverage": 0.9893402477672141,
+      "max_binance_jitter_seconds": 0.029,
+      "max_hyperliquid_jitter_seconds": 1433.04
     },
-    {
-      "lookback_blocks": 12,
-      "min_predicted_edge_bps": 16.0,
-      "hold_blocks": 3,
-      "max_abs_basis_bps": 40.0,
-      "name": "fund_l12_e16_h3_b40"
+    "DOGE": {
+      "rows": 3471,
+      "complete_blocks": 3434,
+      "funding_coverage": 0.9893402477672141,
+      "max_binance_jitter_seconds": 0.029,
+      "max_hyperliquid_jitter_seconds": 1433.04
     },
-    {
-      "lookback_blocks": 6,
-      "min_predicted_edge_bps": 24.0,
-      "hold_blocks": 3,
-      "max_abs_basis_bps": 40.0,
-      "name": "fund_l6_e24_h3_b40"
+    "ETH": {
+      "rows": 3471,
+      "complete_blocks": 3434,
+      "funding_coverage": 0.9893402477672141,
+      "max_binance_jitter_seconds": 0.029,
+      "max_hyperliquid_jitter_seconds": 1433.04
+    },
+    "SOL": {
+      "rows": 3471,
+      "complete_blocks": 3434,
+      "funding_coverage": 0.9893402477672141,
+      "max_binance_jitter_seconds": 0.029,
+      "max_hyperliquid_jitter_seconds": 1433.04
+    },
+    "XRP": {
+      "rows": 3471,
+      "complete_blocks": 3323,
+      "funding_coverage": 0.9573609910688562,
+      "max_binance_jitter_seconds": 0.029,
+      "max_hyperliquid_jitter_seconds": 887.645
     }
-  ],
-  "development_gates": {
-    "cagr_min": 0.05,
-    "sharpe_min": 0.75,
-    "max_drawdown_min": -0.1,
-    "all_calendar_years_positive": true,
-    "trade_count_min": 20,
-    "annual_turnover_max": 40.0
   },
-  "post_selection_gates": {
-    "holdout_return_positive": true,
-    "final_return_positive": true,
-    "severe_full_cagr_positive": true,
-    "delay_full_cagr_positive": true,
-    "worst_year_min": -0.08,
-    "trade_count_min": 30,
-    "zero_forced_exits": true
-  },
-  "ranking_sha256": "18d3ec8ec7c98244a0ff6a9fbe3984f58a0aa811f68c489205e5b509ea6c6c33",
-  "design_sha256": "5e70508ff40f3e1ec85eecccae4395f3acaef3697cffa161541bee63f3fa5e5a",
   "coverage_gate": {
     "candidate": "V171_DATA_COVERAGE",
     "minimum_full_assets": 3,
@@ -141,6 +133,5 @@
         "full_coverage": true
       }
     ]
-  },
-  "selection_proof_sha256": "fc8464ac8f2b7c4dbd3ba496c392ab745a68f79267e23e310836d3aefcad95dc"
+  }
 }

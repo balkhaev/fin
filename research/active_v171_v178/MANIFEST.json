@@ -9,41 +9,45 @@
       "bytes": 5239,
       "sha256": "5e70508ff40f3e1ec85eecccae4395f3acaef3697cffa161541bee63f3fa5e5a"
     },
+    "V179_RUN_TRIGGER.txt": {
+      "bytes": 27,
+      "sha256": "fe91dd8124541cdf3fc77be7b39dd6946363a20e35ca25576bb46d193f4d7caa"
+    },
     "config.py": {
       "bytes": 2172,
       "sha256": "095fb8e26a9400819c26bb051b9e588316f3f9d88c96899ed33432f68965ad11"
     },
     "data.py": {
-      "bytes": 18434,
-      "sha256": "4aec225f11c1cae39407f3210efa9aca1151be0760b89e4673e1736f396963a6"
+      "bytes": 21039,
+      "sha256": "4e2bcafcdd4e712f532954144c91de6e02511f843ceeb12d5c7ba8ca95ea982a"
     },
     "engine.py": {
       "bytes": 20857,
       "sha256": "1aec7805a3e13ebda086b793a14a664b42f9d82d986706d1d8e52b507336632a"
     },
     "inputs/normalized/BTC_8h.csv": {
-      "bytes": 466996,
-      "sha256": "a27d183219ec6b96f973e894efb4fa1a713c06b37928f2f6872e7dc7c2b6adb9"
+      "bytes": 543498,
+      "sha256": "767681277047385a54d915c5981a847981ec0b4de1606c4fa2f59c3aab3124f0"
     },
     "inputs/normalized/DOGE_8h.csv": {
-      "bytes": 466176,
-      "sha256": "179b7bd38a33a178ed7255e2d118ba554f558c4db6e70c5cd84eaf772115593c"
+      "bytes": 542730,
+      "sha256": "7ea285dde53607b35deb916609f6171f0bf4caba38e3f0afe7b331db232d13f1"
     },
     "inputs/normalized/ETH_8h.csv": {
-      "bytes": 458040,
-      "sha256": "2db1435adc55c1e70f956a734e29bf3ea5cd5e8f02e7caa861bc69575b1c3d09"
+      "bytes": 535587,
+      "sha256": "afaa9c5e708664583b0f0c33d73986cf38dbbdd743bdcd673528bfdd0b89cd3b"
     },
     "inputs/normalized/SOL_8h.csv": {
-      "bytes": 452086,
-      "sha256": "a255268e2ebf769b885108725e1e35541a1f5bcf1e9d4ec2baf838e1e517935b"
+      "bytes": 528266,
+      "sha256": "549fd3b27a38239aaf200ea8e9ea224475295fe468c8d84446e0ab1121d0b3b4"
     },
     "inputs/normalized/XRP_8h.csv": {
-      "bytes": 441777,
-      "sha256": "43e3526136457a90cb2236b702a7200cf08cc057d53d08fd4f6aa31d7531d95b"
+      "bytes": 517151,
+      "sha256": "8a2e42e76dca7a070c58a5477263a210d9eb30ef78e1010e661342de54f6685f"
     },
     "inputs/provenance.json": {
       "bytes": 174894,
-      "sha256": "6418f4716fcd42d460d01d344da107efda2672873adaa48c9037d53bae9508dd"
+      "sha256": "e6db7725803d03a6e6f79530296feeac959a876e9ec28397f0e2a4db18e47873"
     },
     "inputs/raw/binance/binance_BTCUSDT_funding.csv": {
       "bytes": 136960,
@@ -170,48 +174,72 @@
       "sha256": "39dbeb92512a19992fe7c27e816a62219b067e0220281a2019a7ca3364c0d52e"
     },
     "results/ANNUAL_RETURNS.csv": {
-      "bytes": 169,
-      "sha256": "ff8deb5c5c68ddf15dc1705880208a143c2b1b9b7ec69e5d019b1d5f835e6437"
+      "bytes": 235,
+      "sha256": "8e1d3fd3f66b97ca478eef301071d24389e87c292ae485ff1a8acdbf623f34be"
     },
     "results/FROZEN_DECISION.json": {
-      "bytes": 297,
-      "sha256": "0666f77a05214746dd2eb4bc0cca9c4f09d8e4fd060cf57a5941b4e70ab74703"
+      "bytes": 300,
+      "sha256": "271facf6c137fd60c329e042e9f5d82bccf726dfed40f103d012b6291ebe4be2"
     },
     "results/REPORT_RU.md": {
-      "bytes": 255,
-      "sha256": "99237c3e53b21a73814edf4d39f7120c57360251a87539e32e05028290ed2525"
+      "bytes": 1219,
+      "sha256": "7818ee0373a2ccdab9c91d06cfd020a48940809b4ce55c21f9f44b1658508252"
     },
     "results/audit_metrics.csv": {
-      "bytes": 1,
-      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      "bytes": 1591,
+      "sha256": "987fb6d2b53432b2151d6be5c458dac5dcf5d2e87ab4780d7c47c2629790665d"
+    },
+    "results/base_equity.csv": {
+      "bytes": 263099,
+      "sha256": "e09f9de9be39cc15649db84193e4dd32e51c648d1d01671c05f5ae2d76c464ed"
+    },
+    "results/bootstrap.json": {
+      "bytes": 335,
+      "sha256": "a41e03cd5655c355d1a0b52fb0a1f0b1796eae992bbc89eec44da15d93b2ba0a"
     },
     "results/coverage_gate.json": {
-      "bytes": 2638,
-      "sha256": "b7d8481d984530f48b97ce30b99d6492ac9374f4330c020a0974d27626e833c2"
+      "bytes": 2680,
+      "sha256": "18bc7e03bd62fb47ce455cd7b5d940f04591259176dd5910fa6b82f75ae8af9f"
     },
     "results/data_quality.csv": {
-      "bytes": 800,
-      "sha256": "35d8de11bb5b4ac4ae45f2304073d6eb436e883ecea731916ed98e3c085ea99a"
+      "bytes": 785,
+      "sha256": "f2e2e46bfbcd3e1efed94bc3e3d88446e064026c2fde0c34019c3d6a0d61b36d"
+    },
+    "results/delay_8h_equity.csv": {
+      "bytes": 260835,
+      "sha256": "9342ff978d4d7b4e69f9004b5f69beb5a1d2583dd42b28ae6c19e2b88318bc55"
+    },
+    "results/extreme_equity.csv": {
+      "bytes": 260448,
+      "sha256": "d6c4b6b99c16551a1fe2ccc2d9aa9e45b8ab7e3b435845f7cf0277678fa60e03"
     },
     "results/selected_trades.csv": {
-      "bytes": 1,
-      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      "bytes": 6407,
+      "sha256": "b2e6cff56bac999589937afeeadb116a1ec977458841052e46d51d904052516c"
     },
     "results/selection_proof_before_holdout.json": {
-      "bytes": 2963,
-      "sha256": "88169646c911e0e4de502a9bfa600993f76a9563fbbed7a8e467a3ceedd5c979"
+      "bytes": 4432,
+      "sha256": "98e4b21c4370f536b3883adf48a687d9313ddc2ecc407d0364238a29514a394c"
     },
     "results/selection_ranking_before_holdout.csv": {
-      "bytes": 1,
-      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      "bytes": 9808,
+      "sha256": "18d3ec8ec7c98244a0ff6a9fbe3984f58a0aa811f68c489205e5b509ea6c6c33"
+    },
+    "results/severe_equity.csv": {
+      "bytes": 260792,
+      "sha256": "936b31d2c381389407b0b05c8a27705e6b46db97a4601accdb106278222f7980"
     },
     "results/summary.json": {
-      "bytes": 3506,
-      "sha256": "99a72670c140a09261aa9b138200364768a89bee6c050c1726d2490449b40826"
+      "bytes": 15025,
+      "sha256": "d17f52b56fcfd63be9e57ed58a1cc796f1ba921d4c18dd21ca17b0309639c205"
     },
     "run_research.py": {
       "bytes": 25608,
       "sha256": "851e68f0e97f0b126b11c2fec11af2fc0a73b2fc1d316f490e13a176f4e3da10"
+    },
+    "run_v179_v180.log": {
+      "bytes": 186,
+      "sha256": "857a80fbc97687055589a5375301202397d81a6350f22c54d57ff426eed83339"
     }
   }
 }
