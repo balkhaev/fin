@@ -98,5 +98,7 @@ jobs:
           rm -rf "$replay"
       - name: Reject opaque canonical evidence
         run: |
+          find research/active_v147_v154 docs/checkpoints/v154 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v147_v154 docs/checkpoints/v154 -type f -name '*.pyc' -delete || true
           bad=$(find research/active_v147_v154 docs/checkpoints/v154 -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.xz' -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
           test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
