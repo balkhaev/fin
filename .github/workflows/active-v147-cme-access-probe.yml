@@ -6,6 +6,11 @@ on:
     paths:
       - 'research/active_v147_v154/**'
       - '.github/workflows/active-v147-cme-access-probe.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v147_v154/**'
+      - '.github/workflows/active-v147-cme-access-probe.yml'
   workflow_dispatch:
 
 permissions:
