@@ -1,0 +1,15 @@
+{
+  "format": "base64(tar.xz)",
+  "archive_bytes": 25284,
+  "archive_sha256": "5a0fbbfec2433be17e3dba0fc6ff6f22cc9d3f59c3943c71cc736e822d6232ef",
+  "encoded_bytes": 33712,
+  "encoded_sha256": "15c4dbd086d08f224a680b43d39a4f64456b8d7a4124103db12b5a7a551948d7",
+  "parts": [
+    {"path": "part_000", "bytes": 7000, "sha256": "8f4926c7d80bcf18d2db7b39941367e7a32f7a10f0759dae05db8df30c976e6a"},
+    {"path": "part_001", "bytes": 7000, "sha256": "fed47b28a80bdfbef499badb55d543d89e97c429c1bb3e6a730a4ecff679a25c"},
+    {"path": "part_002", "bytes": 7000, "sha256": "86b5ccdf6824daa17de319ddb9217c94fab784bf0b96414f2ac302950c38efee"},
+    {"path": "part_003", "bytes": 7000, "sha256": "a0cddbaf9d045fe054c2d3fda424b6d9d7345fb5796171d77ac416a427ecc458"},
+    {"path": "part_004", "bytes": 5712, "sha256": "ff2fd3216909a951ea7c3fc5738b2aab540ca819d593bc9d5ae344036d42cd08"}
+  ],
+  "materialized_file_count": 30
+}
