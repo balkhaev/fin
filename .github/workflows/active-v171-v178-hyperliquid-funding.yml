@@ -1,0 +1,135 @@
+name: Active V171-V178 Binance-Hyperliquid funding research
+
+on:
+  push:
+    branches: [agent/active-v171-v178-hyperliquid-funding]
+    paths:
+      - 'research/active_v171_v178/**'
+      - '.github/workflows/active-v171-v178-hyperliquid-funding.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v171-v178-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v171-v178-hyperliquid-funding
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize readable frozen source
+        run: |
+          set -euxo pipefail
+          if test -f research/active_v171_v178/bootstrap_payload.py; then
+            python research/active_v171_v178/bootstrap_payload.py
+          fi
+          test -s research/active_v171_v178/run_research.py
+          test -s research/active_v171_v178/V171_V178_DESIGN.json
+
+      - name: Install, compile and run causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v171_v178/requirements.txt
+          python -m compileall -q research/active_v171_v178
+          cd research/active_v171_v178
+          python run_research.py --self-test
+
+      - name: Restore immutable public-observation cache
+        uses: actions/cache@v4
+        with:
+          path: research/active_v171_v178/inputs/raw
+          key: v171-binance-hyperliquid-funding-202305-202606-v1
+
+      - name: Run frozen 54-policy research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v171_v178/results \
+                 research/active_v171_v178/inputs/normalized \
+                 research/active_v171_v178/inputs/provenance.json \
+                 docs/checkpoints/v178
+          python research/active_v171_v178/run_research.py \
+            --root research/active_v171_v178 \
+            --raw-cache research/active_v171_v178/inputs/raw \
+            --v165-processed research/active_v163_v170/inputs/processed \
+            --atlas research/active_v139_v146/inputs/v75_stress_equity.csv \
+            2>&1 | tee research/active_v171_v178/run.log
+
+      - name: Materialize checkpoint V178
+        run: |
+          set -euxo pipefail
+          test -s research/active_v171_v178/results/summary.json
+          test -s research/active_v171_v178/results/FROZEN_DECISION.json
+          test -s research/active_v171_v178/results/coverage_gate.json
+          test -s research/active_v171_v178/results/selection_proof_before_holdout.json
+          test -s research/active_v171_v178/results/ANNUAL_RETURNS.csv
+          test -s research/active_v171_v178/MANIFEST.json
+          mkdir -p docs/checkpoints/v178
+          cp research/active_v171_v178/results/summary.json \
+             docs/checkpoints/v178/CHECKPOINT_V178.json
+          cp research/active_v171_v178/results/REPORT_RU.md \
+             docs/checkpoints/v178/RESEARCH_CHECKPOINT_V178_RU.md
+          cp research/active_v171_v178/results/ANNUAL_RETURNS.csv \
+             docs/checkpoints/v178/ANNUAL_RETURNS.csv
+
+      - name: Verify evidence and safety invariants
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('research/active_v171_v178')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_holdout.json').read_text())
+          annual_header = (root / 'results/ANNUAL_RETURNS.csv').read_text().splitlines()[0]
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          assert 'V75_original' in annual_header
+          if not proof.get('selection_not_run'):
+              assert proof['selection_uses_2025'] is False
+              assert proof['selection_uses_2026'] is False
+              assert proof['coverage_gate'] == summary['coverage_gate']
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v171_v178 docs/checkpoints/v178 \
+            -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v171_v178 docs/checkpoints/v178 \
+            -type f -name '*.pyc' -delete || true
+
+      - name: Commit public observations, source and frozen decision
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v171_v178 docs/checkpoints/v178
+          if git diff --cached --quiet; then
+            echo 'No V171-V178 changes'
+          else
+            git commit -m 'Archive Active V171-V178 funding evidence [skip ci]'
+            git push origin HEAD:agent/active-v171-v178-hyperliquid-funding
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v171-v178-binance-hyperliquid-funding
+          path: |
+            research/active_v171_v178/results
+            research/active_v171_v178/run.log
+            research/active_v171_v178/inputs/provenance.json
+          if-no-files-found: warn
+          retention-days: 30
