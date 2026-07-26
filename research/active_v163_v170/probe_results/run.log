@@ -1,12 +1,12 @@
 bybit requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
 Unclosed client session
-client_session: <aiohttp.client.ClientSession object at 0x7fcecea83710>
+client_session: <aiohttp.client.ClientSession object at 0x7f01b8face60>
 Unclosed connector
-connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7fcecdcc5550>, 48.474032427)])']
-connector: <aiohttp.connector.TCPConnector object at 0x7fcece09c380>
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7f01b7c9d710>, 51.590388455)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7f01ba8e1e20>
 {
   "candidate": "V163_CURRENT_FUNDING_DISLOCATION_PROBE",
-  "as_of_utc": "2026-07-26T19:12:53.272396+00:00",
+  "as_of_utc": "2026-07-26T19:18:11.138673+00:00",
   "status": "insufficient_cross_venue_access",
   "expected_exchange_count": 3,
   "initialized_exchange_count": 1,
