@@ -1,0 +1,74 @@
+{
+  "plan_id": "implementation-runtime-v1",
+  "frozen_at": "2026-07-26T00:00:00Z",
+  "repository": "balkhaev/fin",
+  "research_continues_separately": true,
+  "implementation_scope": {
+    "primary": "v75_atlas_nx",
+    "control": "v28_growth_control",
+    "shadow": "v136_execution_shadow",
+    "separate_service": "services/funding_router"
+  },
+  "safety": {
+    "live_execution_available": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "broker_submit_adapter_allowed": false
+  },
+  "frozen_parameters": {
+    "v75": {
+      "high_water_schedules": [[1.75, 2.5], [2.0, 3.0], [2.0, 4.0]],
+      "defensive_weights": [0.0, 0.1, 0.2],
+      "max_accelerator": [0.35, 0.3, 0.25],
+      "gross_caps": [1.1, 1.05, 1.0],
+      "volatility_thresholds": [0.25, 0.35],
+      "volatility_multipliers": [1.0, 0.75, 0.5],
+      "onchain_stale_hours": 48,
+      "initial_margin_reserve": 0.25,
+      "maintenance_margin": 0.1,
+      "operational_reserve": 0.2
+    },
+    "v136": {
+      "l1_band": 0.08,
+      "max_age_days": 28,
+      "step_fraction": 1.0,
+      "risk_reduction_buffer": 0.02,
+      "immediate_zero_exit": true,
+      "split_perpetual_sign_flip": true
+    }
+  },
+  "milestones": [
+    {"id": "M0", "name": "provenance_lock", "status": "todo"},
+    {"id": "M1", "name": "data_contracts", "status": "todo"},
+    {"id": "M2", "name": "v75_exact_regression", "status": "todo"},
+    {"id": "M3", "name": "v28_independent_control", "status": "todo"},
+    {"id": "M4", "name": "v136_shadow_filter", "status": "todo"},
+    {"id": "M5", "name": "portfolio_accounting", "status": "todo"},
+    {"id": "M6", "name": "deterministic_order_planner", "status": "todo"},
+    {"id": "M7", "name": "paper_broker", "status": "todo"},
+    {"id": "M8", "name": "reconciliation_monitoring", "status": "todo"},
+    {"id": "M9", "name": "scheduler_operations", "status": "todo"},
+    {"id": "M10", "name": "frozen_forward", "status": "todo"}
+  ],
+  "forward_minimums": {
+    "calendar_days": 180,
+    "significant_v75_target_changes": 30,
+    "nonzero_v67_regimes": 1,
+    "model_to_paper_tracking_error_max": 0.02,
+    "funding_router_days": 30,
+    "funding_router_closed_positions": 30
+  },
+  "canonical_documents": [
+    "IMPLEMENTATION.md",
+    "docs/implementation/MASTER_IMPLEMENTATION_PLAN_RU.md",
+    "docs/implementation/AGENT_HANDOFF_RU.md",
+    "docs/implementation/RUNTIME_CONTRACTS_RU.md",
+    "docs/implementation/ACCEPTANCE_CRITERIA_RU.md"
+  ],
+  "superseded": [
+    "pull_request_34_transport_implementation"
+  ],
+  "stopped": [
+    "active_v155_v162_vix_carry_convexity"
+  ]
+}
