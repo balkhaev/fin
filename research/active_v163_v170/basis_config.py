@@ -49,15 +49,41 @@ POLICIES = tuple(
 )
 
 AUDITS = (
-    Audit("base", fee_bps=5.0, slippage_bps=3.0, funding_buffer_bps=10.0, forced_exit_extra_bps=10.0),
-    Audit("severe", fee_bps=5.5, slippage_bps=6.0, funding_buffer_bps=20.0, forced_exit_extra_bps=20.0),
-    Audit("extreme", fee_bps=7.5, slippage_bps=10.0, funding_buffer_bps=30.0, forced_exit_extra_bps=35.0),
-    Audit("delay_1h", fee_bps=5.0, slippage_bps=3.0, funding_buffer_bps=10.0, forced_exit_extra_bps=10.0, execution_delay_hours=1),
+    Audit(
+        "base",
+        fee_bps=5.0,
+        slippage_bps=3.0,
+        funding_buffer_bps=10.0,
+        forced_exit_extra_bps=10.0,
+    ),
+    Audit(
+        "severe",
+        fee_bps=5.5,
+        slippage_bps=6.0,
+        funding_buffer_bps=20.0,
+        forced_exit_extra_bps=20.0,
+    ),
+    Audit(
+        "extreme",
+        fee_bps=7.5,
+        slippage_bps=10.0,
+        funding_buffer_bps=30.0,
+        forced_exit_extra_bps=35.0,
+    ),
+    Audit(
+        "delay_1h",
+        fee_bps=5.0,
+        slippage_bps=3.0,
+        funding_buffer_bps=10.0,
+        forced_exit_extra_bps=10.0,
+        execution_delay_hours=1,
+    ),
 )
 
 GROSS = 0.50
 LEG_GROSS = GROSS / 2.0
 EXIT_ABS_Z = 0.50
+MAX_ABS_SPREAD_BPS = 300.0
 INITIAL_EQUITY = 10_000.0
 
 PREFINAL_GATES = {
