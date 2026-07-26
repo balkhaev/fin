@@ -163,15 +163,42 @@ class LiveExecutor:
     ) -> OrderState:
         state = initial
         deadline = asyncio.get_running_loop().time() + self.settings.risk.max_unhedged_seconds
+        fetched_once = False
         while (
             state.filled_base + self._tolerance(requested_base) < requested_base
-            and not state.done
             and state.order_id
             and asyncio.get_running_loop().time() < deadline
         ):
+            # Some venues return a sparse createOrder response marked closed.
+            # Fetch at least once before interpreting a zero fill as final.
+            if fetched_once and state.done:
+                break
             await asyncio.sleep(min(self.settings.execution.order_poll_seconds, 0.25))
             state = await gateway.fetch_order_state(state.order_id, symbol)
+            fetched_once = True
         return state
+
+    async def _confirm_position_delta(
+        self,
+        gateway: ExchangeGateway,
+        symbol: str,
+        side: Side,
+        position_before: float,
+        requested_base: float,
+    ) -> float:
+        direction = 1.0 if side == Side.BUY else -1.0
+        tolerance = self._tolerance(requested_base)
+        deadline = asyncio.get_running_loop().time() + self.settings.risk.max_unhedged_seconds
+        confirmed = 0.0
+        while True:
+            position_after = await gateway.fetch_position_base(symbol)
+            confirmed = max(confirmed, (position_after - position_before) * direction)
+            confirmed = min(requested_base, max(0.0, confirmed))
+            if confirmed + tolerance >= requested_base:
+                return confirmed
+            if asyncio.get_running_loop().time() >= deadline:
+                return confirmed
+            await asyncio.sleep(min(self.settings.execution.order_poll_seconds, 0.25))
 
     async def _hedge_exact(
         self,
@@ -187,9 +214,37 @@ class LiveExecutor:
             remaining = required_base - accumulator.filled_base
             if remaining <= tolerance:
                 break
+            position_before = await gateway.fetch_position_base(symbol)
             order = await gateway.place_market(symbol, side, remaining, reduce_only=False)
             order = await self._await_market_fill(gateway, symbol, order, remaining)
-            accumulator.add(order)
+            confirmed_base = await self._confirm_position_delta(
+                gateway, symbol, side, position_before, remaining
+            )
+            if confirmed_base <= tolerance:
+                safe_no_fill = order.status.lower() in {
+                    "canceled",
+                    "cancelled",
+                    "rejected",
+                    "expired",
+                }
+                if not safe_no_fill:
+                    raise ExecutionError(
+                        f"ambiguous market fill on {gateway.id}: "
+                        f"order={order.order_id!r}, status={order.status!r}, "
+                        f"reported={order.filled_base}, confirmed={confirmed_base}"
+                    )
+            confirmed_order = OrderState(
+                order_id=order.order_id,
+                symbol=order.symbol,
+                side=order.side,
+                status=order.status,
+                requested_base=remaining,
+                filled_base=confirmed_base,
+                remaining_base=max(0.0, remaining - confirmed_base),
+                average_price=order.average_price,
+                raw=order.raw,
+            )
+            accumulator.add(confirmed_order)
             self.store.append_event(
                 "hedge_order",
                 {
@@ -198,7 +253,8 @@ class LiveExecutor:
                     "side": side.value,
                     "attempt": attempt,
                     "requested_base": remaining,
-                    "filled_base": order.filled_base,
+                    "reported_filled_base": order.filled_base,
+                    "confirmed_filled_base": confirmed_base,
                     "status": order.status,
                     "order_id": order.order_id,
                 },

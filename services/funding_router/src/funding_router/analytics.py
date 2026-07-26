@@ -14,6 +14,29 @@ class Evaluation:
     rejection: Rejection | None
 
 
+def _funding_event_count(
+    next_funding_ms: int | None,
+    interval_hours: float,
+    observed_at_ms: int,
+    hold_hours: float,
+) -> int:
+    """Count payments strictly before the planned close timestamp.
+
+    A payment exactly at the close boundary is excluded because simultaneous
+    close/funding ordering is venue-specific and should not be credited.
+    """
+    interval_ms = max(1, round(interval_hours * 3_600_000))
+    close_at_ms = observed_at_ms + max(1, round(hold_hours * 3_600_000))
+    first_ms = (
+        next_funding_ms
+        if next_funding_ms is not None and next_funding_ms > observed_at_ms
+        else observed_at_ms + interval_ms
+    )
+    if first_ms >= close_at_ms:
+        return 0
+    return 1 + (close_at_ms - 1 - first_ms) // interval_ms
+
+
 def _reject(long: MarketSnapshot, short: MarketSnapshot, reason: str, **details: float | str | bool | None) -> Evaluation:
     return Evaluation(
         candidate=None,
@@ -147,8 +170,28 @@ def evaluate_pair(
     fee_bps = entry_fee_bps + exit_fee_bps
 
     slippage_bps = long_slippage + short_slippage + risk.slippage_buffer_bps
-    conservative_spread_hourly = min(current_spread_hourly, predicted_spread_hourly)
-    gross_funding_bps = conservative_spread_hourly * risk.hold_hours * 10_000.0
+    observed_at_ms = max(long.quote.observed_at_ms, short.quote.observed_at_ms)
+    long_funding_events = _funding_event_count(
+        long.quote.funding_timestamp_ms,
+        long.quote.interval_hours,
+        observed_at_ms,
+        risk.hold_hours,
+    )
+    short_funding_events = _funding_event_count(
+        short.quote.funding_timestamp_ms,
+        short.quote.interval_hours,
+        observed_at_ms,
+        risk.hold_hours,
+    )
+    current_gross_funding_bps = (
+        short.quote.funding_rate * short_funding_events
+        - long.quote.funding_rate * long_funding_events
+    ) * 10_000.0
+    predicted_gross_funding_bps = (
+        short.quote.predicted_funding_rate * short_funding_events
+        - long.quote.predicted_funding_rate * long_funding_events
+    ) * 10_000.0
+    gross_funding_bps = min(current_gross_funding_bps, predicted_gross_funding_bps)
     safety_bps = risk.exit_basis_buffer_bps + risk.adverse_selection_buffer_bps
     # Do not credit a favorable entry basis. It may disappear before both legs close.
     basis_cost_bps = max(0.0, entry_basis_bps)
@@ -165,9 +208,12 @@ def evaluate_pair(
             entry_basis_bps=entry_basis_bps,
             expected_net_bps=expected_net_bps,
             evaluation_hold_hours=risk.hold_hours,
+            long_funding_events=long_funding_events,
+            short_funding_events=short_funding_events,
+            current_gross_funding_bps=current_gross_funding_bps,
+            predicted_gross_funding_bps=predicted_gross_funding_bps,
         )
 
-    observed_at_ms = max(long.quote.observed_at_ms, short.quote.observed_at_ms)
     candidate = Candidate(
         asset=long.asset,
         long_exchange=long.exchange_id,
@@ -203,6 +249,10 @@ def evaluate_pair(
             "long_prediction_source": long.quote.prediction_source,
             "short_prediction_source": short.quote.prediction_source,
             "mark_divergence_bps": mark_divergence_bps,
+            "long_funding_events": long_funding_events,
+            "short_funding_events": short_funding_events,
+            "current_gross_funding_bps": current_gross_funding_bps,
+            "predicted_gross_funding_bps": predicted_gross_funding_bps,
         },
     )
     return Evaluation(candidate=candidate, rejection=None)

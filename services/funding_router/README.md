@@ -162,9 +162,16 @@ current_spread_per_hour = short_rate / short_interval
 predicted_spread_per_hour = predicted_short / short_interval
                           - predicted_long  / long_interval
 
-conservative_spread = min(current_spread, predicted_spread)
+long_events  = payments strictly before planned close
+short_events = payments strictly before planned close
 
-gross_funding_bps = conservative_spread × hold_hours × 10 000
+current_gross_bps = short_current_rate × short_events
+                  - long_current_rate  × long_events
+
+predicted_gross_bps = short_predicted_rate × short_events
+                    - long_predicted_rate  × long_events
+
+gross_funding_bps = min(current_gross_bps, predicted_gross_bps) × 10 000
 
 expected_net_bps = gross_funding_bps
                  - entry_and_exit_fees
@@ -242,8 +249,10 @@ funding-router --config config.example.toml validate
 - VWAP и insufficient depth;
 - predicted reversal;
 - excessive basis;
+- actual funding timestamp/payment counts;
 - partial maker fills;
 - incremental hedging;
+- sparse market-order responses reconciled against real positions;
 - emergency flatten;
 - unmanaged positions;
 - free collateral;
