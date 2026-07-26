@@ -1,0 +1,44 @@
+name: Diagnose V138 materialization payload
+on:
+  push:
+    branches: [agent/active-v131-v138-regime-execution]
+    paths:
+      - '.github/workflows/diagnose-v138.yml'
+      - '.bootstrap_v138/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/active-v131-v138-regime-execution
+      - name: Compute actual transport identities
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64,hashlib,json,lzma
+          root=Path('.bootstrap_v138')
+          expected=json.loads((root/'manifest.json').read_text())
+          actual=[]; chunks=[]
+          for p in sorted((root/'payload').glob('part_*.txt')):
+              b=p.read_bytes(); chunks.append(b.strip())
+              actual.append({'path':p.name,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})
+          encoded=b''.join(chunks)
+          diag={'expected':expected,'actual':actual,'encoded_bytes':len(encoded),'encoded_sha256':hashlib.sha256(encoded).hexdigest()}
+          try:
+              archive=base64.b64decode(encoded,validate=True)
+              diag['archive_bytes']=len(archive); diag['archive_sha256']=hashlib.sha256(archive).hexdigest()
+              lzma.decompress(archive); diag['xz_valid']=True
+          except Exception as exc:
+              diag['decode_error']=repr(exc); diag['xz_valid']=False
+          Path('/tmp/v138-diagnostic.json').write_text(json.dumps(diag,indent=2)+'\n')
+          print(json.dumps(diag,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v138-materialization-diagnostic
+          path: /tmp/v138-diagnostic.json
+          if-no-files-found: error
