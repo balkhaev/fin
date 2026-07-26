@@ -14,10 +14,7 @@ from typing import Any
 import requests
 
 BASE = "https://www.cmegroup.com"
-SETTLEMENT_TEMPLATE = (
-    BASE
-    + "/CmeWS/mvc/Settlements/Futures/Settlements/{product_id}/FUT"
-)
+SETTLEMENT_TEMPLATE = BASE + "/CmeWS/mvc/Settlements/Futures/Settlements/{product_id}/FUT"
 
 # Candidate IDs are discovery hints only. Every ID is verified by an actual
 # official CME settlement response before it is accepted by the probe.
@@ -59,7 +56,9 @@ PRODUCTS: dict[str, dict[str, Any]] = {
     },
 }
 
-PROBE_DATES = ("03/26/2020", "01/03/2024", "07/24/2026")
+# One historical and one recent completed trade date are enough for the access
+# gate. A later full collector will use a complete business-day calendar.
+PROBE_DATES = ("03/26/2020", "07/24/2026")
 ID_PATTERNS = (
     re.compile(r'"productId"\s*:\s*"?(\d+)"?'),
     re.compile(r"productId\s*[=:]\s*['\"]?(\d+)"),
@@ -103,20 +102,20 @@ def get_with_retries(
     url: str,
     *,
     params: dict[str, str] | None = None,
-    attempts: int = 4,
-    timeout: int = 35,
+    attempts: int = 2,
+    timeout: int = 12,
 ) -> requests.Response:
     last: Exception | None = None
     for attempt in range(attempts):
         try:
             response = session.get(url, params=params, timeout=timeout)
             if response.status_code in {403, 429, 500, 502, 503, 504}:
-                time.sleep(1.5 * (attempt + 1))
+                time.sleep(0.75 * (attempt + 1))
                 continue
             return response
         except requests.RequestException as exc:
             last = exc
-            time.sleep(1.5 * (attempt + 1))
+            time.sleep(0.75 * (attempt + 1))
     if last is not None:
         raise last
     raise RuntimeError(f"unable to fetch {url}")
@@ -202,12 +201,13 @@ def probe_product(
     except Exception as exc:  # noqa: BLE001 - evidence capture is intentional
         page_evidence = HttpEvidence(page_url, None, None, 0, None, repr(exc))
 
+    # Probe the explicit candidate first, then at most three IDs discovered from
+    # the official product page. This bounds both runtime and request volume.
     candidates: list[int] = []
-    for value in [*discovered, *spec.get("candidate_ids", [])]:
-        if value not in candidates:
+    for value in [*spec.get("candidate_ids", []), *discovered[:3]]:
+        if int(value) not in candidates:
             candidates.append(int(value))
-    # Prevent a page containing many option product IDs from creating a large probe.
-    candidates = candidates[:12]
+    candidates = candidates[:4]
 
     attempts: list[dict[str, Any]] = []
     accepted_id: int | None = None
@@ -257,9 +257,9 @@ def probe_product(
                     product_result["nonempty_dates"] += 1
             except Exception as exc:  # noqa: BLE001
                 product_result["dates"][trade_date] = {"error": repr(exc)}
-            time.sleep(0.25)
+            time.sleep(0.15)
         attempts.append(product_result)
-        if product_result["nonempty_dates"] >= 2:
+        if product_result["nonempty_dates"] == len(PROBE_DATES):
             accepted_id = product_id
             accepted_dates = [
                 d
