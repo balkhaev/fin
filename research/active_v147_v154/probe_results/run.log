@@ -1,0 +1,257 @@
+probing ES: E-mini S&P 500
+probing NQ: E-mini Nasdaq-100
+probing ZN: 10-Year U.S. Treasury Note
+probing GC: Gold
+probing CL: WTI Crude Oil
+probing NG: Henry Hub Natural Gas
+probing 6E: Euro FX
+{
+  "candidate": "V147_CME_DATED_CONTRACT_ACCESS_PROBE",
+  "as_of": "2026-07-26",
+  "status": "official_dated_settlement_access_blocked",
+  "accepted_symbols": [],
+  "accepted_symbol_count": 0,
+  "required_for_full_v148_v154": [
+    "ES",
+    "ZN",
+    "GC",
+    "CL",
+    "6E"
+  ],
+  "full_research_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "products": {
+    "ES": {
+      "symbol": "ES",
+      "name": "E-mini S&P 500",
+      "page": {
+        "url": "https://www.cmegroup.com/markets/equities/sp/e-mini-sandp500.html",
+        "status_code": null,
+        "content_type": null,
+        "bytes": 0,
+        "sha256": null,
+        "error": "RuntimeError('unable to fetch https://www.cmegroup.com/markets/equities/sp/e-mini-sandp500.html')"
+      },
+      "page_excerpt": "",
+      "discovered_product_ids": [],
+      "candidate_product_ids": [
+        138
+      ],
+      "accepted_product_id": null,
+      "accepted_dates": [],
+      "attempts": [
+        {
+          "product_id": 138,
+          "dates": {
+            "03/26/2020": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/138/FUT')"
+            },
+            "07/24/2026": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/138/FUT')"
+            }
+          },
+          "nonempty_dates": 0
+        }
+      ]
+    },
+    "NQ": {
+      "symbol": "NQ",
+      "name": "E-mini Nasdaq-100",
+      "page": {
+        "url": "https://www.cmegroup.com/markets/equities/nasdaq/e-mini-nasdaq-100.html",
+        "status_code": null,
+        "content_type": null,
+        "bytes": 0,
+        "sha256": null,
+        "error": "RuntimeError('unable to fetch https://www.cmegroup.com/markets/equities/nasdaq/e-mini-nasdaq-100.html')"
+      },
+      "page_excerpt": "",
+      "discovered_product_ids": [],
+      "candidate_product_ids": [
+        209
+      ],
+      "accepted_product_id": null,
+      "accepted_dates": [],
+      "attempts": [
+        {
+          "product_id": 209,
+          "dates": {
+            "03/26/2020": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/209/FUT')"
+            },
+            "07/24/2026": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/209/FUT')"
+            }
+          },
+          "nonempty_dates": 0
+        }
+      ]
+    },
+    "ZN": {
+      "symbol": "ZN",
+      "name": "10-Year U.S. Treasury Note",
+      "page": {
+        "url": "https://www.cmegroup.com/markets/interest-rates/us-treasury/10-year-us-treasury-note.html",
+        "status_code": null,
+        "content_type": null,
+        "bytes": 0,
+        "sha256": null,
+        "error": "RuntimeError('unable to fetch https://www.cmegroup.com/markets/interest-rates/us-treasury/10-year-us-treasury-note.html')"
+      },
+      "page_excerpt": "",
+      "discovered_product_ids": [],
+      "candidate_product_ids": [
+        316
+      ],
+      "accepted_product_id": null,
+      "accepted_dates": [],
+      "attempts": [
+        {
+          "product_id": 316,
+          "dates": {
+            "03/26/2020": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/316/FUT')"
+            },
+            "07/24/2026": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/316/FUT')"
+            }
+          },
+          "nonempty_dates": 0
+        }
+      ]
+    },
+    "GC": {
+      "symbol": "GC",
+      "name": "Gold",
+      "page": {
+        "url": "https://www.cmegroup.com/markets/metals/precious/gold.html",
+        "status_code": null,
+        "content_type": null,
+        "bytes": 0,
+        "sha256": null,
+        "error": "RuntimeError('unable to fetch https://www.cmegroup.com/markets/metals/precious/gold.html')"
+      },
+      "page_excerpt": "",
+      "discovered_product_ids": [],
+      "candidate_product_ids": [
+        437
+      ],
+      "accepted_product_id": null,
+      "accepted_dates": [],
+      "attempts": [
+        {
+          "product_id": 437,
+          "dates": {
+            "03/26/2020": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/437/FUT')"
+            },
+            "07/24/2026": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/437/FUT')"
+            }
+          },
+          "nonempty_dates": 0
+        }
+      ]
+    },
+    "CL": {
+      "symbol": "CL",
+      "name": "WTI Crude Oil",
+      "page": {
+        "url": "https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.html",
+        "status_code": null,
+        "content_type": null,
+        "bytes": 0,
+        "sha256": null,
+        "error": "RuntimeError('unable to fetch https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.html')"
+      },
+      "page_excerpt": "",
+      "discovered_product_ids": [],
+      "candidate_product_ids": [
+        425
+      ],
+      "accepted_product_id": null,
+      "accepted_dates": [],
+      "attempts": [
+        {
+          "product_id": 425,
+          "dates": {
+            "03/26/2020": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/425/FUT')"
+            },
+            "07/24/2026": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/425/FUT')"
+            }
+          },
+          "nonempty_dates": 0
+        }
+      ]
+    },
+    "NG": {
+      "symbol": "NG",
+      "name": "Henry Hub Natural Gas",
+      "page": {
+        "url": "https://www.cmegroup.com/markets/energy/natural-gas/natural-gas.html",
+        "status_code": null,
+        "content_type": null,
+        "bytes": 0,
+        "sha256": null,
+        "error": "RuntimeError('unable to fetch https://www.cmegroup.com/markets/energy/natural-gas/natural-gas.html')"
+      },
+      "page_excerpt": "",
+      "discovered_product_ids": [],
+      "candidate_product_ids": [
+        444
+      ],
+      "accepted_product_id": null,
+      "accepted_dates": [],
+      "attempts": [
+        {
+          "product_id": 444,
+          "dates": {
+            "03/26/2020": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/444/FUT')"
+            },
+            "07/24/2026": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/444/FUT')"
+            }
+          },
+          "nonempty_dates": 0
+        }
+      ]
+    },
+    "6E": {
+      "symbol": "6E",
+      "name": "Euro FX",
+      "page": {
+        "url": "https://www.cmegroup.com/markets/fx/g10/euro-fx.html",
+        "status_code": null,
+        "content_type": null,
+        "bytes": 0,
+        "sha256": null,
+        "error": "RuntimeError('unable to fetch https://www.cmegroup.com/markets/fx/g10/euro-fx.html')"
+      },
+      "page_excerpt": "",
+      "discovered_product_ids": [],
+      "candidate_product_ids": [
+        58
+      ],
+      "accepted_product_id": null,
+      "accepted_dates": [],
+      "attempts": [
+        {
+          "product_id": 58,
+          "dates": {
+            "03/26/2020": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/58/FUT')"
+            },
+            "07/24/2026": {
+              "error": "RuntimeError('unable to fetch https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/58/FUT')"
+            }
+          },
+          "nonempty_dates": 0
+        }
+      ]
+    }
+  }
+}

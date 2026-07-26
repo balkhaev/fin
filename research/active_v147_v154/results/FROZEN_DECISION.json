@@ -1,0 +1,154 @@
+{
+  "candidate": "ACTIVE_V147_V154_DATED_VIX_FUTURES",
+  "status": "rejected_or_needs_iteration",
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "original_v75": {
+    "total_return": 3.3554131438812718,
+    "annualized_return": 0.3068209897853704,
+    "max_drawdown": -0.21591803526892284,
+    "sharpe": 1.3294516915576948,
+    "annual_turnover": 0.0,
+    "average_gross": 0.0,
+    "max_gross": 0.0,
+    "costs": 0.0,
+    "liquidations": 0,
+    "min_margin_buffer": 1.0,
+    "observations_per_year": 365.4245750249252
+  },
+  "selection": {
+    "selection_cutoff": "2020-12-31",
+    "selection_uses_2021_or_later": false,
+    "policy_count": 108,
+    "eligible_policy_count": 2,
+    "selected": [
+      {
+        "name": "tail_t95_b15_h14",
+        "family": "tail_long",
+        "threshold": 0.95,
+        "budget": 0.15,
+        "hold_days": 14,
+        "band": 0.0
+      },
+      {
+        "name": "tail_t95_b10_h14",
+        "family": "tail_long",
+        "threshold": 0.95,
+        "budget": 0.1,
+        "hold_days": 14,
+        "band": 0.0
+      }
+    ],
+    "selection_proof_sha256": "49b8f0e79cad7b41da45a580a72ec8a818990913e5ff7497756bc746325e5087"
+  },
+  "selected_sleeve": {
+    "full": {
+      "total_return": 0.2814045669881262,
+      "annualized_return": 0.01120041781590797,
+      "max_drawdown": -0.2143899626022262,
+      "sharpe": 0.22083482821619999,
+      "annual_turnover": 1.0306461752136264,
+      "average_gross": 0.01563091676998138,
+      "max_gross": 0.22714065971628783,
+      "costs": 566.599238099278,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8301181102362205,
+      "observations_per_year": 247.10355337596852
+    },
+    "prefinal_2006_2020": {
+      "total_return": 0.5685103304223746,
+      "annualized_return": 0.03047810668738049,
+      "max_drawdown": -0.10254195808436684,
+      "sharpe": 0.5186856318947879,
+      "annual_turnover": 1.0652995677180077,
+      "average_gross": 0.016157675154852277,
+      "max_gross": 0.22714065971628783,
+      "costs": 375.78702008569803,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8301181102362205,
+      "observations_per_year": 245.1847023374726
+    },
+    "holdout_2021_2023": {
+      "total_return": -0.06817782006359252,
+      "annualized_return": -0.02340492242351,
+      "max_drawdown": -0.09138670827104944,
+      "sharpe": -0.5136604539638472,
+      "annual_turnover": 0.7951431425766903,
+      "average_gross": 0.013864874127319763,
+      "max_gross": 0.14660953373103625,
+      "costs": 70.57046051534803,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8477184466019418,
+      "observations_per_year": 252.55059917355373
+    },
+    "holdout_2024_2025": {
+      "total_return": -0.0773079593434528,
+      "annualized_return": -0.03951011234247481,
+      "max_drawdown": -0.13520722029583088,
+      "sharpe": -0.4992334309173885,
+      "annual_turnover": 1.765185437908097,
+      "average_gross": 0.025730484294407396,
+      "max_gross": 0.1662290663940598,
+      "costs": 95.27690959708096,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8347756818761152,
+      "observations_per_year": 252.0123148148148
+    },
+    "final_2026h1": {
+      "total_return": -0.046448609019285714,
+      "annualized_return": -0.09248784203752525,
+      "max_drawdown": -0.046448609019285714,
+      "sharpe": -2.7032618489373026,
+      "annual_turnover": 1.1420915508621488,
+      "average_gross": 0.012851408182653939,
+      "max_gross": 0.13036760499271305,
+      "costs": 14.606466774705451,
+      "liquidations": 0,
+      "min_margin_buffer": 0.8509650924024641,
+      "observations_per_year": 250.97668994413408
+    },
+    "best_year_positive_log_share": 0.31236906880890847,
+    "post_selection_checks": {
+      "holdout_2021_2023": false,
+      "holdout_2024_2025": false,
+      "final_2026h1": false,
+      "best_year_concentration": true
+    },
+    "stress_post_selection_checks": {
+      "holdout_2021_2023": false,
+      "holdout_2024_2025": false,
+      "final_2026h1": false,
+      "best_year_concentration": true
+    },
+    "vxm_integer_feasibility": {
+      "active_days": 201,
+      "fraction_days_one_contract_feasible": 0.09950248756218906,
+      "median_fractional_contracts": 0.7540807433079869,
+      "minimum_one_contract_weight": 0.10643665799198679,
+      "median_one_contract_weight": 0.16576474218351261
+    }
+  },
+  "standalone_selection_passed": false,
+  "integration_permitted": false,
+  "integration_weight": null,
+  "integration_checks": {},
+  "integration_passed": false,
+  "promoted_candidates": [],
+  "data_quality": {
+    "contract_rows": 44997,
+    "unique_expiries": 264,
+    "trade_date_min": "2004-03-26",
+    "trade_date_max": "2026-06-30",
+    "duplicate_trade_date_expiry": 0,
+    "nonpositive_settle": 0,
+    "spot_rows": 9218,
+    "spot_date_min": "1990-01-02",
+    "spot_date_max": "2026-06-30"
+  },
+  "evidence_limits": {
+    "official_dated_contract_files": true,
+    "historical_bid_ask_available": false,
+    "historical_broker_margin_available": false,
+    "program_level_holdout_pristine": false
+  }
+}

@@ -1,0 +1,2 @@
+contract_rows,unique_expiries,trade_date_min,trade_date_max,duplicate_trade_date_expiry,nonpositive_settle,spot_rows,spot_date_min,spot_date_max
+44997,264,2004-03-26,2026-06-30,0,0,9218,1990-01-02,2026-06-30

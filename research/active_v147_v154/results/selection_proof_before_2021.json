@@ -1,0 +1,38 @@
+{
+  "candidate": "V149_V154_DATED_VIX_FUTURES",
+  "selection_cutoff": "2020-12-31",
+  "selection_uses_2021_or_later": false,
+  "policy_count": 108,
+  "eligible_policy_count": 2,
+  "selected": [
+    {
+      "name": "tail_t95_b15_h14",
+      "family": "tail_long",
+      "threshold": 0.95,
+      "budget": 0.15,
+      "hold_days": 14,
+      "band": 0.0
+    },
+    {
+      "name": "tail_t95_b10_h14",
+      "family": "tail_long",
+      "threshold": 0.95,
+      "budget": 0.1,
+      "hold_days": 14,
+      "band": 0.0
+    }
+  ],
+  "standalone_gates": {
+    "prefinal_cagr_min": 0.02,
+    "prefinal_sharpe_min": 0.5,
+    "prefinal_max_drawdown_min": -0.15,
+    "annual_turnover_max": 12.0,
+    "validation_2011_2014_min": 0.0,
+    "validation_2015_2018_min": 0.0,
+    "bridge_2019_2020_min": -0.02,
+    "stress_prefinal_cagr_min": 0.0,
+    "stress_prefinal_max_drawdown_min": -0.2
+  },
+  "ranking_sha256": "3d0270b8c51782e7b3a93e97a1918ff90a685e98347b67ba40644ccb26aec0cf",
+  "selection_proof_sha256": "ea04aaefd20f5ef222cb172cda37105bde6f20b6df4db0c754e8eedf8484c583"
+}

@@ -1,0 +1,104 @@
+name: Active V147-V154 direct integrity
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v147_v154/**'
+      - 'docs/checkpoints/v154/**'
+      - '.github/workflows/active-v147-v154-integrity.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'research/active_v147_v154/**'
+      - 'docs/checkpoints/v154/**'
+      - '.github/workflows/active-v147-v154-integrity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install, compile and self-test
+        run: |
+          python -m pip install -r research/active_v147_v154/requirements.txt
+          python -m compileall -q research/active_v147_v154/source \
+            research/active_v147_v154/cme_access_probe.py \
+            research/active_v147_v154/cboe_access_probe.py \
+            research/active_v147_v154/finalize_cboe_probe.py
+          python research/active_v147_v154/source/canonical_runner.py --self-test
+      - name: Verify immutable evidence contracts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('research/active_v147_v154')
+          cme=json.loads((root/'probe_results/summary.json').read_text())
+          cboe=json.loads((root/'cboe_probe_results/summary.json').read_text())
+          result=json.loads((root/'results/summary.json').read_text())
+          assert cme['status'] == 'official_dated_settlement_access_blocked'
+          assert cboe['status'] == 'official_cboe_dated_contract_access_confirmed'
+          assert result['status'] == 'rejected_or_needs_iteration'
+          assert result['selection']['policy_count'] == 108
+          assert result['selection']['eligible_policy_count'] == 2
+          assert result['standalone_selection_passed'] is False
+          assert result['integration_permitted'] is False
+          assert result['promoted_candidates'] == []
+          assert result['live_ready'] is False
+          assert result['real_leverage_authorized'] is False
+          assert result['data_quality']['contract_rows'] == 44997
+          assert result['data_quality']['unique_expiries'] == 264
+          assert result['data_quality']['duplicate_trade_date_expiry'] == 0
+          assert result['data_quality']['nonpositive_settle'] == 0
+          assert 'V75_original' in (root/'results/ANNUAL_RETURNS.csv').read_text().splitlines()[0]
+          PY
+      - name: Deterministic replay from committed official observations
+        run: |
+          set -euxo pipefail
+          replay=research/_replay_v154
+          rm -rf "$replay"
+          mkdir -p "$replay/inputs"
+          cp -r research/active_v147_v154/inputs/processed "$replay/inputs/"
+          python research/active_v147_v154/source/canonical_runner.py \
+            --root "$replay" \
+            --cache .cache/unused-v154-replay \
+            --atlas research/active_v139_v146/inputs/v75_stress_equity.csv
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          expected=json.loads(Path('research/active_v147_v154/results/summary.json').read_text())
+          actual=json.loads(Path('research/_replay_v154/results/summary.json').read_text())
+          assert actual['selection']['eligible_policy_count'] == expected['selection']['eligible_policy_count']
+          assert actual['selection']['selected'] == expected['selection']['selected']
+          for path in (
+              ('selected_sleeve','full','annualized_return'),
+              ('selected_sleeve','full','total_return'),
+              ('selected_sleeve','full','max_drawdown'),
+              ('selected_sleeve','full','sharpe'),
+              ('selected_sleeve','holdout_2021_2023','total_return'),
+              ('selected_sleeve','holdout_2024_2025','total_return'),
+              ('selected_sleeve','final_2026h1','total_return'),
+          ):
+              left=expected
+              right=actual
+              for key in path:
+                  left=left[key]; right=right[key]
+              assert math.isclose(float(left),float(right),rel_tol=1e-11,abs_tol=1e-11),(path,left,right)
+          assert actual['standalone_selection_passed'] is False
+          assert actual['integration_permitted'] is False
+          PY
+          rm -rf "$replay"
+      - name: Reject opaque canonical evidence
+        run: |
+          find research/active_v147_v154 docs/checkpoints/v154 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v147_v154 docs/checkpoints/v154 -type f -name '*.pyc' -delete || true
+          bad=$(find research/active_v147_v154 docs/checkpoints/v154 -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.xz' -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }

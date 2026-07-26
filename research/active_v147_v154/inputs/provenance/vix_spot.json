@@ -1,0 +1,8 @@
+{
+  "url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
+  "bytes": 470779,
+  "sha256": "6967c50995d88c7b5ed20c0a6a38792099b33dda3b440408129721094a81a2a0",
+  "rows": 9218,
+  "date_min": "1990-01-02",
+  "date_max": "2026-06-30"
+}
