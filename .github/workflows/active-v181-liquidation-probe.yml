@@ -6,10 +6,15 @@ on:
     paths:
       - 'research/active_v181_v188/**'
       - '.github/workflows/active-v181-liquidation-probe.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v181_v188/**'
+      - '.github/workflows/active-v181-liquidation-probe.yml'
   workflow_dispatch:
 
 concurrency:
-  group: active-v181-${{ github.ref }}
+  group: active-v181-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -70,6 +75,7 @@ jobs:
           PY
 
       - name: Commit direct probe evidence
+        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           find research/active_v181_v188 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
