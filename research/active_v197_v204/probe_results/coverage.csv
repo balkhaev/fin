@@ -3,10 +3,10 @@ BTCUSD_PERP,book_depth,2023-01-15,True,200,200,True,782,50,True,30000,ok,c8a7728
 BTCUSD_PERP,book_depth,2024-07-15,True,200,200,True,265903,28800,True,30000,ok,91ce1d59e8782332471c6c716be088840d5c61ab92d122c3e2343f8982e52502
 BTCUSD_PERP,book_depth,2025-07-15,True,200,200,True,278320,28800,True,30000,ok,d2e28cc40ea7f98a53e356fb939db5b7f5202791a8c08471c10247db4b24c0f9
 BTCUSD_PERP,book_depth,2026-04-15,True,200,200,True,279268,28800,True,30000,ok,a7eb22a1f7c42080c58829f83ffeacfd01e932142720ae7d8da877c04b5f87b9
-BTCUSD_PERP,book_ticker,2023-01-15,False,404,404,,373,,,,missing_archive_or_checksum,
+BTCUSD_PERP,book_ticker,2023-01-15,False,404,404,,353,,,,missing_archive_or_checksum,
 BTCUSD_PERP,book_ticker,2024-07-15,True,200,200,True,53063730,4385466,True,4,ok,af51045fdb0bdf5472c15b039a86539f7a19acfaed6d333fa53c6af335f80deb
 BTCUSD_PERP,book_ticker,2025-07-15,False,404,404,,353,,,,missing_archive_or_checksum,
-BTCUSD_PERP,book_ticker,2026-04-15,False,404,404,,373,,,,missing_archive_or_checksum,
+BTCUSD_PERP,book_ticker,2026-04-15,False,404,404,,353,,,,missing_archive_or_checksum,
 BTCUSD_PERP,mark_price_1m,2023-01-15,True,200,200,True,38710,1440,True,60000,ok,223f84b229977ff52f5e120e9546b68fc105d9cb54683a6ce21e43d800ce8b52
 BTCUSD_PERP,mark_price_1m,2024-07-15,True,200,200,True,38909,1440,True,60000,ok,67c3aaad2e7d01720b0c95ed0356517c60dda7eacdb9780010f86a30840debfa
 BTCUSD_PERP,mark_price_1m,2025-07-15,True,200,200,True,37425,1440,True,60000,ok,1759e788a8da29d991bbb0ef526eaabea823b18858f684c388710a9395e9c59c
