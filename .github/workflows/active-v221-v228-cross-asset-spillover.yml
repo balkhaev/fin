@@ -1,0 +1,121 @@
+name: Active V221-V228 cross-asset shock spillover
+
+on:
+  push:
+    branches: [agent/active-v221-v228-cross-asset-spillover]
+    paths:
+      - 'research/active_v221_v228/**'
+      - '.github/workflows/active-v221-v228-cross-asset-spillover.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v221_v228/**'
+      - '.github/workflows/active-v221-v228-cross-asset-spillover.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v221-v228-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v221-v228-cross-asset-spillover
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v221_v228/requirements.txt
+          python -m compileall -q research/active_v221_v228
+          cd research/active_v221_v228
+          python run_research.py --self-test
+
+      - name: Restore immutable public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v221_spillover
+          key: v221-binance-btc-eth-usdm-5m-202101-202606-v1
+
+      - name: Run frozen 144-policy development and guarded OOS research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v221_v228/results \
+                 research/active_v221_v228/MANIFEST.json \
+                 docs/checkpoints/v228
+          python research/active_v221_v228/run_research.py \
+            --root research/active_v221_v228 \
+            --cache .cache/v221_spillover \
+            2>&1 | tee research/active_v221_v228/run.log
+
+      - name: Materialize V228 checkpoint
+        run: |
+          set -euxo pipefail
+          test -s research/active_v221_v228/results/summary.json
+          test -s research/active_v221_v228/results/FROZEN_DECISION.json
+          test -s research/active_v221_v228/results/coverage_gate.json
+          test -s research/active_v221_v228/results/selection_proof_before_validation.json
+          test -s research/active_v221_v228/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v228
+          cp research/active_v221_v228/results/summary.json docs/checkpoints/v228/CHECKPOINT_V228.json
+          cp research/active_v221_v228/results/REPORT_RU.md docs/checkpoints/v228/RESEARCH_CHECKPOINT_V228_RU.md
+          if test -s research/active_v221_v228/results/ANNUAL_RETURNS.csv; then
+            cp research/active_v221_v228/results/ANNUAL_RETURNS.csv docs/checkpoints/v228/ANNUAL_RETURNS.csv
+          fi
+
+      - name: Verify frozen evidence and safety
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v221_v228')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_validation.json').read_text())
+          assert proof['selection_uses_2024'] is False
+          assert proof['selection_uses_2025'] is False
+          assert proof['selection_uses_2026'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v221_v228 docs/checkpoints/v228 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v221_v228 docs/checkpoints/v228 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and frozen decision
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v221_v228 docs/checkpoints/v228
+          if git diff --cached --quiet; then
+            echo 'No V221-V228 changes'
+          else
+            git commit -m 'Archive V221-V228 cross-asset spillover evidence [skip ci]'
+            git push origin HEAD:agent/active-v221-v228-cross-asset-spillover
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v221-v228-cross-asset-spillover
+          path: |
+            research/active_v221_v228/results
+            research/active_v221_v228/run.log
+            docs/checkpoints/v228
+          if-no-files-found: warn
+          retention-days: 30
