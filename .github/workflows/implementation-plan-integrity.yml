@@ -1,0 +1,36 @@
+name: Implementation plan integrity
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'IMPLEMENTATION.md'
+      - 'docs/implementation/**'
+      - 'scripts/verify_implementation_plan.py'
+      - '.github/workflows/implementation-plan-integrity.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'IMPLEMENTATION.md'
+      - 'docs/implementation/**'
+      - 'scripts/verify_implementation_plan.py'
+      - '.github/workflows/implementation-plan-integrity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m py_compile scripts/verify_implementation_plan.py
+      - run: python scripts/verify_implementation_plan.py
+      - name: Reject opaque implementation transport
+        run: |
+          bad=$(find docs/implementation scripts -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
