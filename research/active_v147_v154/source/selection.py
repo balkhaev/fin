@@ -18,7 +18,7 @@ from config import (
     STANDALONE_GATES,
     Policy,
 )
-from engine import annual_returns, metrics, period, simulate
+from engine import annual_returns, period, simulate
 from features import MarketData, policy_target
 
 
@@ -58,18 +58,20 @@ def score(row: dict[str, Any]) -> float:
     )
 
 
-def evaluate_prefinal(market: MarketData, output: Path) -> tuple[list[Policy], pd.DataFrame, dict[str, pd.DataFrame]]:
+def evaluate_prefinal(market: MarketData, output: Path) -> tuple[list[Policy], pd.DataFrame]:
+    """Evaluate policies without retaining the large target matrices.
+
+    Each target is discarded after simulation. Only the three selected targets
+    are rebuilt later, keeping the grid bounded in memory.
+    """
+
     base_audit = next(audit for audit in AUDITS if audit.name == "base")
     stress_audit = next(audit for audit in AUDITS if audit.name == "stress")
     rows: list[dict[str, Any]] = []
-    accounts: dict[str, pd.DataFrame] = {}
-    targets: dict[str, pd.DataFrame] = {}
 
     for number, policy in enumerate(POLICIES, start=1):
         target = policy_target(policy, market)
         account = simulate(market, target, base_audit)
-        accounts[policy.name] = account
-        targets[policy.name] = target
         pre = period(account, "2006-01-01", SELECTION_END)
         val1 = period(account, *PERIODS["validation_2011_2014"])
         val2 = period(account, *PERIODS["validation_2015_2018"])
@@ -111,18 +113,19 @@ def evaluate_prefinal(market: MarketData, output: Path) -> tuple[list[Policy], p
                     "stress_min_margin_buffer": np.nan,
                 }
             )
-            stress_gate = {key: False for key in (
-                "stress_prefinal_cagr",
-                "stress_prefinal_drawdown",
-                "stress_no_liquidations",
-                "stress_positive_margin",
-            )}
+            stress_gate = {
+                "stress_prefinal_cagr": False,
+                "stress_prefinal_drawdown": False,
+                "stress_no_liquidations": False,
+                "stress_positive_margin": False,
+            }
         row.update({f"gate_{key}": value for key, value in stress_gate.items()})
         row["eligible_before_2021"] = bool(row["eligible_before_stress"] and all(stress_gate.values()))
         row["score"] = score(row)
         rows.append(row)
         if number % 18 == 0:
             print(f"evaluated {number}/{len(POLICIES)} VIX policies", flush=True)
+        del target, account
 
     ranking = pd.DataFrame(rows).sort_values(
         ["eligible_before_2021", "score"], ascending=[False, False]
@@ -133,19 +136,17 @@ def evaluate_prefinal(market: MarketData, output: Path) -> tuple[list[Policy], p
     selected_names: list[str] = []
     selected_families: set[str] = set()
     for _, row in source.iterrows():
-        name = str(row["name"])
-        family = str(row["family"])
-        if family not in selected_families or len(selected_names) == 0:
+        name, family = str(row["name"]), str(row["family"])
+        if family not in selected_families or not selected_names:
             selected_names.append(name)
             selected_families.add(family)
         if len(selected_names) == 3:
             break
-    if len(selected_names) < 3:
-        for name in source["name"].astype(str):
-            if name not in selected_names:
-                selected_names.append(name)
-            if len(selected_names) == 3:
-                break
+    for name in source["name"].astype(str):
+        if len(selected_names) == 3:
+            break
+        if name not in selected_names:
+            selected_names.append(name)
     by_name = {policy.name: policy for policy in POLICIES}
     selected = [by_name[name] for name in selected_names]
 
@@ -163,11 +164,13 @@ def evaluate_prefinal(market: MarketData, output: Path) -> tuple[list[Policy], p
     proof_path.write_text(json.dumps(proof, indent=2) + "\n")
     proof["selection_proof_sha256"] = sha256_bytes(proof_path.read_bytes())
     proof_path.write_text(json.dumps(proof, indent=2) + "\n")
-    return selected, ranking, {"accounts": accounts, "targets": targets}
+    return selected, ranking
 
 
-def ensemble_target(selected: list[Policy], targets: dict[str, pd.DataFrame]) -> pd.DataFrame:
-    return sum(targets[policy.name] for policy in selected) / len(selected)
+def ensemble_target(selected: list[Policy], market: MarketData) -> pd.DataFrame:
+    targets = [policy_target(policy, market) for policy in selected]
+    result = sum(targets) / len(targets)
+    return result
 
 
 def best_year_share(account: pd.DataFrame) -> float:
