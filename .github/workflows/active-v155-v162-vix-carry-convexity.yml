@@ -41,10 +41,11 @@ jobs:
           test -s research/active_v139_v146/inputs/v75_stress_equity.csv
       - name: Install, compile and causal self-test
         run: |
+          set -o pipefail
           python -m pip install -r research/active_v155_v162/requirements.txt
           python -m compileall -q research/active_v155_v162
           cd research/active_v155_v162
-          python run_research.py --self-test
+          python run_research.py --self-test 2>&1 | tee self_test.log
       - name: Run frozen V155-V162 research
         run: |
           set -euxo pipefail
@@ -92,5 +93,6 @@ jobs:
           path: |
             research/active_v155_v162/results
             research/active_v155_v162/run.log
+            research/active_v155_v162/self_test.log
           if-no-files-found: warn
           retention-days: 30
