@@ -1,0 +1,26 @@
+{
+  "encoded_bytes": 31272,
+  "encoded_sha256": "d42beb6df8023e693d7e13939325e1dd6df92843f0a453eb38d855e968aea5b3",
+  "archive_bytes": 23454,
+  "archive_sha256": "165fc0657b9684a095d742167aab11416c9abbe986ab1d35b88df80a1087b0e9",
+  "parts": [
+    {"path":"chunk_000.txt","bytes":1800,"sha256":"4d4a21acd985fcc809a3741d8103903554403c39ae6f25c72f53de9bfb9d8153","git_blob_sha1":"51539035e333b4a1063f005af6dc4836173f805e"},
+    {"path":"chunk_001.txt","bytes":1800,"sha256":"c0ceb93ab23ffdfdb9d34d15ba636c68c3784206539526ee305858c26b0698f6","git_blob_sha1":"0ffbaa88935f22fbc84a24b00908d59ecc904d45"},
+    {"path":"chunk_002.txt","bytes":1800,"sha256":"9625b98b79407d2522535a0ea99ba98727d8e4f8b0bc178c48a7bec308a279ca","git_blob_sha1":"c3a89fd9486f0211382510bded21bc7251356c1d"},
+    {"path":"chunk_003.txt","bytes":1800,"sha256":"4c5b8025769858dff145d1a46fc3e0f012b10fe1f49179b96bcca835d4820bc6","git_blob_sha1":"f2fe80506e99a28ecc316bcf684a3c09e8d63c3a"},
+    {"path":"chunk_004.txt","bytes":1800,"sha256":"d0dae6f770b6c6a48978aaf6904b4a9d23b69462a55598739d62ab8da64846dc","git_blob_sha1":"5ce1f39593f6a490216422c6022d784e530a161e"},
+    {"path":"chunk_005.txt","bytes":1800,"sha256":"120e129b9bba47dc728ad9a731085cafd4288d618b5235f9669a60c4bdb89cb5","git_blob_sha1":"ff2da3030a3c226b1e88a973e81bf56cf6f57730"},
+    {"path":"chunk_006.txt","bytes":1800,"sha256":"32d4bcd4a79f5042e310dd1a9f13faed8e6b3564182fd0bf8d73ce6fc4133bf7","git_blob_sha1":"ae5fc957f004aa936b268d55f8585758e9487a1b"},
+    {"path":"chunk_007.txt","bytes":1800,"sha256":"d58bb1026bb1ff00f9ad6f32fff04f3917ca92e1f8da298f1d244874066e899d","git_blob_sha1":"4709463bf305b3c8b11d106ccf3be049f4edb859"},
+    {"path":"chunk_008.txt","bytes":1800,"sha256":"695cbc2a2a86a1c540c4f6e1d4d0a23ceffc49977e057d460d072f15ff7f5dd6","git_blob_sha1":"2c034c0e02d895ef65fd53c8178946653af6a26a"},
+    {"path":"chunk_009.txt","bytes":1800,"sha256":"f05fa6cbbb5bbcef8d6761824c4df3a118212c15e77f95ee4975456892d2e4b7","git_blob_sha1":"2312cda2a212f4156432b25471d1b42aff5649e5"},
+    {"path":"chunk_010.txt","bytes":1800,"sha256":"2e90ece6feb2910852a6fc142549c7d4343b096ddc2c65cca4d1adbdd3f8284b","git_blob_sha1":"82206b9d194676b5eca3e03de799cb6457c4eafe"},
+    {"path":"chunk_011.txt","bytes":1800,"sha256":"6e3ed68224ba5ffd3e23cc0ed88e39784cf85fec7c097adb6c81b7ddfcd380eb","git_blob_sha1":"bf068343ffdb041683882c50bd83a05220ad0b30"},
+    {"path":"chunk_012.txt","bytes":1800,"sha256":"c7c41949c153f0f8c281ffeccbb50cfc790cd99cdca4fa65a0bd5e6f9c64bb61","git_blob_sha1":"e6633616d40712690bb52a3f11663ff869201398"},
+    {"path":"chunk_013.txt","bytes":1800,"sha256":"9f90514bd687676b668138cc71838e29589a2fb791456edb524705286392a423","git_blob_sha1":"5bdcc461f6ff3366d3377a4b18b14bc366d0a73e"},
+    {"path":"chunk_014.txt","bytes":1800,"sha256":"d7e3c4c067a3b5770873c9691915ded8efa999788cb6f5456385d5e1561248b8","git_blob_sha1":"362edb5daaa67a0241d9daf35366503216e37954"},
+    {"path":"chunk_015.txt","bytes":1800,"sha256":"521990ba8dc39c2c9e44388634332bbf5c30741ece46c08eb4f6acd74388ed78","git_blob_sha1":"900939c0b817554d504db22f0ccbe5c3be1d1206"},
+    {"path":"chunk_016.txt","bytes":1800,"sha256":"bc049c0035ef1d3ce9dc4a1a4f8f69bda3ff959480b21ff2bc15394e2e58436e","git_blob_sha1":"bcdc13378f72d1970e046f094354ab75ee5d3015"},
+    {"path":"chunk_017.txt","bytes":672,"sha256":"afc523a2aba757ee2f0931cc4e1bdc31866c9766226418372512469e2f3f78b4","git_blob_sha1":"8f99aa7af673a0368f92d35f4b0968e34f104e3e"}
+  ]
+}
