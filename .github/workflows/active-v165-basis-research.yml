@@ -23,6 +23,10 @@ on:
       - '.github/workflows/active-v165-basis-research.yml'
   workflow_dispatch:
 
+concurrency:
+  group: active-v165-basis-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
