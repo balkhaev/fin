@@ -1,0 +1,363 @@
+{
+  "assets": {
+    "BTC": {
+      "inst_id": "BTC-USDT-SWAP",
+      "funding": {
+        "row_count": 290,
+        "timestamp_min": "2026-04-21T08:00:00+00:00",
+        "timestamp_max": "2026-07-26T16:00:00+00:00",
+        "covers_2021": false,
+        "sample_rows": [
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000107069213573",
+            "fundingTime": "1785081600000",
+            "instId": "BTC-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000107069213573"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000291130085216",
+            "fundingTime": "1785052800000",
+            "instId": "BTC-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000291130085216"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000404469961172",
+            "fundingTime": "1785024000000",
+            "instId": "BTC-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000404469961172"
+          }
+        ],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=BTC-USDT-SWAP&limit=400",
+            "status": 200,
+            "bytes": 56834,
+            "sha256": "9be42bbd742e63772dc3d75b2a86a8633ad1182aaf95cfa436d0b046c60413ca"
+          },
+          {
+            "page": 1,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=BTC-USDT-SWAP&limit=400&after=1776758400000",
+            "status": 200,
+            "bytes": 31,
+            "sha256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a"
+          }
+        ]
+      },
+      "mark_price_8h": {
+        "row_count": 0,
+        "timestamp_min": null,
+        "timestamp_max": null,
+        "covers_2021": false,
+        "sample_rows": [],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/market/history-mark-price-candles?instId=BTC-USDT-SWAP&bar=8H&limit=100",
+            "status": 200,
+            "bytes": 54,
+            "sha256": "539269816d7d4acf58d13b03afa68ac008e514e4cd5d51d820c1b697c5d63af8"
+          }
+        ]
+      }
+    },
+    "ETH": {
+      "inst_id": "ETH-USDT-SWAP",
+      "funding": {
+        "row_count": 290,
+        "timestamp_min": "2026-04-21T08:00:00+00:00",
+        "timestamp_max": "2026-07-26T16:00:00+00:00",
+        "covers_2021": false,
+        "sample_rows": [
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000220730758221",
+            "fundingTime": "1785081600000",
+            "instId": "ETH-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000220730758221"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000212251466303",
+            "fundingTime": "1785052800000",
+            "instId": "ETH-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000212251466303"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000129977466092",
+            "fundingTime": "1785024000000",
+            "instId": "ETH-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000129977466092"
+          }
+        ],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=ETH-USDT-SWAP&limit=400",
+            "status": 200,
+            "bytes": 56986,
+            "sha256": "c5b66a80f241a0bd9d9a7e20b9b13584f9e3ff21fc85ff1f21ededc987520bc7"
+          },
+          {
+            "page": 1,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=ETH-USDT-SWAP&limit=400&after=1776758400000",
+            "status": 200,
+            "bytes": 31,
+            "sha256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a"
+          }
+        ]
+      },
+      "mark_price_8h": {
+        "row_count": 0,
+        "timestamp_min": null,
+        "timestamp_max": null,
+        "covers_2021": false,
+        "sample_rows": [],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/market/history-mark-price-candles?instId=ETH-USDT-SWAP&bar=8H&limit=100",
+            "status": 200,
+            "bytes": 54,
+            "sha256": "539269816d7d4acf58d13b03afa68ac008e514e4cd5d51d820c1b697c5d63af8"
+          }
+        ]
+      }
+    },
+    "SOL": {
+      "inst_id": "SOL-USDT-SWAP",
+      "funding": {
+        "row_count": 290,
+        "timestamp_min": "2026-04-21T08:00:00+00:00",
+        "timestamp_max": "2026-07-26T16:00:00+00:00",
+        "covers_2021": false,
+        "sample_rows": [
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000135212663039",
+            "fundingTime": "1785081600000",
+            "instId": "SOL-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000135212663039"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000505518516348",
+            "fundingTime": "1785052800000",
+            "instId": "SOL-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000505518516348"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000298114861387",
+            "fundingTime": "1785024000000",
+            "instId": "SOL-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000298114861387"
+          }
+        ],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=SOL-USDT-SWAP&limit=400",
+            "status": 200,
+            "bytes": 56774,
+            "sha256": "72428d8f6e88007afbb13ded30bcc1e8b63fb53900de8208bee0d2cc8230d362"
+          },
+          {
+            "page": 1,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=SOL-USDT-SWAP&limit=400&after=1776758400000",
+            "status": 200,
+            "bytes": 31,
+            "sha256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a"
+          }
+        ]
+      },
+      "mark_price_8h": {
+        "row_count": 0,
+        "timestamp_min": null,
+        "timestamp_max": null,
+        "covers_2021": false,
+        "sample_rows": [],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/market/history-mark-price-candles?instId=SOL-USDT-SWAP&bar=8H&limit=100",
+            "status": 200,
+            "bytes": 54,
+            "sha256": "539269816d7d4acf58d13b03afa68ac008e514e4cd5d51d820c1b697c5d63af8"
+          }
+        ]
+      }
+    },
+    "XRP": {
+      "inst_id": "XRP-USDT-SWAP",
+      "funding": {
+        "row_count": 290,
+        "timestamp_min": "2026-04-21T08:00:00+00:00",
+        "timestamp_max": "2026-07-26T16:00:00+00:00",
+        "covers_2021": false,
+        "sample_rows": [
+          {
+            "formulaType": "withRate",
+            "fundingRate": "-0.0000159278552351",
+            "fundingTime": "1785081600000",
+            "instId": "XRP-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "-0.0000159278552351"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "-0.000024606799303",
+            "fundingTime": "1785052800000",
+            "instId": "XRP-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "-0.000024606799303"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "-0.0000242760225946",
+            "fundingTime": "1785024000000",
+            "instId": "XRP-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "-0.0000242760225946"
+          }
+        ],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=XRP-USDT-SWAP&limit=400",
+            "status": 200,
+            "bytes": 54176,
+            "sha256": "34045a376fdf6341ed7d9b6ee5ed1080630bfbc52b0c43c02ee7a5c30cb95467"
+          },
+          {
+            "page": 1,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=XRP-USDT-SWAP&limit=400&after=1777046400000",
+            "status": 200,
+            "bytes": 1928,
+            "sha256": "44e524e5fa34dbf5cc1d2a873ec024e2832a9cfe6b4ca1816e5f0e6f87519ca1"
+          },
+          {
+            "page": 2,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=XRP-USDT-SWAP&limit=400&after=1776758400000",
+            "status": 200,
+            "bytes": 31,
+            "sha256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a"
+          }
+        ]
+      },
+      "mark_price_8h": {
+        "row_count": 0,
+        "timestamp_min": null,
+        "timestamp_max": null,
+        "covers_2021": false,
+        "sample_rows": [],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/market/history-mark-price-candles?instId=XRP-USDT-SWAP&bar=8H&limit=100",
+            "status": 200,
+            "bytes": 54,
+            "sha256": "539269816d7d4acf58d13b03afa68ac008e514e4cd5d51d820c1b697c5d63af8"
+          }
+        ]
+      }
+    },
+    "DOGE": {
+      "inst_id": "DOGE-USDT-SWAP",
+      "funding": {
+        "row_count": 290,
+        "timestamp_min": "2026-04-21T08:00:00+00:00",
+        "timestamp_max": "2026-07-26T16:00:00+00:00",
+        "covers_2021": false,
+        "sample_rows": [
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0001",
+            "fundingTime": "1785081600000",
+            "instId": "DOGE-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0001"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0000937223072038",
+            "fundingTime": "1785052800000",
+            "instId": "DOGE-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0000937223072038"
+          },
+          {
+            "formulaType": "withRate",
+            "fundingRate": "0.0001",
+            "fundingTime": "1785024000000",
+            "instId": "DOGE-USDT-SWAP",
+            "instType": "SWAP",
+            "method": "current_period",
+            "realizedRate": "0.0001"
+          }
+        ],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=DOGE-USDT-SWAP&limit=400",
+            "status": 200,
+            "bytes": 55938,
+            "sha256": "941d18c5803aa044d4e35d313cdab5d53db7c583c47ccaffaaf30e15d93acdc0"
+          },
+          {
+            "page": 1,
+            "url": "https://www.okx.com/api/v5/public/funding-rate-history?instId=DOGE-USDT-SWAP&limit=400&after=1776758400000",
+            "status": 200,
+            "bytes": 31,
+            "sha256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a"
+          }
+        ]
+      },
+      "mark_price_8h": {
+        "row_count": 0,
+        "timestamp_min": null,
+        "timestamp_max": null,
+        "covers_2021": false,
+        "sample_rows": [],
+        "requests": [
+          {
+            "page": 0,
+            "url": "https://www.okx.com/api/v5/market/history-mark-price-candles?instId=DOGE-USDT-SWAP&bar=8H&limit=100",
+            "status": 200,
+            "bytes": 54,
+            "sha256": "539269816d7d4acf58d13b03afa68ac008e514e4cd5d51d820c1b697c5d63af8"
+          }
+        ]
+      }
+    }
+  },
+  "valid_assets": [],
+  "covers_2021_assets": []
+}

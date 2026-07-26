@@ -1,0 +1,16 @@
+{
+  "files": {
+    "binance_access.json": {
+      "bytes": 75749,
+      "sha256": "e33bfd80b697a563ca10183c3ca76d76645a2c39acbaf39946e31efb8ab438cc"
+    },
+    "okx_access.json": {
+      "bytes": 12339,
+      "sha256": "421f82bc09b57a547f3a2b634adfd79c730365797e73196a23e15de6f6ab4178"
+    },
+    "summary.json": {
+      "bytes": 483,
+      "sha256": "092005ec985638314a0930915cc3118bd6a93fcd562e3a3b8e04caacf27c28bd"
+    }
+  }
+}
