@@ -1,0 +1,12 @@
+{
+  "candidate": "ACTIVE_V197_DEPTH_REPLENISHMENT",
+  "status": "data_or_schema_insufficient",
+  "schema_coverage_passed": false,
+  "selection_run": false,
+  "full_backtest_run": false,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "design_sha256": "b6b0f3b75c65dcf094263a291bd20d58a7bacff52d1ad738b5adf91065c839ac"
+}
