@@ -1,0 +1,635 @@
+{
+  "candidate": "ACTIVE_V205_FLOW_DEPTH_INTERACTION",
+  "status": "rejected_before_validation",
+  "eligible_policy_count": 0,
+  "standalone_selection_passed": false,
+  "integration_permitted": false,
+  "promoted_candidates": [],
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "selection": {
+    "candidate": "ACTIVE_V205_FLOW_DEPTH_INTERACTION",
+    "selection_cutoff": "2024-06-30T23:59:59Z",
+    "selection_uses_validation": false,
+    "selection_uses_2025": false,
+    "selection_uses_2026": false,
+    "program_level_holdout_pristine": false,
+    "policy_count": 120,
+    "eligible_policy_count": 0,
+    "selected": null,
+    "development_gates": {
+      "cagr_min": 0.05,
+      "sharpe_min": 1.0,
+      "max_drawdown_min": -0.1,
+      "closed_trades_min": 250,
+      "annual_turnover_max": 250.0,
+      "btc_return_positive": true,
+      "eth_return_positive": true
+    },
+    "post_selection_gates": {
+      "validation_return_positive": true,
+      "holdout_return_positive": true,
+      "final_return_positive": true,
+      "severe_full_cagr_positive": true,
+      "latency_full_cagr_positive": true,
+      "worst_calendar_quarter_min": -0.08,
+      "top_month_positive_pnl_share_max": 0.3,
+      "unexplained_events_max": 0
+    },
+    "ranking_sha256": "bf0294b5d761c10a8819c7b9f4a9e157819576e196e562812c82de2910954ce2",
+    "design_sha256": "5fb7e73a8da101cd1af4aa4e7e44e1b92fa2cef6548d3e96153e7528abe15e4d",
+    "coverage_gate": {
+      "candidate": "V206_FLOW_DEPTH_PANEL_COVERAGE",
+      "depth_gate": {
+        "candidate": "V198_DEPTH_PANEL_COVERAGE",
+        "required_month_coverage": 0.95,
+        "symbols": {
+          "BTCUSD_PERP": {
+            "periods": {
+              "development": {
+                "months": 18,
+                "full_months": 15,
+                "required_full_months": 15,
+                "passed": true,
+                "minimum_coverage": 0.8547043010752688,
+                "median_coverage": 0.9903651433691756
+              },
+              "validation": {
+                "months": 6,
+                "full_months": 6,
+                "required_full_months": 5,
+                "passed": true,
+                "minimum_coverage": 0.996550925925926,
+                "median_coverage": 0.9992047491039426
+              },
+              "holdout": {
+                "months": 12,
+                "full_months": 12,
+                "required_full_months": 11,
+                "passed": true,
+                "minimum_coverage": 0.996415770609319,
+                "median_coverage": 0.9995138888888889
+              },
+              "final": {
+                "months": 6,
+                "full_months": 6,
+                "required_full_months": 5,
+                "passed": true,
+                "minimum_coverage": 0.9941203703703704,
+                "median_coverage": 0.9991035426267281
+              }
+            }
+          },
+          "ETHUSD_PERP": {
+            "periods": {
+              "development": {
+                "months": 18,
+                "full_months": 15,
+                "required_full_months": 15,
+                "passed": true,
+                "minimum_coverage": 0.8547043010752688,
+                "median_coverage": 0.9903651433691756
+              },
+              "validation": {
+                "months": 6,
+                "full_months": 6,
+                "required_full_months": 5,
+                "passed": true,
+                "minimum_coverage": 0.996550925925926,
+                "median_coverage": 0.9992047491039426
+              },
+              "holdout": {
+                "months": 12,
+                "full_months": 12,
+                "required_full_months": 11,
+                "passed": true,
+                "minimum_coverage": 0.996415770609319,
+                "median_coverage": 0.9995138888888889
+              },
+              "final": {
+                "months": 6,
+                "full_months": 6,
+                "required_full_months": 5,
+                "passed": true,
+                "minimum_coverage": 0.9941203703703704,
+                "median_coverage": 0.9991035426267281
+              }
+            }
+          }
+        },
+        "passed": true
+      },
+      "flow_gate": {
+        "candidate": "V205_TAKER_FLOW_COVERAGE",
+        "required_month_coverage": 0.95,
+        "symbols": {
+          "BTCUSD_PERP": {
+            "periods": {
+              "development": {
+                "months": 18,
+                "full_months": 17,
+                "required_full_months": 15,
+                "minimum_coverage": 0.8709677419354839,
+                "median_coverage": 1.0,
+                "passed": true
+              },
+              "validation": {
+                "months": 6,
+                "full_months": 6,
+                "required_full_months": 5,
+                "minimum_coverage": 1.0,
+                "median_coverage": 1.0,
+                "passed": true
+              },
+              "holdout": {
+                "months": 12,
+                "full_months": 12,
+                "required_full_months": 11,
+                "minimum_coverage": 1.0,
+                "median_coverage": 1.0,
+                "passed": true
+              },
+              "final": {
+                "months": 6,
+                "full_months": 6,
+                "required_full_months": 5,
+                "minimum_coverage": 0.9666666666666667,
+                "median_coverage": 1.0,
+                "passed": true
+              }
+            }
+          },
+          "ETHUSD_PERP": {
+            "periods": {
+              "development": {
+                "months": 18,
+                "full_months": 17,
+                "required_full_months": 15,
+                "minimum_coverage": 0.8709677419354839,
+                "median_coverage": 1.0,
+                "passed": true
+              },
+              "validation": {
+                "months": 6,
+                "full_months": 6,
+                "required_full_months": 5,
+                "minimum_coverage": 1.0,
+                "median_coverage": 1.0,
+                "passed": true
+              },
+              "holdout": {
+                "months": 12,
+                "full_months": 12,
+                "required_full_months": 11,
+                "minimum_coverage": 1.0,
+                "median_coverage": 1.0,
+                "passed": true
+              },
+              "final": {
+                "months": 6,
+                "full_months": 6,
+                "required_full_months": 5,
+                "minimum_coverage": 0.9666666666666667,
+                "median_coverage": 1.0,
+                "passed": true
+              }
+            }
+          }
+        },
+        "passed": true
+      },
+      "passed": true
+    },
+    "selection_proof_sha256": "2f1c3172a5d1709c85ab4bf31199ccdde219e412fc596765b4bcc6eec18f4283"
+  },
+  "coverage_gate": {
+    "candidate": "V206_FLOW_DEPTH_PANEL_COVERAGE",
+    "depth_gate": {
+      "candidate": "V198_DEPTH_PANEL_COVERAGE",
+      "required_month_coverage": 0.95,
+      "symbols": {
+        "BTCUSD_PERP": {
+          "periods": {
+            "development": {
+              "months": 18,
+              "full_months": 15,
+              "required_full_months": 15,
+              "passed": true,
+              "minimum_coverage": 0.8547043010752688,
+              "median_coverage": 0.9903651433691756
+            },
+            "validation": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "passed": true,
+              "minimum_coverage": 0.996550925925926,
+              "median_coverage": 0.9992047491039426
+            },
+            "holdout": {
+              "months": 12,
+              "full_months": 12,
+              "required_full_months": 11,
+              "passed": true,
+              "minimum_coverage": 0.996415770609319,
+              "median_coverage": 0.9995138888888889
+            },
+            "final": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "passed": true,
+              "minimum_coverage": 0.9941203703703704,
+              "median_coverage": 0.9991035426267281
+            }
+          }
+        },
+        "ETHUSD_PERP": {
+          "periods": {
+            "development": {
+              "months": 18,
+              "full_months": 15,
+              "required_full_months": 15,
+              "passed": true,
+              "minimum_coverage": 0.8547043010752688,
+              "median_coverage": 0.9903651433691756
+            },
+            "validation": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "passed": true,
+              "minimum_coverage": 0.996550925925926,
+              "median_coverage": 0.9992047491039426
+            },
+            "holdout": {
+              "months": 12,
+              "full_months": 12,
+              "required_full_months": 11,
+              "passed": true,
+              "minimum_coverage": 0.996415770609319,
+              "median_coverage": 0.9995138888888889
+            },
+            "final": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "passed": true,
+              "minimum_coverage": 0.9941203703703704,
+              "median_coverage": 0.9991035426267281
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    "flow_gate": {
+      "candidate": "V205_TAKER_FLOW_COVERAGE",
+      "required_month_coverage": 0.95,
+      "symbols": {
+        "BTCUSD_PERP": {
+          "periods": {
+            "development": {
+              "months": 18,
+              "full_months": 17,
+              "required_full_months": 15,
+              "minimum_coverage": 0.8709677419354839,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "validation": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "minimum_coverage": 1.0,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "holdout": {
+              "months": 12,
+              "full_months": 12,
+              "required_full_months": 11,
+              "minimum_coverage": 1.0,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "final": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "minimum_coverage": 0.9666666666666667,
+              "median_coverage": 1.0,
+              "passed": true
+            }
+          }
+        },
+        "ETHUSD_PERP": {
+          "periods": {
+            "development": {
+              "months": 18,
+              "full_months": 17,
+              "required_full_months": 15,
+              "minimum_coverage": 0.8709677419354839,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "validation": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "minimum_coverage": 1.0,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "holdout": {
+              "months": 12,
+              "full_months": 12,
+              "required_full_months": 11,
+              "minimum_coverage": 1.0,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "final": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "minimum_coverage": 0.9666666666666667,
+              "median_coverage": 1.0,
+              "passed": true
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    "passed": true
+  },
+  "development_diagnostics": [
+    {
+      "policy": "reversed_agreement_control_f2_p1.5_v0_i0_d0_n3_h12",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 2.0,
+      "pressure_threshold": 1.5,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 12,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": 0.05442597530699167,
+      "development_total_return": 0.010119609319214407,
+      "development_cagr": 0.006745758117780332,
+      "development_max_drawdown": -0.002399701397354237,
+      "development_sharpe": 0.9658822131116217,
+      "development_annual_turnover": 3.7392332663432697,
+      "development_average_gross": 4.2656970669524006e-05,
+      "development_max_gross": 0.2,
+      "development_costs": 28.12792616211047,
+      "development_trade_count": 14,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f2_p1.5_v0_i0_d0_n3_h3",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 2.0,
+      "pressure_threshold": 1.5,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 3,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": 0.05278156382403605,
+      "development_total_return": 0.004299142385739918,
+      "development_cagr": 0.0028685778614585544,
+      "development_max_drawdown": -0.001268209698695122,
+      "development_sharpe": 1.0082746051816267,
+      "development_annual_turnover": 3.739233266343269,
+      "development_average_gross": 1.0664242667381002e-05,
+      "development_max_gross": 0.2,
+      "development_costs": 28.05485365322002,
+      "development_trade_count": 14,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f2_p1_v0_i0_d0_n3_h12",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 2.0,
+      "pressure_threshold": 1.0,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 12,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": 0.05113694608246348,
+      "development_total_return": 0.010274905056717687,
+      "development_cagr": 0.006849103239561893,
+      "development_max_drawdown": -0.0035334518847830454,
+      "development_sharpe": 0.9088490460547833,
+      "development_annual_turnover": 8.012642713592719,
+      "development_average_gross": 9.140779429183715e-05,
+      "development_max_gross": 0.2,
+      "development_costs": 60.32390988657925,
+      "development_trade_count": 30,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f1.5_p1.5_v0_i0_d0_n3_h12",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 1.5,
+      "pressure_threshold": 1.5,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 12,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": 0.020582181244527143,
+      "development_total_return": 0.004116515971520629,
+      "development_cagr": 0.0027468045327652124,
+      "development_max_drawdown": -0.003364355779063355,
+      "development_sharpe": 0.38052988358236317,
+      "development_annual_turnover": 8.546818894498902,
+      "development_average_gross": 9.750164724462632e-05,
+      "development_max_gross": 0.2,
+      "development_costs": 64.0748473700951,
+      "development_trade_count": 32,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f2_p1.5_v0_i0_d0_n3_h1",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 2.0,
+      "pressure_threshold": 1.5,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 1,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": 0.015080178833403084,
+      "development_total_return": 0.000855960295794489,
+      "development_cagr": 0.000571460754648756,
+      "development_max_drawdown": -0.0010530961226561386,
+      "development_sharpe": 0.2997590203530854,
+      "development_annual_turnover": 3.73923326634327,
+      "development_average_gross": 3.5547475557936676e-06,
+      "development_max_gross": 0.2,
+      "development_costs": 28.00886692804837,
+      "development_trade_count": 14,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f2_p1_v0_i0_d0_n3_h3",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 2.0,
+      "pressure_threshold": 1.0,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 3,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": 0.008574793099314379,
+      "development_total_return": 0.0008944078456669668,
+      "development_cagr": 0.0005971255000631892,
+      "development_max_drawdown": -0.002584134785769243,
+      "development_sharpe": 0.18128108316465388,
+      "development_annual_turnover": 8.279730804045808,
+      "development_average_gross": 2.3613680192057934e-05,
+      "development_max_gross": 0.2,
+      "development_costs": 62.01617597929612,
+      "development_trade_count": 31,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f1.5_p1_v0_i0_d0_n3_h12",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 1.5,
+      "pressure_threshold": 1.0,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 12,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": 0.0018269618881280457,
+      "development_total_return": 0.0008650726166379297,
+      "development_cagr": 0.0005775434968304793,
+      "development_max_drawdown": -0.006578239882458203,
+      "development_sharpe": 0.07767388497792514,
+      "development_annual_turnover": 19.76451869352871,
+      "development_average_gross": 0.00022547255925319836,
+      "development_max_gross": 0.2,
+      "development_costs": 147.87296560122152,
+      "development_trade_count": 74,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f1.5_p1.5_v0_i0_d0_n3_h3",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 1.5,
+      "pressure_threshold": 1.5,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 3,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": -0.010444011371126802,
+      "development_total_return": -0.0008375628381043221,
+      "development_cagr": -0.0005593354987730725,
+      "development_max_drawdown": -0.0030097433628701875,
+      "development_sharpe": -0.17404621675143025,
+      "development_annual_turnover": 8.813906984951991,
+      "development_average_gross": 2.5137143430255218e-05,
+      "development_max_gross": 0.2,
+      "development_costs": 65.93978030728799,
+      "development_trade_count": 33,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f2_p1_v0_i0_d0_n3_h1",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 2.0,
+      "pressure_threshold": 1.0,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 1,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": -0.03983156160395798,
+      "development_total_return": -0.0025510502920186306,
+      "development_cagr": -0.0017041106459206867,
+      "development_max_drawdown": -0.0027521513455123214,
+      "development_sharpe": -0.7404852548616296,
+      "development_annual_turnover": 8.279730804045808,
+      "development_average_gross": 7.871226730685978e-06,
+      "development_max_gross": 0.2,
+      "development_costs": 61.93228711334707,
+      "development_trade_count": 31,
+      "development_unexplained_events": 0
+    },
+    {
+      "policy": "reversed_agreement_control_f1.5_p1.5_v0_i0_d0_n3_h1",
+      "family": "reversed_agreement_control",
+      "flow_threshold": 1.5,
+      "pressure_threshold": 1.5,
+      "volume_threshold": 0.0,
+      "max_impact_bps": 0.0,
+      "depth_threshold": 0.0,
+      "persistence": 3,
+      "hold_minutes": 1,
+      "eligible_development": false,
+      "preliminary_gate": false,
+      "btc_development_return": NaN,
+      "eth_development_return": NaN,
+      "score": -0.05631605299772214,
+      "development_total_return": -0.003767170379654683,
+      "development_cagr": -0.002516992839004639,
+      "development_max_drawdown": -0.004084542262259849,
+      "development_sharpe": -1.0501843046799262,
+      "development_annual_turnover": 8.81390698495199,
+      "development_average_gross": 8.379047810085073e-06,
+      "development_max_gross": 0.2,
+      "development_costs": 65.84604348049122,
+      "development_trade_count": 33,
+      "development_unexplained_events": 0
+    }
+  ],
+  "provenance_sha256": "52f4890e6c0e160803d2c6084cc499d5c7b10dab23e6cdbdc613503df0881387",
+  "limitations": [
+    "Validation and later periods were not opened because no development policy passed.",
+    "Execution is a next-minute mark-open proxy plus frozen cost floors, not BBO proof."
+  ]
+}

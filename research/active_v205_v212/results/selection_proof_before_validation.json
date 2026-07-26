@@ -1,0 +1,195 @@
+{
+  "candidate": "ACTIVE_V205_FLOW_DEPTH_INTERACTION",
+  "selection_cutoff": "2024-06-30T23:59:59Z",
+  "selection_uses_validation": false,
+  "selection_uses_2025": false,
+  "selection_uses_2026": false,
+  "program_level_holdout_pristine": false,
+  "policy_count": 120,
+  "eligible_policy_count": 0,
+  "selected": null,
+  "development_gates": {
+    "cagr_min": 0.05,
+    "sharpe_min": 1.0,
+    "max_drawdown_min": -0.1,
+    "closed_trades_min": 250,
+    "annual_turnover_max": 250.0,
+    "btc_return_positive": true,
+    "eth_return_positive": true
+  },
+  "post_selection_gates": {
+    "validation_return_positive": true,
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "severe_full_cagr_positive": true,
+    "latency_full_cagr_positive": true,
+    "worst_calendar_quarter_min": -0.08,
+    "top_month_positive_pnl_share_max": 0.3,
+    "unexplained_events_max": 0
+  },
+  "ranking_sha256": "bf0294b5d761c10a8819c7b9f4a9e157819576e196e562812c82de2910954ce2",
+  "design_sha256": "5fb7e73a8da101cd1af4aa4e7e44e1b92fa2cef6548d3e96153e7528abe15e4d",
+  "coverage_gate": {
+    "candidate": "V206_FLOW_DEPTH_PANEL_COVERAGE",
+    "depth_gate": {
+      "candidate": "V198_DEPTH_PANEL_COVERAGE",
+      "required_month_coverage": 0.95,
+      "symbols": {
+        "BTCUSD_PERP": {
+          "periods": {
+            "development": {
+              "months": 18,
+              "full_months": 15,
+              "required_full_months": 15,
+              "passed": true,
+              "minimum_coverage": 0.8547043010752688,
+              "median_coverage": 0.9903651433691756
+            },
+            "validation": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "passed": true,
+              "minimum_coverage": 0.996550925925926,
+              "median_coverage": 0.9992047491039426
+            },
+            "holdout": {
+              "months": 12,
+              "full_months": 12,
+              "required_full_months": 11,
+              "passed": true,
+              "minimum_coverage": 0.996415770609319,
+              "median_coverage": 0.9995138888888889
+            },
+            "final": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "passed": true,
+              "minimum_coverage": 0.9941203703703704,
+              "median_coverage": 0.9991035426267281
+            }
+          }
+        },
+        "ETHUSD_PERP": {
+          "periods": {
+            "development": {
+              "months": 18,
+              "full_months": 15,
+              "required_full_months": 15,
+              "passed": true,
+              "minimum_coverage": 0.8547043010752688,
+              "median_coverage": 0.9903651433691756
+            },
+            "validation": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "passed": true,
+              "minimum_coverage": 0.996550925925926,
+              "median_coverage": 0.9992047491039426
+            },
+            "holdout": {
+              "months": 12,
+              "full_months": 12,
+              "required_full_months": 11,
+              "passed": true,
+              "minimum_coverage": 0.996415770609319,
+              "median_coverage": 0.9995138888888889
+            },
+            "final": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "passed": true,
+              "minimum_coverage": 0.9941203703703704,
+              "median_coverage": 0.9991035426267281
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    "flow_gate": {
+      "candidate": "V205_TAKER_FLOW_COVERAGE",
+      "required_month_coverage": 0.95,
+      "symbols": {
+        "BTCUSD_PERP": {
+          "periods": {
+            "development": {
+              "months": 18,
+              "full_months": 17,
+              "required_full_months": 15,
+              "minimum_coverage": 0.8709677419354839,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "validation": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "minimum_coverage": 1.0,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "holdout": {
+              "months": 12,
+              "full_months": 12,
+              "required_full_months": 11,
+              "minimum_coverage": 1.0,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "final": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "minimum_coverage": 0.9666666666666667,
+              "median_coverage": 1.0,
+              "passed": true
+            }
+          }
+        },
+        "ETHUSD_PERP": {
+          "periods": {
+            "development": {
+              "months": 18,
+              "full_months": 17,
+              "required_full_months": 15,
+              "minimum_coverage": 0.8709677419354839,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "validation": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "minimum_coverage": 1.0,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "holdout": {
+              "months": 12,
+              "full_months": 12,
+              "required_full_months": 11,
+              "minimum_coverage": 1.0,
+              "median_coverage": 1.0,
+              "passed": true
+            },
+            "final": {
+              "months": 6,
+              "full_months": 6,
+              "required_full_months": 5,
+              "minimum_coverage": 0.9666666666666667,
+              "median_coverage": 1.0,
+              "passed": true
+            }
+          }
+        }
+      },
+      "passed": true
+    },
+    "passed": true
+  },
+  "selection_proof_sha256": "2f1c3172a5d1709c85ab4bf31199ccdde219e412fc596765b4bcc6eec18f4283"
+}
