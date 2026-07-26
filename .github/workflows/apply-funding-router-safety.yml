@@ -1,0 +1,51 @@
+name: Apply funding router safety patch
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.bootstrap_funding_safety/**'
+      - '.github/workflows/apply-funding-router-safety.yml'
+      - 'services/funding_router/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-funding-router-safety
+  cancel-in-progress: false
+
+jobs:
+  apply-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/funding-router-postmerge-safety
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply deterministic source patch
+        run: python .bootstrap_funding_safety/apply.py
+      - name: Run local-equivalent validation
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install 'pytest>=8.3,<10'
+          PYTHONPATH=services/funding_router/src python -m compileall -q services/funding_router/src services/funding_router/tests services/funding_router/verify.py
+          PYTHONPATH=services/funding_router/src python -m pytest -q services/funding_router/tests
+          PYTHONPATH=services/funding_router/src python -m funding_router --config services/funding_router/config.example.toml validate
+          python services/funding_router/verify.py
+      - name: Publish clean patch commit
+        run: |
+          set -euxo pipefail
+          rm -rf .bootstrap_funding_safety
+          rm -f .github/workflows/apply-funding-router-safety.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Harden funding schedule and fill reconciliation'
+          git push origin HEAD:refs/heads/agent/funding-router-postmerge-safety
