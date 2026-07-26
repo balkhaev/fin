@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: active-v163-current-probe
+  group: active-v163-current-probe-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
