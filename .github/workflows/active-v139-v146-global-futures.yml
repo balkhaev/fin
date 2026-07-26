@@ -15,6 +15,10 @@ on:
       - '.github/workflows/active-v139-v146-global-futures.yml'
   workflow_dispatch:
 
+concurrency:
+  group: active-v139-v146-global-futures
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -70,6 +74,13 @@ jobs:
           input_path=Path('research/active_v139_v146/inputs/v75_stress_equity.csv')
           source_path.parent.mkdir(parents=True,exist_ok=True); input_path.parent.mkdir(parents=True,exist_ok=True)
           source_path.write_bytes(source); input_path.write_bytes(raw)
+          # Accounting fix only: the immutable V75 control input is an equity-only series.
+          # Add zero bookkeeping columns so the shared calendar-corrected metrics function can evaluate it.
+          text=source_path.read_text()
+          needle="    atlas = atlas[['equity']].sort_index()\n"
+          replacement=(needle + "    atlas['gross'] = 0.0\n    atlas['turnover'] = 0.0\n    atlas['min_margin_buffer'] = 1.0\n")
+          assert needle in text
+          source_path.write_text(text.replace(needle,replacement,1))
           PY
           python -m py_compile research/active_v139_v146/source/run_research.py
       - name: Install and causal self-test
@@ -84,6 +95,7 @@ jobs:
           key: v139-v146-yahoo-continuous-futures-2007-2026-v1
       - name: Run frozen research
         run: |
+          set -o pipefail
           rm -rf artifacts/active_v139_v146
           mkdir -p artifacts/active_v139_v146
           python research/active_v139_v146/source/run_research.py \
