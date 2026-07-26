@@ -1,0 +1,33 @@
+{
+  "encoded_bytes": 31272,
+  "encoded_sha256": "d42beb6df8023e693d7e13939325e1dd6df92843f0a453eb38d855e968aea5b3",
+  "archive_bytes": 23454,
+  "archive_sha256": "165fc0657b9684a095d742167aab11416c9abbe986ab1d35b88df80a1087b0e9",
+  "parts": [
+    {
+      "path": "part_000.txt",
+      "bytes": 7500,
+      "sha256": "cb54fd1fd6d23c5120a8ec40375e6c741b7611c3868430a06c6d38c0f2757768"
+    },
+    {
+      "path": "part_001.txt",
+      "bytes": 7500,
+      "sha256": "58e0622b5a521ef5dbb194067942154b7faf3681f280e10f3de262ca0a7c5ad9"
+    },
+    {
+      "path": "part_002.txt",
+      "bytes": 7500,
+      "sha256": "34893e911443bd24fe937d167d03ded2c0747053377a0cb7499554847d2a7329"
+    },
+    {
+      "path": "part_003.txt",
+      "bytes": 7500,
+      "sha256": "793896a4f3f04df9889e4afa371cd96728743e86f1bd3544261e6d70dc087ec5"
+    },
+    {
+      "path": "part_004.txt",
+      "bytes": 1272,
+      "sha256": "1db2a912c5d6262d595a70cc9667efb99658099a5a5344cfcc1d6e418f373be8"
+    }
+  ]
+}
