@@ -1,0 +1,20 @@
+{
+  "venue": "hyperliquid",
+  "asset": "XRP",
+  "dataset": "public_candleSnapshot_8h",
+  "request": {
+    "type": "candleSnapshot",
+    "req": {
+      "coin": "XRP",
+      "interval": "8h",
+      "startTime": 1682899200000,
+      "endTime": 1782863999000
+    }
+  },
+  "status": 200,
+  "bytes": 468445,
+  "sha256": "1d6bb9e8886c96bb2f49f2401f55359813e15ec8b451938255efaa81a2e56e12",
+  "rows": 3471,
+  "timestamp_min": "2023-05-01T00:00:00+00:00",
+  "timestamp_max": "2026-06-30T16:00:00+00:00"
+}

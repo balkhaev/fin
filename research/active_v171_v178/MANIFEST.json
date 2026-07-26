@@ -1,0 +1,217 @@
+{
+  "candidate": "ACTIVE_V171_BINANCE_HYPERLIQUID_FUNDING",
+  "files": {
+    "README.md": {
+      "bytes": 6170,
+      "sha256": "89126133abd4118c7ffbb2e5cd66047940cc1301b1992bf3b6a73bafb66d80c5"
+    },
+    "V171_V178_DESIGN.json": {
+      "bytes": 5239,
+      "sha256": "5e70508ff40f3e1ec85eecccae4395f3acaef3697cffa161541bee63f3fa5e5a"
+    },
+    "config.py": {
+      "bytes": 2172,
+      "sha256": "095fb8e26a9400819c26bb051b9e588316f3f9d88c96899ed33432f68965ad11"
+    },
+    "data.py": {
+      "bytes": 18434,
+      "sha256": "4aec225f11c1cae39407f3210efa9aca1151be0760b89e4673e1736f396963a6"
+    },
+    "engine.py": {
+      "bytes": 20857,
+      "sha256": "1aec7805a3e13ebda086b793a14a664b42f9d82d986706d1d8e52b507336632a"
+    },
+    "inputs/normalized/BTC_8h.csv": {
+      "bytes": 466996,
+      "sha256": "a27d183219ec6b96f973e894efb4fa1a713c06b37928f2f6872e7dc7c2b6adb9"
+    },
+    "inputs/normalized/DOGE_8h.csv": {
+      "bytes": 466176,
+      "sha256": "179b7bd38a33a178ed7255e2d118ba554f558c4db6e70c5cd84eaf772115593c"
+    },
+    "inputs/normalized/ETH_8h.csv": {
+      "bytes": 458040,
+      "sha256": "2db1435adc55c1e70f956a734e29bf3ea5cd5e8f02e7caa861bc69575b1c3d09"
+    },
+    "inputs/normalized/SOL_8h.csv": {
+      "bytes": 452086,
+      "sha256": "a255268e2ebf769b885108725e1e35541a1f5bcf1e9d4ec2baf838e1e517935b"
+    },
+    "inputs/normalized/XRP_8h.csv": {
+      "bytes": 441777,
+      "sha256": "43e3526136457a90cb2236b702a7200cf08cc057d53d08fd4f6aa31d7531d95b"
+    },
+    "inputs/provenance.json": {
+      "bytes": 174894,
+      "sha256": "6418f4716fcd42d460d01d344da107efda2672873adaa48c9037d53bae9508dd"
+    },
+    "inputs/raw/binance/binance_BTCUSDT_funding.csv": {
+      "bytes": 136960,
+      "sha256": "aa3fcb247762f618f9dc8828f624fb07dd75c2bd4b1c836199ed501146da6d9d"
+    },
+    "inputs/raw/binance/binance_BTCUSDT_funding_provenance.json": {
+      "bytes": 14978,
+      "sha256": "789140655c7ccb52728149225fea1b2800b60e47fb09d7f04d9af8c18f1cb988"
+    },
+    "inputs/raw/binance/binance_DOGEUSDT_funding.csv": {
+      "bytes": 136574,
+      "sha256": "fa4a40d5ef78af4995c2df9d96e75565e7e5ee81b8633f361e2393cb1991cb62"
+    },
+    "inputs/raw/binance/binance_DOGEUSDT_funding_provenance.json": {
+      "bytes": 15055,
+      "sha256": "11355dbaacbfbd8ad7f0edf141f986e692525ac8708adbd9625b1b497604252b"
+    },
+    "inputs/raw/binance/binance_ETHUSDT_funding.csv": {
+      "bytes": 137104,
+      "sha256": "f2bedd6e0242e32e1d7d45104fa54608019780b35ecd7e96b627b1f6a1bece03"
+    },
+    "inputs/raw/binance/binance_ETHUSDT_funding_provenance.json": {
+      "bytes": 14978,
+      "sha256": "830b8864ca3fcae8248bdbd5ec3493bc6b4b5c1cb134e8fd29e39e6a1fa69de7"
+    },
+    "inputs/raw/binance/binance_SOLUSDT_funding.csv": {
+      "bytes": 137862,
+      "sha256": "65cf1c162d454d1f701e1ec6511c3c87e2c3d0382d2ecb53cb4459a54dbda591"
+    },
+    "inputs/raw/binance/binance_SOLUSDT_funding_provenance.json": {
+      "bytes": 14978,
+      "sha256": "bcfb1909665f9dcd29e1458aec3f393b3ae341720cb8c0a530605d166fc5c37e"
+    },
+    "inputs/raw/binance/binance_XRPUSDT_funding.csv": {
+      "bytes": 136746,
+      "sha256": "562ddeceec7bde80245f9b12b06ffd0b9f2f2b3ede0aeb68b07ae7bdab65df29"
+    },
+    "inputs/raw/binance/binance_XRPUSDT_funding_provenance.json": {
+      "bytes": 14979,
+      "sha256": "45e6445afd7ccb9590f9cb58c8501523166bda9562366656f8a6705c4bc8e1d7"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_BTC_8h.csv": {
+      "bytes": 147123,
+      "sha256": "cea877c35b4e1cc6b11001bb066aa9044e9814257f6656f41bce1c9d44801852"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_BTC_8h_provenance.json": {
+      "bytes": 495,
+      "sha256": "5efc5241d59d8aad72e5ae742ce5f9db5bd0ab6a0690074b10fb0b3e4b4165c4"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_BTC_funding.csv": {
+      "bytes": 1524014,
+      "sha256": "1417ba6ecd5ed0a61e624ef93e4c3bc3140fdd85c622fc570aaefabae448e840"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_BTC_funding_provenance.json": {
+      "bytes": 13398,
+      "sha256": "85f57428efdebd5998c3c0bf151ed16fc9e4cbf35ebb575b3e6598ace8f4ca1d"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_DOGE_8h.csv": {
+      "bytes": 147532,
+      "sha256": "3fa36efa76bd7244d5246a97d400423a1072968c7c81c14ab8779dada46b1cac"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_DOGE_8h_provenance.json": {
+      "bytes": 497,
+      "sha256": "89be203accee05165235b83fd85b64b5c41471b6850407fb5bf2ed85bf9bc75d"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_DOGE_funding.csv": {
+      "bytes": 1536629,
+      "sha256": "dcd53a77ae63958e4f15d1f0822a290c399900bedfe0e2d91f5bbd4577f9f988"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_DOGE_funding_provenance.json": {
+      "bytes": 13399,
+      "sha256": "73b57b911a49649ea54233307e87c6cc699ebb3612069d4a067cd56758be4fce"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_ETH_8h.csv": {
+      "bytes": 138885,
+      "sha256": "b776a0cfbfcf90bda19c213fb80e7b78c6028b9147bdfe85652a43c29cb73735"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_ETH_8h_provenance.json": {
+      "bytes": 495,
+      "sha256": "56ea9d9dd8928b4bcd3a42bf20cccc430a12d0f4ecf1fa6f61536efdd497a094"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_ETH_funding.csv": {
+      "bytes": 1527644,
+      "sha256": "dc492ca46ee86cd0912af68ce71a55748606d7c35159f9670cf3e52b6e78d006"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_ETH_funding_provenance.json": {
+      "bytes": 13398,
+      "sha256": "9785e1831f57a421b7c695b97cf9e503e3f42ac3ab91e4b8d297e9e67bf37978"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_SOL_8h.csv": {
+      "bytes": 138095,
+      "sha256": "17bd1da2ffd6f23f06d12ac2e7d8126c7059d0d4ec3bfc71d491f4b45d467605"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_SOL_8h_provenance.json": {
+      "bytes": 495,
+      "sha256": "af83f92f3c22649ac9cda2b2471d8fa890166c91c19758f029a230b4fad3a1e5"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_SOL_funding.csv": {
+      "bytes": 1538094,
+      "sha256": "f6948e7dc8680481ec26d1e95d046f9b9a1e7cfe10c6467921d106954bacbbbc"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_SOL_funding_provenance.json": {
+      "bytes": 13398,
+      "sha256": "4cd19b548acb9b33b29a5633a36ea2c17aec7ae261f59122ca32ce6bb01177e8"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_XRP_8h.csv": {
+      "bytes": 141136,
+      "sha256": "675ebdeeabc9c4cac8077eb6109524e869ebc2f8725ebe53f7a21f6bbf2dbb30"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_XRP_8h_provenance.json": {
+      "bytes": 495,
+      "sha256": "c17886ad95ccbf6376ad682538e067372a3ebf153ca172bc0e225bacd0175c72"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_XRP_funding.csv": {
+      "bytes": 1514777,
+      "sha256": "7087d6088c321759ffb7aa923987e2f5af0ab78d3dc552fbff9eba83d87e62db"
+    },
+    "inputs/raw/hyperliquid/hyperliquid_XRP_funding_provenance.json": {
+      "bytes": 13398,
+      "sha256": "a68864bf6580a1a9cf86430065572b235891861aed1cfb2296796d5f7c8c310f"
+    },
+    "requirements.txt": {
+      "bytes": 44,
+      "sha256": "39dbeb92512a19992fe7c27e816a62219b067e0220281a2019a7ca3364c0d52e"
+    },
+    "results/ANNUAL_RETURNS.csv": {
+      "bytes": 169,
+      "sha256": "ff8deb5c5c68ddf15dc1705880208a143c2b1b9b7ec69e5d019b1d5f835e6437"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 297,
+      "sha256": "0666f77a05214746dd2eb4bc0cca9c4f09d8e4fd060cf57a5941b4e70ab74703"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 255,
+      "sha256": "99237c3e53b21a73814edf4d39f7120c57360251a87539e32e05028290ed2525"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 2638,
+      "sha256": "b7d8481d984530f48b97ce30b99d6492ac9374f4330c020a0974d27626e833c2"
+    },
+    "results/data_quality.csv": {
+      "bytes": 800,
+      "sha256": "35d8de11bb5b4ac4ae45f2304073d6eb436e883ecea731916ed98e3c085ea99a"
+    },
+    "results/selected_trades.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/selection_proof_before_holdout.json": {
+      "bytes": 2963,
+      "sha256": "88169646c911e0e4de502a9bfa600993f76a9563fbbed7a8e467a3ceedd5c979"
+    },
+    "results/selection_ranking_before_holdout.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/summary.json": {
+      "bytes": 3506,
+      "sha256": "99a72670c140a09261aa9b138200364768a89bee6c050c1726d2490449b40826"
+    },
+    "run_research.py": {
+      "bytes": 25608,
+      "sha256": "851e68f0e97f0b126b11c2fec11af2fc0a73b2fc1d316f490e13a176f4e3da10"
+    }
+  }
+}

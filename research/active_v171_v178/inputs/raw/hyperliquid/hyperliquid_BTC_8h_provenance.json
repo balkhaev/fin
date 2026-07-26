@@ -1,0 +1,20 @@
+{
+  "venue": "hyperliquid",
+  "asset": "BTC",
+  "dataset": "public_candleSnapshot_8h",
+  "request": {
+    "type": "candleSnapshot",
+    "req": {
+      "coin": "BTC",
+      "interval": "8h",
+      "startTime": 1682899200000,
+      "endTime": 1782863999000
+    }
+  },
+  "status": 200,
+  "bytes": 486779,
+  "sha256": "0d89593b5e1945ecd0d27ce619c41b84743dcff6b9ee68374d99df37782159e7",
+  "rows": 3471,
+  "timestamp_min": "2023-05-01T00:00:00+00:00",
+  "timestamp_max": "2026-06-30T16:00:00+00:00"
+}
