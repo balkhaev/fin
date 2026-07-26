@@ -1,0 +1,102 @@
+[service]
+poll_seconds = 15.0
+database_path = "data/funding_router.sqlite3"
+log_level = "INFO"
+order_book_limit = 50
+funding_history_limit = 3
+history_cache_seconds = 300.0
+
+[risk]
+capital_usdt = 3000.0
+notional_usdt = 1000.0
+max_deployed_fraction = 0.80
+min_free_reserve_fraction = 0.20
+max_open_positions = 1
+min_current_spread_bps_8h = 8.0
+min_predicted_spread_bps_8h = 5.0
+min_expected_net_bps = 10.0
+exit_expected_net_bps = 1.0
+hold_hours = 24.0
+max_hold_hours = 72.0
+max_basis_bps = 35.0
+max_mark_divergence_bps = 75.0
+min_open_interest_usdt = 5000000.0
+allow_missing_open_interest = false
+min_depth_multiple = 5.0
+require_predicted_confirmation = true
+slippage_buffer_bps = 3.0
+exit_basis_buffer_bps = 8.0
+adverse_selection_buffer_bps = 3.0
+delta_tolerance_fraction = 0.005
+max_unhedged_seconds = 4.0
+max_retries = 3
+min_fill_fraction = 0.20
+
+[execution]
+maker_timeout_seconds = 8.0
+order_poll_seconds = 0.5
+maker_offset_bps = 0.0
+close_retry_delay_seconds = 0.75
+paper_start_balance_usdt = 3000.0
+paper_entry_extra_bps = 0.0
+paper_exit_extra_bps = 0.0
+
+[live]
+enabled = false
+confirmation_phrase = "YES_I_UNDERSTAND"
+confirmation_env = "FUNDING_ROUTER_LIVE_CONFIRM"
+allow_external_positions = false
+close_on_shutdown = true
+require_balance_check = true
+margin_safety_multiplier = 1.20
+
+[[exchanges]]
+id = "binance"
+exchange_class = "binanceusdm"
+enabled = true
+markets = ["BTC/USDT:USDT", "ETH/USDT:USDT", "PENDLE/USDT:USDT"]
+maker_fee_bps = 2.0
+taker_fee_bps = 5.0
+api_key_env = "BINANCE_API_KEY"
+secret_env = "BINANCE_SECRET"
+password_env = ""
+uid_env = ""
+default_funding_interval_hours = 8.0
+leverage = 1.0
+sandbox = false
+options = { defaultType = "swap" }
+params = { marginMode = "cross" }
+
+[[exchanges]]
+id = "bybit"
+exchange_class = "bybit"
+enabled = true
+markets = ["BTC/USDT:USDT", "ETH/USDT:USDT", "PENDLE/USDT:USDT"]
+maker_fee_bps = 2.0
+taker_fee_bps = 5.5
+api_key_env = "BYBIT_API_KEY"
+secret_env = "BYBIT_SECRET"
+password_env = ""
+uid_env = ""
+default_funding_interval_hours = 8.0
+leverage = 1.0
+sandbox = false
+options = { defaultType = "swap" }
+params = { marginMode = "cross" }
+
+[[exchanges]]
+id = "okx"
+exchange_class = "okx"
+enabled = false
+markets = ["BTC/USDT:USDT", "ETH/USDT:USDT"]
+maker_fee_bps = 2.0
+taker_fee_bps = 5.0
+api_key_env = "OKX_API_KEY"
+secret_env = "OKX_SECRET"
+password_env = "OKX_PASSPHRASE"
+uid_env = ""
+default_funding_interval_hours = 8.0
+leverage = 1.0
+sandbox = false
+options = { defaultType = "swap" }
+params = { tdMode = "cross" }

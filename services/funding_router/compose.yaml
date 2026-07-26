@@ -1,0 +1,17 @@
+services:
+  funding-router:
+    build: .
+    restart: unless-stopped
+    init: true
+    env_file:
+      - .env
+    volumes:
+      - ./config.toml:/app/config.toml:ro
+      - ./data:/app/data
+    command: ["--config", "/app/config.toml", "paper"]
+    stop_grace_period: 30s
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    security_opt:
+      - no-new-privileges:true
