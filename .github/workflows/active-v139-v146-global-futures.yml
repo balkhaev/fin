@@ -1,0 +1,129 @@
+name: Active V139-V146 global futures proxy research
+
+on:
+  push:
+    branches: [agent/active-v139-v146-global-futures]
+    paths:
+      - '.bootstrap_v146/**'
+      - 'research/active_v139_v146/**'
+      - '.github/workflows/active-v139-v146-global-futures.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.bootstrap_v146/**'
+      - 'research/active_v139_v146/**'
+      - '.github/workflows/active-v139-v146-global-futures.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v139-v146-global-futures
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reconstruct readable source and V75 control input
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import base64,hashlib,json,lzma
+          root=Path('.bootstrap_v146')
+          m=json.loads((root/'manifest.json').read_text())
+          src=[]
+          for item in m['source']['parts']:
+              p=root/'source_parts'/item['path']; b=p.read_bytes()
+              assert len(b)==item['bytes'] and hashlib.sha256(b).hexdigest()==item['sha256']
+              src.append(b)
+          source=b''.join(src)
+          assert len(source)==m['source']['bytes'] and hashlib.sha256(source).hexdigest()==m['source']['sha256']
+          enc=[]
+          for item in m['v75']['parts']:
+              p=root/'input_parts'/item['path']; b=p.read_bytes()
+              assert len(b)==item['bytes'] and hashlib.sha256(b).hexdigest()==item['sha256']
+              enc.append(b)
+          encoded=b''.join(enc)
+          assert len(encoded)==m['v75']['encoded_bytes'] and hashlib.sha256(encoded).hexdigest()==m['v75']['encoded_sha256']
+          archive=base64.b64decode(encoded,validate=True)
+          assert len(archive)==m['v75']['xz_bytes'] and hashlib.sha256(archive).hexdigest()==m['v75']['xz_sha256']
+          raw=lzma.decompress(archive)
+          assert len(raw)==m['v75']['raw_bytes'] and hashlib.sha256(raw).hexdigest()==m['v75']['raw_sha256']
+          source_path=Path('research/active_v139_v146/source/run_research.py')
+          input_path=Path('research/active_v139_v146/inputs/v75_stress_equity.csv')
+          source_path.parent.mkdir(parents=True,exist_ok=True); input_path.parent.mkdir(parents=True,exist_ok=True)
+          source_path.write_bytes(source); input_path.write_bytes(raw)
+          PY
+          python -m py_compile research/active_v139_v146/source/run_research.py
+      - name: Install and causal self-test
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v139_v146/requirements.txt
+          python research/active_v139_v146/source/run_research.py --self-test
+      - name: Restore raw data cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v139_v146
+          key: v139-v146-yahoo-continuous-futures-2007-2026-v1
+      - name: Run frozen research
+        run: |
+          rm -rf artifacts/active_v139_v146
+          mkdir -p artifacts/active_v139_v146
+          python research/active_v139_v146/source/run_research.py \
+            --atlas research/active_v139_v146/inputs/v75_stress_equity.csv \
+            --cache .cache/v139_v146 \
+            --output artifacts/active_v139_v146 \
+            2>&1 | tee artifacts/active_v139_v146/run.log
+      - name: Materialize readable data and results
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v139_v146/results research/active_v139_v146/inputs/external
+          mkdir -p research/active_v139_v146/results research/active_v139_v146/inputs/external/raw/yahoo
+          cp -r artifacts/active_v139_v146/. research/active_v139_v146/results/
+          cp .cache/v139_v146/yahoo/*.json research/active_v139_v146/inputs/external/raw/yahoo/ 2>/dev/null || true
+          mkdir -p docs/checkpoints/v146
+          cp artifacts/active_v139_v146/summary.json docs/checkpoints/v146/CHECKPOINT_V146.json
+          cp artifacts/active_v139_v146/REPORT_RU.md docs/checkpoints/v146/RESEARCH_CHECKPOINT_V146_RU.md
+          cp artifacts/active_v139_v146/ANNUAL_RETURNS.csv docs/checkpoints/v146/ANNUAL_RETURNS.csv
+          find research/active_v139_v146 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v139_v146 -type f -name '*.pyc' -delete || true
+      - name: Verify frozen output
+        run: |
+          test -s research/active_v139_v146/results/summary.json
+          test -s research/active_v139_v146/results/selection_proof_before_2021.json
+          test -s research/active_v139_v146/ANNUAL_RETURNS.csv
+          grep -q 'V75_original' research/active_v139_v146/ANNUAL_RETURNS.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('research/active_v139_v146/results/summary.json').read_text())
+          assert s['live_ready'] is False
+          assert s['real_leverage_authorized'] is False
+          print(json.dumps(s,indent=2))
+          PY
+      - name: Commit direct source, input, raw observations and results
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v139_v146 docs/checkpoints/v146
+          git commit -m 'Add Active V139-V146 global futures proxy results [skip ci]'
+          git push origin HEAD:agent/active-v139-v146-global-futures
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v139-v146-global-futures-proxy
+          path: artifacts/active_v139_v146
+          if-no-files-found: warn
+          retention-days: 30
