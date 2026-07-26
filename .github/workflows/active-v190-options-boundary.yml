@@ -1,0 +1,100 @@
+name: Active V190 options EOH archive boundary scan
+
+on:
+  push:
+    branches: [agent/active-v189-v196-options-vrp]
+    paths:
+      - 'research/active_v189_v196/boundary_scan.py'
+      - '.github/workflows/active-v190-options-boundary.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v189_v196/boundary_scan.py'
+      - '.github/workflows/active-v190-options-boundary.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v190-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  boundary:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v189-v196-options-vrp
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v189_v196/requirements.txt
+          python -m compileall -q research/active_v189_v196
+          python research/active_v189_v196/boundary_scan.py --self-test
+
+      - name: Scan all daily EOHSummary archive checksums
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v189_v196/boundary_results
+          python research/active_v189_v196/boundary_scan.py \
+            --root research/active_v189_v196 \
+            2>&1 | tee research/active_v189_v196/boundary_scan.log
+
+      - name: Verify frozen no-PnL decision
+        run: |
+          set -euxo pipefail
+          test -s research/active_v189_v196/boundary_results/summary.json
+          test -s research/active_v189_v196/boundary_results/FROZEN_DECISION.json
+          test -s research/active_v189_v196/boundary_results/daily_availability.csv
+          test -s research/active_v189_v196/boundary_results/REPORT_RU.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('research/active_v189_v196/boundary_results')
+          decision = json.loads((root / 'FROZEN_DECISION.json').read_text())
+          assert decision['selection_run'] is False
+          assert decision['full_backtest_run'] is False
+          assert decision['integration_permitted'] is False
+          assert decision['live_ready'] is False
+          assert decision['real_leverage_authorized'] is False
+          assert decision['profitability_proven'] is False
+          print(json.dumps(decision, indent=2))
+          PY
+
+      - name: Commit direct V190 boundary evidence
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          find research/active_v189_v196 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v189_v196 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v189_v196
+          if git diff --cached --quiet; then
+            echo 'No V190 changes'
+          else
+            git commit -m 'Archive V190 options EOH archive boundary [skip ci]'
+            git push origin HEAD:agent/active-v189-v196-options-vrp
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v190-options-eoh-boundary
+          path: |
+            research/active_v189_v196/boundary_results
+            research/active_v189_v196/boundary_scan.log
+          if-no-files-found: warn
+          retention-days: 30
