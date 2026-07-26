@@ -165,7 +165,7 @@ def okx_pages(
         if after is not None:
             query["after"] = str(after)
         response = get(client, f"{OKX_BASE}/{endpoint}", query)
-        meta = {
+        meta: dict[str, Any] = {
             "page": page,
             "url": response.url,
             "status": response.status_code,
@@ -177,6 +177,12 @@ def okx_pages(
             meta["body_prefix"] = response.text[:300]
             break
         payload = response.json()
+        if isinstance(payload, dict):
+            meta["api_code"] = payload.get("code")
+            meta["api_message"] = payload.get("msg")
+        if isinstance(payload, dict) and str(payload.get("code", "0")) != "0":
+            meta["body_prefix"] = response.text[:300]
+            break
         page_rows = payload.get("data") if isinstance(payload, dict) else None
         if not isinstance(page_rows, list) or not page_rows:
             break
@@ -235,12 +241,12 @@ def probe_okx(client: requests.Session) -> dict[str, Any]:
             marks, mark_requests = okx_pages(
                 client,
                 "market/history-mark-price-candles",
-                {"instId": inst, "bar": "8H", "limit": "100"},
+                {"instId": inst, "bar": "4H", "limit": "100"},
                 timestamp_key=0,
-                max_pages=70,
+                max_pages=140,
             )
             mark_ts = sorted({int(row[0]) for row in marks if isinstance(row, list) and row})
-            item["mark_price_8h"] = {
+            item["mark_price_4h"] = {
                 "row_count": len(marks),
                 "timestamp_min": timestamp_iso(mark_ts[0]) if mark_ts else None,
                 "timestamp_max": timestamp_iso(mark_ts[-1]) if mark_ts else None,
@@ -249,19 +255,19 @@ def probe_okx(client: requests.Session) -> dict[str, Any]:
                 "requests": mark_requests,
             }
         except Exception as exc:  # noqa: BLE001
-            item["mark_price_8h"] = {"row_count": 0, "error": f"{type(exc).__name__}: {exc}"}
+            item["mark_price_4h"] = {"row_count": 0, "error": f"{type(exc).__name__}: {exc}"}
         assets[asset] = item
     valid_assets = [
         asset
         for asset, item in assets.items()
         if item["funding"].get("row_count", 0) > 0
-        and item["mark_price_8h"].get("row_count", 0) > 0
+        and item["mark_price_4h"].get("row_count", 0) > 0
     ]
     full_assets = [
         asset
         for asset, item in assets.items()
         if item["funding"].get("covers_2021")
-        and item["mark_price_8h"].get("covers_2021")
+        and item["mark_price_4h"].get("covers_2021")
     ]
     return {
         "assets": assets,
@@ -283,6 +289,12 @@ def main() -> int:
     okx_assets = set(okx["valid_assets"])
     paired = sorted(binance_assets & okx_assets)
     paired_2021 = sorted(binance_assets & set(okx["covers_2021_assets"]))
+    if len(paired_2021) >= 2:
+        status = "full_historical_pair_access_confirmed"
+    elif len(paired) >= 2:
+        status = "short_window_pair_access_only"
+    else:
+        status = "historical_pair_access_insufficient"
     summary = {
         "candidate": "V164_HISTORICAL_FUNDING_ACCESS_PROBE",
         "as_of_utc": datetime.now(timezone.utc).isoformat(),
@@ -290,8 +302,9 @@ def main() -> int:
         "okx_valid_assets": sorted(okx_assets),
         "paired_assets": paired,
         "paired_assets_with_okx_2021_coverage": paired_2021,
-        "full_historical_download_permitted": len(paired) >= 2,
-        "status": "historical_pair_access_confirmed" if len(paired) >= 2 else "historical_pair_access_insufficient",
+        "full_historical_download_permitted": len(paired_2021) >= 2,
+        "short_window_diagnostic_permitted": len(paired) >= 2,
+        "status": status,
         "live_ready": False,
         "real_leverage_authorized": False,
         "profitability_proven": False,
