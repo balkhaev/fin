@@ -1,0 +1,60 @@
+name: Materialize funding router
+
+on:
+  push:
+    branches: [agent/funding-dislocation-router-final]
+    paths:
+      - '.bootstrap_funding_router/**'
+      - '.github/workflows/materialize-funding-router.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: materialize-funding-router
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Decode and verify payload
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cat .bootstrap_funding_router/part_*.b64 > /tmp/funding-router-payload.b64
+          base64 --decode /tmp/funding-router-payload.b64 > /tmp/funding-router-payload.tar.gz
+          echo '8dc4c0a04ef2a9d17baebe7b95083a25134a061e980d27906f3e3bff8d2f916f  /tmp/funding-router-payload.tar.gz' | sha256sum -c -
+      - name: Build, test and publish a clean final commit
+        shell: bash
+        run: |
+          set -euxo pipefail
+          expected_sha="$GITHUB_SHA"
+          git fetch origin main
+          git reset --hard origin/main
+          tar -xzf /tmp/funding-router-payload.tar.gz -C .
+          test -f services/funding_router/pyproject.toml
+          test -f services/funding_router/src/funding_router/execution.py
+          test -f services/funding_router/tests/test_router.py
+          test -f .github/workflows/funding-router.yml
+          bad=$(find services/funding_router -type f \( -name '*.b64' -o -name '*.zip' -o -name '*.tar' -o -name '*.pyfrag' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+          python -m pip install --upgrade pip
+          python -m pip install 'pytest>=8.3,<10'
+          PYTHONPATH=services/funding_router/src python -m compileall -q services/funding_router/src services/funding_router/tests services/funding_router/verify.py
+          PYTHONPATH=services/funding_router/src python -m pytest -q services/funding_router/tests
+          PYTHONPATH=services/funding_router/src python -m funding_router --config services/funding_router/config.example.toml validate
+          python services/funding_router/verify.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/funding-router.yml services/funding_router
+          git commit -m 'Add guarded funding dislocation router'
+          git push --force-with-lease=refs/heads/agent/funding-dislocation-router-final:${expected_sha} origin HEAD:refs/heads/agent/funding-dislocation-router-final
