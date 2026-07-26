@@ -43,12 +43,18 @@ jobs:
           root=Path('.bootstrap_v146')
           m=json.loads((root/'manifest.json').read_text())
           src=[]
-          for item in m['source']['parts']:
-              p=root/'source_parts'/item['path']; b=p.read_bytes()
-              assert len(b)==item['bytes'] and hashlib.sha256(b).hexdigest()==item['sha256']
+          for i,item in enumerate(m['source']['parts']):
+              if i in (3,4):
+                  encoded=(root/'source_fix'/f'part_{i:03d}.b64').read_bytes().strip()
+                  b=base64.b64decode(encoded,validate=True)
+              else:
+                  b=(root/'source_parts'/item['path']).read_bytes()
+              assert len(b)==item['bytes'], (i,len(b),item['bytes'])
+              assert hashlib.sha256(b).hexdigest()==item['sha256'], i
               src.append(b)
           source=b''.join(src)
-          assert len(source)==m['source']['bytes'] and hashlib.sha256(source).hexdigest()==m['source']['sha256']
+          assert len(source)==m['source']['bytes']
+          assert hashlib.sha256(source).hexdigest()==m['source']['sha256']
           enc=[]
           for item in m['v75']['parts']:
               p=root/'input_parts'/item['path']; b=p.read_bytes()
@@ -102,8 +108,8 @@ jobs:
         run: |
           test -s research/active_v139_v146/results/summary.json
           test -s research/active_v139_v146/results/selection_proof_before_2021.json
-          test -s research/active_v139_v146/ANNUAL_RETURNS.csv
-          grep -q 'V75_original' research/active_v139_v146/ANNUAL_RETURNS.csv
+          test -s research/active_v139_v146/results/ANNUAL_RETURNS.csv
+          grep -q 'V75_original' research/active_v139_v146/results/ANNUAL_RETURNS.csv
           python - <<'PY'
           import json
           from pathlib import Path
