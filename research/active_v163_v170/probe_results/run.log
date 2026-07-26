@@ -1,12 +1,12 @@
 bybit requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
 Unclosed client session
-client_session: <aiohttp.client.ClientSession object at 0x7f07ad2ceea0>
+client_session: <aiohttp.client.ClientSession object at 0x7f38f6b7b2c0>
 Unclosed connector
-connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7f07ac6d54e0>, 49.108647796)])']
-connector: <aiohttp.connector.TCPConnector object at 0x7f07ac620680>
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7f38f40a8f30>, 60.594308543)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7f38f6b79100>
 {
   "candidate": "V163_CURRENT_FUNDING_DISLOCATION_PROBE",
-  "as_of_utc": "2026-07-26T19:33:11.021933+00:00",
+  "as_of_utc": "2026-07-26T19:36:04.643822+00:00",
   "status": "insufficient_cross_venue_access",
   "expected_exchange_count": 3,
   "initialized_exchange_count": 1,
@@ -22,7 +22,7 @@ connector: <aiohttp.connector.TCPConnector object at 0x7f07ac620680>
   "error_count": 2,
   "initialization_errors": [
     "binance: ExchangeNotAvailable: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo 451  {\n  \"code\": 0,\n  \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.\"\n}",
-    "bybit: RateLimitExceeded: bybit GET https://api.bybit.com/v5/market/instruments-info?category=option&baseCoin=BTC 403 Forbidden {\n    error:The Amazon CloudFront distribution is configured to block access from your country\n}"
+    "bybit: RateLimitExceeded: bybit GET https://api.bybit.com/v5/market/instruments-info?category=spot 403 Forbidden {\n    error:The Amazon CloudFront distribution is configured to block access from your country\n}"
   ],
   "scan_errors": [],
   "top_candidates": [],

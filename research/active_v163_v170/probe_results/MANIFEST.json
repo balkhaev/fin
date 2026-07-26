@@ -1,20 +1,20 @@
 {
   "files": {
     "coverage.json": {
-      "bytes": 2921,
-      "sha256": "22dc1a5cb4f06ca0b1bae8e071443a62aebdc41a2eaac6556f3cc0da59683b11"
+      "bytes": 2906,
+      "sha256": "1373f7fc0e6ec2b3c18cabccac1baf000722f5fb5573a365a7126bf1d7c98da1"
     },
     "scan.json": {
       "bytes": 94,
-      "sha256": "1861fb47d9186a3c96c87b23ff2cc2f8d26e99891fb993b461ea6fcc91e77030"
+      "sha256": "6209ee0b6636f429658b80e469637188842e8f2f1cd2ef16917cf1b20cb639ad"
     },
     "snapshots.json": {
-      "bytes": 59165,
-      "sha256": "4bd5586d627553a4adfadb504f9fa8efb6ab41d219b277138892fde6c71e27db"
+      "bytes": 59195,
+      "sha256": "909869dc8e2c93a22ef572d0455cf11a11caf862165481072499e17d721dd995"
     },
     "summary.json": {
-      "bytes": 1249,
-      "sha256": "37d7d07c58cda021b6669bb5f850e1eabc4155943f847b9d7486c3451ac51b1b"
+      "bytes": 1234,
+      "sha256": "50ff233f78fbc46110695302d04635fb1a4efa5da21c17b5c268bdf2e2884f62"
     }
   }
 }
