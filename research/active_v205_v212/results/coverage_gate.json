@@ -1,0 +1,162 @@
+{
+  "candidate": "V206_FLOW_DEPTH_PANEL_COVERAGE",
+  "depth_gate": {
+    "candidate": "V198_DEPTH_PANEL_COVERAGE",
+    "required_month_coverage": 0.95,
+    "symbols": {
+      "BTCUSD_PERP": {
+        "periods": {
+          "development": {
+            "months": 18,
+            "full_months": 15,
+            "required_full_months": 15,
+            "passed": true,
+            "minimum_coverage": 0.8547043010752688,
+            "median_coverage": 0.9903651433691756
+          },
+          "validation": {
+            "months": 6,
+            "full_months": 6,
+            "required_full_months": 5,
+            "passed": true,
+            "minimum_coverage": 0.996550925925926,
+            "median_coverage": 0.9992047491039426
+          },
+          "holdout": {
+            "months": 12,
+            "full_months": 12,
+            "required_full_months": 11,
+            "passed": true,
+            "minimum_coverage": 0.996415770609319,
+            "median_coverage": 0.9995138888888889
+          },
+          "final": {
+            "months": 6,
+            "full_months": 6,
+            "required_full_months": 5,
+            "passed": true,
+            "minimum_coverage": 0.9941203703703704,
+            "median_coverage": 0.9991035426267281
+          }
+        }
+      },
+      "ETHUSD_PERP": {
+        "periods": {
+          "development": {
+            "months": 18,
+            "full_months": 15,
+            "required_full_months": 15,
+            "passed": true,
+            "minimum_coverage": 0.8547043010752688,
+            "median_coverage": 0.9903651433691756
+          },
+          "validation": {
+            "months": 6,
+            "full_months": 6,
+            "required_full_months": 5,
+            "passed": true,
+            "minimum_coverage": 0.996550925925926,
+            "median_coverage": 0.9992047491039426
+          },
+          "holdout": {
+            "months": 12,
+            "full_months": 12,
+            "required_full_months": 11,
+            "passed": true,
+            "minimum_coverage": 0.996415770609319,
+            "median_coverage": 0.9995138888888889
+          },
+          "final": {
+            "months": 6,
+            "full_months": 6,
+            "required_full_months": 5,
+            "passed": true,
+            "minimum_coverage": 0.9941203703703704,
+            "median_coverage": 0.9991035426267281
+          }
+        }
+      }
+    },
+    "passed": true
+  },
+  "flow_gate": {
+    "candidate": "V205_TAKER_FLOW_COVERAGE",
+    "required_month_coverage": 0.95,
+    "symbols": {
+      "BTCUSD_PERP": {
+        "periods": {
+          "development": {
+            "months": 18,
+            "full_months": 17,
+            "required_full_months": 15,
+            "minimum_coverage": 0.8709677419354839,
+            "median_coverage": 1.0,
+            "passed": true
+          },
+          "validation": {
+            "months": 6,
+            "full_months": 6,
+            "required_full_months": 5,
+            "minimum_coverage": 1.0,
+            "median_coverage": 1.0,
+            "passed": true
+          },
+          "holdout": {
+            "months": 12,
+            "full_months": 12,
+            "required_full_months": 11,
+            "minimum_coverage": 1.0,
+            "median_coverage": 1.0,
+            "passed": true
+          },
+          "final": {
+            "months": 6,
+            "full_months": 6,
+            "required_full_months": 5,
+            "minimum_coverage": 0.9666666666666667,
+            "median_coverage": 1.0,
+            "passed": true
+          }
+        }
+      },
+      "ETHUSD_PERP": {
+        "periods": {
+          "development": {
+            "months": 18,
+            "full_months": 17,
+            "required_full_months": 15,
+            "minimum_coverage": 0.8709677419354839,
+            "median_coverage": 1.0,
+            "passed": true
+          },
+          "validation": {
+            "months": 6,
+            "full_months": 6,
+            "required_full_months": 5,
+            "minimum_coverage": 1.0,
+            "median_coverage": 1.0,
+            "passed": true
+          },
+          "holdout": {
+            "months": 12,
+            "full_months": 12,
+            "required_full_months": 11,
+            "minimum_coverage": 1.0,
+            "median_coverage": 1.0,
+            "passed": true
+          },
+          "final": {
+            "months": 6,
+            "full_months": 6,
+            "required_full_months": 5,
+            "minimum_coverage": 0.9666666666666667,
+            "median_coverage": 1.0,
+            "passed": true
+          }
+        }
+      }
+    },
+    "passed": true
+  },
+  "passed": true
+}
