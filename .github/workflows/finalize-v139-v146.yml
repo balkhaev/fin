@@ -1,0 +1,105 @@
+name: Finalize Active V139-V146 direct research tree
+
+on:
+  push:
+    branches: [agent/active-v139-v146-global-futures]
+    paths:
+      - 'research/active_v139_v146/FINALIZE_TRIGGER.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v139-v146-global-futures
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify direct evidence exists
+        run: |
+          set -euxo pipefail
+          test -s research/active_v139_v146/source/run_research.py
+          test -s research/active_v139_v146/inputs/v75_stress_equity.csv
+          test -s research/active_v139_v146/results/summary.json
+          test -s research/active_v139_v146/results/selection_proof_before_2021.json
+          test -s research/active_v139_v146/results/ANNUAL_RETURNS.csv
+          python -m pip install -r research/active_v139_v146/requirements.txt
+          python -m py_compile research/active_v139_v146/source/run_research.py
+          python research/active_v139_v146/source/run_research.py --self-test
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('research/active_v139_v146/results/summary.json').read_text())
+          assert s['live_ready'] is False
+          assert s['real_leverage_authorized'] is False
+          PY
+      - name: Replace transport workflows with direct integrity CI
+        run: |
+          set -euxo pipefail
+          rm -rf .bootstrap_v146
+          rm -f .github/workflows/active-v139-v146-global-futures.yml
+          rm -f .github/workflows/finalize-v139-v146.yml
+          rm -f research/active_v139_v146/FINALIZE_TRIGGER.txt
+          cat > .github/workflows/active-v139-v146-integrity.yml <<'YAML'
+          name: Active V139-V146 integrity
+          on:
+            push:
+              branches: [main]
+              paths:
+                - 'research/active_v139_v146/**'
+                - 'docs/checkpoints/v146/**'
+                - '.github/workflows/active-v139-v146-integrity.yml'
+            pull_request:
+              branches: [main]
+              paths:
+                - 'research/active_v139_v146/**'
+                - 'docs/checkpoints/v146/**'
+                - '.github/workflows/active-v139-v146-integrity.yml'
+            workflow_dispatch:
+          permissions:
+            contents: read
+          jobs:
+            verify:
+              runs-on: ubuntu-latest
+              timeout-minutes: 30
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-python@v5
+                  with:
+                    python-version: '3.12'
+                - run: python -m pip install -r research/active_v139_v146/requirements.txt
+                - run: python -m compileall -q research/active_v139_v146/source
+                - run: python research/active_v139_v146/source/run_research.py --self-test
+                - run: |
+                    python - <<'PY'
+                    import json
+                    from pathlib import Path
+                    root=Path('research/active_v139_v146')
+                    s=json.loads((root/'results/summary.json').read_text())
+                    assert s['live_ready'] is False
+                    assert s['real_leverage_authorized'] is False
+                    assert (root/'results/selection_proof_before_2021.json').exists()
+                    assert (root/'results/ANNUAL_RETURNS.csv').exists()
+                    assert 'V75_original' in (root/'results/ANNUAL_RETURNS.csv').read_text().splitlines()[0]
+                    PY
+          YAML
+          find research/active_v139_v146 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v139_v146 -type f -name '*.pyc' -delete || true
+          bad=$(find research/active_v139_v146 docs/checkpoints/v146 -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.xz' -o -name '*.b64' -o -name '*.pyfrag' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+      - name: Commit finalized direct tree
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Finalize Active V139-V146 direct research tree [skip ci]'
+          git push origin HEAD:agent/active-v139-v146-global-futures
