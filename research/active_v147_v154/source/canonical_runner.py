@@ -14,9 +14,11 @@ if str(HERE) not in sys.path:
 import run_research as core
 from features import build_market
 
+_ORIGINAL_LOAD_ATLAS = core.load_atlas
+
 
 def load_atlas_with_account_fields(path: Path) -> pd.DataFrame:
-    frame = core.load_atlas(path)
+    frame = _ORIGINAL_LOAD_ATLAS(path)
     for column, value in {
         "gross": 0.0,
         "turnover": 0.0,
