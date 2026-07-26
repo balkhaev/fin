@@ -8,7 +8,10 @@
     {"path": "part_000", "bytes": 7000, "sha256": "8f4926c7d80bcf18d2db7b39941367e7a32f7a10f0759dae05db8df30c976e6a"},
     {"path": "part_001", "bytes": 7000, "sha256": "fed47b28a80bdfbef499badb55d543d89e97c429c1bb3e6a730a4ecff679a25c"},
     {"path": "part_002", "bytes": 7000, "sha256": "86b5ccdf6824daa17de319ddb9217c94fab784bf0b96414f2ac302950c38efee"},
-    {"path": "part_003", "bytes": 7000, "sha256": "a0cddbaf9d045fe054c2d3fda424b6d9d7345fb5796171d77ac416a427ecc458"},
+    {"path": "part_003a", "bytes": 1750, "sha256": "13f2e080af55be3d17df915ed0b6c51463618856ae7acc7be9f8c9e1821fee31"},
+    {"path": "part_003b", "bytes": 1750, "sha256": "48c0ffd8d641198fb1f0e47392d8ccd348e86ecbd766241b4687fa9e8ccd7421"},
+    {"path": "part_003c", "bytes": 1750, "sha256": "f34404b5c0b7d9e8b3ecbcbc74e3633342160a61a648f57b4641008202f98560"},
+    {"path": "part_003d", "bytes": 1750, "sha256": "ba825bb9b7c5aa435bb89a8c75a8376cba4c8d166dda6466cb1452085ddb48e8"},
     {"path": "part_004", "bytes": 5712, "sha256": "ff2fd3216909a951ea7c3fc5738b2aab540ca819d593bc9d5ae344036d42cd08"}
   ],
   "materialized_file_count": 30
