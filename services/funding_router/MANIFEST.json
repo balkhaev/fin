@@ -45,8 +45,8 @@
       "sha256": "307299fda7b77d22c64cb51430ec75e5f59d78e9c948786afb3b2544fe45e4b7"
     },
     "src/funding_router/analytics.py": {
-      "bytes": 8235,
-      "sha256": "43e193f6fa05f368174db740d975b2c069793a71325a7955bba05287920a4e0a"
+      "bytes": 8239,
+      "sha256": "5c2ef990a5c2528d4e5fe4831e6bf8f60ea15a2a42bea7792930686f1e78a85c"
     },
     "src/funding_router/cli.py": {
       "bytes": 4325,
