@@ -13,6 +13,10 @@ on:
       - '.github/workflows/active-v147-cme-access-probe.yml'
   workflow_dispatch:
 
+concurrency:
+  group: active-v147-cme-access-probe
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -39,6 +43,7 @@ jobs:
         continue-on-error: true
         run: |
           rm -rf artifacts/v147_cme_probe
+          mkdir -p artifacts/v147_cme_probe
           python research/active_v147_v154/cme_access_probe.py \
             --output artifacts/v147_cme_probe \
             2>&1 | tee artifacts/v147_probe.log
