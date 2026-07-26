@@ -1,0 +1,24 @@
+[Unit]
+Description=Funding Dislocation Router
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=funding-router
+Group=funding-router
+WorkingDirectory=/opt/funding-router
+EnvironmentFile=/opt/funding-router/.env
+ExecStart=/opt/funding-router/.venv/bin/funding-router --config /opt/funding-router/config.toml paper
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/funding-router/data
+
+[Install]
+WantedBy=multi-user.target
