@@ -6,6 +6,11 @@ on:
     paths:
       - 'research/active_v163_v170/**'
       - '.github/workflows/active-v163-current-probe.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v163_v170/**'
+      - '.github/workflows/active-v163-current-probe.yml'
   workflow_dispatch:
 
 concurrency:
@@ -60,6 +65,7 @@ jobs:
           find research/active_v163_v170 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
           find research/active_v163_v170 -type f -name '*.pyc' -delete || true
       - name: Commit direct probe evidence
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
