@@ -1,6 +1,6 @@
 {
   "candidate": "V163_CURRENT_FUNDING_DISLOCATION_PROBE",
-  "as_of_utc": "2026-07-26T19:23:25.046147+00:00",
+  "as_of_utc": "2026-07-26T19:24:50.878230+00:00",
   "status": "insufficient_cross_venue_access",
   "expected_exchange_count": 3,
   "initialized_exchange_count": 1,
