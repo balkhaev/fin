@@ -1,0 +1,163 @@
+> pd.Timestamp:
+    first = pd.Timestamp(year=ts.year, month=ts.month, day=1, tz='UTC')
+    fridays = pd.date_range(first, first + pd.offsets.MonthEnd(0), freq='W-FRI', tz='UTC')
+    return fridays[2]
+
+
+def roll_window(index: pd.DatetimeIndex, group: str) -> np.ndarray:
+    flags = np.zeros(len(index), dtype=bool)
+    for i, ts in enumerate(index):
+        if group in {'equity', 'rates', 'fx'}:
+            if ts.month not in (3, 6, 9, 12):
+                continue
+            expiry = third_friday(ts)
+            flags[i] = abs((ts - expiry).days) <= 8
+        else:
+            flags[i] = ts.day >= 18
+    return flags
+
+
+def detect_rolls(index: pd.DatetimeIndex, data: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    op, cl = data['open'], data['close']
+    gap = np.log(op / cl.shift(1)).abs()
+    recent = gap.rolling(63, min_periods=20).median().shift(1)
+    result = pd.DataFrame(False, index=index, columns=cl.columns)
+    for symbol in cl.columns:
+        group = UNIVERSE[symbol]
+        threshold = np.maximum(ROLL_FLOORS[group], (recent[symbol] * 5).fillna(ROLL_FLOORS[group]))
+        result[symbol] = roll_window(index, group) & gap[symbol].gt(threshold)
+    return result
+
+
+def donchian_state(close: pd.DataFrame, entry: int, exit_: int) -> pd.DataFrame:
+    high = close.rolling(entry, min_periods=entry).max().shift(1)
+    low = close.rolling(entry, min_periods=entry).min().shift(1)
+    exit_high = close.rolling(exit_, min_periods=exit_).max().shift(1)
+    exit_low = close.rolling(exit_, min_periods=exit_).min().shift(1)
+    state = pd.DataFrame(0.0, index=close.index, columns=close.columns)
+    for j in range(close.shape[1]):
+        current = 0.0
+        values = []
+        for i in range(len(close)):
+            price = close.iat[i, j]
+            if not np.isfinite(price):
+                current = 0.0
+            elif np.isfinite(high.iat[i, j]) and price > high.iat[i, j]:
+                current = 1.0
+            elif np.isfinite(low.iat[i, j]) and price < low.iat[i, j]:
+                current = -1.0
+            elif current > 0 and np.isfinite(exit_low.iat[i, j]) and price < exit_low.iat[i, j]:
+                current = 0.0
+            elif current < 0 and np.isfinite(exit_high.iat[i, j]) and price > exit_high.iat[i, j]:
+                current = 0.0
+            values.append(current)
+        state.iloc[:, j] = values
+    return state
+
+
+def build_signals(close: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    r63 = close.pct_change(63, fill_method=None)
+    r126 = close.pct_change(126, fill_method=None)
+    r252 = close.pct_change(252, fill_method=None)
+    e100 = close.ewm(span=100, adjust=False, min_periods=100).mean()
+    e200 = close.ewm(span=200, adjust=False, min_periods=200).mean()
+    slow = (np.sign(r126) + np.sign(r252) + np.sign(close / e200 - 1.0)) / 3.0
+    medium = (np.sign(r63) + np.sign(r126) + np.sign(close / e100 - 1.0)) / 3.0
+    breakout = donchian_state(close, 126, 63)
+    ensemble = (slow + medium + breakout) / 3.0
+    return {
+        'slow_trend': slow.shift(1).fillna(0.0),
+        'medium_trend': medium.shift(1).fillna(0.0),
+        'breakout': breakout.shift(1).fillna(0.0),
+        'ensemble': ensemble.shift(1).fillna(0.0),
+    }
+
+
+def available_symbols(close: pd.DataFrame, policy: Policy) -> list[str]:
+    base = list(close.columns)
+    if policy.universe == 'micro':
+        base = [s for s in base if s in MICRO_EXECUTABLE]
+    # Require enough pre-2021 history; rule is fixed before post-2020 evaluation.
+    pre = close.loc[(close.index >= pd.Timestamp('2010-01-01', tz='UTC')) & (close.index < SELECTION_END), base]
+    return [s for s in base if pre[s].notna().mean() >= .65 and pre[s].notna().sum() >= 750]
+
+
+def target_weights(
+    policy: Policy,
+    signal: pd.DataFrame,
+    close: pd.DataFrame,
+) -> pd.DataFrame:
+    symbols = available_symbols(close, policy)
+    rets = close[symbols].pct_change(fill_method=None)
+    vol = rets.rolling(63, min_periods=32).std(ddof=1).shift(1) * np.sqrt(252.0)
+    out = pd.DataFrame(0.0, index=close.index, columns=close.columns)
+    current = pd.Series(0.0, index=symbols)
+    for i, ts in enumerate(close.index):
+        if i % policy.rebalance_days != 0:
+            out.loc[ts, symbols] = current
+            continue
+        s = signal.loc[ts, symbols].where(close.loc[ts, symbols].notna(), 0.0).fillna(0.0)
+        v = vol.loc[ts, symbols].replace(0, np.nan)
+        raw = (s / v.clip(lower=.06)).replace([np.inf, -np.inf], np.nan).fillna(0.0)
+        if raw.abs().sum() == 0:
+            candidate = raw
+        else:
+            candidate = raw / raw.abs().sum()
+            # Apply group caps iteratively.
+            for group, cap in GROUP_CAPS.items():
+                members = [x for x in symbols if UNIVERSE[x] == group]
+                g = candidate[members].abs().sum()
+                if g > cap and g > 0:
+                    candidate.loc[members] *= cap / g
+            # Conservative causal portfolio-vol proxy with a fixed 0.25 correlation floor.
+            # This avoids estimating a noisy covariance matrix for every grid point.
+            risk = (candidate.abs() * v.fillna(np.inf)).replace([np.inf, -np.inf], 0.0)
+            independent = float((risk ** 2).sum())
+            common = float(risk.sum() ** 2)
+            pvol = math.sqrt(max(.75 * independent + .25 * common, 0.0))
+            scale = 1.0
+            gross = float(candidate.abs().sum())
+            if gross > 0:
+                scale = min(scale, policy.gross_cap / gross)
+            if np.isfinite(pvol) and pvol > 0:
+                scale = min(scale, policy.target_vol / pvol)
+            candidate *= max(0.0, scale)
+        # No-trade region is evaluated at scheduled decision points.
+        if float((candidate - current).abs().sum()) < policy.no_trade_band:
+            candidate = current.copy()
+        current = candidate
+        out.loc[ts, symbols] = current
+    return out
+
+
+def shift_array(arr: np.ndarray, delay: int) -> np.ndarray:
+    if delay <= 0:
+        return arr.copy()
+    out = np.zeros_like(arr)
+    out[delay:] = arr[:-delay]
+    return out
+
+
+def simulate(
+    policy: Policy,
+    audit: Audit,
+    index: pd.DatetimeIndex,
+    data: dict[str, pd.DataFrame],
+    rolls: pd.DataFrame,
+    target: pd.DataFrame,
+) -> pd.DataFrame:
+    symbols = list(data['close'].columns)
+    op, hi, lo, cl = [data[x][symbols].to_numpy(float) for x in ('open', 'high', 'low', 'close')]
+    roll = rolls[symbols].to_numpy(bool)
+    tw = shift_array(target[symbols].to_numpy(float), audit.execution_delay)
+    cash = 10000.0
+    notional = np.zeros(len(symbols), dtype=float)
+    records = []
+    prev = None
+    cost_rate = audit.cost_bps / 10000.0
+    roll_rate = audit.roll_bps / 10000.0
+    for i, ts in enumerate(index):
+        roll_cost = 0.0
+        if prev is not None:
+            valid = np.isfinite(op[i]) & np.isfinite(cl[prev]) & (cl[prev] > 0)
+            overnight = np.divide(op[i], cl[prev], out=np.ones(len(symbols)), where=valid) - 1.
