@@ -1,0 +1,96 @@
+name: Active V155-V162 VIX carry-convexity research
+
+on:
+  push:
+    branches: [agent/active-v155-v162-vix-carry-convexity]
+    paths:
+      - 'research/active_v155_v162/**'
+      - '.github/workflows/active-v155-v162-vix-carry-convexity.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v155_v162/**'
+      - '.github/workflows/active-v155-v162-vix-carry-convexity.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v155-v162-vix-carry-convexity
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v155-v162-vix-carry-convexity
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Assert direct V154 dependencies
+        run: |
+          set -euxo pipefail
+          test -s research/active_v147_v154/inputs/processed/vx_monthly_contracts.csv
+          test -s research/active_v147_v154/inputs/processed/vix_spot.csv
+          test -s research/active_v139_v146/inputs/v75_stress_equity.csv
+      - name: Install, compile and causal self-test
+        run: |
+          python -m pip install -r research/active_v155_v162/requirements.txt
+          python -m compileall -q research/active_v155_v162
+          cd research/active_v155_v162
+          python run_research.py --self-test
+      - name: Run frozen V155-V162 research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v155_v162/results
+          python research/active_v155_v162/run_research.py \
+            2>&1 | tee research/active_v155_v162/run.log
+      - name: Materialize checkpoint V162
+        run: |
+          set -euxo pipefail
+          test -s research/active_v155_v162/results/summary.json
+          test -s research/active_v155_v162/results/selection_proof_before_2021.json
+          test -s research/active_v155_v162/results/ANNUAL_RETURNS.csv
+          mkdir -p docs/checkpoints/v162
+          cp research/active_v155_v162/results/summary.json docs/checkpoints/v162/CHECKPOINT_V162.json
+          cp research/active_v155_v162/results/REPORT_RU.md docs/checkpoints/v162/RESEARCH_CHECKPOINT_V162_RU.md
+          cp research/active_v155_v162/results/ANNUAL_RETURNS.csv docs/checkpoints/v162/ANNUAL_RETURNS.csv
+      - name: Verify frozen result contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('research/active_v155_v162')
+          value=json.loads((root/'results/summary.json').read_text())
+          assert value['selection']['selection_uses_2021_or_later'] is False
+          assert value['selection']['hypothesis_inspired_by_post_2020_v154_failure'] is True
+          assert value['live_ready'] is False
+          assert value['real_leverage_authorized'] is False
+          assert 'V75_original' in (root/'results/ANNUAL_RETURNS.csv').read_text().splitlines()[0]
+          print(json.dumps(value,indent=2))
+          PY
+          find research/active_v155_v162 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v155_v162 -type f -name '*.pyc' -delete || true
+      - name: Commit direct source and results
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v155_v162 docs/checkpoints/v162
+          git commit -m 'Add Active V155-V162 VIX carry-convexity results [skip ci]'
+          git push origin HEAD:agent/active-v155-v162-vix-carry-convexity
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v155-v162-vix-carry-convexity
+          path: |
+            research/active_v155_v162/results
+            research/active_v155_v162/run.log
+          if-no-files-found: warn
+          retention-days: 30
