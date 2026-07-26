@@ -6,7 +6,16 @@ on:
     paths:
       - '.bootstrap_runtime_v1/**'
       - '.github/workflows/materialize-runtime-v1.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.bootstrap_runtime_v1/**'
+      - '.github/workflows/materialize-runtime-v1.yml'
   workflow_dispatch:
+
+concurrency:
+  group: materialize-runtime-v1
+  cancel-in-progress: true
 
 permissions:
   contents: write
