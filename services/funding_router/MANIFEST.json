@@ -13,12 +13,12 @@
       "sha256": "7d3caaa7dbc5041623f0e842c7898ba82f06f428f07e67d31e488fb22fd614a1"
     },
     "README.md": {
-      "bytes": 10756,
-      "sha256": "c5e06d763bcaf8350e31afb59dc1c702c3c9e1990fd346311c4b6d39385b121f"
+      "bytes": 11152,
+      "sha256": "0ef41e142efbb6bb5c723262ebcab655d2c42f6bafe5fbbba79cd31a8e06c999"
     },
     "STATUS.json": {
       "bytes": 987,
-      "sha256": "65ce307674ea734fa54b81fcc17f3c7af6c2567dddd2392516c66344f7141578"
+      "sha256": "03bacc070fab787f56a637aa8c6f3849fa50f75e05e084d33692ba615a02483e"
     },
     "compose.yaml": {
       "bytes": 385,
@@ -45,8 +45,8 @@
       "sha256": "307299fda7b77d22c64cb51430ec75e5f59d78e9c948786afb3b2544fe45e4b7"
     },
     "src/funding_router/analytics.py": {
-      "bytes": 8239,
-      "sha256": "5c2ef990a5c2528d4e5fe4831e6bf8f60ea15a2a42bea7792930686f1e78a85c"
+      "bytes": 10141,
+      "sha256": "7b0268c1527f93496b0f68eb3d844b7042694e15e8af1b96a8468f7290f22120"
     },
     "src/funding_router/cli.py": {
       "bytes": 4325,
@@ -57,8 +57,8 @@
       "sha256": "91f90368ccf6f5f0745622f81aafb6f46f5359e41b99167745ca6659822a3d04"
     },
     "src/funding_router/execution.py": {
-      "bytes": 21232,
-      "sha256": "8b50cad66853b9fc7c0d4584caff2f297ef7ecdb80d4e7ddba3abb47e9f332aa"
+      "bytes": 23745,
+      "sha256": "be9d5a74434056afe4873fbfef1e8b5699993fe8fd0d222f1c5218eb649d1a15"
     },
     "src/funding_router/gateways.py": {
       "bytes": 17756,
@@ -89,8 +89,8 @@
       "sha256": "5ba714e29ef6fe5a1af9eb2dc298cc8ad5a5d4afe97f728d1b231abd850106c7"
     },
     "tests/test_router.py": {
-      "bytes": 24956,
-      "sha256": "5f64d0dce792f4603cb2352c0f55e99d7518fc78a32a8f4d7e9e0e584cbef330"
+      "bytes": 27484,
+      "sha256": "9205c281f9b86b45603c44b8cf23bc2d376e1fd1c8d32b6def3ee6c1fed5125c"
     },
     "verify.py": {
       "bytes": 1611,

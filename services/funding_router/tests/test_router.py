@@ -196,6 +196,7 @@ class FakeGateway:
         *,
         maker_states: list[OrderState] | None = None,
         balance: float | None = 100_000.0,
+        report_market_fills: bool = True,
     ):
         self.id = exchange_id
         self.markets = ("BTC/USDT:USDT",)
@@ -212,6 +213,8 @@ class FakeGateway:
         self.fail_public = False
         self.fail_non_reduce_market = False
         self.reduce_fill_ratios: list[float] = []
+        self.report_market_fills = report_market_fills
+        self._market_states: dict[str, OrderState] = {}
 
     async def initialize(self) -> None:
         return None
@@ -250,6 +253,8 @@ class FakeGateway:
         return state
 
     async def fetch_order_state(self, order_id: str, symbol: str) -> OrderState:
+        if order_id in self._market_states:
+            return self._market_states[order_id]
         if self._maker_index + 1 < len(self._maker_states):
             self._maker_index += 1
         state = self._maker_states[self._maker_index]
@@ -278,16 +283,20 @@ class FakeGateway:
         if reduce_only and abs(self.positions[symbol]) < 1e-12:
             self.positions[symbol] = 0.0
         self.market_orders.append((side, base_amount, reduce_only))
-        return OrderState(
-            order_id=f"market-{len(self.market_orders)}",
+        order_id = f"market-{len(self.market_orders)}"
+        reported_filled = filled if self.report_market_fills else 0.0
+        state = OrderState(
+            order_id=order_id,
             symbol=symbol,
             side=side,
             status="closed",
             requested_base=base_amount,
-            filled_base=filled,
-            remaining_base=max(0.0, base_amount - filled),
+            filled_base=reported_filled,
+            remaining_base=max(0.0, base_amount - reported_filled),
             average_price=100.0,
         )
+        self._market_states[order_id] = state
+        return state
 
     async def fetch_position_base(self, symbol: str) -> float:
         return self.positions[symbol]
@@ -360,6 +369,33 @@ def test_evaluate_pair_normalizes_different_intervals(tmp_path: Path) -> None:
     assert result.candidate is not None
     assert result.candidate.current_spread_bps_8h == pytest.approx(16.0)
     assert result.candidate.base_amount > 0
+
+
+def test_evaluate_pair_uses_actual_funding_schedule(tmp_path: Path) -> None:
+    settings = make_settings(tmp_path, hold_hours=3.0)
+    # The 8h long leg has no payment before close; the 1h short leg pays
+    # at 0.5h, 1.5h and 2.5h. A payment exactly at close is excluded.
+    long = snapshot(
+        "long",
+        rate=0.0008,
+        predicted=0.0007,
+        interval=8,
+        funding_ts=1_000 + 7 * 3_600_000,
+    )
+    short = snapshot(
+        "short",
+        rate=0.0002,
+        predicted=0.00015,
+        interval=1,
+        funding_ts=1_000 + 30 * 60_000,
+    )
+    result = evaluate_pair(long, short, settings.risk, settings.exchange_map())
+    assert result.candidate is not None
+    assert result.candidate.metadata["long_funding_events"] == 0
+    assert result.candidate.metadata["short_funding_events"] == 3
+    assert result.candidate.metadata["current_gross_funding_bps"] == pytest.approx(6.0)
+    assert result.candidate.metadata["predicted_gross_funding_bps"] == pytest.approx(4.5)
+    assert result.candidate.gross_funding_bps == pytest.approx(4.5)
 
 
 def test_evaluate_pair_rejects_predicted_reversal(tmp_path: Path) -> None:
@@ -466,6 +502,27 @@ def test_partial_maker_fills_are_hedged_incrementally(tmp_path: Path) -> None:
         assert hedge_sizes == pytest.approx([0.2, 0.4])
         assert long_gw.positions["BTC/USDT:USDT"] == pytest.approx(0.6)
         assert short_gw.positions["BTC/USDT:USDT"] == pytest.approx(-0.6)
+
+
+def test_market_fill_is_confirmed_from_position_when_order_response_is_sparse(
+    tmp_path: Path,
+) -> None:
+    settings = make_settings(tmp_path)
+    states = [
+        OrderState("maker", "BTC/USDT:USDT", Side.BUY, "closed", 1, 1, 0, 99.9)
+    ]
+    long_gw = FakeGateway("long", maker_states=states)
+    short_gw = FakeGateway("short", report_market_fills=False)
+    with SQLiteStore(settings.service.database_path) as store:
+        executor = LiveExecutor(settings, {"long": long_gw, "short": short_gw}, store)
+        position = asyncio.run(executor.open_candidate(candidate()))
+        assert position.long_leg.base_amount == pytest.approx(1.0)
+        assert position.short_leg.base_amount == pytest.approx(1.0)
+        hedge_event = next(
+            event for event in store.events(20) if event["event_type"] == "hedge_order"
+        )
+        assert hedge_event["payload"]["reported_filled_base"] == pytest.approx(0.0)
+        assert hedge_event["payload"]["confirmed_filled_base"] == pytest.approx(1.0)
 
 
 def test_hedge_failure_triggers_emergency_flatten(tmp_path: Path) -> None:

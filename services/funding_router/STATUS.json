@@ -1,12 +1,11 @@
 {
   "component": "funding_dislocation_router",
-  "version": "0.1.0",
-  "implementation_complete": true,
-  "deterministic_tests": 25,
   "default_private_trading": false,
+  "deterministic_tests": 27,
+  "implementation_complete": true,
   "live_ready": false,
-  "real_leverage_authorized": false,
   "profitability_proven": false,
+  "real_leverage_authorized": false,
   "required_before_live": [
     "authenticated read-only smoke tests on every selected venue",
     "at least 30 days of uninterrupted paper operation",
@@ -15,14 +14,15 @@
     "measured net profitability after fees, basis and slippage"
   ],
   "safety": {
-    "configuration_gate": "live.enabled=true",
     "cli_gate": "--confirm-live",
+    "configuration_gate": "live.enabled=true",
     "environment_gate": "FUNDING_ROUTER_LIVE_CONFIRM",
-    "single_position_limit": true,
     "external_position_rejection": true,
     "free_collateral_check": true,
     "incremental_hedging": true,
     "reduce_only_shutdown": true,
+    "single_position_limit": true,
     "sqlite_wal_recovery": true
-  }
+  },
+  "version": "0.1.0"
 }
