@@ -1,0 +1,215 @@
+{
+  "artifact": {
+    "repository": "balkhaev/fin",
+    "artifact_id": 8630848884,
+    "artifact_sha256": "e018f707a486c5bb07108ab8280c13c1dbea884b4d48b8e0f718d82a45bd7538",
+    "selection_proof_sha256": "94cacbc07f4b12bdea0ebfed58630590b1c3d5ee59ad6b57dcb5ef2c4479aee7",
+    "ranking_sha256": "e3eb3d859688b792d9b470d30f182525a1e03db38b9d303476ef6212eab9a68b"
+  },
+  "atlas_input": {
+    "path": "research/active_v139_v146/inputs/v75_stress_equity.csv",
+    "bytes": 88988,
+    "sha256": "f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01"
+  },
+  "raw_yahoo_files": [],
+  "data_quality": [
+    {
+      "symbol": "6A=F",
+      "group": "fx",
+      "raw_file": "6A%3DF.json",
+      "raw_bytes": 544346,
+      "raw_sha256": "6b5a0fc489c68b769cdd578529d44aa35b67dffe5cf35a6320611738d0364efe",
+      "rows": 4905,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "6B=F",
+      "group": "fx",
+      "raw_file": "6B%3DF.json",
+      "raw_bytes": 541945,
+      "raw_sha256": "d21e4b1bf0b06adadca7e12bfeac147532e4e1dc082f990aed7173d3050ab661",
+      "rows": 4904,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "6C=F",
+      "group": "fx",
+      "raw_file": "6C%3DF.json",
+      "raw_bytes": 542880,
+      "raw_sha256": "0db5f8ef8650353f6ef831872a61e54a1bf754093ee35ab3fd7500d15e10b976",
+      "rows": 4904,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "6E=F",
+      "group": "fx",
+      "raw_file": "6E%3DF.json",
+      "raw_bytes": 544583,
+      "raw_sha256": "8d694b1023ff41b5be2db7cc2f644d70c76c3c562eb9a2503dc870458fbcaf72",
+      "rows": 4904,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "6J=F",
+      "group": "fx",
+      "raw_file": "6J%3DF.json",
+      "raw_bytes": 595097,
+      "raw_sha256": "67e422adabd44b0a680bb3998f8a836af55bde84b44f4a5798461aef44b49276",
+      "rows": 4905,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "6S=F",
+      "group": "fx",
+      "raw_file": "6S%3DF.json",
+      "raw_bytes": 544835,
+      "raw_sha256": "0bf603e55205614197a58216ba2464aa5c4bee11231f966d50ac9fe6267e326b",
+      "rows": 4905,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "CL=F",
+      "group": "energy",
+      "raw_file": "CL%3DF.json",
+      "raw_bytes": 519129,
+      "raw_sha256": "aec94bfab505d59a84eb720914c158e52030adc2f1e002a1ce1734ea3b172a8f",
+      "rows": 4902,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "ES=F",
+      "group": "equity",
+      "raw_file": "ES%3DF.json",
+      "raw_bytes": 276582,
+      "raw_sha256": "c9396b3b37785b1d7d712a56da6c7f1142028cd115f79863b04a5d50ea2f9eb3",
+      "rows": 4904,
+      "start": "2007-01-03T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "GC=F",
+      "group": "metals",
+      "raw_file": "GC%3DF.json",
+      "raw_bytes": 451759,
+      "raw_sha256": "6baa4c26b90ca67269964ae96121d3512ea6012fcbf02207a28ee0e11667dc82",
+      "rows": 4903,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "NG=F",
+      "group": "energy",
+      "raw_file": "NG%3DF.json",
+      "raw_bytes": 536080,
+      "raw_sha256": "6bd164dcae6a4a2979d5598e1d22c150c8b7635d104e6edf850a386aed595c2f",
+      "rows": 4905,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "NQ=F",
+      "group": "equity",
+      "raw_file": "NQ%3DF.json",
+      "raw_bytes": 280688,
+      "raw_sha256": "1c1b770f3bd088214b9869c697b53f00ff2546815dead286d659c9cba9de15f5",
+      "rows": 4904,
+      "start": "2007-01-03T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "RTY=F",
+      "group": "equity",
+      "raw_file": "RTY%3DF.json",
+      "raw_bytes": 220163,
+      "raw_sha256": "ce48dd59bd4277b65458e279627f765911400bdfa050708cd313e5ed19e18a98",
+      "rows": 2259,
+      "start": "2017-07-10T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "SI=F",
+      "group": "metals",
+      "raw_file": "SI%3DF.json",
+      "raw_bytes": 517798,
+      "raw_sha256": "83810c9448d5b996352e11e4a2a2c20d98dcf9d3e7cf1aca849aeaeabddbbe56",
+      "rows": 4903,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "ZB=F",
+      "group": "rates",
+      "raw_file": "ZB%3DF.json",
+      "raw_bytes": 317356,
+      "raw_sha256": "1790f6ae5257cdff0391b28264588eeb7deb710d225fda0ec05e4bdadc16014e",
+      "rows": 4901,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "ZC=F",
+      "group": "agri",
+      "raw_file": "ZC%3DF.json",
+      "raw_bytes": 244694,
+      "raw_sha256": "acfc2192e43aad023b80f40e3905f6f0ad89c5b54914d0c31f13c88d18348a14",
+      "rows": 4900,
+      "start": "2007-01-03T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "ZN=F",
+      "group": "rates",
+      "raw_file": "ZN%3DF.json",
+      "raw_bytes": 335905,
+      "raw_sha256": "43ff0e276d13a9e136d73db5d704f2680d371211cac4b2f394fd731c2ecc6a68",
+      "rows": 4894,
+      "start": "2007-01-02T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "ZS=F",
+      "group": "agri",
+      "raw_file": "ZS%3DF.json",
+      "raw_bytes": 257311,
+      "raw_sha256": "0969c8ff299c89d1a3c3ebad5a34d5dd0e8babf7fdff612d75696bb8f8309697",
+      "rows": 4902,
+      "start": "2007-01-03T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    },
+    {
+      "symbol": "ZW=F",
+      "group": "agri",
+      "raw_file": "ZW%3DF.json",
+      "raw_bytes": 241826,
+      "raw_sha256": "f11129c3b61528106b6bb879728450ed892517dea5036445ba22b04d7547271e",
+      "rows": 4902,
+      "start": "2007-01-03T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "status": "ok"
+    }
+  ]
+}

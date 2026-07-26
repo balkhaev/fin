@@ -1,0 +1,37 @@
+processed 20/192 policies
+processed 40/192 policies
+processed 60/192 policies
+processed 80/192 policies
+processed 100/192 policies
+processed 120/192 policies
+processed 140/192 policies
+processed 160/192 policies
+processed 180/192 policies
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3812, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7096, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'turnover'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/work/fin/fin/research/active_v139_v146/source/run_research.py", line 829, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/runner/work/fin/fin/research/active_v139_v146/source/run_research.py", line 730, in main
+    integration_rows.append({'candidate': name, 'period': period, **metrics(account, *bounds)})
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/fin/fin/research/active_v139_v146/source/run_research.py", line 440, in metrics
+    'annual_turnover': float(x['turnover'].sum() / years),
+                             ~^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/core/frame.py", line 4113, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3819, in get_loc
+    raise KeyError(key) from err
+KeyError: 'turnover'
