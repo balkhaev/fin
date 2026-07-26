@@ -7,6 +7,12 @@ on:
       - 'research/active_v147_v154/source/**'
       - 'research/active_v147_v154/requirements.txt'
       - '.github/workflows/active-v149-v154-dated-vix-research.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v147_v154/source/**'
+      - 'research/active_v147_v154/requirements.txt'
+      - '.github/workflows/active-v149-v154-dated-vix-research.yml'
   workflow_dispatch:
 
 concurrency:
