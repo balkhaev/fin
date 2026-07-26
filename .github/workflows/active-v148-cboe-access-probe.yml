@@ -5,12 +5,14 @@ on:
     branches: [agent/active-v147-v154-cme-dated-contracts]
     paths:
       - 'research/active_v147_v154/cboe_access_probe.py'
+      - 'research/active_v147_v154/finalize_cboe_probe.py'
       - 'research/active_v147_v154/requirements.txt'
       - '.github/workflows/active-v148-cboe-access-probe.yml'
   pull_request:
     branches: [main]
     paths:
       - 'research/active_v147_v154/cboe_access_probe.py'
+      - 'research/active_v147_v154/finalize_cboe_probe.py'
       - 'research/active_v147_v154/requirements.txt'
       - '.github/workflows/active-v148-cboe-access-probe.yml'
   workflow_dispatch:
@@ -39,7 +41,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r research/active_v147_v154/requirements.txt
-          python -m py_compile research/active_v147_v154/cboe_access_probe.py
+          python -m py_compile \
+            research/active_v147_v154/cboe_access_probe.py \
+            research/active_v147_v154/finalize_cboe_probe.py
       - name: Probe official Cboe dated-contract datasets
         id: probe
         continue-on-error: true
@@ -49,7 +53,7 @@ jobs:
           python research/active_v147_v154/cboe_access_probe.py \
             --output artifacts/v148_cboe_probe \
             2>&1 | tee artifacts/v148_probe.log
-      - name: Materialize and validate direct evidence
+      - name: Materialize and normalize direct evidence
         if: always()
         run: |
           set -euxo pipefail
@@ -58,14 +62,13 @@ jobs:
           cp -r artifacts/v148_cboe_probe/. research/active_v147_v154/cboe_probe_results/ 2>/dev/null || true
           cp artifacts/v148_probe.log research/active_v147_v154/cboe_probe_results/run.log 2>/dev/null || true
           test -s research/active_v147_v154/cboe_probe_results/summary.json
+          python research/active_v147_v154/finalize_cboe_probe.py
           python - <<'PY'
           import json
           from pathlib import Path
           value=json.loads(Path('research/active_v147_v154/cboe_probe_results/summary.json').read_text())
-          assert value['status'] in {
-              'official_cboe_dated_contract_access_confirmed',
-              'official_cboe_dated_contract_access_blocked',
-          }
+          assert value['status'] == 'official_cboe_dated_contract_access_confirmed'
+          assert value['full_v149_v154_permitted'] is True
           assert value['live_ready'] is False
           assert value['real_leverage_authorized'] is False
           print(json.dumps(value,indent=2))
