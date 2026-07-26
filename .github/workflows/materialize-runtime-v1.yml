@@ -1,0 +1,107 @@
+name: Materialize frozen strategy runtime v1
+
+on:
+  push:
+    branches: [agent/runtime-v1]
+    paths:
+      - '.bootstrap_runtime_v1/**'
+      - '.github/workflows/materialize-runtime-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/runtime-v1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify and reconstruct runtime source tree
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          import hashlib
+          import json
+          import tarfile
+
+          root = Path('.bootstrap_runtime_v1')
+          manifest = json.loads((root / 'manifest.json').read_text())
+          chunks = []
+          for item in manifest['parts']:
+              path = root / item['path']
+              data = path.read_bytes()
+              assert len(data) == item['bytes'], (path, len(data), item['bytes'])
+              assert hashlib.sha256(data).hexdigest() == item['sha256'], path
+              chunks.append(data)
+          encoded = b''.join(chunks)
+          assert len(encoded) == manifest['encoded_bytes']
+          assert hashlib.sha256(encoded).hexdigest() == manifest['encoded_sha256']
+          archive = base64.b64decode(encoded, validate=True)
+          assert len(archive) == manifest['archive_bytes']
+          assert hashlib.sha256(archive).hexdigest() == manifest['archive_sha256']
+          archive_path = Path('/tmp/runtime-v1.tar.gz')
+          archive_path.write_bytes(archive)
+          destination = Path('/tmp/runtime-v1-tree')
+          destination.mkdir(parents=True, exist_ok=True)
+          with tarfile.open(archive_path, 'r:gz') as handle:
+              for member in handle.getmembers():
+                  member_path = Path(member.name)
+                  assert not member_path.is_absolute(), member.name
+                  assert '..' not in member_path.parts, member.name
+              handle.extractall(destination, filter='data')
+          PY
+          rsync -a /tmp/runtime-v1-tree/ ./
+          rm -rf .bootstrap_runtime_v1 .pytest_cache
+          rm -f .github/workflows/materialize-runtime-v1.yml
+          find . -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find . -type f -name '*.pyc' -delete || true
+
+      - name: Validate package and runtime invariants
+        run: |
+          set -euxo pipefail
+          python -m pip install --no-build-isolation -e .
+          python -m compileall -q src tests scripts
+          python -m unittest discover -s tests -v
+          python -m finruntime.cli self-test
+          python scripts/verify_runtime.py
+          python -m finruntime.cli registry > /tmp/runtime-registry.json
+          python - <<'PY'
+          import json
+          value = json.load(open('/tmp/runtime-registry.json'))
+          assert value['live_execution_available'] is False
+          assert set(value['strategies']) == {
+              'v75_atlas_nx',
+              'v28_growth_control',
+              'v136_execution_shadow',
+          }
+          assert all(not item['live_ready'] for item in value['strategies'].values())
+          assert all(not item['real_leverage_authorized'] for item in value['strategies'].values())
+          PY
+          rm -rf .pytest_cache
+          find . -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find . -type f -name '*.pyc' -delete || true
+          find src -maxdepth 1 -type d -name '*.egg-info' -prune -exec rm -rf {} + || true
+          bad=$(find src tests scripts config schemas examples docs/implementation docs/checkpoints/runtime-v1 -type f \
+            \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+
+      - name: Commit direct implementation tree
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'Add frozen strategy runtime v1 [skip ci]'
+          git push origin HEAD:agent/runtime-v1
