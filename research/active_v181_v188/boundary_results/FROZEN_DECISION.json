@@ -1,0 +1,10 @@
+{
+  "candidate": "ACTIVE_V181_COINM_LIQUIDATION_FLOW",
+  "status": "archive_discontinued_or_ambiguous",
+  "continuous_research_permitted": false,
+  "selection_run": false,
+  "full_backtest_run": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
