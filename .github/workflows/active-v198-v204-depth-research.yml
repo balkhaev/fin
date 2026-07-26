@@ -1,0 +1,135 @@
+name: Active V198-V204 frozen depth research
+
+on:
+  push:
+    branches: [agent/active-v197-v204-depth-replenishment]
+    paths:
+      - 'research/active_v197_v204/config.py'
+      - 'research/active_v197_v204/data.py'
+      - 'research/active_v197_v204/engine.py'
+      - 'research/active_v197_v204/run_research.py'
+      - 'research/active_v197_v204/V198_V204_CONFIG.json'
+      - 'research/active_v197_v204/apply_v198_import_fix.py'
+      - 'research/active_v197_v204/requirements.txt'
+      - '.github/workflows/active-v198-v204-depth-research.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v197_v204/config.py'
+      - 'research/active_v197_v204/data.py'
+      - 'research/active_v197_v204/engine.py'
+      - 'research/active_v197_v204/run_research.py'
+      - 'research/active_v197_v204/V198_V204_CONFIG.json'
+      - 'research/active_v197_v204/requirements.txt'
+      - '.github/workflows/active-v198-v204-depth-research.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v198-v204-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v197-v204-depth-replenishment
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply deterministic source correction
+        run: |
+          set -euxo pipefail
+          if test -f research/active_v197_v204/apply_v198_import_fix.py; then
+            python research/active_v197_v204/apply_v198_import_fix.py
+            rm research/active_v197_v204/apply_v198_import_fix.py
+          fi
+          grep -q 'VALIDATION_START' research/active_v197_v204/data.py
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v197_v204/requirements.txt
+          python -m compileall -q research/active_v197_v204
+          cd research/active_v197_v204
+          python run_research.py --self-test
+
+      - name: Restore immutable archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v198_depth
+          key: v198-coinm-bookdepth-mark-202301-202606-v1
+
+      - name: Run frozen 84-policy development and guarded OOS research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v197_v204/results \
+                 research/active_v197_v204/MANIFEST.json
+          python research/active_v197_v204/run_research.py \
+            --root research/active_v197_v204 \
+            --cache .cache/v198_depth \
+            --atlas research/active_v139_v146/inputs/v75_stress_equity.csv \
+            2>&1 | tee research/active_v197_v204/run_v198_v204.log
+
+      - name: Verify frozen evidence and safety
+        run: |
+          set -euxo pipefail
+          test -s research/active_v197_v204/results/summary.json
+          test -s research/active_v197_v204/results/FROZEN_DECISION.json
+          test -s research/active_v197_v204/results/coverage_gate.json
+          test -s research/active_v197_v204/results/data_quality.csv
+          test -s research/active_v197_v204/results/selection_proof_before_validation.json
+          test -s research/active_v197_v204/results/ANNUAL_RETURNS.csv
+          test -s research/active_v197_v204/MANIFEST.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('research/active_v197_v204/results')
+          summary = json.loads((root / 'summary.json').read_text())
+          proof = json.loads((root / 'selection_proof_before_validation.json').read_text())
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          assert proof.get('selection_uses_2025') is False or proof.get('selection_not_run') is True
+          assert proof.get('selection_uses_2026') is False or proof.get('selection_not_run') is True
+          assert 'V75_original' in (root / 'ANNUAL_RETURNS.csv').read_text().splitlines()[0]
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Commit readable source and frozen results
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          find research/active_v197_v204 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v197_v204 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v197_v204
+          if git diff --cached --quiet; then
+            echo 'No V198-V204 changes'
+          else
+            git commit -m 'Archive V198-V204 depth research [skip ci]'
+            git push origin HEAD:agent/active-v197-v204-depth-replenishment
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v198-v204-depth-research
+          path: |
+            research/active_v197_v204/results
+            research/active_v197_v204/run_v198_v204.log
+            research/active_v197_v204/MANIFEST.json
+          if-no-files-found: warn
+          retention-days: 30
