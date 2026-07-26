@@ -1,0 +1,99 @@
+name: Active V165 cross-venue basis research
+
+on:
+  push:
+    branches: [agent/active-v163-v170-funding-evidence]
+    paths:
+      - 'research/active_v163_v170/basis_*.py'
+      - 'research/active_v163_v170/run_basis_research.py'
+      - 'research/active_v163_v170/V165_BASIS_DESIGN.json'
+      - 'research/active_v163_v170/requirements.txt'
+      - '.github/workflows/active-v165-basis-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v163-v170-funding-evidence
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install, compile and causal self-test
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v163_v170/requirements.txt
+          python -m compileall -q research/active_v163_v170
+          cd research/active_v163_v170
+          python run_basis_research.py --self-test
+      - name: Restore immutable download cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v165_basis
+          key: v165-binance-okx-hourly-2021-2026-v1
+      - name: Run frozen 162-policy research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v163_v170/results \
+                 research/active_v163_v170/inputs/processed \
+                 research/active_v163_v170/inputs/provenance.json
+          python research/active_v163_v170/run_basis_research.py \
+            --root research/active_v163_v170 \
+            --cache .cache/v165_basis \
+            --atlas research/active_v139_v146/inputs/v75_stress_equity.csv \
+            2>&1 | tee research/active_v163_v170/v165_run.log
+      - name: Materialize checkpoint V170
+        run: |
+          test -s research/active_v163_v170/results/summary.json
+          test -s research/active_v163_v170/results/selection_proof_before_final.json
+          test -s research/active_v163_v170/results/ANNUAL_RETURNS.csv
+          test -s research/active_v163_v170/inputs/processed/BTC_hourly.csv
+          mkdir -p docs/checkpoints/v170
+          cp research/active_v163_v170/results/summary.json docs/checkpoints/v170/CHECKPOINT_V170.json
+          cp research/active_v163_v170/results/REPORT_RU.md docs/checkpoints/v170/RESEARCH_CHECKPOINT_V170_RU.md
+          cp research/active_v163_v170/results/ANNUAL_RETURNS.csv docs/checkpoints/v170/ANNUAL_RETURNS.csv
+      - name: Verify frozen decision
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('research/active_v163_v170')
+          summary=json.loads((root/'results/summary.json').read_text())
+          proof=json.loads((root/'results/selection_proof_before_final.json').read_text())
+          assert proof['selection_uses_2026'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          assert 'V75_original' in (root/'results/ANNUAL_RETURNS.csv').read_text().splitlines()[0]
+          print(json.dumps(summary,indent=2))
+          PY
+          find research/active_v163_v170 docs/checkpoints/v170 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v163_v170 docs/checkpoints/v170 -type f -name '*.pyc' -delete || true
+      - name: Commit direct observations, source and results
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v163_v170 docs/checkpoints/v170
+          if git diff --cached --quiet; then
+            echo 'No V165 changes'
+          else
+            git commit -m 'Add Active V163-V170 funding and basis evidence [skip ci]'
+            git push origin HEAD:agent/active-v163-v170-funding-evidence
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v163-v170-funding-basis-research
+          path: |
+            research/active_v163_v170/results
+            research/active_v163_v170/v165_run.log
+          if-no-files-found: warn
+          retention-days: 30
