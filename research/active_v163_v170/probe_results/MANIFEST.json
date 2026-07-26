@@ -1,0 +1,20 @@
+{
+  "files": {
+    "coverage.json": {
+      "bytes": 2921,
+      "sha256": "22dc1a5cb4f06ca0b1bae8e071443a62aebdc41a2eaac6556f3cc0da59683b11"
+    },
+    "scan.json": {
+      "bytes": 94,
+      "sha256": "5fe3adbfad71dc490904401163cdeff879ff94452599cebfeb1f290f877a8000"
+    },
+    "snapshots.json": {
+      "bytes": 59229,
+      "sha256": "2eb29f0cd7830e776685350d42d869fd7de80b075218fa2db0ec067fa2afd7ad"
+    },
+    "summary.json": {
+      "bytes": 1249,
+      "sha256": "f0e198167e8b740221af2ac1083a545816e6a1f0f1c7cf9474292ef8abc6f497"
+    }
+  }
+}

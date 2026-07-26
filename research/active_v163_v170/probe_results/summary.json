@@ -1,0 +1,27 @@
+{
+  "candidate": "V163_CURRENT_FUNDING_DISLOCATION_PROBE",
+  "as_of_utc": "2026-07-26T19:12:53.272396+00:00",
+  "status": "insufficient_cross_venue_access",
+  "expected_exchange_count": 3,
+  "initialized_exchange_count": 1,
+  "observed_exchange_count": 1,
+  "observed_exchanges": [
+    "okx"
+  ],
+  "expected_snapshot_count": 15,
+  "observed_snapshot_count": 5,
+  "missing_snapshot_count": 10,
+  "candidate_count": 0,
+  "rejection_count": 0,
+  "error_count": 2,
+  "initialization_errors": [
+    "binance: ExchangeNotAvailable: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo 451  {\n  \"code\": 0,\n  \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.\"\n}",
+    "bybit: RateLimitExceeded: bybit GET https://api.bybit.com/v5/market/instruments-info?category=option&baseCoin=BTC 403 Forbidden {\n    error:The Amazon CloudFront distribution is configured to block access from your country\n}"
+  ],
+  "scan_errors": [],
+  "top_candidates": [],
+  "historical_research_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
