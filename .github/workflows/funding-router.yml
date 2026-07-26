@@ -1,0 +1,50 @@
+name: Funding dislocation router
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/funding_router/**'
+      - '.github/workflows/funding-router.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'services/funding_router/**'
+      - '.github/workflows/funding-router.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    defaults:
+      run:
+        working-directory: services/funding_router
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: services/funding_router/pyproject.toml
+      - name: Install package and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[dev]'
+      - name: Compile source and tests
+        run: python -m compileall -q src tests
+      - name: Run deterministic tests
+        run: pytest -q
+      - name: Validate example configuration
+        run: funding-router --config config.example.toml validate
+      - name: Verify service manifest and safety flags
+        run: python verify.py
+      - name: Check installed dependencies
+        run: python -m pip check
