@@ -6,6 +6,11 @@ on:
     paths:
       - '.bootstrap_funding_router/**'
       - '.github/workflows/materialize-funding-router.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.bootstrap_funding_router/**'
+      - '.github/workflows/materialize-funding-router.yml'
   workflow_dispatch:
 
 permissions:
@@ -22,6 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: agent/funding-dislocation-router-final
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -37,7 +43,7 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          expected_sha="$GITHUB_SHA"
+          expected_sha="$(git rev-parse HEAD)"
           git fetch origin main
           git reset --hard origin/main
           tar -xzf /tmp/funding-router-payload.tar.gz -C .
