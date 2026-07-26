@@ -36,7 +36,13 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          cat .bootstrap_funding_router/part_*.b64 > /tmp/funding-router-payload.b64
+          cat \
+            .bootstrap_funding_router/part_000_0.b64 \
+            .bootstrap_funding_router/part_000_1.b64 \
+            .bootstrap_funding_router/part_001.b64 \
+            .bootstrap_funding_router/part_002.b64 \
+            .bootstrap_funding_router/part_003.b64 \
+            > /tmp/funding-router-payload.b64
           base64 --decode /tmp/funding-router-payload.b64 > /tmp/funding-router-payload.tar.gz
           echo '8dc4c0a04ef2a9d17baebe7b95083a25134a061e980d27906f3e3bff8d2f916f  /tmp/funding-router-payload.tar.gz' | sha256sum -c -
       - name: Build, test and publish a clean final commit
