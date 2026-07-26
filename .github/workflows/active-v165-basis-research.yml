@@ -6,6 +6,7 @@ on:
     paths:
       - 'research/active_v163_v170/basis_*.py'
       - 'research/active_v163_v170/run_basis_research.py'
+      - 'research/active_v163_v170/enforce_basis_coverage.py'
       - 'research/active_v163_v170/V165_BASIS_DESIGN.json'
       - 'research/active_v163_v170/requirements.txt'
       - '.github/workflows/active-v165-basis-research.yml'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'research/active_v163_v170/basis_*.py'
       - 'research/active_v163_v170/run_basis_research.py'
+      - 'research/active_v163_v170/enforce_basis_coverage.py'
       - 'research/active_v163_v170/V165_BASIS_DESIGN.json'
       - 'research/active_v163_v170/requirements.txt'
       - '.github/workflows/active-v165-basis-research.yml'
@@ -58,10 +60,13 @@ jobs:
             --cache .cache/v165_basis \
             --atlas research/active_v139_v146/inputs/v75_stress_equity.csv \
             2>&1 | tee research/active_v163_v170/v165_run.log
+          python research/active_v163_v170/enforce_basis_coverage.py \
+            --root research/active_v163_v170
       - name: Materialize checkpoint V170
         run: |
           test -s research/active_v163_v170/results/summary.json
           test -s research/active_v163_v170/results/selection_proof_before_final.json
+          test -s research/active_v163_v170/results/coverage_gate.json
           test -s research/active_v163_v170/results/ANNUAL_RETURNS.csv
           test -s research/active_v163_v170/inputs/processed/BTC_hourly.csv
           mkdir -p docs/checkpoints/v170
@@ -76,7 +81,9 @@ jobs:
           root=Path('research/active_v163_v170')
           summary=json.loads((root/'results/summary.json').read_text())
           proof=json.loads((root/'results/selection_proof_before_final.json').read_text())
+          gate=json.loads((root/'results/coverage_gate.json').read_text())
           assert proof['selection_uses_2026'] is False
+          assert proof['data_coverage_gate'] == gate
           assert summary['live_ready'] is False
           assert summary['real_leverage_authorized'] is False
           assert summary['profitability_proven'] is False
