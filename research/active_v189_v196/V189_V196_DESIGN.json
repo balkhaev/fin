@@ -1,0 +1,94 @@
+{
+  "candidate": "ACTIVE_V189_DEFINED_RISK_OPTIONS_VRP",
+  "frozen_before_profit_results": true,
+  "frozen_at_utc": "2026-07-27T00:00:00Z",
+  "objective": "independent defined-risk implied-versus-realized variance carry",
+  "universe": {
+    "venue": "binance_options",
+    "underlyings": ["BTCUSDT", "ETHUSDT"],
+    "replacement_after_results": false
+  },
+  "sources": {
+    "option_chain": "data.binance.vision option daily EOHSummary",
+    "checksum_required": true,
+    "raw_payload_sha256_required": true,
+    "theoretical_quotes_allowed": false
+  },
+  "periods": {
+    "development": ["2023-07-01", "2024-06-30"],
+    "validation": ["2024-07-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "program_level_holdout_pristine": false
+  },
+  "required_semantics": [
+    "instrument_symbol",
+    "expiry",
+    "strike",
+    "call_put",
+    "bid",
+    "ask",
+    "underlying_price",
+    "liquidity_measure",
+    "settlement_or_intrinsic_inputs",
+    "timestamp",
+    "contract_multiplier"
+  ],
+  "grid": {
+    "dte_bucket": [[7, 14], [14, 30]],
+    "short_abs_delta": [0.15, 0.25],
+    "long_wing_abs_delta": [0.05, 0.1],
+    "minimum_iv_minus_realized_vol_points": [10.0, 20.0],
+    "holding_rule": ["one_day", "three_days", "exit_at_2dte"],
+    "structure": ["put_spread", "call_spread", "iron_condor"],
+    "policy_count": 144
+  },
+  "execution": {
+    "signal_snapshot": "completed_eoh",
+    "entry": "next_available_eoh",
+    "short_leg_price": "bid",
+    "long_leg_price": "ask",
+    "all_legs_or_no_trade": true,
+    "missing_quote": "no_trade",
+    "discretionary_roll": false
+  },
+  "risk": {
+    "maximum_loss_fraction_per_structure": 0.02,
+    "maximum_concurrent_expiries": 2,
+    "minimum_cash_margin_reserve": 0.5,
+    "naked_short_legs": false,
+    "cross_expiry_portfolio_margin_credit": false
+  },
+  "audits": {
+    "base": "observed bid_ask plus fee proxy",
+    "severe_spread_and_fee_multiplier": 1.5,
+    "latency": "next_eoh_snapshot",
+    "jump": "intrinsic settlement without discretionary roll"
+  },
+  "standalone_gates": {
+    "development_cagr_min": 0.08,
+    "development_sharpe_min": 1.0,
+    "development_max_drawdown_min": -0.15,
+    "closed_structures_min": 60,
+    "btc_return_positive": true,
+    "eth_return_positive": true,
+    "validation_return_positive": true,
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "severe_full_cagr_positive": true,
+    "latency_full_cagr_positive": true,
+    "worst_calendar_quarter_min": -0.1,
+    "top_quarter_positive_pnl_share_max": 0.4,
+    "undefined_settlements_max": 0,
+    "margin_or_max_loss_breaches_max": 0
+  },
+  "integration": {
+    "permitted_only_after_standalone_pass": true,
+    "v75_weights_to_test": [0.05, 0.1, 0.15]
+  },
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
