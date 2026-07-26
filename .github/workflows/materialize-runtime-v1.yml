@@ -4,12 +4,12 @@ on:
   push:
     branches: [agent/runtime-v1]
     paths:
-      - '.bootstrap_runtime_v1/**'
+      - '.bootstrap_runtime_v1_small/**'
       - '.github/workflows/materialize-runtime-v1.yml'
   pull_request:
     branches: [main]
     paths:
-      - '.bootstrap_runtime_v1/**'
+      - '.bootstrap_runtime_v1_small/**'
       - '.github/workflows/materialize-runtime-v1.yml'
   workflow_dispatch:
 
@@ -43,9 +43,10 @@ jobs:
           import base64
           import hashlib
           import json
+          import subprocess
           import tarfile
 
-          root = Path('.bootstrap_runtime_v1')
+          root = Path('.bootstrap_runtime_v1_small')
           manifest = json.loads((root / 'manifest.json').read_text())
           chunks = []
           for item in manifest['parts']:
@@ -53,6 +54,8 @@ jobs:
               data = path.read_bytes()
               assert len(data) == item['bytes'], (path, len(data), item['bytes'])
               assert hashlib.sha256(data).hexdigest() == item['sha256'], path
+              git_sha = subprocess.check_output(['git', 'hash-object', str(path)], text=True).strip()
+              assert git_sha == item['git_blob_sha1'], (path, git_sha, item['git_blob_sha1'])
               chunks.append(data)
           encoded = b''.join(chunks)
           assert len(encoded) == manifest['encoded_bytes']
@@ -72,7 +75,7 @@ jobs:
               handle.extractall(destination, filter='data')
           PY
           rsync -a /tmp/runtime-v1-tree/ ./
-          rm -rf .bootstrap_runtime_v1 .pytest_cache
+          rm -rf .bootstrap_runtime_v1 .bootstrap_runtime_v1_small .pytest_cache
           rm -f .github/workflows/materialize-runtime-v1.yml
           find . -type d -name '__pycache__' -prune -exec rm -rf {} + || true
           find . -type f -name '*.pyc' -delete || true
@@ -112,5 +115,5 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add -A
-          git commit -m 'Add frozen strategy runtime v1 [skip ci]'
+          git commit -m 'Add frozen strategy runtime v1'
           git push origin HEAD:agent/runtime-v1
