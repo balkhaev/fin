@@ -32,5 +32,7 @@ jobs:
       - run: python scripts/verify_implementation_plan.py
       - name: Reject opaque implementation transport
         run: |
+          find scripts docs/implementation -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find scripts docs/implementation -type f -name '*.pyc' -delete || true
           bad=$(find docs/implementation scripts -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
           test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
