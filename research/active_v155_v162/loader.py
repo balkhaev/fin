@@ -25,20 +25,28 @@ def load_module(name: str, path: Path) -> ModuleType:
     return module
 
 
-def load_v154_modules() -> tuple[ModuleType, ModuleType]:
-    """Load V154 feature/engine code while isolating its `config` module."""
+def restore_module(name: str, previous: ModuleType | None) -> None:
+    if previous is None:
+        sys.modules.pop(name, None)
+    else:
+        sys.modules[name] = previous
 
-    previous = sys.modules.get("config")
+
+def load_v154_modules() -> tuple[ModuleType, ModuleType]:
+    """Load V154 feature/engine code while isolating legacy absolute imports."""
+
+    previous_config = sys.modules.get("config")
+    previous_features = sys.modules.get("features")
     v154_config = load_module("v154_config", V154_SOURCE / "config.py")
     sys.modules["config"] = v154_config
     try:
         features = load_module("v154_features_for_v162", V154_SOURCE / "features.py")
+        # V154 engine.py imports `features` by its old absolute name.
+        sys.modules["features"] = features
         engine = load_module("v154_engine_for_v162", V154_SOURCE / "engine.py")
     finally:
-        if previous is None:
-            sys.modules.pop("config", None)
-        else:
-            sys.modules["config"] = previous
+        restore_module("features", previous_features)
+        restore_module("config", previous_config)
     return features, engine
 
 
