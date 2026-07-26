@@ -9,6 +9,14 @@ on:
       - 'research/active_v163_v170/V165_BASIS_DESIGN.json'
       - 'research/active_v163_v170/requirements.txt'
       - '.github/workflows/active-v165-basis-research.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v163_v170/basis_*.py'
+      - 'research/active_v163_v170/run_basis_research.py'
+      - 'research/active_v163_v170/V165_BASIS_DESIGN.json'
+      - 'research/active_v163_v170/requirements.txt'
+      - '.github/workflows/active-v165-basis-research.yml'
   workflow_dispatch:
 
 permissions:
@@ -78,6 +86,7 @@ jobs:
           find research/active_v163_v170 docs/checkpoints/v170 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
           find research/active_v163_v170 docs/checkpoints/v170 -type f -name '*.pyc' -delete || true
       - name: Commit direct observations, source and results
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
