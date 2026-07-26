@@ -1,0 +1,83 @@
+name: Active V164 historical funding access probe
+
+on:
+  push:
+    branches: [agent/active-v163-v170-funding-evidence]
+    paths:
+      - 'research/active_v163_v170/history_access_probe.py'
+      - '.github/workflows/active-v164-history-access.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v163_v170/history_access_probe.py'
+      - '.github/workflows/active-v164-history-access.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v164-history-access-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v163-v170-funding-evidence
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install and compile
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests
+          python -m py_compile research/active_v163_v170/history_access_probe.py
+      - name: Probe official historical sources
+        run: |
+          rm -rf research/active_v163_v170/history_probe_results
+          mkdir -p research/active_v163_v170/history_probe_results
+          python research/active_v163_v170/history_access_probe.py \
+            --output research/active_v163_v170/history_probe_results \
+            2>&1 | tee research/active_v163_v170/history_probe_results/run.log
+      - name: Validate evidence
+        run: |
+          test -s research/active_v163_v170/history_probe_results/summary.json
+          test -s research/active_v163_v170/history_probe_results/binance_access.json
+          test -s research/active_v163_v170/history_probe_results/okx_access.json
+          test -s research/active_v163_v170/history_probe_results/MANIFEST.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          value=json.loads(Path('research/active_v163_v170/history_probe_results/summary.json').read_text())
+          assert value['live_ready'] is False
+          assert value['real_leverage_authorized'] is False
+          assert value['profitability_proven'] is False
+          print(json.dumps(value,indent=2))
+          PY
+          find research/active_v163_v170 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v163_v170 -type f -name '*.pyc' -delete || true
+      - name: Commit direct historical access evidence
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v163_v170/history_probe_results
+          if git diff --cached --quiet; then
+            echo 'No history-probe changes'
+          else
+            git commit -m 'Record V164 historical funding access [skip ci]'
+            git push origin HEAD:agent/active-v163-v170-funding-evidence
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v164-historical-funding-access
+          path: research/active_v163_v170/history_probe_results
+          if-no-files-found: warn
+          retention-days: 30
