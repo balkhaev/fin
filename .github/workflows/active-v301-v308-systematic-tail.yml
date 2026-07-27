@@ -1,0 +1,139 @@
+name: Active V301-V308 fixed-universe crypto systematic tail
+
+on:
+  push:
+    branches: [agent/active-v301-v308-systematic-tail]
+    paths:
+      - 'research/active_v301_v308/**'
+      - '.github/workflows/active-v301-v308-systematic-tail.yml'
+  pull_request:
+    branches: [agent/active-v293-v300-residual-reversal]
+    paths:
+      - 'research/active_v301_v308/**'
+      - '.github/workflows/active-v301-v308-systematic-tail.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v301-v308-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v301-v308-systematic-tail
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize readable systematic-tail source
+        run: |
+          set -euxo pipefail
+          python research/active_v301_v308/bootstrap_systematic_tail.py
+          test -s research/active_v301_v308/run_research.py
+          grep -q 'low_systematic_coskewness' research/active_v301_v308/run_research.py
+          grep -q 'high_up_down_beta_spread' research/active_v301_v308/run_research.py
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v301_v308/requirements.txt
+          python -m compileall -q \
+            research/active_v301_v308 \
+            research/active_v293_v300 \
+            research/active_v269_v276 \
+            research/active_v253_v260 \
+            research/active_v9
+          python research/active_v301_v308/run_research.py --self-test
+
+      - name: Restore immutable V9 public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+
+      - name: Run frozen 144-policy systematic-tail research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v301_v308/results \
+                 research/active_v301_v308/MANIFEST.json \
+                 docs/checkpoints/v308
+          python research/active_v301_v308/run_research.py \
+            --root research/active_v301_v308 \
+            --cache .cache/v9 \
+            2>&1 | tee research/active_v301_v308/run.log
+
+      - name: Materialize V308 checkpoint
+        run: |
+          set -euxo pipefail
+          test -s research/active_v301_v308/results/summary.json
+          test -s research/active_v301_v308/results/FROZEN_DECISION.json
+          test -s research/active_v301_v308/results/coverage_gate.json
+          test -s research/active_v301_v308/results/selection_proof_before_validation.json
+          test -s research/active_v301_v308/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v308
+          cp research/active_v301_v308/results/summary.json docs/checkpoints/v308/CHECKPOINT_V308.json
+          cp research/active_v301_v308/results/REPORT_RU.md docs/checkpoints/v308/RESEARCH_CHECKPOINT_V308_RU.md
+          if test -s research/active_v301_v308/results/ANNUAL_RETURNS.csv; then
+            cp research/active_v301_v308/results/ANNUAL_RETURNS.csv docs/checkpoints/v308/ANNUAL_RETURNS.csv
+          fi
+
+      - name: Verify frozen evidence and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v301_v308')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_validation.json').read_text())
+          if not proof.get('selection_not_run'):
+              assert proof['selection_uses_2024'] is False
+              assert proof['selection_uses_2025'] is False
+              assert proof['selection_uses_2026'] is False
+              assert proof['policy_count'] == 144
+              assert proof['promotable_policy_count'] == 108
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v301_v308 docs/checkpoints/v308 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v301_v308 docs/checkpoints/v308 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and frozen decision
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          rm -f research/active_v301_v308/bootstrap_systematic_tail.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v301_v308 docs/checkpoints/v308
+          if git diff --cached --quiet; then
+            echo 'No V301-V308 changes'
+          else
+            git commit -m 'Archive V301-V308 systematic-tail evidence [skip ci]'
+            git push origin HEAD:agent/active-v301-v308-systematic-tail
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v301-v308-systematic-tail
+          path: |
+            research/active_v301_v308/results
+            research/active_v301_v308/run.log
+            docs/checkpoints/v308
+          if-no-files-found: warn
+          retention-days: 30
