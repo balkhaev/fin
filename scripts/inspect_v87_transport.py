@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import base64
+import bz2
+import gzip
 import hashlib
 import io
 import json
@@ -9,8 +11,10 @@ import lzma
 import subprocess
 import tarfile
 import zipfile
+import zlib
 from collections import defaultdict
 from pathlib import Path
+from typing import Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "f99747b9ee547848c2ecf4ad49ea29e1380ab9ec"
@@ -26,49 +30,57 @@ def git_show(commit: str, path: str) -> bytes:
     return subprocess.check_output(["git", "show", f"{commit}:{path}"], cwd=ROOT)
 
 
-def describe_payload(payload: bytes) -> dict[str, object]:
-    result: dict[str, object] = {
-        "bytes": len(payload),
-        "sha256": hashlib.sha256(payload).hexdigest(),
-        "first_32_hex": payload[:32].hex(),
-        "starts_xz": payload.startswith(b"\xfd7zXZ\x00"),
-        "starts_zip": payload.startswith(b"PK"),
+def archive_trial(label: str, candidate: bytes) -> dict[str, object]:
+    trial: dict[str, object] = {
+        "candidate": label,
+        "bytes": len(candidate),
+        "sha256": hashlib.sha256(candidate).hexdigest(),
+        "first_32_hex": candidate[:32].hex(),
+        "first_64_repr": repr(candidate[:64]),
+        "starts_xz": candidate.startswith(b"\xfd7zXZ\x00"),
+        "starts_zip": candidate.startswith(b"PK"),
+        "starts_gzip": candidate.startswith(b"\x1f\x8b"),
+        "starts_bzip2": candidate.startswith(b"BZh"),
+        "starts_zlib_common": candidate[:2] in {b"\x78\x01", b"\x78\x5e", b"\x78\x9c", b"\x78\xda"},
+        "ustar_offset": candidate.find(b"ustar"),
+        "cpio_magic": candidate[:6] in {b"070701", b"070702", b"070707"},
     }
-    candidates = [("payload", payload)]
     try:
-        expanded = lzma.decompress(payload)
-        result.update(
-            {
-                "lzma_ok": True,
-                "lzma_bytes": len(expanded),
-                "lzma_sha256": hashlib.sha256(expanded).hexdigest(),
-                "lzma_first_64_hex": expanded[:64].hex(),
-                "lzma_first_64_repr": repr(expanded[:64]),
-                "lzma_ustar_offset": expanded.find(b"ustar"),
-                "lzma_zip_magic": expanded.startswith(b"PK"),
-                "lzma_cpio_magic": expanded[:6] in {b"070701", b"070702", b"070707"},
-            }
-        )
-        candidates.append(("lzma", expanded))
+        with tarfile.open(fileobj=io.BytesIO(candidate), mode="r:*") as tar:
+            members = tar.getmembers()
+            trial["tar_ok"] = True
+            trial["tar_members"] = len(members)
+            trial["tar_sample"] = [member.name for member in members[:40]]
     except Exception as error:
-        result["lzma_ok"] = False
-        result["lzma_error"] = repr(error)
+        trial["tar_ok"] = False
+        trial["tar_error"] = repr(error)
+    trial["zip_ok"] = zipfile.is_zipfile(io.BytesIO(candidate))
+    if trial["zip_ok"]:
+        with zipfile.ZipFile(io.BytesIO(candidate)) as archive:
+            trial["zip_members"] = len(archive.namelist())
+            trial["zip_sample"] = archive.namelist()[:40]
+    return trial
 
-    trials: list[dict[str, object]] = []
-    for label, candidate in candidates:
-        trial: dict[str, object] = {"candidate": label}
+
+def describe_payload(payload: bytes) -> dict[str, object]:
+    result: dict[str, object] = archive_trial("decoded", payload)
+    decompression: list[dict[str, object]] = []
+    methods: tuple[tuple[str, Callable[[bytes], bytes]], ...] = (
+        ("lzma", lzma.decompress),
+        ("zlib", zlib.decompress),
+        ("zlib_raw", lambda value: zlib.decompress(value, -zlib.MAX_WBITS)),
+        ("gzip", gzip.decompress),
+        ("bz2", bz2.decompress),
+    )
+    for name, method in methods:
         try:
-            with tarfile.open(fileobj=io.BytesIO(candidate), mode="r:*") as tar:
-                members = tar.getmembers()
-                trial["tar_ok"] = True
-                trial["tar_members"] = len(members)
-                trial["tar_sample"] = [member.name for member in members[:20]]
+            expanded = method(payload)
+            row = archive_trial(name, expanded)
+            row["ok"] = True
         except Exception as error:
-            trial["tar_ok"] = False
-            trial["tar_error"] = repr(error)
-        trial["zip_ok"] = zipfile.is_zipfile(io.BytesIO(candidate))
-        trials.append(trial)
-    result["archive_trials"] = trials
+            row = {"candidate": name, "ok": False, "error": repr(error)}
+        decompression.append(row)
+    result["decompression_trials"] = decompression
     return result
 
 
@@ -83,6 +95,7 @@ def inspect_group(commit: str, paths: list[str]) -> dict[str, object]:
                 "path": path,
                 "git_blob_sha": run_text("rev-parse", f"{commit}:{path}"),
                 "encoded_bytes": len(raw),
+                "prefix": raw[:16].decode("ascii", errors="replace"),
                 "suffix": raw[-16:].decode("ascii", errors="replace"),
             }
         )
@@ -93,11 +106,40 @@ def inspect_group(commit: str, paths: list[str]) -> dict[str, object]:
         "encoded_bytes": len(encoded),
         "encoded_sha256": hashlib.sha256(encoded).hexdigest(),
     }
-    try:
-        row["decoded"] = describe_payload(base64.b64decode(encoded, validate=True))
-    except Exception as error:
-        row["decode_error"] = repr(error)
+    decoders: tuple[tuple[str, Callable[[bytes], bytes]], ...] = (
+        ("base64", lambda value: base64.b64decode(value, validate=True)),
+        ("base85", base64.b85decode),
+        ("ascii85", lambda value: base64.a85decode(value, adobe=False)),
+        ("ascii85_adobe", lambda value: base64.a85decode(value, adobe=True)),
+    )
+    decoded_trials: list[dict[str, object]] = []
+    for name, decoder in decoders:
+        try:
+            payload = decoder(encoded)
+            decoded_trials.append(
+                {"decoder": name, "ok": True, "payload": describe_payload(payload)}
+            )
+        except Exception as error:
+            decoded_trials.append({"decoder": name, "ok": False, "error": repr(error)})
+    row["decoded_trials"] = decoded_trials
     return row
+
+
+def is_useful(inspection: dict[str, object]) -> bool:
+    for decoded in inspection.get("decoded_trials", []):
+        if not isinstance(decoded, dict) or not decoded.get("ok"):
+            continue
+        payload = decoded.get("payload", {})
+        if not isinstance(payload, dict):
+            continue
+        if payload.get("tar_ok") or payload.get("zip_ok"):
+            return True
+        for expanded in payload.get("decompression_trials", []):
+            if isinstance(expanded, dict) and expanded.get("ok") and (
+                expanded.get("tar_ok") or expanded.get("zip_ok")
+            ):
+                return True
+    return False
 
 
 def main() -> int:
@@ -118,16 +160,10 @@ def main() -> int:
         for root, paths in sorted(grouped.items()):
             inspection = inspect_group(commit, sorted(paths))
             groups[root] = inspection
-            decoded = inspection.get("decoded", {})
-            if isinstance(decoded, dict):
-                trials = decoded.get("archive_trials", [])
-                if decoded.get("lzma_ok") or any(
-                    isinstance(trial, dict) and (trial.get("tar_ok") or trial.get("zip_ok"))
-                    for trial in trials
-                ):
-                    successful_candidates.append(
-                        {"commit": commit, "root": root, "inspection": inspection}
-                    )
+            if is_useful(inspection):
+                successful_candidates.append(
+                    {"commit": commit, "root": root, "inspection": inspection}
+                )
 
         changed = run_text("diff-tree", "--no-commit-id", "--name-status", "-r", commit)
         history.append(
@@ -145,7 +181,7 @@ def main() -> int:
         "head": HEAD,
         "commit_count": len(commits),
         "history": history,
-        "successful_or_decompressible_candidates": successful_candidates,
+        "successful_archive_candidates": successful_candidates,
     }
     print(json.dumps(output, indent=2, ensure_ascii=False))
     return 0
