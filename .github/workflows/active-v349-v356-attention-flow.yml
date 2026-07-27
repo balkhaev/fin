@@ -1,0 +1,134 @@
+name: Active V349-V356 fixed-universe attention and taker flow
+
+on:
+  push:
+    branches: [agent/active-v349-v356-attention-flow]
+    paths:
+      - 'research/active_v349_v356/**'
+      - '.github/workflows/active-v349-v356-attention-flow.yml'
+  pull_request:
+    branches: [agent/active-v293-v300-residual-reversal]
+    paths:
+      - 'research/active_v349_v356/**'
+      - '.github/workflows/active-v349-v356-attention-flow.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v349-v356-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v349-v356-attention-flow
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize pinned V261 execution base
+        run: |
+          set -euxo pipefail
+          git show ac2f43fe592513fde9d85e4b09921015b34c9419:research/active_v261_v268/run_research.py \
+            > research/active_v349_v356/v261_base.py
+          test -s research/active_v349_v356/v261_base.py
+          grep -q 'ACTIVE_V261_CRYPTO_LIQUIDITY_QUALITY' research/active_v349_v356/v261_base.py
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v349_v356/requirements.txt
+          python -m compileall -q \
+            research/active_v349_v356 \
+            research/active_v253_v260 \
+            research/active_v9
+          python research/active_v349_v356/run_research.py --self-test
+
+      - name: Restore immutable V9 public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+
+      - name: Run frozen 144-policy attention-flow research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v349_v356/results \
+                 research/active_v349_v356/MANIFEST.json \
+                 docs/checkpoints/v356
+          python research/active_v349_v356/run_research.py \
+            --root research/active_v349_v356 \
+            --cache .cache/v9 \
+            2>&1 | tee research/active_v349_v356/run.log
+
+      - name: Materialize V356 checkpoint
+        run: |
+          set -euxo pipefail
+          test -s research/active_v349_v356/results/summary.json
+          test -s research/active_v349_v356/results/FROZEN_DECISION.json
+          test -s research/active_v349_v356/results/coverage_gate.json
+          test -s research/active_v349_v356/results/selection_proof_before_validation.json
+          test -s research/active_v349_v356/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v356
+          cp research/active_v349_v356/results/summary.json docs/checkpoints/v356/CHECKPOINT_V356.json
+          cp research/active_v349_v356/results/REPORT_RU.md docs/checkpoints/v356/RESEARCH_CHECKPOINT_V356_RU.md
+          if test -s research/active_v349_v356/results/ANNUAL_RETURNS.csv; then
+            cp research/active_v349_v356/results/ANNUAL_RETURNS.csv docs/checkpoints/v356/ANNUAL_RETURNS.csv
+          fi
+
+      - name: Verify frozen chronology and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v349_v356')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_validation.json').read_text())
+          if not proof.get('selection_not_run'):
+              assert proof['selection_uses_2024'] is False
+              assert proof['selection_uses_2025'] is False
+              assert proof['selection_uses_2026'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v349_v356 docs/checkpoints/v356 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v349_v356 docs/checkpoints/v356 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and frozen decision
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v349_v356 docs/checkpoints/v356
+          if git diff --cached --quiet; then
+            echo 'No V349-V356 changes'
+          else
+            git commit -m 'Archive V349-V356 attention-flow evidence [skip ci]'
+            git push origin HEAD:agent/active-v349-v356-attention-flow
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v349-v356-attention-flow
+          path: |
+            research/active_v349_v356/results
+            research/active_v349_v356/run.log
+            docs/checkpoints/v356
+          if-no-files-found: warn
+          retention-days: 30
