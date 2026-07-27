@@ -1,0 +1,6 @@
+{
+  "materialized_source_commit": "ac2f43fe592513fde9d85e4b09921015b34c9419",
+  "materialized_source_path": "research/active_v261_v268/run_research.py",
+  "materialized_target_path": "research/active_v349_v356/v261_base.py",
+  "reason": "reuse corrected fixed-universe scheduled-execution and quote-volume loader; V349 scores and gates are separate"
+}
