@@ -106,7 +106,6 @@ jobs:
           find research/active_v253_v260 docs/checkpoints/v260 -type f -name '*.pyc' -delete || true
 
       - name: Commit readable source and frozen decision
-        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
