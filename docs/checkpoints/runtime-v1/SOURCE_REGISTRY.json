@@ -3,25 +3,37 @@
   "repository": "balkhaev/fin",
   "frozen_base_commit": "4d8fe27e703d8330dc38bb0233ce19f669c6a43b",
   "hash_policy": {
-    "canonical_sources": "sha256 over exact repository bytes",
+    "committed_sources": "sha256 over exact repository bytes",
     "repository_anchor": "git commit SHA-1",
-    "runtime_objects": "sha256 over canonical JSON with sha256: prefix"
+    "runtime_objects": "sha256 over canonical JSON with sha256: prefix",
+    "missing_dependencies": "record expected hash and fail closed; never substitute another file"
   },
   "profiles": {
     "v75_atlas_nx": {
       "role": "primary",
+      "provenance_complete": false,
       "source_paths": {
-        "research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc",
         "research/active_v131_v138/source/run_research.py": "fc26c84e0785fc386b9023281b713d69f9291e805bfbd0b872ad13298d5290b8",
-        "research/active_v131_v138/results/v136/v75_original_stress_equity.csv": "0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b"
+        "research/active_v131_v138/DATA_REQUIREMENTS.json": "5984f1ba39fe415dd324ade047195d471f8c55e8646b8b64d496d0a6a7ef9d3c",
+        "docs/checkpoints/v138/CHECKPOINT_V138.json": "8f7663ab93fa08291fd84425d362338c00d20e29e5e4f6daf6cd8e319e184690"
       },
-      "expected_regression_outputs": [
-        "research/active_v131_v138/results/v136/v75_original_stress_equity.csv",
-        "research/active_v131_v138/results/v136/v75_original_annual_returns.csv"
-      ]
+      "unmaterialized_requirements": {
+        "canonical_engine": {
+          "expected_layout": "dependencies/atlas/source/v75_operational_feedback_engine.py",
+          "expected_sha256": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc",
+          "status": "not_materialized_in_main"
+        },
+        "full_regression_equity": {
+          "expected_layout": "results/v136/v75_original_stress_equity.csv",
+          "expected_sha256": "0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b",
+          "status": "not_materialized_in_main"
+        }
+      },
+      "runtime_blocker": "exact V75 target engine and daily regression fixture must be materialized directly before M2"
     },
     "v136_execution_shadow": {
       "role": "shadow",
+      "provenance_complete": true,
       "source_paths": {
         "research/active_v131_v138/source/run_execution_layer.py": "0918e588dae21e5b41fe9585ce9baf0f57907eb58a259dff4b524b1e559adc82",
         "research/active_v131_v138/results/v136/summary.json": "4928dcf2d3b7c8caa6e318bef317448f0a85557b4bbdd3c8836adfc560b7cfaf"
@@ -31,17 +43,21 @@
         "maximum_target_age_days": 28,
         "step_fraction": 1.0,
         "risk_reduction_buffer": 0.02
-      }
+      },
+      "runtime_blocker": "requires exact V75 target stream before historical shadow regression"
     },
     "v28_growth_control": {
       "role": "control",
+      "provenance_complete": false,
       "source_paths": {
         "research/active_v26_v28/v28_run_research.py": "64c968222fb10687040b56077a1c82ec0484e359377b20db85cb5d2d10cdcf6a",
         "research/active_v26_v28/v28_frozen_candidate.json": "a78f7af830e718e77dbd28905cfbdcc7b33ed64a166e18f9910ae3e991822e61"
       },
-      "selection_proof_sha256": "fcdf6d12bd1ba95374c8866e3a44987e0eea1d187cc2e4100a81f446d20a4828"
+      "selection_proof_sha256": "fcdf6d12bd1ba95374c8866e3a44987e0eea1d187cc2e4100a81f446d20a4828",
+      "runtime_blocker": "research source still references uncommitted local dependency paths; direct fixture materialization required before M3"
     }
   },
+  "checkpoint_status": "contracts_ready_provenance_blocked_on_v75_and_v28_materialization",
   "safety": {
     "live_execution_available": false,
     "live_ready": false,
