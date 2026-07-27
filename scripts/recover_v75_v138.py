@@ -88,16 +88,29 @@ def load_historical_archive(commit: str) -> tuple[bytes, dict[str, Any]]:
 
 
 def safe_extract(archive: bytes, destination: Path) -> list[str]:
+    """Extract only regular files and directories; historical links are ignored."""
     extracted: list[str] = []
+    skipped: list[str] = []
     with tarfile.open(fileobj=io.BytesIO(archive), mode="r:xz") as tar:
         for member in tar.getmembers():
             relative = PurePosixPath(member.name)
             if relative.is_absolute() or ".." in relative.parts:
                 raise RuntimeError(f"unsafe path in historical archive: {member.name!r}")
-            if member.issym() or member.islnk() or member.isdev():
-                raise RuntimeError(f"unsupported historical archive member: {member.name!r}")
-        tar.extractall(destination, filter="data")
-        extracted = [member.name for member in tar.getmembers() if member.isfile()]
+            target = destination.joinpath(*relative.parts)
+            if member.isdir():
+                target.mkdir(parents=True, exist_ok=True)
+                continue
+            if not member.isfile():
+                skipped.append(member.name)
+                continue
+            source = tar.extractfile(member)
+            if source is None:
+                raise RuntimeError(f"cannot read historical archive member: {member.name!r}")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(source.read())
+            extracted.append(member.name)
+    if skipped:
+        print(json.dumps({"skipped_non_regular_archive_members": skipped}, ensure_ascii=False))
     return extracted
 
 
