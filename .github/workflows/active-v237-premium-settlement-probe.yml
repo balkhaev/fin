@@ -1,0 +1,82 @@
+name: Active V237 premium settlement archive probe
+
+on:
+  push:
+    branches: [agent/active-v237-v244-premium-settlement]
+    paths:
+      - 'research/active_v237_v244/**'
+      - '.github/workflows/active-v237-premium-settlement-probe.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v237-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v237-v244-premium-settlement
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install, compile and self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v237_v244/requirements.txt
+          python -m compileall -q research/active_v237_v244
+          python research/active_v237_v244/probe.py --self-test
+      - name: Run checksum-aware frozen data gate
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v237_v244/probe_results
+          python research/active_v237_v244/probe.py \
+            --root research/active_v237_v244 \
+            2>&1 | tee research/active_v237_v244/probe.log
+      - name: Verify no-PnL and safety invariants
+        run: |
+          test -s research/active_v237_v244/probe_results/summary.json
+          test -s research/active_v237_v244/probe_results/coverage_gate.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary = json.loads(Path('research/active_v237_v244/probe_results/summary.json').read_text())
+          assert summary['selection_run'] is False
+          assert summary['full_backtest_run'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+      - name: Commit direct V237 evidence
+        run: |
+          set -euxo pipefail
+          find research/active_v237_v244 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v237_v244 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v237_v244
+          if git diff --cached --quiet; then
+            echo 'No V237 changes'
+          else
+            git commit -m 'Archive V237 premium settlement data probe [skip ci]'
+            git push origin HEAD:agent/active-v237-v244-premium-settlement
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v237-premium-settlement-probe
+          path: |
+            research/active_v237_v244/probe_results
+            research/active_v237_v244/probe.log
+          if-no-files-found: warn
+          retention-days: 30
