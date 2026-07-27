@@ -1,0 +1,61 @@
+{
+  "candidate": "ACTIVE_V277_RISK_NORMALIZED_LOW_SKEW",
+  "files": {
+    "README.md": {
+      "bytes": 1566,
+      "sha256": "d51c18f138c50c865a5e07bd50075fb24da6a435fb010c9df06d05e6625875ad"
+    },
+    "V277_V284_DESIGN.json": {
+      "bytes": 2979,
+      "sha256": "c6a7bb62e701f4698e2cb0cefd0f814f56e871b6a212288d08843c4bc7d64bdf"
+    },
+    "requirements.txt": {
+      "bytes": 47,
+      "sha256": "e4b80ba1592a07b6c9bfcad04477c3ae8e131719c30f33fa2c52a5078c608199"
+    },
+    "results/DEVELOPMENT_ANNUAL_RETURNS.csv": {
+      "bytes": 87,
+      "sha256": "4d3acd40d26a0981bdd0c144b8fa86c34d6791ec36d7f94dba7f171ccfd5efdf"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 351,
+      "sha256": "8c579b93e50409945f7256d2ca54e95f6a42a7a4c61826d3a40f69a8a66b8811"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 156,
+      "sha256": "4d7676e8e310983eca0da74df15e0608fc2008f4bf1e3430718b8606873c2012"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "c566961a46d5af44c75aef30bdff914ddf812b8465395a933ac98abb6138b8b8"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "d742af0eb70276b0d4f9abcadef0b0ed56ac990b8e5d78051d12a06e12d0dcc8"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/frozen_weights.csv": {
+      "bytes": 380316,
+      "sha256": "73efcb34327b89a315f11c42e1b00c453d5f09f0bb9b8c532a2707c6923466bf"
+    },
+    "results/selection_proof_before_oos.json": {
+      "bytes": 11523,
+      "sha256": "e6542e43b788073eade4c3132bdc324d99322a7d6b583cafd3f53fec26b3e83c"
+    },
+    "results/summary.json": {
+      "bytes": 20658,
+      "sha256": "35e3c744ecbdae46791612aebf8d8fb50112fb2da5452749b7b9be9d8e8209aa"
+    },
+    "run_research.py": {
+      "bytes": 20650,
+      "sha256": "0459b0d61df891c5f5d44acc4982cd131db99f4a42647814f67cd0082792f68d"
+    }
+  }
+}
