@@ -1,0 +1,38 @@
+{
+  "contract": "V429_V436_STATE_CONDITIONED_TELEMETRY",
+  "primary_key": ["timestamp", "strategy_id"],
+  "required_strategies": [
+    "V75_ATLAS_NX",
+    "V136_EXECUTION_PLATEAU",
+    "V28_GROWTH_CONTROL"
+  ],
+  "fields": {
+    "timestamp": "ISO-8601 UTC reconciliation timestamp",
+    "strategy_id": "frozen strategy identifier",
+    "source_bundle_sha256": "hash of complete market/model input bundle",
+    "target_hash": "hash of frozen target positions",
+    "realized_position_hash": "hash of reconciled paper positions",
+    "gross_target": "non-negative float",
+    "gross_realized": "non-negative float",
+    "turnover": "non-negative notional divided by prior equity",
+    "modelled_slippage_bps": "non-negative float",
+    "paper_slippage_bps": "non-negative float",
+    "net_return": "daily net paper return",
+    "equity": "positive paper equity",
+    "drawdown": "non-positive drawdown",
+    "reconciliation_ok": "boolean",
+    "source_hash_match": "boolean",
+    "data_stale": "boolean",
+    "execution_complete": "boolean"
+  },
+  "fail_closed": [
+    "missing state row",
+    "duplicate primary key",
+    "unknown strategy id",
+    "source hash mismatch",
+    "stale market data",
+    "failed position reconciliation",
+    "incomplete execution",
+    "non-positive or non-finite equity"
+  ]
+}
