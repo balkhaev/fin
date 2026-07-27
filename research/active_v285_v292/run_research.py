@@ -375,7 +375,9 @@ def simulate_hourly(
     funding = panel["funding"].to_numpy(float)
     available = np.isfinite(opens) & np.isfinite(closes) & (opens > 0) & (closes > 0)
 
-    executed_daily = daily_weights.shift(1 + audit.alpha_delay_days)
+    executed_daily = daily_weights.reindex(columns=SYMBOLS).shift(
+        1 + audit.alpha_delay_days
+    )
     normalized_days = index.normalize()
     target_values = executed_daily.reindex(normalized_days).fillna(0.0).to_numpy(float)
 
@@ -645,6 +647,9 @@ def self_test() -> None:
     daily_weights = pd.DataFrame(0.0, index=daily_index, columns=SYMBOLS)
     daily_weights.loc[:, columns[:3]] = TARGET_GROSS / 6
     daily_weights.loc[:, columns[3:]] = -TARGET_GROSS / 6
+    # Adversarially scramble source columns. The simulator must explicitly
+    # realign them to the frozen SYMBOLS order before NumPy conversion.
+    daily_weights = daily_weights.loc[:, list(reversed(daily_weights.columns))]
     account, diagnostics = simulate_hourly(
         hourly_index, panel, daily_weights, "2021-01-01", "2021-01-05", AUDITS[0]
     )

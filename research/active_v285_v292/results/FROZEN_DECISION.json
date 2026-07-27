@@ -1,11 +1,12 @@
 {
   "candidate": "ACTIVE_V285_HOURLY_GROSS_CONTROLLED_LOW_SKEW",
-  "status": "rejected_before_oos",
-  "development_reproof_passed": false,
-  "oos_opened": false,
+  "status": "rejected_after_oos",
+  "development_reproof_passed": true,
+  "oos_opened": true,
   "standalone_selection_passed": false,
   "integration_permitted": false,
   "promoted_candidates": [],
+  "paper_forward_earliest_start": null,
   "live_ready": false,
   "real_leverage_authorized": false,
   "profitability_proven": false

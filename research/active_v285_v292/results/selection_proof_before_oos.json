@@ -52,38 +52,38 @@
   "selection_uses_2026": false,
   "program_level_holdout_pristine": false,
   "development_metrics": {
-    "total_return": -0.21118812658562525,
-    "cagr": -0.076081445329503,
-    "max_drawdown": -0.38344746493889403,
-    "sharpe": -0.25789890533292265,
-    "annual_turnover": 5.068765143932985,
-    "average_gross": 0.4716393448714289,
-    "max_gross": 0.7993552655254407,
-    "max_stress_gross": 0.8784307132732427,
-    "costs": 414.15460398870755,
-    "funding_pnl": 62.882958086633,
-    "daily_rebalance_events": 38,
-    "risk_reduction_events": 21,
-    "forced_exits": 3
+    "total_return": 0.6835065569431853,
+    "cagr": 0.18975600785846347,
+    "max_drawdown": -0.08616309095912167,
+    "sharpe": 1.5610711622000164,
+    "annual_turnover": 4.5334557490645375,
+    "average_gross": 0.4708348968574554,
+    "max_gross": 0.627557557834669,
+    "max_stress_gross": 0.6487826328668371,
+    "costs": 566.2869429399763,
+    "funding_pnl": 2.6303539480754736,
+    "daily_rebalance_events": 34,
+    "risk_reduction_events": 14,
+    "forced_exits": 1
   },
   "development_diagnostics": {
     "asset_pnl": {
-      "BTCUSDT": 694.3734680758745,
-      "ETHUSDT": -1042.664744856161,
-      "BNBUSDT": 310.8126436055288,
-      "XRPUSDT": 1070.621915293838,
-      "ADAUSDT": 109.71315215370512,
-      "LTCUSDT": 380.4318316330959,
-      "BCHUSDT": 688.360424015504,
-      "EOSUSDT": -434.9548761465322,
-      "DOGEUSDT": -3203.6979979293237,
-      "LINKUSDT": -566.9999588120864,
-      "DOTUSDT": -78.75376990227147,
-      "TRXUSDT": 80.94203926295275,
-      "SOLUSDT": -120.06539225106127
+      "BTCUSDT": 244.35983615675474,
+      "ETHUSDT": 813.7410370234933,
+      "BNBUSDT": 697.5268605642433,
+      "XRPUSDT": 968.9707576976019,
+      "ADAUSDT": 1232.1652695258636,
+      "LTCUSDT": 198.5078575117567,
+      "BCHUSDT": -1064.0093233680782,
+      "EOSUSDT": 1021.2578396879074,
+      "DOGEUSDT": 822.001098008453,
+      "LINKUSDT": -108.57267691913702,
+      "DOTUSDT": 2307.939375936605,
+      "TRXUSDT": -223.80741132400428,
+      "SOLUSDT": -75.01495106969398
     },
-    "long_leg_pnl": 3338.2917973426866,
-    "short_leg_pnl": -5450.173063199624,
+    "long_leg_pnl": 5872.818815848058,
+    "short_leg_pnl": 962.246753583448,
     "symbols_traded": [
       "ADAUSDT",
       "BCHUSDT",
@@ -100,40 +100,40 @@
       "XRPUSDT"
     ],
     "symbol_count_traded": 13,
-    "forced_exit_count": 3,
-    "daily_rebalance_events": 38,
-    "risk_reduction_events": 21,
-    "top_positive_asset_pnl_share": 0.32100147158947073
+    "forced_exit_count": 1,
+    "daily_rebalance_events": 34,
+    "risk_reduction_events": 14,
+    "top_positive_asset_pnl_share": 0.2778483994764308
   },
   "development_annual_returns": [
     {
       "year": 2021,
-      "return": -0.16660309609353263
+      "return": 0.2950479579352405
     },
     {
       "year": 2022,
-      "return": 0.08141749270754062
+      "return": 0.20645962065878187
     },
     {
       "year": 2023,
-      "return": -0.1247579673280782
+      "return": 0.07749724857021256
     }
   ],
   "development_gate_results": {
-    "cagr": false,
-    "sharpe": false,
-    "max_drawdown": false,
+    "cagr": true,
+    "sharpe": true,
+    "max_drawdown": true,
     "rebalance_events": true,
     "annual_turnover": true,
-    "max_hourly_close_gross": false,
-    "max_adverse_intrahour_stress_gross": false,
-    "all_development_years_positive": false,
+    "max_hourly_close_gross": true,
+    "max_adverse_intrahour_stress_gross": true,
+    "all_development_years_positive": true,
     "net_long_leg_pnl_positive": true,
-    "net_short_leg_pnl_positive": false,
+    "net_short_leg_pnl_positive": true,
     "symbols_traded": true,
     "concentration": true
   },
-  "development_reproof_passed": false,
+  "development_reproof_passed": true,
   "coverage_gate": {
     "candidate": "V285_COMBINED_DAILY_HOURLY_COVERAGE",
     "daily_gate": {
@@ -553,5 +553,5 @@
     "passed": true
   },
   "design_sha256": "f8c4992e7b6e00788e58da1f9e8363078b77b97762d1e3e18b99208503f500ba",
-  "selection_proof_sha256": "5cd071d877faba09fdea093a49c6e0ee6b374399ba56462d3f0a4cb47494bc71"
+  "selection_proof_sha256": "1cb4747c43cffb8befd45e9993b2836be17ce93ef8064e7f1fad2fb5cb51514c"
 }
