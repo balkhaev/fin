@@ -65,6 +65,16 @@ def main() -> int:
         forced_exit_penalty_bps=v365.FORCED_EXIT_PENALTY_BPS,
     )
     klines, funding, records, quality = v365.base.load_v9(config, args.cache, False)
+    records = sorted(
+        records,
+        key=lambda row: (
+            str(row.get("kind", "")),
+            str(row.get("symbol", "")),
+            str(row.get("month", "")),
+            str(row.get("url", "")),
+        ),
+    )
+    quality = sorted(quality, key=lambda row: str(row.get("symbol", "")))
     gate = v365.base.data_gate(klines, records)
     if not gate.get("passed"):
         raise RuntimeError("pinned V365 data gate failed")
