@@ -1,0 +1,16 @@
+asset,dataset,attempted,valid,availability,schema_widths,latest_2026_06_present,gate_passed
+BTC,premium_index_5m,8,7,0.875,[12],False,False
+BTC,mark_price_5m,8,7,0.875,[12],False,False
+BTC,index_price_5m,8,7,0.875,[12],False,False
+BTC,perpetual_5m,8,7,0.875,[12],False,False
+BTC,funding,8,7,0.875,[3],False,False
+ETH,premium_index_5m,8,7,0.875,[12],False,False
+ETH,mark_price_5m,8,7,0.875,[12],False,False
+ETH,index_price_5m,8,7,0.875,[12],False,False
+ETH,perpetual_5m,8,7,0.875,[12],False,False
+ETH,funding,8,7,0.875,[3],False,False
+SOL,premium_index_5m,8,6,0.75,[12],False,False
+SOL,mark_price_5m,8,6,0.75,[12],False,False
+SOL,index_price_5m,8,6,0.75,[12],False,False
+SOL,perpetual_5m,8,6,0.75,[12],False,False
+SOL,funding,8,6,0.75,[3],False,False
