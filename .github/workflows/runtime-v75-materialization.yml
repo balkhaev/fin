@@ -5,12 +5,14 @@ on:
     branches: [agent/runtime-v75-materialization]
     paths:
       - 'scripts/recover_v75_v138.py'
+      - 'scripts/inspect_v87_transport.py'
       - '.github/workflows/runtime-v75-materialization.yml'
       - 'docs/checkpoints/runtime-v1/SOURCE_REGISTRY.json'
   pull_request:
     branches: [agent/runtime-contracts-m0-m1]
     paths:
       - 'scripts/recover_v75_v138.py'
+      - 'scripts/inspect_v87_transport.py'
       - '.github/workflows/runtime-v75-materialization.yml'
       - 'docs/checkpoints/runtime-v1/SOURCE_REGISTRY.json'
   workflow_dispatch:
@@ -38,6 +40,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Inspect pinned V87 transport format
+        run: |
+          set -euxo pipefail
+          python scripts/inspect_v87_transport.py \
+            2>&1 | tee /tmp/v87-transport-inspection.log
 
       - name: Recover exact direct V75 evidence
         run: |
@@ -99,6 +107,7 @@ jobs:
         with:
           name: runtime-v75-direct-materialization
           path: |
+            /tmp/v87-transport-inspection.log
             /tmp/v75-recovery.log
             docs/checkpoints/runtime-v1/V75_RECOVERY_PROVENANCE.json
             research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py
