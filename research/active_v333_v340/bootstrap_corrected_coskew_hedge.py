@@ -1,12 +1,24 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
-source = root / "research" / "active_v317_v324" / "run_research.py"
+local_source = root / "research" / "active_v317_v324" / "run_research.py"
 target = Path(__file__).resolve().parent / "run_research.py"
-text = source.read_text()
+if local_source.exists():
+    text = local_source.read_text()
+    source_provenance = str(local_source.relative_to(root))
+else:
+    remote_ref = "origin/agent/active-v317-v324-coskew-beta-hedge"
+    remote_path = "research/active_v317_v324/run_research.py"
+    text = subprocess.check_output(
+        ["git", "show", f"{remote_ref}:{remote_path}"],
+        cwd=root,
+        text=True,
+    )
+    source_provenance = f"{remote_ref}:{remote_path}"
 
 replacements = (
     (
@@ -51,7 +63,8 @@ text = text.replace(
     proof_needle,
     proof_needle
     + '        "corrected_coskewness_moment": True,\n'
-    + '        "hedge_specification_source": "V317-V324 preregistration",\n',
+    + '        "hedge_specification_source": "V317-V324 preregistration",\n'
+    + f'        "source_materialization_provenance": {source_provenance!r},\n',
     1,
 )
 
@@ -69,6 +82,7 @@ essential = (
     'LONG_ASSET_COUNT = 3',
     'corrected_coskewness_moment',
     'hedge_specification_source',
+    'source_materialization_provenance',
     'V333_V340_DESIGN.json',
 )
 missing = [fragment for fragment in essential if fragment not in text]
@@ -76,4 +90,4 @@ if missing:
     raise SystemExit(f"materialized source missing essentials: {missing}")
 
 target.write_text(text)
-print(f"materialized {target} ({len(text)} bytes)")
+print(f"materialized {target} ({len(text)} bytes) from {source_provenance}")
