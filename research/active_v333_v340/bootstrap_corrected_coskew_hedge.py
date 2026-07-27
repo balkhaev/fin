@@ -23,8 +23,6 @@ replacements = {
     'root / "V317_V324_DESIGN.json"': 'root / "V333_V340_DESIGN.json"',
     'print("V317-V324 exact coskewness beta-hedge self-test passed")':
         'print("V333-V340 corrected coskewness beta-hedge self-test passed")',
-    '# Active V317–V324 — exact coskewness beta hedge':
-        '# Active V333–V340 — corrected coskewness beta hedge',
 }
 for old, new in replacements.items():
     if text.count(old) != 1:
