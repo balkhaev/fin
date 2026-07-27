@@ -1,0 +1,61 @@
+{
+  "candidate": "ACTIVE_V381_CRYPTO_RESIDUAL_ENTROPY",
+  "files": {
+    "README.md": {
+      "bytes": 1015,
+      "sha256": "be9a02e033e9fbf4c675b71c77ca3b040ded75a1124e0195484291f9d8f0c83b"
+    },
+    "V381_V388_DESIGN.json": {
+      "bytes": 1956,
+      "sha256": "22a80d9ecd8b2fb29f1a446ef5f8ebb8469591c962017357bffeb35e1d1fb844"
+    },
+    "bootstrap.py": {
+      "bytes": 6280,
+      "sha256": "d0f4079001daff006d86f26a2405411189e90bdeaf56648941a84aa0e925ca97"
+    },
+    "requirements.txt": {
+      "bytes": 13,
+      "sha256": "7c3194b101c68d4c524948fd09ec3dff5e7ecf54f11e8ccc23440ff932a604e7"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 325,
+      "sha256": "41b74afdcfb6175e90f767240edbebfa2af6d8b95739f6d2d3dc7d023741209d"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 186,
+      "sha256": "0144d0c3a19fbf956ec49f3b89ddce4a2bbafca04080cc5ea2b711d924e2597d"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "835e74feaa3a20aa28af344b502b0a8b72aecb44f8af242315751465933141d4"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "e1936f3a803bcf7705e3e8a3b5d3015529f7775b8699531013b0eda3540b8ffe"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 8245,
+      "sha256": "a79ce6c21827796cfd35362836d116f4ea7c281dc5c3e8e2c22e9c2c3892599c"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 131120,
+      "sha256": "afe8d9afdb4b98d749497e86f7d5a6332ad99667ea5c95320629d8c54936f136"
+    },
+    "results/summary.json": {
+      "bytes": 41664,
+      "sha256": "3447dadf03de6f9ab7e55bc58d267768081a6fe5ced32839a08cb47e9c54ff63"
+    },
+    "run_research.py": {
+      "bytes": 14979,
+      "sha256": "492451ded36487d0341789bfd0fbc53665e2a942e05b1284c56946a6a2f5ca5f"
+    }
+  }
+}
