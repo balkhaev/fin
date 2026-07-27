@@ -61,6 +61,20 @@ def patch_analyzer() -> None:
     elif new_self_test not in text:
         raise SystemExit("self-test correction missing")
 
+    contributor_replacements = {
+        '"largest_negative_states": state_metrics.head(4).to_dict(orient="records"),':
+            '"largest_negative_states": state_metrics.loc[state_metrics.compound_return < 0.0].head(4).to_dict(orient="records"),',
+        '"largest_negative_transitions": transition_metrics.head(5).to_dict(orient="records"),':
+            '"largest_negative_transitions": transition_metrics.loc[transition_metrics.compound_return < 0.0].head(5).to_dict(orient="records"),',
+        '"largest_negative_duration_buckets": duration_metrics.head(4).to_dict(orient="records"),':
+            '"largest_negative_duration_buckets": duration_metrics.loc[duration_metrics.compound_return < 0.0].head(4).to_dict(orient="records"),',
+    }
+    for old, new in contributor_replacements.items():
+        if old in text:
+            text = replace_once(text, old, new, "negative contributor filter")
+        elif new not in text:
+            raise SystemExit(f"negative contributor correction missing: {new[:70]}")
+
     path.write_text(text, encoding="utf-8")
 
 
