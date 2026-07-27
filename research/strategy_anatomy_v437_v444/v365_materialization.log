@@ -23,7 +23,7 @@ archives 2028/2028
     "low_downside_vol_ratio_l14_k3_r7_dollar": "19186c7561bb6cb8ee824ed7faaa83c4188f91ebe40e5b9fb7743b2605058d10",
     "low_downside_vol_ratio_l60_k3_r7_beta": "9098498197133cd79dec5001e5c4cc7bc7dbf108a3bc41d71c722ced56bda5cb"
   },
-  "data_manifest_sha256": "e590b41b7583cbee05d7c2964096ec0474588f9b2aed8f40637eee80b3260a6c",
+  "data_manifest_sha256": "908fbbb5021bc957f8a9f83749dd531e189cf52545241218ab6049fbf05daed6",
   "data_quality": [
     {
       "symbol": "BTCUSDT",
