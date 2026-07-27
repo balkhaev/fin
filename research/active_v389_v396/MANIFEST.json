@@ -1,0 +1,61 @@
+{
+  "candidate": "ACTIVE_V389_CRYPTO_RESIDUAL_RESILIENCE",
+  "files": {
+    "README.md": {
+      "bytes": 852,
+      "sha256": "3556cfc7e137e23412f9ad140d3e9a73e43158b9e13435459b109b14ecbf15c8"
+    },
+    "V389_V396_DESIGN.json": {
+      "bytes": 1837,
+      "sha256": "eab8d7edccfdfaaa02903ba36bdd419cd7d411010e3beb3e3581e9281abb1c82"
+    },
+    "bootstrap.py": {
+      "bytes": 6314,
+      "sha256": "04fd8e6a0294be0d69f068f379be676dc5f72932d3172df293600963fce45a75"
+    },
+    "requirements.txt": {
+      "bytes": 13,
+      "sha256": "7c3194b101c68d4c524948fd09ec3dff5e7ecf54f11e8ccc23440ff932a604e7"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 328,
+      "sha256": "8242b90bb47e49749d00f85e17c15d8298bb2913597dff679c87e947bd0fa916"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 198,
+      "sha256": "052e3b6fb50398d81be24f8319c250f3adc0b3db0f2e89467c7d603707aecf3d"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "835e74feaa3a20aa28af344b502b0a8b72aecb44f8af242315751465933141d4"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "b9c91fc2051e4932561a3440348fa6511c7d3ac85df55700791e262e7fc00bd2"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 8248,
+      "sha256": "ed9177647dc43bfef32068781b0ad518f064ac3550e89b2185b2d3631170074f"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 131656,
+      "sha256": "bb1aaab9c488afd8299b95502823a83735a24f73deb66474e55e2d38665443a5"
+    },
+    "results/summary.json": {
+      "bytes": 41731,
+      "sha256": "ef9c85278ae2b9c44ce8e56271f6c5bfd80f09ea22e6c79521a474ded6bb7938"
+    },
+    "run_research.py": {
+      "bytes": 15025,
+      "sha256": "212c2f488ef020d53bd784c581a0276cc707fcb0200ca025a60d2ce9faa23aab"
+    }
+  }
+}
