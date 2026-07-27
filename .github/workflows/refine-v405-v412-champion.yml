@@ -92,6 +92,7 @@ jobs:
           find research/refinement_v405_v412 docs/checkpoints/v412 -type f -name '*.pyc' -delete || true
 
       - name: Commit refinement evidence
+        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
