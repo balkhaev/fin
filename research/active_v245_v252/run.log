@@ -1,0 +1,63 @@
+loading BTC
+um BTCUSDT klines: 20/66
+um BTCUSDT klines: 40/66
+um BTCUSDT klines: 60/66
+cm BTCUSD_PERP klines: 20/66
+cm BTCUSD_PERP klines: 40/66
+cm BTCUSD_PERP klines: 60/66
+um BTCUSDT fundingRate: 20/66
+um BTCUSDT fundingRate: 40/66
+um BTCUSDT fundingRate: 60/66
+cm BTCUSD_PERP fundingRate: 20/66
+cm BTCUSD_PERP fundingRate: 40/66
+cm BTCUSD_PERP fundingRate: 60/66
+loading ETH
+um ETHUSDT klines: 20/66
+um ETHUSDT klines: 40/66
+um ETHUSDT klines: 60/66
+cm ETHUSD_PERP klines: 20/66
+cm ETHUSD_PERP klines: 40/66
+cm ETHUSD_PERP klines: 60/66
+um ETHUSDT fundingRate: 20/66
+um ETHUSDT fundingRate: 40/66
+um ETHUSDT fundingRate: 60/66
+cm ETHUSD_PERP fundingRate: 20/66
+cm ETHUSD_PERP fundingRate: 40/66
+cm ETHUSD_PERP fundingRate: 60/66
+{
+  "status": "data_access_insufficient",
+  "coverage": {
+    "candidate": "V245_DUAL_PERP_DATA_COVERAGE",
+    "minimum_month_archive_share": 0.95,
+    "minimum_price_coverage": 0.98,
+    "assets": {
+      "BTC": {
+        "rows": 48168,
+        "price_coverage": 0.9975087194818136,
+        "dataset_month_shares": {
+          "usdm_prices": 1.0,
+          "coinm_prices": 1.0,
+          "usdm_funding": 1.0,
+          "coinm_funding": 0.7272727272727273
+        },
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "passed": false
+      },
+      "ETH": {
+        "rows": 48168,
+        "price_coverage": 0.9975087194818136,
+        "dataset_month_shares": {
+          "usdm_prices": 1.0,
+          "coinm_prices": 1.0,
+          "usdm_funding": 1.0,
+          "coinm_funding": 0.7272727272727273
+        },
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "passed": false
+      }
+    },
+    "passed": false
+  }
+}
