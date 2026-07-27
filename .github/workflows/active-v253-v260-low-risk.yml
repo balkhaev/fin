@@ -35,14 +35,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Apply deterministic V254 scheduled-execution correction
-        run: |
-          set -euxo pipefail
-          python research/active_v253_v260/apply_v254_execution_fix.py
-          rm research/active_v253_v260/apply_v254_execution_fix.py
-          grep -q 'last_signal_target' research/active_v253_v260/run_research.py
-          grep -q 'max_realized_gross' research/active_v253_v260/run_research.py
-
       - name: Install, compile and causal self-test
         run: |
           set -euxo pipefail
