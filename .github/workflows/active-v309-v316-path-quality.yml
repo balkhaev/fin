@@ -1,0 +1,139 @@
+name: Active V309-V316 fixed-universe residual path quality
+
+on:
+  push:
+    branches: [agent/active-v309-v316-path-quality]
+    paths:
+      - 'research/active_v309_v316/**'
+      - '.github/workflows/active-v309-v316-path-quality.yml'
+  pull_request:
+    branches: [agent/active-v293-v300-residual-reversal]
+    paths:
+      - 'research/active_v309_v316/**'
+      - '.github/workflows/active-v309-v316-path-quality.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v309-v316-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v309-v316-path-quality
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize readable path-quality source
+        run: |
+          set -euxo pipefail
+          python research/active_v309_v316/bootstrap_path_quality.py
+          test -s research/active_v309_v316/run_research.py
+          grep -q 'high_absolute_residual_efficiency' research/active_v309_v316/run_research.py
+          grep -q 'high_residual_variance_ratio' research/active_v309_v316/run_research.py
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v309_v316/requirements.txt
+          python -m compileall -q \
+            research/active_v309_v316 \
+            research/active_v293_v300 \
+            research/active_v269_v276 \
+            research/active_v253_v260 \
+            research/active_v9
+          python research/active_v309_v316/run_research.py --self-test
+
+      - name: Restore immutable V9 public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+
+      - name: Run frozen 144-policy path-quality research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v309_v316/results \
+                 research/active_v309_v316/MANIFEST.json \
+                 docs/checkpoints/v316
+          python research/active_v309_v316/run_research.py \
+            --root research/active_v309_v316 \
+            --cache .cache/v9 \
+            2>&1 | tee research/active_v309_v316/run.log
+
+      - name: Materialize V316 checkpoint
+        run: |
+          set -euxo pipefail
+          test -s research/active_v309_v316/results/summary.json
+          test -s research/active_v309_v316/results/FROZEN_DECISION.json
+          test -s research/active_v309_v316/results/coverage_gate.json
+          test -s research/active_v309_v316/results/selection_proof_before_validation.json
+          test -s research/active_v309_v316/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v316
+          cp research/active_v309_v316/results/summary.json docs/checkpoints/v316/CHECKPOINT_V316.json
+          cp research/active_v309_v316/results/REPORT_RU.md docs/checkpoints/v316/RESEARCH_CHECKPOINT_V316_RU.md
+          if test -s research/active_v309_v316/results/ANNUAL_RETURNS.csv; then
+            cp research/active_v309_v316/results/ANNUAL_RETURNS.csv docs/checkpoints/v316/ANNUAL_RETURNS.csv
+          fi
+
+      - name: Verify frozen evidence and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v309_v316')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_validation.json').read_text())
+          if not proof.get('selection_not_run'):
+              assert proof['selection_uses_2024'] is False
+              assert proof['selection_uses_2025'] is False
+              assert proof['selection_uses_2026'] is False
+              assert proof['policy_count'] == 144
+              assert proof['promotable_policy_count'] == 108
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v309_v316 docs/checkpoints/v316 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v309_v316 docs/checkpoints/v316 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and frozen decision
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          rm -f research/active_v309_v316/bootstrap_path_quality.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v309_v316 docs/checkpoints/v316
+          if git diff --cached --quiet; then
+            echo 'No V309-V316 changes'
+          else
+            git commit -m 'Archive V309-V316 residual path-quality evidence [skip ci]'
+            git push origin HEAD:agent/active-v309-v316-path-quality
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v309-v316-path-quality
+          path: |
+            research/active_v309_v316/results
+            research/active_v309_v316/run.log
+            docs/checkpoints/v316
+          if-no-files-found: warn
+          retention-days: 30
