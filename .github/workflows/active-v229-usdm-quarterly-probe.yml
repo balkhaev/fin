@@ -1,0 +1,102 @@
+name: Active V229 USD-M quarterly archive probe
+
+on:
+  push:
+    branches: [agent/active-v229-v236-perp-calendar-spread]
+    paths:
+      - 'research/active_v229_v236/**'
+      - '.github/workflows/active-v229-usdm-quarterly-probe.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v229_v236/**'
+      - '.github/workflows/active-v229-usdm-quarterly-probe.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v229-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v229-v236-perp-calendar-spread
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v229_v236/requirements.txt
+          python -m compileall -q research/active_v229_v236
+          python research/active_v229_v236/probe.py --self-test
+
+      - name: Run frozen checksum-aware quarterly coverage probe
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v229_v236/probe_results \
+                 research/active_v229_v236/MANIFEST.json
+          python research/active_v229_v236/probe.py \
+            --root research/active_v229_v236 \
+            2>&1 | tee research/active_v229_v236/probe.log
+
+      - name: Verify no-PnL and safety invariants
+        run: |
+          set -euxo pipefail
+          test -s research/active_v229_v236/probe_results/summary.json
+          test -s research/active_v229_v236/probe_results/coverage_gate.json
+          test -s research/active_v229_v236/probe_results/contract_coverage.csv
+          test -s research/active_v229_v236/probe_results/REPORT_RU.md
+          test -s research/active_v229_v236/MANIFEST.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v229_v236')
+          summary = json.loads((root / 'probe_results/summary.json').read_text())
+          assert summary['selection_run'] is False
+          assert summary['full_backtest_run'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Commit direct V229 evidence
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          find research/active_v229_v236 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v229_v236 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v229_v236
+          if git diff --cached --quiet; then
+            echo 'No V229 probe changes'
+          else
+            git commit -m 'Archive V229 USD-M quarterly archive evidence [skip ci]'
+            git push origin HEAD:agent/active-v229-v236-perp-calendar-spread
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v229-usdm-quarterly-probe
+          path: |
+            research/active_v229_v236/probe_results
+            research/active_v229_v236/probe.log
+            research/active_v229_v236/MANIFEST.json
+          if-no-files-found: warn
+          retention-days: 30
