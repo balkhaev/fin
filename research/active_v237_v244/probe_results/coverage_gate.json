@@ -1,0 +1,31 @@
+{
+  "candidate": "V237_PREMIUM_SETTLEMENT_DATA_GATE",
+  "sample_months": [
+    "2021-01",
+    "2021-10",
+    "2022-07",
+    "2023-10",
+    "2024-07",
+    "2025-07",
+    "2026-04",
+    "2026-06"
+  ],
+  "details": [
+    {"asset":"BTC","dataset":"premium_index_5m","attempted":8,"valid":7,"availability":0.875,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"BTC","dataset":"mark_price_5m","attempted":8,"valid":7,"availability":0.875,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"BTC","dataset":"index_price_5m","attempted":8,"valid":7,"availability":0.875,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"BTC","dataset":"perpetual_5m","attempted":8,"valid":7,"availability":0.875,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"BTC","dataset":"funding","attempted":8,"valid":7,"availability":0.875,"schema_widths":[3],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"ETH","dataset":"premium_index_5m","attempted":8,"valid":7,"availability":0.875,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"ETH","dataset":"mark_price_5m","attempted":8,"valid":7,"availability":0.875,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"ETH","dataset":"index_price_5m","attempted":8,"valid":7,"availability":0.875,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"ETH","dataset":"perpetual_5m","attempted":8,"valid":7,"availability":0.875,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"ETH","dataset":"funding","attempted":8,"valid":7,"availability":0.875,"schema_widths":[3],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"SOL","dataset":"premium_index_5m","attempted":8,"valid":6,"availability":0.75,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"SOL","dataset":"mark_price_5m","attempted":8,"valid":6,"availability":0.75,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"SOL","dataset":"index_price_5m","attempted":8,"valid":6,"availability":0.75,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"SOL","dataset":"perpetual_5m","attempted":8,"valid":6,"availability":0.75,"schema_widths":[12],"latest_2026_06_present":false,"gate_passed":false},
+    {"asset":"SOL","dataset":"funding","attempted":8,"valid":6,"availability":0.75,"schema_widths":[3],"latest_2026_06_present":false,"gate_passed":false}
+  ],
+  "passed": false
+}
