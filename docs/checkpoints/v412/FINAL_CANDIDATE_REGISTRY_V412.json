@@ -1,0 +1,23 @@
+{
+  "checkpoint": "V412",
+  "historical_parameter_search_closed": true,
+  "primary_paper_shadow_champion": "V75_ATLAS_NX",
+  "execution_shadow": "V136_EXECUTION_PLATEAU",
+  "mandatory_control": "V28_GROWTH_CONTROL",
+  "new_standalone_candidate": null,
+  "new_sleeve_allocation": 0.0,
+  "v136_historical_promotion_passed": false,
+  "rejected_oos_anti_controls": [
+    "V285_LOW_SKEW_HOURLY_CONTROLLER",
+    "V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE"
+  ],
+  "final_batch_rejected": [
+    "V381_RESIDUAL_ENTROPY",
+    "V389_RESIDUAL_RESILIENCE",
+    "V397_DISPERSION_SENSITIVITY"
+  ],
+  "next_evidence": "minimum 180-day paper-forward V75 versus V136 execution comparison",
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "integration_permitted": false
+}
