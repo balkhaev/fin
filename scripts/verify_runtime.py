@@ -19,11 +19,18 @@ def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def verify_provenance() -> None:
-    registry_path = ROOT / "docs" / "checkpoints" / "runtime-v1" / "SOURCE_REGISTRY.json"
-    registry = json.loads(registry_path.read_text(encoding="utf-8"))
-    if registry["repository"] != "balkhaev/fin":
+def load_source_registry() -> dict[str, object]:
+    path = ROOT / "docs" / "checkpoints" / "runtime-v1" / "SOURCE_REGISTRY.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if value["repository"] != "balkhaev/fin":
         raise SystemExit("unexpected repository in SOURCE_REGISTRY")
+    if any(value["safety"].values()):
+        raise SystemExit("runtime safety flags must all remain false")
+    return value
+
+
+def verify_provenance(profile_name: str | None = None) -> None:
+    registry = load_source_registry()
     anchor = registry["frozen_base_commit"]
     subprocess.run(
         ["git", "cat-file", "-e", f"{anchor}^{{commit}}"],
@@ -31,18 +38,25 @@ def verify_provenance() -> None:
         check=True,
         stdout=subprocess.DEVNULL,
     )
-    for profile in registry["profiles"].values():
+    profiles = registry["profiles"]
+    if profile_name is not None:
+        if profile_name not in profiles:
+            raise SystemExit(f"unknown provenance profile: {profile_name}")
+        profiles = {profile_name: profiles[profile_name]}
+    for current_name, profile in profiles.items():
         for relative, expected in profile["source_paths"].items():
             path = ROOT / relative
             if not path.is_file():
-                raise SystemExit(f"missing frozen source: {relative}")
+                raise SystemExit(
+                    f"missing frozen source for {current_name}: {relative}"
+                )
             actual = sha256_file(path)
             if actual != expected:
                 raise SystemExit(
-                    f"frozen source hash mismatch for {relative}: {actual} != {expected}"
+                    f"frozen source hash mismatch for {current_name} {relative}: "
+                    f"{actual} != {expected}"
                 )
-    if any(registry["safety"].values()):
-        raise SystemExit("runtime safety flags must all remain false")
+        print(f"provenance profile passed: {current_name}")
 
 
 def verify_configs_and_schemas() -> None:
@@ -63,14 +77,20 @@ def verify_configs_and_schemas() -> None:
     if committed["live_execution_available"]:
         raise SystemExit("live execution must not be available")
 
-    for path in sorted((ROOT / "schemas" / "runtime").glob("*.schema.json")):
+    schemas = sorted((ROOT / "schemas" / "runtime").glob("*.schema.json"))
+    if not schemas:
+        raise SystemExit("runtime schemas are missing")
+    for path in schemas:
         value = json.loads(path.read_text(encoding="utf-8"))
         if value.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
             raise SystemExit(f"unsupported schema declaration: {path}")
         if value.get("type") != "object":
             raise SystemExit(f"runtime schema must describe an object: {path}")
 
-    for path in sorted((ROOT / "config" / "strategies").glob("*.json")):
+    configs = sorted((ROOT / "config" / "strategies").glob("*.json"))
+    if set(path.stem for path in configs) != set(committed["strategies"]):
+        raise SystemExit("strategy config set does not match committed registry")
+    for path in configs:
         value = json.loads(path.read_text(encoding="utf-8"))
         if value.get("live_ready") or value.get("real_leverage_authorized"):
             raise SystemExit(f"unsafe config flags: {path}")
@@ -89,18 +109,30 @@ def verify_no_live_surface() -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--provenance-only", action="store_true")
-    parser.add_argument("--full", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--provenance-only", action="store_true")
+    mode.add_argument("--contracts-only", action="store_true")
+    mode.add_argument("--full", action="store_true")
+    parser.add_argument("--profile")
     args = parser.parse_args()
-    verify_provenance()
-    if not args.provenance_only:
+
+    if args.contracts_only:
         verify_configs_and_schemas()
         verify_no_live_surface()
+        provenance_status = "not_requested"
+    else:
+        verify_provenance(args.profile)
+        provenance_status = "passed"
+        if not args.provenance_only:
+            verify_configs_and_schemas()
+            verify_no_live_surface()
+
     print(
         json.dumps(
             {
-                "provenance": "passed",
-                "full": not args.provenance_only,
+                "provenance": provenance_status,
+                "profile": args.profile,
+                "contracts": "not_requested" if args.provenance_only else "passed",
                 "live_execution_available": False,
             },
             indent=2,
