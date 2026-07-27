@@ -1,0 +1,57 @@
+{
+  "candidate": "ACTIVE_V373_CRYPTO_IDIOSYNCRATIC_JUMPS",
+  "files": {
+    "README.md": {
+      "bytes": 814,
+      "sha256": "1c86a0db95953550a6348eef9bedb727722c075160cae6d955b90cd3209ca246"
+    },
+    "V373_V380_DESIGN.json": {
+      "bytes": 2983,
+      "sha256": "bfdc3ff2f6f94e604f0c3b03611bef5732d55da1b7aacaeea1a96d88a84dd055"
+    },
+    "requirements.txt": {
+      "bytes": 13,
+      "sha256": "7c3194b101c68d4c524948fd09ec3dff5e7ecf54f11e8ccc23440ff932a604e7"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 328,
+      "sha256": "44a76f44efad2839bd17e315d4aee2ac08de1312e711713298b97b7f477fdaa7"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 199,
+      "sha256": "c2d18c3c2d0407c9bdc097c1b6e09ab59ae5cab9fcddfacc2713b23881df5fcf"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "835e74feaa3a20aa28af344b502b0a8b72aecb44f8af242315751465933141d4"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "86ebcee205c696bb0192ba13ba237a8927ab2c17067ccfa0ed0c3dfebca6a1a5"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 8410,
+      "sha256": "e959de25ca9b3ac260e6bfd8bc34f79137d22136d9a506d0ced430275db4b95a"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 131584,
+      "sha256": "7d1e38f95ffa2828124307046fccbb8ccb8890d7ed27545bee0e4097937f8dcf"
+    },
+    "results/summary.json": {
+      "bytes": 41894,
+      "sha256": "0a14497bb0e84c6ca1bbd06212abf69eaa0dc8ccf6377ec632ce193145bfa934"
+    },
+    "run_research.py": {
+      "bytes": 9865,
+      "sha256": "d010dde02ff6b1338fd7a64bbf19eb0602348b03564d26efc176eb0ba677a58d"
+    }
+  }
+}
