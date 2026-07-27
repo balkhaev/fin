@@ -6,10 +6,15 @@ on:
     paths:
       - 'research/active_v245_v252/**'
       - '.github/workflows/active-v245-v252-dual-perp.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/active_v245_v252/**'
+      - '.github/workflows/active-v245-v252-dual-perp.yml'
   workflow_dispatch:
 
 concurrency:
-  group: active-v245-v252-${{ github.ref }}
+  group: active-v245-v252-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -108,6 +113,7 @@ jobs:
           find research/active_v245_v252 docs/checkpoints/v252 -type f -name '*.pyc' -delete || true
 
       - name: Commit readable source and frozen decision
+        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
