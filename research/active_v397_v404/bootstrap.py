@@ -137,8 +137,12 @@ replace_once('            (7, 14, 28),', '            (14, 28, 56),')
 replace_once('policy = v.Policy("low_residual_vol_ratio", 30, 3, 14, "dollar")', 'policy = v.Policy("low_residual_dispersion_beta", 60, 3, 14, "dollar")')
 replace_once('print("V341-V348 causal volatility-term-structure self-test passed")', 'print("V397-V404 causal dispersion-sensitivity self-test passed")')
 replace_once('proof["window_pairs"] = {str(key): list(value) for key, value in WINDOWS.items()}', 'proof["lookbacks"] = list(WINDOWS)')
-replace_once('V341_V348_DESIGN.json', 'V397_V404_DESIGN.json')
-replace_once('V341_FIXED_UNIVERSE_DATA_COVERAGE', 'V397_FIXED_UNIVERSE_DATA_COVERAGE')
+if text.count('V341_V348_DESIGN.json') != 2:
+    raise SystemExit('unexpected design-path count')
+text = text.replace('V341_V348_DESIGN.json', 'V397_V404_DESIGN.json')
+if text.count('V341_FIXED_UNIVERSE_DATA_COVERAGE') != 2:
+    raise SystemExit('unexpected coverage-name count')
+text = text.replace('V341_FIXED_UNIVERSE_DATA_COVERAGE', 'V397_FIXED_UNIVERSE_DATA_COVERAGE')
 text = text.replace('V341–V348 — volatility term structure', 'V397–V404 — dispersion sensitivity')
 replace_once('Volatility compression is a statistical ranking, not an issuer-quality claim.', 'Dispersion sensitivity is a statistical market-linkage ranking, not an issuer-quality claim.')
 
