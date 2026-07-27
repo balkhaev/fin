@@ -1,0 +1,127 @@
+name: Active V341-V348 fixed-universe volatility term structure
+
+on:
+  push:
+    branches: [agent/active-v341-v348-volatility-term-structure]
+    paths:
+      - 'research/active_v341_v348/**'
+      - '.github/workflows/active-v341-v348-volatility-term-structure.yml'
+  pull_request:
+    branches: [agent/active-v293-v300-residual-reversal]
+    paths:
+      - 'research/active_v341_v348/**'
+      - '.github/workflows/active-v341-v348-volatility-term-structure.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v341-v348-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v341-v348-volatility-term-structure
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v341_v348/requirements.txt
+          python -m compileall -q \
+            research/active_v341_v348 \
+            research/active_v269_v276 \
+            research/active_v253_v260 \
+            research/active_v9
+          python research/active_v341_v348/run_research.py --self-test
+
+      - name: Restore immutable V9 public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+
+      - name: Run frozen 144-policy volatility-term research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v341_v348/results \
+                 research/active_v341_v348/MANIFEST.json \
+                 docs/checkpoints/v348
+          python research/active_v341_v348/run_research.py \
+            --root research/active_v341_v348 \
+            --cache .cache/v9 \
+            2>&1 | tee research/active_v341_v348/run.log
+
+      - name: Materialize V348 checkpoint
+        run: |
+          set -euxo pipefail
+          test -s research/active_v341_v348/results/summary.json
+          test -s research/active_v341_v348/results/FROZEN_DECISION.json
+          test -s research/active_v341_v348/results/coverage_gate.json
+          test -s research/active_v341_v348/results/selection_proof_before_validation.json
+          test -s research/active_v341_v348/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v348
+          cp research/active_v341_v348/results/summary.json docs/checkpoints/v348/CHECKPOINT_V348.json
+          cp research/active_v341_v348/results/REPORT_RU.md docs/checkpoints/v348/RESEARCH_CHECKPOINT_V348_RU.md
+          if test -s research/active_v341_v348/results/ANNUAL_RETURNS.csv; then
+            cp research/active_v341_v348/results/ANNUAL_RETURNS.csv docs/checkpoints/v348/ANNUAL_RETURNS.csv
+          fi
+
+      - name: Verify frozen chronology and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v341_v348')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_validation.json').read_text())
+          if not proof.get('selection_not_run'):
+              assert proof['selection_uses_2024'] is False
+              assert proof['selection_uses_2025'] is False
+              assert proof['selection_uses_2026'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v341_v348 docs/checkpoints/v348 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v341_v348 docs/checkpoints/v348 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and frozen decision
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v341_v348 docs/checkpoints/v348
+          if git diff --cached --quiet; then
+            echo 'No V341-V348 changes'
+          else
+            git commit -m 'Archive V341-V348 volatility term-structure evidence [skip ci]'
+            git push origin HEAD:agent/active-v341-v348-volatility-term-structure
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v341-v348-volatility-term-structure
+          path: |
+            research/active_v341_v348/results
+            research/active_v341_v348/run.log
+            docs/checkpoints/v348
+          if-no-files-found: warn
+          retention-days: 30
