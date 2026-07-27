@@ -1,0 +1,56 @@
+{
+  "contract": "V413_V420_STATE_CONDITIONED_STRATEGY_TELEMETRY",
+  "earliest_observation_start": "2026-07-28",
+  "required_strategies": [
+    "V75_ATLAS_NX",
+    "V136_EXECUTION_PLATEAU",
+    "V28_GROWTH_CONTROL"
+  ],
+  "primary_key": ["timestamp", "strategy_id"],
+  "timestamp_rule": "UTC daily observation timestamp after completed reconciliation",
+  "required_fields": {
+    "timestamp": "ISO-8601 UTC timestamp",
+    "strategy_id": "frozen strategy identifier",
+    "source_bundle_sha256": "hash of all market and model inputs",
+    "target_hash": "hash of frozen target positions",
+    "realized_position_hash": "hash of reconciled paper positions",
+    "gross_target": "non-negative float",
+    "gross_realized": "non-negative float",
+    "turnover": "non-negative notional divided by prior equity",
+    "modelled_slippage_bps": "non-negative float",
+    "paper_slippage_bps": "non-negative float",
+    "net_return": "daily net paper return",
+    "equity": "positive paper equity",
+    "drawdown": "non-positive drawdown",
+    "reconciliation_ok": "boolean",
+    "source_hash_match": "boolean",
+    "data_stale": "boolean",
+    "execution_complete": "boolean"
+  },
+  "fail_closed_rules": [
+    "missing timestamp or strategy id",
+    "source hash mismatch",
+    "stale market data",
+    "failed position reconciliation",
+    "negative or non-finite equity",
+    "missing target or realized-position hash"
+  ],
+  "forward_acceptance_gates": {
+    "minimum_calendar_days": 180,
+    "minimum_v136_target_changes": 25,
+    "zero_reconciliation_breaks": true,
+    "source_hash_match_rate": 1.0,
+    "v136_turnover_reduction_min": 0.10,
+    "v136_net_return_delta_min": 0.0,
+    "v136_max_drawdown_worsening_max": 0.02,
+    "paper_slippage_to_model_ratio_max": 1.5
+  },
+  "state_conditioned_outputs": [
+    "return by state and strategy",
+    "drawdown by state and strategy",
+    "turnover and slippage by state and strategy",
+    "reconciliation and stale-data incidents by state",
+    "transition-surprise exposure before execution incidents"
+  ],
+  "capital_decision_from_historical_state_diagnostics_permitted": false
+}
