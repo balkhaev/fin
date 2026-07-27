@@ -1,0 +1,101 @@
+name: Runtime V75 direct materialization
+
+on:
+  push:
+    branches: [agent/runtime-v75-materialization]
+    paths:
+      - 'scripts/recover_v75_v138.py'
+      - '.github/workflows/runtime-v75-materialization.yml'
+      - 'docs/checkpoints/runtime-v1/SOURCE_REGISTRY.json'
+  workflow_dispatch:
+
+concurrency:
+  group: runtime-v75-materialization-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/runtime-v75-materialization
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Recover exact direct V75 evidence
+        run: |
+          set -euxo pipefail
+          python scripts/recover_v75_v138.py --write \
+            2>&1 | tee /tmp/v75-recovery.log
+
+      - name: Verify recovered hashes and direct-file policy
+        run: |
+          set -euxo pipefail
+          test "$(sha256sum research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py | cut -d' ' -f1)" = \
+            '3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc'
+          test "$(sha256sum research/active_v131_v138/results/v136/v75_original_stress_equity.csv | cut -d' ' -f1)" = \
+            '0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b'
+          test "$(sha256sum research/active_v131_v138/results/v136/v75_original_annual_returns.csv | cut -d' ' -f1)" = \
+            'e3de37108b5d459ad9f8324388a3a34571f29c5c594a77d82477cb812c8e0d25'
+          python -m py_compile \
+            research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py
+          bad=$(find research/active_v131_v138/dependencies/atlas/source \
+            research/active_v131_v138/results/v136 docs/checkpoints/runtime-v1 \
+            -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.xz' -o -name '*.b64' -o -name '*.pyfrag' \) \
+            -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+
+      - name: Run runtime foundation verification
+        run: |
+          set -euxo pipefail
+          python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+          python -m finruntime self-test
+          python scripts/verify_runtime.py --full
+
+      - name: Commit direct recovered files
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          find research/active_v131_v138/dependencies/atlas/source \
+            research/active_v131_v138/results/v136 docs/checkpoints/runtime-v1 \
+            -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v131_v138/dependencies/atlas/source \
+            research/active_v131_v138/results/v136 docs/checkpoints/runtime-v1 \
+            -type f -name '*.pyc' -delete || true
+          git add \
+            research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py \
+            research/active_v131_v138/results/v136/v75_original_stress_equity.csv \
+            research/active_v131_v138/results/v136/v75_original_annual_returns.csv \
+            docs/checkpoints/runtime-v1/SOURCE_REGISTRY.json \
+            docs/checkpoints/runtime-v1/V75_RECOVERY_PROVENANCE.json
+          if git diff --cached --quiet; then
+            echo 'Exact V75 files already materialized'
+          else
+            git commit -m 'Materialize exact V75 source and regression evidence [skip ci]'
+            git push origin HEAD:agent/runtime-v75-materialization
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: runtime-v75-direct-materialization
+          path: |
+            /tmp/v75-recovery.log
+            docs/checkpoints/runtime-v1/V75_RECOVERY_PROVENANCE.json
+            research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py
+            research/active_v131_v138/results/v136/v75_original_stress_equity.csv
+            research/active_v131_v138/results/v136/v75_original_annual_returns.csv
+          if-no-files-found: warn
+          retention-days: 30
