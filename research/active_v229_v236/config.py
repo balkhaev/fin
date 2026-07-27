@@ -20,6 +20,7 @@ DTE_MIN_DAYS = 10.0
 DTE_MAX_DAYS = 75.0
 CLOSE_BEFORE_EXPIRY_HOURS = 48.0
 EXIT_ABS_Z = 0.50
+FUNDING_MEDIAN_EVENTS = 9
 
 FAMILIES = (
     "perp_dated_basis_convergence",

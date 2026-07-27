@@ -18,8 +18,20 @@
       "sha256": "5bd47828f2ea4a059671f0ee4fd3fc6663fbd7bc92fd8b3f074079970ebde171"
     },
     "config.py": {
-      "bytes": 2343,
-      "sha256": "298fe82d203c2560134ce6dfd614c0c6ef9a7525545fc9300ad47faf5e2d3233"
+      "bytes": 2369,
+      "sha256": "b3de6ef85197582bfdda47ec92bf35a8b424d0cecba34b1a4d662214fad8bb84"
+    },
+    "data.py": {
+      "bytes": 11758,
+      "sha256": "4dd98d277df6e945411b7c8daaa270849318cc64460682cd021358b2f34e17ad"
+    },
+    "engine.py": {
+      "bytes": 24552,
+      "sha256": "2544120b0258b8ccf3e1f86b26dacb94c98811d9a005f3211b59d3198fd886b4"
+    },
+    "probe.log": {
+      "bytes": 1821,
+      "sha256": "3d01f62851e89178d8415bc087fa4f5ba03e83fdaf186aafe0888b71e182e057"
     },
     "probe.py": {
       "bytes": 11243,
@@ -52,6 +64,38 @@
     "requirements.txt": {
       "bytes": 47,
       "sha256": "e4b80ba1592a07b6c9bfcad04477c3ae8e131719c30f33fa2c52a5078c608199"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 265,
+      "sha256": "dfcb5b196a2620df73ad9ed7c53aabf820b80638a0824b74eb786d68f4200a1c"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 260,
+      "sha256": "5f2b492400c3c71dd9736ab4d993ec2939246398684f4b1a039640cf7ac2381d"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 536,
+      "sha256": "292424e56dfb4d66aeccec0a698955805e2992aba28fe8c1dbcec0171cd27551"
+    },
+    "results/provenance.json": {
+      "bytes": 295181,
+      "sha256": "0ea0d22ee0fb17d7aa2c28eebafb6342f47a86cbd4a6fda97f4c2d6653d717cc"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 1795,
+      "sha256": "b9e9e2294654efa77408bf09b4917f73320654d7f667648b3611f502fd6fb241"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 49512,
+      "sha256": "b591b596fb68aeac4756f6a785ce3f90060e09ee37da1bb5f7dee94db960da38"
+    },
+    "results/summary.json": {
+      "bytes": 18489,
+      "sha256": "5a3011a54c53d3c2784b07b659e899ae66ede54b5359591a2a024e22ae5937c1"
+    },
+    "run_research.py": {
+      "bytes": 19847,
+      "sha256": "de7ebcfc7e540100f3d009d6db96f6311712bd4c76c953b65bc8156d168f7750"
     }
   }
 }
