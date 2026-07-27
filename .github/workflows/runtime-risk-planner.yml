@@ -1,0 +1,79 @@
+name: Runtime pre-trade risk and planner
+
+on:
+  push:
+    branches: [agent/runtime-risk-planner]
+    paths:
+      - 'src/finruntime/portfolio/**'
+      - 'src/finruntime/execution/**'
+      - 'tests/runtime/test_risk_planner.py'
+      - 'docs/checkpoints/runtime-v1/RISK_PLANNER_*'
+      - '.github/workflows/runtime-risk-planner.yml'
+  pull_request:
+    branches: [agent/runtime-v136-shadow]
+    paths:
+      - 'src/finruntime/portfolio/**'
+      - 'src/finruntime/execution/**'
+      - 'tests/runtime/test_risk_planner.py'
+      - 'docs/checkpoints/runtime-v1/RISK_PLANNER_*'
+      - '.github/workflows/runtime-risk-planner.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  risk-planner:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Compile runtime
+        run: python -m compileall -q src/finruntime tests/runtime
+
+      - name: Run complete runtime suite
+        run: python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+
+      - name: Runtime self-test and provenance
+        run: |
+          python -m finruntime self-test
+          python scripts/verify_runtime.py --full
+
+      - name: Verify planner contract and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          contract = json.loads(
+              Path('docs/checkpoints/runtime-v1/RISK_PLANNER_CONTRACT.json').read_text()
+          )
+          assert contract['status'] == 'pretrade_risk_and_deterministic_planner_ready'
+          assert contract['risk_reduction_precedes_increase'] is True
+          assert contract['perpetual_sign_flip_split'] is True
+          assert contract['missing_price_blocks_plan'] is True
+          assert contract['stale_critical_data_blocks_risk_increase'] is True
+          assert contract['plan_hash_deterministic'] is True
+          assert contract['live_execution_available'] is False
+          assert contract['live_ready'] is False
+          assert contract['real_leverage_authorized'] is False
+          PY
+          find src/finruntime tests/runtime -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find src/finruntime tests/runtime -type f -name '*.pyc' -delete || true
+          bad=$(find src/finruntime/portfolio src/finruntime/execution tests/runtime \
+            -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' \
+            -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+          ! grep -R --line-number --fixed-strings 'submit_order' src/finruntime
+          ! grep -R --line-number --fixed-strings 'mode="live"' src/finruntime
