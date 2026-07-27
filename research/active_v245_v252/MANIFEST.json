@@ -9,25 +9,21 @@
       "bytes": 1582,
       "sha256": "6c4f4959d0b654f50c83b37067a3ea25b0b24db1876ef265cdb4c2a177545bb3"
     },
-    "apply_v246_daily_funding_fallback.py": {
-      "bytes": 5422,
-      "sha256": "d3b1c8dfdaf0295fcc7f7ee7644e7f3c2b7c2c0735f615e2a9c6d0315088e02a"
-    },
     "config.py": {
       "bytes": 2491,
       "sha256": "67d4057a4d39bfd5f7700dcac8dce642b75c1232f55a85f137cf5389ad4b93c0"
     },
     "data.py": {
-      "bytes": 15038,
-      "sha256": "728610f56a66856e1825c00b7b272fafd5352a9a2bdceddcad196a66dcf99ef6"
+      "bytes": 19385,
+      "sha256": "156280e0276e6c7a74adb0573828d06cc2b06b228eb6667ae1b400b45741b96f"
     },
     "engine.py": {
       "bytes": 18515,
       "sha256": "36d0bfd0dc935aad7aa41fadc1956db289c59ed7ae73f288c28c5418e6f2a48f"
     },
     "inputs/provenance.json": {
-      "bytes": 263459,
-      "sha256": "d7223e75b5b4b3e2e1cc253512568b513260af687dfbcf7524e4444ad7ed0786"
+      "bytes": 734927,
+      "sha256": "28095453be132b5675c03c397dbc998c94de0de9503dbe53dd62e56ea8bca910"
     },
     "requirements.txt": {
       "bytes": 47,
@@ -63,7 +59,7 @@
     },
     "results/summary.json": {
       "bytes": 1449,
-      "sha256": "0b4c41c87b545f2ad16c35c712a26e5feb3e9ea807836408da53f86e141515c7"
+      "sha256": "227cf429602626552b213b877a468222178c4ecc9f08750083e1e6a2f3bdbd06"
     },
     "run_research.py": {
       "bytes": 17976,

@@ -173,6 +173,101 @@ def _archive_url(product: str, dataset: str, symbol: str, month: str) -> str:
     raise ValueError(dataset)
 
 
+def _daily_funding_url(product: str, symbol: str, day: str) -> str:
+    filename = f"{symbol}-fundingRate-{day}.zip"
+    return f"{BASE}/{product}/daily/fundingRate/{symbol}/{filename}"
+
+
+def _download_daily_funding_one(
+    product: str,
+    symbol: str,
+    day: str,
+    normalizer: Callable[[bytes], pd.DataFrame],
+) -> tuple[pd.DataFrame | None, dict[str, Any]]:
+    url = _daily_funding_url(product, symbol, day)
+    meta: dict[str, Any] = {"day": day, "url": url}
+    try:
+        checksum = _get(url + ".CHECKSUM")
+        archive = _get(url)
+        meta["checksum_status"] = checksum.status_code
+        meta["http_status"] = archive.status_code
+        meta["bytes"] = len(archive.content)
+        if checksum.status_code != 200 or archive.status_code != 200:
+            meta["valid"] = False
+            meta["reason"] = "missing_archive_or_checksum"
+            return None, meta
+        expected = checksum.text.strip().split()[0].lower()
+        actual = sha256_bytes(archive.content)
+        meta["sha256"] = actual
+        meta["checksum_valid"] = expected == actual
+        frame = normalizer(archive.content)
+        meta["rows"] = len(frame)
+        meta["valid"] = bool(meta["checksum_valid"] and not frame.empty)
+        meta["reason"] = "ok" if meta["valid"] else "checksum_or_parse_failure"
+        return frame if meta["valid"] else None, meta
+    except Exception as exc:
+        meta["valid"] = False
+        meta["reason"] = f"{type(exc).__name__}: {exc}"
+        return None, meta
+
+
+def _reconstruct_daily_funding_month(
+    product: str,
+    symbol: str,
+    venue: str,
+    month: str,
+    monthly_request: dict[str, Any],
+) -> tuple[pd.DataFrame | None, dict[str, Any]]:
+    period = pd.Period(month, freq="M")
+    days = [
+        value.strftime("%Y-%m-%d")
+        for value in pd.date_range(period.start_time, period.end_time, freq="1D")
+    ]
+    normalizer = lambda payload: normalize_funding(payload, venue)
+    frames: list[pd.DataFrame] = []
+    daily_requests: list[dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = {
+            executor.submit(
+                _download_daily_funding_one, product, symbol, day, normalizer
+            ): day
+            for day in days
+        }
+        for future in as_completed(futures):
+            frame, meta = future.result()
+            daily_requests.append(meta)
+            if frame is not None:
+                frames.append(frame)
+    daily_requests.sort(key=lambda item: item["day"])
+    valid_days = sum(bool(item.get("valid")) for item in daily_requests)
+    valid_share = valid_days / len(days) if days else 0.0
+    if frames:
+        frame = pd.concat(frames, ignore_index=True)
+        frame = frame.drop_duplicates("timestamp", keep="last").sort_values("timestamp")
+    else:
+        frame = pd.DataFrame(
+            columns=[
+                "timestamp",
+                f"funding_{venue}",
+                f"funding_interval_hours_{venue}",
+            ]
+        )
+    valid = bool(valid_share >= 0.95 and not frame.empty)
+    meta = {
+        "month": month,
+        "source": "daily_reconstruction",
+        "valid": valid,
+        "valid_days": valid_days,
+        "expected_days": len(days),
+        "valid_day_share": valid_share,
+        "rows": len(frame),
+        "monthly_request": monthly_request,
+        "daily_requests": daily_requests,
+        "reason": "ok" if valid else "daily_coverage_below_95pct",
+    }
+    return frame if valid else None, meta
+
+
 def _download_one(
     product: str,
     dataset: str,
@@ -181,7 +276,7 @@ def _download_one(
     normalizer: Callable[[bytes], pd.DataFrame],
 ) -> tuple[pd.DataFrame | None, dict[str, Any]]:
     url = _archive_url(product, dataset, symbol, month)
-    meta: dict[str, Any] = {"month": month, "url": url}
+    meta: dict[str, Any] = {"month": month, "url": url, "source": "monthly"}
     try:
         checksum = _get(url + ".CHECKSUM")
         archive = _get(url)
@@ -246,6 +341,24 @@ def download_dataset(
             if number % 20 == 0:
                 print(f"{product} {symbol} {dataset}: {number}/{len(months)}", flush=True)
     requests_meta.sort(key=lambda item: item["month"])
+    if product == "cm" and dataset == "fundingRate":
+        rebuilt_meta: list[dict[str, Any]] = []
+        for monthly_meta in requests_meta:
+            if monthly_meta.get("valid"):
+                rebuilt_meta.append(monthly_meta)
+                continue
+            daily_frame, daily_meta = _reconstruct_daily_funding_month(
+                product, symbol, venue, monthly_meta["month"], monthly_meta
+            )
+            rebuilt_meta.append(daily_meta)
+            if daily_frame is not None:
+                frames.append(daily_frame)
+            print(
+                f"{product} {symbol} funding daily fallback {monthly_meta['month']}: "
+                f"{daily_meta['valid_days']}/{daily_meta['expected_days']}",
+                flush=True,
+            )
+        requests_meta = rebuilt_meta
     if frames:
         frame = pd.concat(frames, ignore_index=True)
         frame = frame.drop_duplicates("timestamp", keep="last").sort_values("timestamp")

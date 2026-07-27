@@ -1,5 +1,65 @@
 loading BTC
+um BTCUSDT klines: 20/66
+um BTCUSDT klines: 40/66
+um BTCUSDT klines: 60/66
+cm BTCUSD_PERP klines: 20/66
+cm BTCUSD_PERP klines: 40/66
+cm BTCUSD_PERP klines: 60/66
+um BTCUSDT fundingRate: 20/66
+um BTCUSDT fundingRate: 40/66
+um BTCUSDT fundingRate: 60/66
+cm BTCUSD_PERP fundingRate: 20/66
+cm BTCUSD_PERP fundingRate: 40/66
+cm BTCUSD_PERP fundingRate: 60/66
+cm BTCUSD_PERP funding daily fallback 2021-01: 0/31
+cm BTCUSD_PERP funding daily fallback 2021-02: 0/28
+cm BTCUSD_PERP funding daily fallback 2021-03: 0/31
+cm BTCUSD_PERP funding daily fallback 2021-04: 0/30
+cm BTCUSD_PERP funding daily fallback 2021-05: 0/31
+cm BTCUSD_PERP funding daily fallback 2021-06: 0/30
+cm BTCUSD_PERP funding daily fallback 2021-07: 0/31
+cm BTCUSD_PERP funding daily fallback 2021-08: 0/31
+cm BTCUSD_PERP funding daily fallback 2021-09: 0/30
+cm BTCUSD_PERP funding daily fallback 2021-10: 0/31
+cm BTCUSD_PERP funding daily fallback 2021-11: 0/30
+cm BTCUSD_PERP funding daily fallback 2021-12: 0/31
+cm BTCUSD_PERP funding daily fallback 2022-01: 0/31
+cm BTCUSD_PERP funding daily fallback 2022-02: 0/28
+cm BTCUSD_PERP funding daily fallback 2022-03: 0/31
+cm BTCUSD_PERP funding daily fallback 2022-04: 0/30
+cm BTCUSD_PERP funding daily fallback 2022-05: 0/31
+cm BTCUSD_PERP funding daily fallback 2022-06: 0/30
 loading ETH
+um ETHUSDT klines: 20/66
+um ETHUSDT klines: 40/66
+um ETHUSDT klines: 60/66
+cm ETHUSD_PERP klines: 20/66
+cm ETHUSD_PERP klines: 40/66
+cm ETHUSD_PERP klines: 60/66
+um ETHUSDT fundingRate: 20/66
+um ETHUSDT fundingRate: 40/66
+um ETHUSDT fundingRate: 60/66
+cm ETHUSD_PERP fundingRate: 20/66
+cm ETHUSD_PERP fundingRate: 40/66
+cm ETHUSD_PERP fundingRate: 60/66
+cm ETHUSD_PERP funding daily fallback 2021-01: 0/31
+cm ETHUSD_PERP funding daily fallback 2021-02: 0/28
+cm ETHUSD_PERP funding daily fallback 2021-03: 0/31
+cm ETHUSD_PERP funding daily fallback 2021-04: 0/30
+cm ETHUSD_PERP funding daily fallback 2021-05: 0/31
+cm ETHUSD_PERP funding daily fallback 2021-06: 0/30
+cm ETHUSD_PERP funding daily fallback 2021-07: 0/31
+cm ETHUSD_PERP funding daily fallback 2021-08: 0/31
+cm ETHUSD_PERP funding daily fallback 2021-09: 0/30
+cm ETHUSD_PERP funding daily fallback 2021-10: 0/31
+cm ETHUSD_PERP funding daily fallback 2021-11: 0/30
+cm ETHUSD_PERP funding daily fallback 2021-12: 0/31
+cm ETHUSD_PERP funding daily fallback 2022-01: 0/31
+cm ETHUSD_PERP funding daily fallback 2022-02: 0/28
+cm ETHUSD_PERP funding daily fallback 2022-03: 0/31
+cm ETHUSD_PERP funding daily fallback 2022-04: 0/30
+cm ETHUSD_PERP funding daily fallback 2022-05: 0/31
+cm ETHUSD_PERP funding daily fallback 2022-06: 0/30
 {
   "status": "data_access_insufficient",
   "coverage": {
