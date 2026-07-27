@@ -1,0 +1,81 @@
+name: Runtime paper ledger and reconciliation
+
+on:
+  push:
+    branches: [agent/runtime-paper-ledger]
+    paths:
+      - 'src/finruntime/portfolio/**'
+      - 'src/finruntime/execution/**'
+      - 'tests/runtime/test_paper_ledger.py'
+      - 'docs/checkpoints/runtime-v1/PAPER_LEDGER_*'
+      - '.github/workflows/runtime-paper-ledger.yml'
+  pull_request:
+    branches: [agent/runtime-risk-planner]
+    paths:
+      - 'src/finruntime/portfolio/**'
+      - 'src/finruntime/execution/**'
+      - 'tests/runtime/test_paper_ledger.py'
+      - 'docs/checkpoints/runtime-v1/PAPER_LEDGER_*'
+      - '.github/workflows/runtime-paper-ledger.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paper-ledger:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Compile runtime
+        run: python -m compileall -q src/finruntime tests/runtime
+
+      - name: Run complete runtime suite
+        run: python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+
+      - name: Runtime self-test and provenance
+        run: |
+          python -m finruntime self-test
+          python scripts/verify_runtime.py --full
+
+      - name: Verify paper ledger contract and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          contract = json.loads(
+              Path('docs/checkpoints/runtime-v1/PAPER_LEDGER_CONTRACT.json').read_text()
+          )
+          assert contract['status'] == 'paper_execution_accounting_and_telemetry_ready'
+          assert contract['paper_broker']['partial_fills'] is True
+          assert contract['paper_broker']['outage_scenario'] is True
+          assert contract['accounting']['idempotent_event_application'] is True
+          assert contract['accounting']['reduce_only_cross_through_zero_rejected'] is True
+          assert contract['reconciliation']['source_hash_mismatch_halts'] is True
+          assert contract['forward_telemetry']['v429_compatible_row'] is True
+          assert contract['submit_surface_available'] is False
+          assert contract['live_execution_available'] is False
+          assert contract['live_ready'] is False
+          assert contract['real_leverage_authorized'] is False
+          PY
+          find src/finruntime tests/runtime -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find src/finruntime tests/runtime -type f -name '*.pyc' -delete || true
+          bad=$(find src/finruntime/portfolio src/finruntime/execution tests/runtime \
+            -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' \
+            -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+          ! grep -R --line-number --fixed-strings 'submit_order' src/finruntime
+          ! grep -R --line-number --fixed-strings 'mode="live"' src/finruntime
