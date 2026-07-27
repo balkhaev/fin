@@ -1,0 +1,12 @@
+{
+  "program": "V405-V412_CHAMPION_REFINEMENT",
+  "generated_from_committed_evidence": true,
+  "files": {
+    "docs/checkpoints/v138/CHECKPOINT_V138.json": "8f7663ab93fa08291fd84425d362338c00d20e29e5e4f6daf6cd8e319e184690",
+    "research/active_v131_v138/results/v136/summary.json": "4928dcf2d3b7c8caa6e318bef317448f0a85557b4bbdd3c8836adfc560b7cfaf",
+    "research/active_v131_v138/source/run_research.py": "fc26c84e0785fc386b9023281b713d69f9291e805bfbd0b872ad13298d5290b8",
+    "research/active_v131_v138/DATA_REQUIREMENTS.json": "5984f1ba39fe415dd324ade047195d471f8c55e8646b8b64d496d0a6a7ef9d3c",
+    "research/refinement_v405_v412/V405_V412_DESIGN.json": "2a3ca7f0ea0ffb36cd2a0b6af03ece06ef0c147c497a454f7f5f6a5d37fe115f"
+  },
+  "canonical_v75_source_expected_sha256": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc"
+}
