@@ -2,21 +2,9 @@ name: Canonical V87 repository verification
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'research/active_v87/**'
-      - 'research/active_v88_v94/inputs/atlas/**'
-      - 'research/active_v88_v94/source_parts/**'
-      - 'research/active_v88_v94/manifests/**'
-      - '.github/workflows/canonical-v87-public.yml'
+    branches: [agent/canonical-research-v87-handoff]
   pull_request:
     branches: [main]
-    paths:
-      - 'research/active_v87/**'
-      - 'research/active_v88_v94/inputs/atlas/**'
-      - 'research/active_v88_v94/source_parts/**'
-      - 'research/active_v88_v94/manifests/**'
-      - '.github/workflows/canonical-v87-public.yml'
   workflow_dispatch:
 
 permissions:
@@ -25,54 +13,37 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-
-      - name: Compile canonical source
+          python-version: '3.12'
+          cache: pip
+      - name: Assert canonical handoff structure
         run: |
-          python -m py_compile research/active_v87/source/rebuild_compact.py
-          python -m py_compile research/active_v87/source/canonical_v87.py
-          python -m py_compile research/active_v87/verify_canonical.py
-
-      - name: Verify canonical repository evidence
+          set -euxo pipefail
+          test -f AGENTS.md
+          test -f pyproject.toml
+          test -f docs/HANDOFF.md
+          test -f docs/checkpoints/v87/CHECKPOINT_V87.json
+          test -f scripts/verify_repository.py
+          test -d src
+          test -d tests
+          test -d research/active_v69_v76
+          test -d research/active_v77_v87
+      - name: Reject opaque canonical evidence
         run: |
-          python research/active_v87/verify_canonical.py
-
-      - name: Verify downstream direct ATLAS input
+          set -euxo pipefail
+          bad=$(find src tests scripts docs research inputs results -type f \( -iname '*.zip' -o -iname '*.tar' -o -iname '*.tgz' -o -iname '*.bz2' -o -iname '*.gz' -o -iname '*.b64' -o -iname '*.pyfrag' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+      - name: Install package and development dependencies
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          import pandas as pd
-
-          path = Path("research/active_v88_v94/inputs/atlas/v75_stress_equity.csv")
-          frame = pd.read_csv(path)
-          assert len(frame) == 2007
-          assert list(frame.columns) == ["date", "equity", "cash_weight", "gross", "net"]
-          print(frame.head(3).to_string(index=False))
-          print(frame.tail(3).to_string(index=False))
-          PY
-
-      - name: Verify downstream source-part coverage
-        run: |
-          python - <<'PY'
-          import hashlib
-          import json
-          from pathlib import Path
-
-          root = Path("research/active_v88_v94")
-          manifest = json.loads((root / "manifests" / "source_parts.json").read_text())
-          parts = sorted((root / "source_parts").glob("part_*.txt"))
-          assert len(parts) == manifest["part_count"]
-          assert sum(p.stat().st_size for p in parts) == manifest["source_size"]
-          source = "".join(path.read_text() for path in parts)
-          assert hashlib.sha256(source.encode()).hexdigest() == manifest["source_sha256"]
-          print("V88 source parts verified", len(source))
-          PY
-
-      - name: Verify no transport archives remain
-        run: |
-          test -z "$(find research/active_v87 research/active_v88_v94 -type f \( -name '*.zip' -o -name '*.b64' -o -name '*.pyfrag' \) -print)"
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[dev]'
+      - name: Compile all Python source
+        run: python -m compileall -q src tests scripts research/active_v69_v76 research/active_v77_v87
+      - name: Run unit and causal tests
+        run: python -m pytest -q
+      - name: Verify repository manifest and deterministic replays
+        run: python scripts/verify_repository.py --full
