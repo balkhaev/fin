@@ -1,0 +1,42 @@
+{
+  "strategy_id": "v136_execution_shadow",
+  "source_profile": "v75_atlas_nx",
+  "source_path": "research/active_v131_v138/source/run_execution_layer.py",
+  "source_sha256": "0918e588dae21e5b41fe9585ce9baf0f57907eb58a259dff4b524b1e559adc82",
+  "frozen_policy": {
+    "l1_no_trade_band": "0.08",
+    "maximum_target_age_days": 28,
+    "step_fraction": "1.00",
+    "risk_reduction_buffer": "0.02",
+    "perpetual_sign_change_epsilon": "0.000001"
+  },
+  "exact_research_semantics": {
+    "l1_change": "sum absolute target changes across spot and perpetual instruments",
+    "spot_gross": "sum long-only spot target weights",
+    "perpetual_gross": "sum absolute perpetual target weights",
+    "force_reduce": [
+      "desired gross < held gross - 0.02",
+      "desired total gross is zero while held gross is positive",
+      "perpetual sign differs and absolute target difference exceeds 0.000001"
+    ],
+    "update": [
+      "uninitialized shadow state",
+      "force_reduce",
+      "target age >= 28 days",
+      "L1 target change >= 0.08"
+    ],
+    "otherwise": "preserve held targets and increment age by one"
+  },
+  "separation": {
+    "primary_v75_snapshot_mutated": false,
+    "separate_strategy_id": true,
+    "separate_target_hash": true,
+    "availability_and_margin_layer_included": false,
+    "order_planner_included": false,
+    "paper_broker_included": false
+  },
+  "status": "state_machine_ready_historical_regression_blocked_on_v75_target_fixture",
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "integration_permitted": false
+}
