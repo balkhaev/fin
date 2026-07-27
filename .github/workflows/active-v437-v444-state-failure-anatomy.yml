@@ -35,6 +35,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Apply deterministic source corrections
+        run: |
+          set -euxo pipefail
+          python research/strategy_anatomy_v437_v444/apply_source_fixes.py
+
       - name: Install, compile and self-test
         run: |
           set -euxo pipefail
