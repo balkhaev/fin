@@ -1,0 +1,107 @@
+name: Refine V405-V412 V75 champion and V136 execution shadow
+
+on:
+  push:
+    branches: [agent/refine-v405-v412-champion-execution]
+    paths:
+      - 'research/refinement_v405_v412/**'
+      - '.github/workflows/refine-v405-v412-champion.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/refinement_v405_v412/**'
+      - '.github/workflows/refine-v405-v412-champion.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: refine-v405-v412-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/refine-v405-v412-champion-execution
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile and build frozen champion scorecard
+        run: |
+          set -euxo pipefail
+          python -m compileall -q research/refinement_v405_v412
+          rm -rf research/refinement_v405_v412/results docs/checkpoints/v412
+          python research/refinement_v405_v412/build_refinement.py \
+            2>&1 | tee research/refinement_v405_v412/run.log
+
+      - name: Materialize V412 checkpoint
+        run: |
+          set -euxo pipefail
+          test -s research/refinement_v405_v412/results/SOURCE_REGISTRY.json
+          test -s research/refinement_v405_v412/results/CHAMPION_SCORECARD.json
+          test -s research/refinement_v405_v412/results/REFINEMENT_DECISION.json
+          test -s research/refinement_v405_v412/results/REFINEMENT_PLAN_RU.md
+          mkdir -p docs/checkpoints/v412
+          cp research/refinement_v405_v412/results/CHAMPION_SCORECARD.json \
+             docs/checkpoints/v412/CHAMPION_SCORECARD_V412.json
+          cp research/refinement_v405_v412/results/REFINEMENT_DECISION.json \
+             docs/checkpoints/v412/REFINEMENT_DECISION_V412.json
+          cp research/refinement_v405_v412/results/REFINEMENT_PLAN_RU.md \
+             docs/checkpoints/v412/CHAMPION_REFINEMENT_V412_RU.md
+
+      - name: Verify frozen roles and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/refinement_v405_v412/results')
+          score = json.loads((root / 'CHAMPION_SCORECARD.json').read_text())
+          decision = json.loads((root / 'REFINEMENT_DECISION.json').read_text())
+          assert score['champion'] == 'V75_ATLAS_NX'
+          assert score['execution_shadow'] == 'V136_EXECUTION_PLATEAU'
+          assert score['historical_v136_promotion_passed'] is False
+          assert decision['historical_parameter_search_closed'] is True
+          assert decision['v136_capital_allocation'] == 0.0
+          assert decision['new_sleeve_allocation'] == 0.0
+          assert decision['integration_permitted'] is False
+          assert decision['live_ready'] is False
+          assert decision['real_leverage_authorized'] is False
+          print(json.dumps(decision, indent=2))
+          PY
+          find research/refinement_v405_v412 docs/checkpoints/v412 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/refinement_v405_v412 docs/checkpoints/v412 -type f -name '*.pyc' -delete || true
+
+      - name: Commit refinement evidence
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/refinement_v405_v412 docs/checkpoints/v412
+          if git diff --cached --quiet; then
+            echo 'No V405-V412 changes'
+          else
+            git commit -m 'Archive V405-V412 champion refinement evidence [skip ci]'
+            git push origin HEAD:agent/refine-v405-v412-champion-execution
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: refine-v405-v412-champion
+          path: |
+            research/refinement_v405_v412/results
+            research/refinement_v405_v412/run.log
+            docs/checkpoints/v412
+          if-no-files-found: warn
+          retention-days: 30
