@@ -17,10 +17,6 @@
       "bytes": 1497,
       "sha256": "fc542df482ed16307208c5a69978c695254f79d1b068304c9a7197ff0038479f"
     },
-    "bootstrap_payload.py": {
-      "bytes": 17265,
-      "sha256": "734c945c5e58ec20908279f13f4287c8491fa5c6ccc9b368747c712a35833715"
-    },
     "config.py": {
       "bytes": 2504,
       "sha256": "81a79574b7b57987bfbcaa019b7b12bc38897d682e7dc50c157295925b729582"
