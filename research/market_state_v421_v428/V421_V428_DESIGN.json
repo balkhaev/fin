@@ -1,0 +1,55 @@
+{
+  "program": "V421_V428_MARKET_STATE_MEMORY",
+  "frozen_before_results": true,
+  "source": "V413_V420_MARKET_STATE_OBSERVATORY",
+  "purpose": "explainability, structural drift, novelty episodes, transition scenarios and state-duration memory",
+  "source_model_refit_permitted": false,
+  "source_feature_weights_changed": false,
+  "source_centroids_changed": false,
+  "strategy_returns_used": false,
+  "outputs": [
+    "daily state-driver attribution",
+    "occupancy drift versus 2021-2023",
+    "transition-matrix drift",
+    "axis-level drift",
+    "novelty episodes",
+    "state-exit hazard by duration",
+    "frozen scenario graph",
+    "current archived market narrative"
+  ],
+  "drift_metrics": {
+    "occupancy": ["Jensen-Shannon divergence", "population stability index"],
+    "transition": ["occupancy-weighted row Jensen-Shannon divergence", "Frobenius distance", "self-transition change"],
+    "axis": ["mean shift", "median shift", "segment standard deviation"]
+  },
+  "duration_buckets_days": ["1", "2", "3-5", "6-10", "11-20", "21-40", "41+"],
+  "novelty_episode_rule": "consecutive V413 novelty_flag observations with no gap above two calendar days",
+  "scenario_rule": {
+    "transition_probabilities": "unchanged V413 development transition matrix",
+    "high_stress_states": "two centroids with highest frozen stress axis",
+    "low_stress_states": "two centroids with lowest frozen stress axis"
+  },
+  "authorized_use": [
+    "market narrative",
+    "structural-break monitoring",
+    "forward V75/V136/V28 attribution",
+    "execution incident post-mortems",
+    "state-transition alerts"
+  ],
+  "prohibited_use": [
+    "state or drift metrics as direct historical trade signals",
+    "capital allocation from historical state-conditioned performance",
+    "refitting V413 with 2024-2026",
+    "retuning V75 or V136"
+  ],
+  "safety": {
+    "market_state_model_is_trading_signal": false,
+    "strategy_parameter_changes_permitted": false,
+    "allocation_changes_permitted": false,
+    "historical_parameter_search_closed": true,
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
