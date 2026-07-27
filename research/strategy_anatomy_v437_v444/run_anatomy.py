@@ -311,9 +311,9 @@ def failure_map(joined: dict[str, pd.DataFrame]) -> dict[str, Any]:
             "period_metrics": metric_row(selected),
             "negative_states": sorted(negative_states),
             "negative_transitions": sorted(negative_transitions),
-            "largest_negative_states": state_metrics.head(4).to_dict(orient="records"),
-            "largest_negative_transitions": transition_metrics.head(5).to_dict(orient="records"),
-            "largest_negative_duration_buckets": duration_metrics.head(4).to_dict(orient="records"),
+            "largest_negative_states": state_metrics.loc[state_metrics.compound_return < 0.0].head(4).to_dict(orient="records"),
+            "largest_negative_transitions": transition_metrics.loc[transition_metrics.compound_return < 0.0].head(5).to_dict(orient="records"),
+            "largest_negative_duration_buckets": duration_metrics.loc[duration_metrics.compound_return < 0.0].head(4).to_dict(orient="records"),
             "novel_day_share_of_negative_dollar_pnl": negative_loss_share(
                 selected, selected["novelty_flag"].astype(bool)
             ),

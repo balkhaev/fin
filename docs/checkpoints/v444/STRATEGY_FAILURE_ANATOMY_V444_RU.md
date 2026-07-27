@@ -26,7 +26,7 @@ state-entry loss share              7.9%
 persistent state >5d loss share     68.4%
 ```
 
-Largest negative states: deleveraging (-7.68%), rotation (+0.18%), transition (+0.69%).
+Largest negative states: deleveraging (-7.68%).
 
 ## V365 — failure window 2024
 

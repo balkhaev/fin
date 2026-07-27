@@ -2,16 +2,16 @@
   "program": "V437_V444_STATE_CONDITIONED_STRATEGY_ANATOMY",
   "files": {
     "FAILURE_MAP.json": {
-      "bytes": 55375,
-      "sha256": "7ab33888d9cf892a1a3b650f302f464fcb253ee641ae3b660b7d0757ca8f085d"
+      "bytes": 52063,
+      "sha256": "69265f010c068bff085764ebaefbafe7687b8f73ab059397b1e2efb9764b1af5"
     },
     "FROZEN_DECISION.json": {
       "bytes": 1268,
       "sha256": "184250ada6dd766babc2509f8ba0aacab9b20273af38639aab5b3228e262ea71"
     },
     "REPORT_RU.md": {
-      "bytes": 2915,
-      "sha256": "dde635f0c2173fad90cf3159e94d6d5cb02b1077b44439c8b1b37bbc84f44505"
+      "bytes": 2875,
+      "sha256": "0979b5568a93532efb465b46c0d59ea16e274582116263b2e7cf25b43df9f291"
     },
     "TECHNICAL_QUALITY.json": {
       "bytes": 803,
