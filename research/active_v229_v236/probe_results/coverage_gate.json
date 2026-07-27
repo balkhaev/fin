@@ -1,0 +1,31 @@
+{
+  "candidate": "V229_USDM_QUARTERLY_ARCHIVE_COVERAGE",
+  "symbol_rule": "<ASSET>USDT_YYMMDD",
+  "expiry_rule": "last Friday of quarter",
+  "scan_start": "2021-01-01T00:00:00+00:00",
+  "scan_end": "2026-06-30T00:00:00+00:00",
+  "assets": {
+    "BTC": {
+      "expected_contracts": 22,
+      "valid_contracts": 22,
+      "valid_contract_share": 1.0,
+      "minimum_contract_share": 0.8,
+      "minimum_valid_months_per_contract": 2,
+      "latest_required_expiry": "2026-06-26",
+      "latest_required_contract_passed": true,
+      "passed": true
+    },
+    "ETH": {
+      "expected_contracts": 22,
+      "valid_contracts": 22,
+      "valid_contract_share": 1.0,
+      "minimum_contract_share": 0.8,
+      "minimum_valid_months_per_contract": 2,
+      "latest_required_expiry": "2026-06-26",
+      "latest_required_contract_passed": true,
+      "passed": true
+    }
+  },
+  "passed": true,
+  "coin_m_fallback_permitted": false
+}

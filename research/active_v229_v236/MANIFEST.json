@@ -1,0 +1,45 @@
+{
+  "candidate": "ACTIVE_V229_USDM_PERP_QUARTERLY_SPREAD",
+  "files": {
+    "README.md": {
+      "bytes": 825,
+      "sha256": "f21c04c70f0b17df10ba7bc06ec813ab67c31652c1e70937a20b87c3f27cc502"
+    },
+    "V229_V236_DESIGN.json": {
+      "bytes": 1660,
+      "sha256": "e45af394806d729ba2b1392feee13071bd3e858a5550dadf5161335602a3f530"
+    },
+    "probe.py": {
+      "bytes": 11243,
+      "sha256": "47f36643870a46b2b48989322c438356c8651c367c0ca6dc736c725cc7345a52"
+    },
+    "probe_results/FROZEN_DECISION.json": {
+      "bytes": 1344,
+      "sha256": "c5fff2036000df965d2019a407a214000bb5ad492fa049d577c270d8b0cc8cac"
+    },
+    "probe_results/REPORT_RU.md": {
+      "bytes": 277,
+      "sha256": "f4362c514f13b47cfc3afc7198ad1ba9383927b3bbaa46ddd622a4ba65827351"
+    },
+    "probe_results/contract_coverage.csv": {
+      "bytes": 2521,
+      "sha256": "550df1ae9faa511e91c3cb674aa90620136b332a0ed17b8f071d59202eea2e69"
+    },
+    "probe_results/coverage_gate.json": {
+      "bytes": 928,
+      "sha256": "65b601279be3eefebcdb044203d834188d988ce922dcbd1361bae80953927d7b"
+    },
+    "probe_results/raw_probe.json": {
+      "bytes": 234310,
+      "sha256": "57864d4c7ea1ea9a6d0f95cae022e9383924634ba73c7046d8bcb8fbe6618544"
+    },
+    "probe_results/summary.json": {
+      "bytes": 1344,
+      "sha256": "c5fff2036000df965d2019a407a214000bb5ad492fa049d577c270d8b0cc8cac"
+    },
+    "requirements.txt": {
+      "bytes": 33,
+      "sha256": "1e6bb6eaa8081089e5ad5edad5f4ddf628ba7583e157f6c32bf7bea76acb9793"
+    }
+  }
+}
