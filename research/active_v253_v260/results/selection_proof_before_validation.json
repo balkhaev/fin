@@ -14,6 +14,7 @@
     "max_drawdown_min": -0.15,
     "rebalance_events_min": 24,
     "annual_turnover_max": 20.0,
+    "max_realized_gross": 0.7,
     "all_development_years_positive": true,
     "net_long_leg_pnl_positive": true,
     "net_short_leg_pnl_positive": true,
@@ -222,8 +223,8 @@
     "passed": true,
     "survivor_replacement_permitted": false
   },
-  "ranking_sha256": "8532326c911107c29533f10efdaaea666e898c6c28783c2f7a466c20c2790f9e",
-  "design_sha256": "db5c855483d283594c92afaaa1cb0e64d67e84156ca8ed5c4febc9c8b4b2a109",
+  "ranking_sha256": "8953e7224ea7b195619fe4121dd03a096c4fef6d331566fca5350b8490ae49e6",
+  "design_sha256": "3343a63ba388814c258c7bfadae77eedb494e1d47a18373198331860521887c9",
   "selected": null,
-  "selection_proof_sha256": "561f702d6605636f61c8e50a150a640e3479829e8dabbde651be8ef6eaa2b5cc"
+  "selection_proof_sha256": "d2754d71b46350dc325f29817f0ca96b1f772a076242f8035a247f84ca04f4a8"
 }
