@@ -1,0 +1,94 @@
+{
+  "candidate": "ACTIVE_V333_CORRECTED_COSKEW_BETA_HEDGE",
+  "frozen_before_profit_results": true,
+  "source_cycle": "V325-V332",
+  "source_policy": "low_systematic_coskewness_l365_k3_r14_beta",
+  "source_selection_reason": "top-ranked corrected V325 policy; all development years positive; V325 OOS remained closed",
+  "hedge_specification_source": "V317-V324 preregistration before corrected V325 results",
+  "neighboring_alpha_parameters_tested": 0,
+  "neighboring_hedge_parameters_tested": 0,
+  "universe": [
+    "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "LTCUSDT",
+    "BCHUSDT", "EOSUSDT", "DOGEUSDT", "LINKUSDT", "DOTUSDT", "TRXUSDT", "SOLUSDT"
+  ],
+  "chronology": {
+    "warmup_start": "2020-01-01",
+    "development": ["2021-01-01", "2023-12-31"],
+    "validation": ["2024-01-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "oos_open_condition": "all development gates pass",
+    "program_level_holdout_pristine": false,
+    "paper_forward_earliest_start": "2026-07-27"
+  },
+  "alpha": {
+    "family": "low_systematic_coskewness",
+    "corrected_moment": true,
+    "lookback_days": 365,
+    "long_asset_count": 3,
+    "rebalance_days": 14,
+    "long_weighting": "inverse realized volatility",
+    "long_gross": 0.25
+  },
+  "hedge": {
+    "symbols": ["BTCUSDT", "ETHUSDT"],
+    "beta_lookback_days": 90,
+    "weighting": "inverse volatility",
+    "target": "offset estimated beta exposure of long basket",
+    "maximum_hedge_gross": 0.35,
+    "maximum_target_gross": 0.60,
+    "maximum_realized_close_gross": 0.70,
+    "hedge_leg_profit_required": false,
+    "realized_beta_abs_max": 0.20
+  },
+  "execution": {
+    "signal": "completed daily close only",
+    "entry": "next UTC daily open",
+    "scheduled_rebalances_only": true,
+    "actual_archived_funding": true,
+    "forced_delisting_penalty_bps": 100,
+    "survivor_replacement_permitted": false
+  },
+  "audits": {
+    "base_cost_bps_per_side": 30,
+    "severe_cost_bps_per_side": 60,
+    "extreme_cost_bps_per_side": 100,
+    "latency": "+1 completed daily bar"
+  },
+  "development_gates": {
+    "cagr_min": 0.05,
+    "sharpe_min": 1.0,
+    "max_drawdown_min": -0.15,
+    "rebalance_events_min": 18,
+    "annual_turnover_max": 15.0,
+    "max_realized_gross": 0.70,
+    "all_development_years_positive": true,
+    "net_long_side_pnl_positive": true,
+    "symbols_traded_min": 8,
+    "top_positive_asset_pnl_share_max": 0.35,
+    "realized_beta_abs_max": 0.20
+  },
+  "post_oos_gates": {
+    "validation_return_positive": true,
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "full_cagr_min": 0.06,
+    "full_sharpe_min": 0.80,
+    "full_max_drawdown_min": -0.15,
+    "severe_full_cagr_positive": true,
+    "extreme_full_cagr_positive": true,
+    "latency_full_cagr_positive": true,
+    "worst_calendar_year_min": -0.10,
+    "full_net_long_side_pnl_positive": true,
+    "full_realized_beta_abs_max": 0.20,
+    "all_audits_max_gross": 0.70,
+    "top_positive_asset_pnl_share_max": 0.35,
+    "forced_exit_count_max": 4
+  },
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "integration_permitted": false
+  }
+}
