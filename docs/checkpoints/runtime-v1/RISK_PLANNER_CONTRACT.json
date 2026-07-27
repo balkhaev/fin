@@ -1,0 +1,46 @@
+{
+  "checkpoint": "runtime-v1-risk-planner",
+  "status": "pretrade_risk_and_deterministic_planner_ready",
+  "scope": [
+    "fail-closed critical-source availability",
+    "instrumentwise no-risk-increase fallback",
+    "gross-cap scaling",
+    "spot cash plus perpetual initial-margin feasibility",
+    "deterministic base-quantity order planning",
+    "risk reductions before risk increases",
+    "perpetual sign-flip close then open",
+    "pending-plan and identical-replan integrity"
+  ],
+  "default_limits": {
+    "hard_gross_cap": "1.10",
+    "initial_margin_ratio": "0.25",
+    "operational_reserve": "0.20"
+  },
+  "default_planner": {
+    "spot_max_slippage_bps": "10",
+    "perp_max_slippage_bps": "10",
+    "intent_ttl_seconds": 900,
+    "quantity_unit": "base",
+    "minimum_quantity": "0.000000000001"
+  },
+  "target_semantics": {
+    "strategy_targets": "signed equity fractions; spot must be non-negative",
+    "portfolio_positions": "signed base quantities; spot must be non-negative",
+    "reference_prices": "positive deterministic decimal strings",
+    "execution_target_hash": "SHA-256 of source target, constrained targets and risk reasons"
+  },
+  "risk_reduction_precedes_increase": true,
+  "perpetual_sign_flip_split": true,
+  "missing_price_blocks_plan": true,
+  "stale_critical_data_blocks_risk_increase": true,
+  "same_sign_reductions_remain_permitted_on_stale_data": true,
+  "plan_hash_deterministic": true,
+  "submit_surface_available": false,
+  "historical_parameter_search_closed": true,
+  "strategy_parameters_changed": false,
+  "allocation_changes_permitted": false,
+  "live_execution_available": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
