@@ -1,0 +1,86 @@
+{
+  "candidate": "ACTIVE_V221_CROSS_ASSET_SHOCK_SPILLOVER",
+  "selection_cutoff": "2023-12-31T23:59:59Z",
+  "selection_uses_2024": false,
+  "selection_uses_2025": false,
+  "selection_uses_2026": false,
+  "program_level_holdout_pristine": false,
+  "policy_count": 144,
+  "promotable_policy_count": 108,
+  "eligible_policy_count": 0,
+  "selected": [],
+  "development_gates": {
+    "cagr_min": 0.05,
+    "sharpe_min": 1.0,
+    "max_drawdown_min": -0.12,
+    "closed_trades_min": 100,
+    "annual_turnover_max": 200.0,
+    "all_years_positive": true,
+    "long_short_side_pnl_positive": true
+  },
+  "post_selection_gates": {
+    "validation_return_positive": true,
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "severe_full_cagr_positive": true,
+    "delay_full_cagr_positive": true,
+    "worst_quarter_min": -0.08,
+    "top_month_positive_pnl_share_max": 0.3,
+    "zero_forced_exits": true
+  },
+  "ranking_sha256": "2cf0342c86c5f0a8cd7f552f8a447c798b953b22ab75a24bb6dce68a047d2b5d",
+  "design_sha256": "179e33fabd5212dbdceb34a120dc2c1f894082dc647be616ad65903503d46747",
+  "coverage_gate": {
+    "candidate": "V221_CROSS_ASSET_PANEL_COVERAGE",
+    "required_month_coverage": 0.95,
+    "required_full_month_share": 0.9,
+    "periods": {
+      "development": {
+        "months": 36,
+        "full_months": 36,
+        "required_full_months": 33,
+        "minimum_coverage": 0.997800925925926,
+        "median_coverage": 1.0,
+        "passed": true
+      },
+      "validation": {
+        "months": 12,
+        "full_months": 12,
+        "required_full_months": 11,
+        "minimum_coverage": 0.9982078853046595,
+        "median_coverage": 1.0,
+        "passed": true
+      },
+      "holdout": {
+        "months": 12,
+        "full_months": 12,
+        "required_full_months": 11,
+        "minimum_coverage": 0.9996639784946236,
+        "median_coverage": 1.0,
+        "passed": true
+      },
+      "final": {
+        "months": 6,
+        "full_months": 6,
+        "required_full_months": 6,
+        "minimum_coverage": 1.0,
+        "median_coverage": 1.0,
+        "passed": true
+      }
+    },
+    "archives": {
+      "BTC": {
+        "valid_months": 66,
+        "attempted_months": 66,
+        "passed": true
+      },
+      "ETH": {
+        "valid_months": 66,
+        "attempted_months": 66,
+        "passed": true
+      }
+    },
+    "passed": true
+  },
+  "selection_proof_sha256": "b82c11a189d5f9ec42eedc85c1d99c499f2814adb7296c985a17261bf35a9011"
+}
