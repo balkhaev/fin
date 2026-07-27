@@ -1,0 +1,148 @@
+name: Active V285-V292 exact low-skew hourly gross controller
+
+on:
+  push:
+    branches: [agent/active-v285-v292-hourly-gross-controller]
+    paths:
+      - 'research/active_v285_v292/**'
+      - '.github/workflows/active-v285-v292-hourly-gross-controller.yml'
+  pull_request:
+    branches: [agent/active-v277-v284-lottery-risk-normalized]
+    paths:
+      - 'research/active_v285_v292/**'
+      - '.github/workflows/active-v285-v292-hourly-gross-controller.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v285-v292-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v285-v292-hourly-gross-controller
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize readable hourly controller source
+        run: |
+          set -euxo pipefail
+          python research/active_v285_v292/bootstrap_hourly_controller.py
+          test -s research/active_v285_v292/run_research.py
+          grep -q 'last_alpha_target' research/active_v285_v292/run_research.py
+          grep -q 'SOFT_GROSS_TRIGGER = 0.60' research/active_v285_v292/run_research.py
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v285_v292/requirements.txt
+          python -m compileall -q \
+            research/active_v285_v292 \
+            research/active_v277_v284 \
+            research/active_v269_v276 \
+            research/active_v253_v260 \
+            research/active_v9
+          python research/active_v285_v292/run_research.py --self-test
+
+      - name: Restore immutable daily archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+
+      - name: Restore immutable hourly archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v285_hourly
+          key: binance-usdm-hourly-fixed-universe-2020-2026-v285
+
+      - name: Run exact alpha with preregistered hourly risk controller
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v285_v292/results \
+                 research/active_v285_v292/MANIFEST.json \
+                 docs/checkpoints/v292
+          python research/active_v285_v292/run_research.py \
+            --root research/active_v285_v292 \
+            --daily-cache .cache/v9 \
+            --hourly-cache .cache/v285_hourly \
+            2>&1 | tee research/active_v285_v292/run.log
+
+      - name: Materialize V292 checkpoint
+        run: |
+          set -euxo pipefail
+          test -s research/active_v285_v292/results/summary.json
+          test -s research/active_v285_v292/results/FROZEN_DECISION.json
+          test -s research/active_v285_v292/results/coverage_gate.json
+          test -s research/active_v285_v292/results/selection_proof_before_oos.json
+          test -s research/active_v285_v292/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v292
+          cp research/active_v285_v292/results/summary.json docs/checkpoints/v292/CHECKPOINT_V292.json
+          cp research/active_v285_v292/results/REPORT_RU.md docs/checkpoints/v292/RESEARCH_CHECKPOINT_V292_RU.md
+          if test -s research/active_v285_v292/results/ANNUAL_RETURNS.csv; then
+            cp research/active_v285_v292/results/ANNUAL_RETURNS.csv docs/checkpoints/v292/ANNUAL_RETURNS.csv
+          fi
+
+      - name: Verify chronology, controller and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v285_v292')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_oos.json').read_text())
+          if not proof.get('selection_not_run'):
+              assert proof['selection_uses_2024'] is False
+              assert proof['selection_uses_2025'] is False
+              assert proof['selection_uses_2026'] is False
+              assert proof['neighboring_triggers_tested'] == 0
+              assert proof['daily_target_gross'] == 0.50
+              assert proof['soft_gross_trigger'] == 0.60
+              assert proof['hard_hourly_close_gross'] == 0.70
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v285_v292 docs/checkpoints/v292 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v285_v292 docs/checkpoints/v292 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and frozen decision
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          rm -f research/active_v285_v292/bootstrap_hourly_controller.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v285_v292 docs/checkpoints/v292
+          if git diff --cached --quiet; then
+            echo 'No V285-V292 changes'
+          else
+            git commit -m 'Archive V285-V292 hourly gross-controller evidence [skip ci]'
+            git push origin HEAD:agent/active-v285-v292-hourly-gross-controller
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v285-v292-hourly-gross-controller
+          path: |
+            research/active_v285_v292/results
+            research/active_v285_v292/run.log
+            docs/checkpoints/v292
+          if-no-files-found: warn
+          retention-days: 30
