@@ -1,6 +1,7 @@
 {
   "candidate": "ACTIVE_V253_CRYPTO_LOW_RISK_FACTOR",
   "frozen_before_profit_results": true,
+  "execution_correction_before_oos": "scheduled targets must trade only when the scheduled target changes, on a forced exit, or to restore the predeclared gross cap; daily drift rebalancing is forbidden",
   "data_dependency": "canonical checksum-aware research/active_v9 loader",
   "universe": [
     "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "LTCUSDT",
@@ -35,6 +36,7 @@
     "entry": "next UTC daily open",
     "target_total_gross": 0.60,
     "maximum_realized_gross": 0.70,
+    "scheduled_rebalance_only": true,
     "inverse_volatility_leg_weights": true,
     "actual_archived_funding": true,
     "forced_delisting_penalty_bps": 100
@@ -51,6 +53,7 @@
     "max_drawdown_min": -0.15,
     "rebalance_events_min": 24,
     "annual_turnover_max": 20.0,
+    "max_realized_gross": 0.70,
     "all_development_years_positive": true,
     "net_long_leg_pnl_positive": true,
     "net_short_leg_pnl_positive": true,
