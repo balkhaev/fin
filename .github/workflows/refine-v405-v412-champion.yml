@@ -7,7 +7,7 @@ on:
       - 'research/refinement_v405_v412/**'
       - '.github/workflows/refine-v405-v412-champion.yml'
   pull_request:
-    branches: [main]
+    branches: [main, agent/refine-v405-v412-champion-execution]
     paths:
       - 'research/refinement_v405_v412/**'
       - '.github/workflows/refine-v405-v412-champion.yml'
@@ -82,7 +82,6 @@ jobs:
           find research/refinement_v405_v412 docs/checkpoints/v412 -type f -name '*.pyc' -delete || true
 
       - name: Commit refinement evidence
-        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
