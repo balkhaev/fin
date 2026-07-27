@@ -1,0 +1,170 @@
+name: Active V437-V444 state-conditioned strategy anatomy
+
+on:
+  push:
+    branches: [agent/active-v437-v444-state-failure-anatomy]
+    paths:
+      - 'research/strategy_anatomy_v437_v444/**'
+      - '.github/workflows/active-v437-v444-state-failure-anatomy.yml'
+  pull_request:
+    branches: [agent/active-v421-v428-market-state-memory]
+    paths:
+      - 'research/strategy_anatomy_v437_v444/**'
+      - '.github/workflows/active-v437-v444-state-failure-anatomy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v437-v444-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  anatomy:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v437-v444-state-failure-anatomy
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/strategy_anatomy_v437_v444/requirements.txt
+          python -m compileall -q research/strategy_anatomy_v437_v444
+          python research/strategy_anatomy_v437_v444/run_anatomy.py --self-test
+
+      - name: Materialize pinned V285 and V365 evidence
+        run: |
+          set -euxo pipefail
+          rm -rf .external/v437_v444
+          mkdir -p .external/v437_v444/v285 .external/v437_v444/v365_root
+          git fetch --no-tags origin \
+            '+refs/pull/53/head:refs/remotes/origin/v285-source' \
+            '+refs/pull/63/head:refs/remotes/origin/v365-source'
+          test "$(git rev-parse refs/remotes/origin/v285-source)" = '0fc0f8bcf38e396aca52fa5b3e5c334fbbd05473'
+          test "$(git rev-parse refs/remotes/origin/v365-source)" = '2af20f21379b7ca8358422377689c0bb6c369969'
+          git show refs/remotes/origin/v285-source:research/active_v285_v292/results/equity_base.csv \
+            > .external/v437_v444/v285/equity_base.csv
+          git archive refs/remotes/origin/v365-source \
+            research/active_v365_v372 \
+            research/active_v341_v348 \
+            research/active_v269_v276 \
+            research/active_v253_v260 \
+            research/active_v9 \
+            | tar -x -C .external/v437_v444/v365_root
+          test -s .external/v437_v444/v285/equity_base.csv
+          test -s .external/v437_v444/v365_root/research/active_v365_v372/run_research.py
+
+      - name: Restore immutable V9 public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+
+      - name: Recreate exact V365 daily account
+        run: |
+          set -euxo pipefail
+          python research/strategy_anatomy_v437_v444/materialize_v365_account.py \
+            --source-root .external/v437_v444/v365_root \
+            --cache .cache/v9 \
+            --output .external/v437_v444/v365_materialized \
+            --source-commit 2af20f21379b7ca8358422377689c0bb6c369969 \
+            2>&1 | tee research/strategy_anatomy_v437_v444/v365_materialization.log
+
+      - name: Build frozen state-conditioned failure map
+        run: |
+          set -euxo pipefail
+          rm -rf research/strategy_anatomy_v437_v444/results docs/checkpoints/v444
+          python research/strategy_anatomy_v437_v444/run_anatomy.py \
+            --state research/market_state_v413_v420/results/market_state_daily.csv \
+            --state-model research/market_state_v413_v420/results/STATE_MODEL.json \
+            --v285 .external/v437_v444/v285/equity_base.csv \
+            --v365 .external/v437_v444/v365_materialized/v365_equity_base.csv \
+            --annual docs/checkpoints/v138/ANNUAL_RETURNS.csv \
+            --design research/strategy_anatomy_v437_v444/V437_V444_DESIGN.json \
+            --output research/strategy_anatomy_v437_v444/results \
+            2>&1 | tee research/strategy_anatomy_v437_v444/run.log
+
+      - name: Materialize V444 checkpoint
+        run: |
+          set -euxo pipefail
+          root=research/strategy_anatomy_v437_v444/results
+          test -s "$root/FROZEN_DECISION.json"
+          test -s "$root/FAILURE_MAP.json"
+          test -s "$root/TECHNICAL_QUALITY.json"
+          test -s "$root/REPORT_RU.md"
+          test -s "$root/strategy_metrics_by_period_state.csv"
+          test -s "$root/champion_year_state_context.csv"
+          mkdir -p docs/checkpoints/v444
+          cp "$root/FROZEN_DECISION.json" docs/checkpoints/v444/FROZEN_DECISION_V444.json
+          cp "$root/FAILURE_MAP.json" docs/checkpoints/v444/FAILURE_MAP_V444.json
+          cp "$root/REPORT_RU.md" docs/checkpoints/v444/STRATEGY_FAILURE_ANATOMY_V444_RU.md
+          cp "$root/champion_year_state_context.csv" docs/checkpoints/v444/CHAMPION_YEAR_STATE_CONTEXT.csv
+
+      - name: Verify role, chronology and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/strategy_anatomy_v437_v444/results')
+          decision = json.loads((root / 'FROZEN_DECISION.json').read_text())
+          quality = json.loads((root / 'TECHNICAL_QUALITY.json').read_text())
+          failure = json.loads((root / 'FAILURE_MAP.json').read_text())
+          assert quality['passed'] is True
+          assert quality['state_rows'] == 2007
+          assert all(value == 2007 for value in quality['strategy_rows'].values())
+          assert decision['historical_parameter_search_closed'] is True
+          assert decision['historical_state_gating_permitted'] is False
+          assert decision['strategy_parameter_changes_permitted'] is False
+          assert decision['allocation_changes_permitted'] is False
+          assert decision['new_sleeve_allocation'] == 0.0
+          assert decision['v136_capital_allocation'] == 0.0
+          assert decision['integration_permitted'] is False
+          assert decision['live_ready'] is False
+          assert decision['real_leverage_authorized'] is False
+          assert decision['profitability_proven'] is False
+          assert set(failure['per_strategy']) == {
+              'V285_LOW_SKEW_HOURLY_CONTROLLER',
+              'V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE',
+          }
+          print(json.dumps(decision, indent=2))
+          PY
+          find research/strategy_anatomy_v437_v444 docs/checkpoints/v444 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/strategy_anatomy_v437_v444 docs/checkpoints/v444 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable anatomy evidence
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/strategy_anatomy_v437_v444 docs/checkpoints/v444
+          if git diff --cached --quiet; then
+            echo 'No V437-V444 changes'
+          else
+            git commit -m 'Archive V437-V444 state-conditioned failure anatomy [skip ci]'
+            git push origin HEAD:agent/active-v437-v444-state-failure-anatomy
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v437-v444-state-failure-anatomy
+          path: |
+            research/strategy_anatomy_v437_v444/results
+            research/strategy_anatomy_v437_v444/run.log
+            research/strategy_anatomy_v437_v444/v365_materialization.log
+            docs/checkpoints/v444
+          if-no-files-found: warn
+          retention-days: 30
