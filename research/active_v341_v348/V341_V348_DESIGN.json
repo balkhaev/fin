@@ -1,0 +1,84 @@
+{
+  "candidate": "ACTIVE_V341_CRYPTO_VOLATILITY_TERM_STRUCTURE",
+  "frozen_before_profit_results": true,
+  "independence": "relative volatility term structure; no absolute low-volatility, momentum, funding, liquidity or coskewness ranking",
+  "universe": [
+    "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "LTCUSDT",
+    "BCHUSDT", "EOSUSDT", "DOGEUSDT", "LINKUSDT", "DOTUSDT", "TRXUSDT", "SOLUSDT"
+  ],
+  "survivorship_rule": "fixed January-2021 universe; no replacement; forced delisting exit penalty",
+  "chronology": {
+    "warmup_start": "2020-01-01",
+    "development": ["2021-01-01", "2023-12-31"],
+    "validation": ["2024-01-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "selection_uses_2024_2026": false,
+    "program_level_holdout_pristine": false
+  },
+  "families": [
+    "low_residual_vol_ratio",
+    "low_downside_vol_ratio",
+    "low_range_vol_ratio",
+    "reversed_vol_expansion_control"
+  ],
+  "window_pairs": {"14": [14, 90], "30": [30, 180], "60": [60, 240]},
+  "grid": {
+    "short_window_key": [14, 30, 60],
+    "long_short_k": [3, 4],
+    "rebalance_days": [7, 14, 28],
+    "neutralization": ["dollar", "beta"],
+    "policy_count": 144,
+    "promotable_policy_count": 108
+  },
+  "execution": {
+    "signal": "completed daily bars only",
+    "entry": "next UTC daily open",
+    "scheduled_rebalances_only": true,
+    "target_total_gross": 0.40,
+    "maximum_realized_close_gross": 0.70,
+    "actual_archived_funding": true,
+    "forced_delisting_penalty_bps": 100
+  },
+  "audits": {
+    "base_cost_bps_per_side": 30,
+    "severe_cost_bps_per_side": 60,
+    "extreme_cost_bps_per_side": 100,
+    "latency": "+1 completed daily bar"
+  },
+  "development_gates": {
+    "cagr_min": 0.05,
+    "sharpe_min": 1.0,
+    "max_drawdown_min": -0.15,
+    "rebalance_events_min": 24,
+    "annual_turnover_max": 20.0,
+    "max_realized_gross": 0.70,
+    "all_development_years_positive": true,
+    "net_long_leg_pnl_positive": true,
+    "net_short_leg_pnl_positive": true,
+    "symbols_traded_min": 10,
+    "top_positive_asset_pnl_share_max": 0.35
+  },
+  "post_selection_gates": {
+    "validation_return_positive": true,
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "full_cagr_min": 0.06,
+    "full_sharpe_min": 0.80,
+    "full_max_drawdown_min": -0.15,
+    "severe_full_cagr_positive": true,
+    "extreme_full_cagr_positive": true,
+    "latency_full_cagr_positive": true,
+    "worst_calendar_year_min": -0.10,
+    "full_long_leg_pnl_positive": true,
+    "full_short_leg_pnl_positive": true,
+    "top_positive_asset_pnl_share_max": 0.35,
+    "forced_exit_count_max": 4
+  },
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "integration_permitted": false
+  }
+}
