@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/journal_event.schema.json",
+  "title": "JournalEvent",
+  "type": "object",
+  "required": [
+    "event_type",
+    "event_time_utc",
+    "strategy_id",
+    "sequence",
+    "payload",
+    "payload_hash",
+    "previous_event_hash",
+    "event_hash"
+  ],
+  "properties": {
+    "event_type": {"type": "string", "minLength": 1},
+    "event_time_utc": {"type": "string", "pattern": "Z$"},
+    "strategy_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 0},
+    "payload": {},
+    "payload_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "previous_event_hash": {"type": ["string", "null"]},
+    "event_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}
