@@ -2,8 +2,8 @@
   "program": "V437_V444_STATE_CONDITIONED_STRATEGY_ANATOMY",
   "files": {
     "FAILURE_MAP.json": {
-      "bytes": 52063,
-      "sha256": "69265f010c068bff085764ebaefbafe7687b8f73ab059397b1e2efb9764b1af5"
+      "bytes": 52065,
+      "sha256": "ae206e903a2849640fb5a71dd9cd9b51de7e246484bef1b802aa7e9b6114a0fa"
     },
     "FROZEN_DECISION.json": {
       "bytes": 1268,
@@ -15,47 +15,47 @@
     },
     "TECHNICAL_QUALITY.json": {
       "bytes": 803,
-      "sha256": "f5887e63021939cc6c9ca5849be3b02669a47b79c498b71f1f46b0838ab82a6f"
+      "sha256": "524bc6f0fb82d59f844696f011bf5438930fce6dce4f7ad47f5547a7f6368943"
     },
     "champion_year_state_context.csv": {
       "bytes": 2424,
       "sha256": "807da0fd9ce5482b0796d31dc8dd9cc5d1e5f7beeb1c91876afa9e004e7bae9f"
     },
     "joined_V285_LOW_SKEW_HOURLY_CONTROLLER.csv": {
-      "bytes": 1122915,
-      "sha256": "0456df8a98761dbde0ef7fbcd827eae442e86d50f0655da55b57189ecf1993d3"
+      "bytes": 1122921,
+      "sha256": "feed96a18b4d6cd2a203e52341941ada04a03062c41d1196c904fb1b415fbfba"
     },
     "joined_V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE.csv": {
-      "bytes": 1117043,
-      "sha256": "e134ebcd7504a818b2d824e5ea133c98bfd6a16596dc47b9e6754ccebf2663a0"
+      "bytes": 1117034,
+      "sha256": "39d144552a8209a9d3eb09c4206346cd0f5449fa9d8699ede41fb577fdfc80d7"
     },
     "strategy_metrics_by_duration.csv": {
-      "bytes": 72074,
-      "sha256": "6f6a95db7006f9b0f4782aa7870b4085c4075424bea7ef628d233a10cd85d4ab"
+      "bytes": 72066,
+      "sha256": "0e33184f31fc2e74600cc484e47cfc280c90bd54138c2eb90645689fe3f33aa8"
     },
     "strategy_metrics_by_novelty.csv": {
-      "bytes": 6967,
-      "sha256": "ca8580a6a9a0971ec6a7c4707a4b5b8d4211f0f3aedd059cde91a78831a8cb90"
+      "bytes": 6966,
+      "sha256": "5dea9c4b253590d4371b97377483466c60dd68c0d3fa9b60c127f09ed197ca84"
     },
     "strategy_metrics_by_period_state.csv": {
-      "bytes": 16684,
-      "sha256": "0b3b24ab39f7646c5d30fab7a5c255efff405e87e3d2c9535df443a0ccac7540"
+      "bytes": 16685,
+      "sha256": "8978a38e3e54c2b6c44070a8dd72a4574fee169972acf7c1abf6bd02e6b248b9"
     },
     "strategy_metrics_by_state.csv": {
       "bytes": 5555,
-      "sha256": "63016885c86f098ed6cba0ac205279f758649edf2e8054ada1697cd296da70d2"
+      "sha256": "3d039d6e6e7a3e542029a32077e530c13bc568ea353951c251b0dea1bbbf00a9"
     },
     "strategy_metrics_by_transition.csv": {
-      "bytes": 44207,
-      "sha256": "5e9c93a8262a16ffa5303b9773841a5bc166fc4bd78eb0a7a225ac81a569373e"
+      "bytes": 44199,
+      "sha256": "50b20ae3aa9fbc866ff20ec28d05615a11365c7f80573d02721eece5f0edfd92"
     },
     "strategy_metrics_by_transition_surprise.csv": {
-      "bytes": 11303,
-      "sha256": "48461390e3fa18d8e79ee14b54a9738ebd55af6f1bf661ce59d029b600936aa2"
+      "bytes": 11302,
+      "sha256": "da89bfa786cc1d97e7c9952133b77c43d0d537e38838258c9e570c676a6aa0c6"
     },
     "worst_drawdown_episodes.csv": {
-      "bytes": 65521,
-      "sha256": "57fa0926f3d7c5b460d71bd89d5c480d29dec97d4f89b6331bd38ab62b4c2487"
+      "bytes": 65525,
+      "sha256": "de2e7a17d0e40e55b0bcaa1d9fcbad29cdca7b209121bc6d4c22838b732daa7a"
     }
   }
 }

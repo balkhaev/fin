@@ -17,24 +17,24 @@ archives 2028/2028
   "source_commit": "2af20f21379b7ca8358422377689c0bb6c369969",
   "source_path": "research/active_v365_v372/run_research.py",
   "source_sha256": "5f9c28f37588bb05e031dcb22ebbb6787b5c514d7ee44dc16c125784fda82948",
-  "account_sha256": "9d39a3ebab2871901fa767f35496539dd890b433cadcc5be446ad712ed4bfc90",
-  "weights_sha256": "075962321ab920ac77075f88ccf9cd21a7ffc45d8b6804d8648a4fa938d1291a",
+  "account_sha256": "20aaa8599b2730d02a5d28c71ce3878bf1fee9253d86c8f0b7e8185fd8c8083a",
+  "weights_sha256": "d0446d0021e99218bce405b5cf3eb1bd488ee0ffa16773942ecbe72c50231d3f",
   "component_hashes": {
     "low_downside_vol_ratio_l14_k3_r7_dollar": "19186c7561bb6cb8ee824ed7faaa83c4188f91ebe40e5b9fb7743b2605058d10",
-    "low_downside_vol_ratio_l60_k3_r7_beta": "9098498197133cd79dec5001e5c4cc7bc7dbf108a3bc41d71c722ced56bda5cb"
+    "low_downside_vol_ratio_l60_k3_r7_beta": "385190e7f8652fe58fbdb9343addc3b761e31b30334b6813bb25e7880444ca53"
   },
-  "data_manifest_sha256": "908fbbb5021bc957f8a9f83749dd531e189cf52545241218ab6049fbf05daed6",
+  "data_manifest_sha256": "5a63fad25eb56271966a4ae7475928be3a1d6d923b6491c93304b5239d995283",
   "data_quality": [
     {
-      "symbol": "BTCUSDT",
-      "kline_rows": 2373,
-      "start": "2020-01-01T00:00:00+00:00",
+      "symbol": "ADAUSDT",
+      "kline_rows": 2343,
+      "start": "2020-01-31T00:00:00+00:00",
       "end": "2026-06-30T00:00:00+00:00",
       "duplicates": 0,
-      "funding_rows": 7119
+      "funding_rows": 7063
     },
     {
-      "symbol": "ETHUSDT",
+      "symbol": "BCHUSDT",
       "kline_rows": 2373,
       "start": "2020-01-01T00:00:00+00:00",
       "end": "2026-06-30T00:00:00+00:00",
@@ -50,44 +50,12 @@ archives 2028/2028
       "funding_rows": 6998
     },
     {
-      "symbol": "XRPUSDT",
-      "kline_rows": 2363,
-      "start": "2020-01-06T00:00:00+00:00",
-      "end": "2026-06-30T00:00:00+00:00",
-      "duplicates": 0,
-      "funding_rows": 7103
-    },
-    {
-      "symbol": "ADAUSDT",
-      "kline_rows": 2343,
-      "start": "2020-01-31T00:00:00+00:00",
-      "end": "2026-06-30T00:00:00+00:00",
-      "duplicates": 0,
-      "funding_rows": 7063
-    },
-    {
-      "symbol": "LTCUSDT",
-      "kline_rows": 2360,
-      "start": "2020-01-09T00:00:00+00:00",
-      "end": "2026-06-30T00:00:00+00:00",
-      "duplicates": 0,
-      "funding_rows": 7094
-    },
-    {
-      "symbol": "BCHUSDT",
+      "symbol": "BTCUSDT",
       "kline_rows": 2373,
       "start": "2020-01-01T00:00:00+00:00",
       "end": "2026-06-30T00:00:00+00:00",
       "duplicates": 0,
       "funding_rows": 7119
-    },
-    {
-      "symbol": "EOSUSDT",
-      "kline_rows": 1961,
-      "start": "2020-01-08T00:00:00+00:00",
-      "end": "2025-05-21T00:00:00+00:00",
-      "duplicates": 0,
-      "funding_rows": 7097
     },
     {
       "symbol": "DOGEUSDT",
@@ -98,6 +66,30 @@ archives 2028/2028
       "funding_rows": 6545
     },
     {
+      "symbol": "DOTUSDT",
+      "kline_rows": 2139,
+      "start": "2020-08-22T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 6422
+    },
+    {
+      "symbol": "EOSUSDT",
+      "kline_rows": 1961,
+      "start": "2020-01-08T00:00:00+00:00",
+      "end": "2025-05-21T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7097
+    },
+    {
+      "symbol": "ETHUSDT",
+      "kline_rows": 2373,
+      "start": "2020-01-01T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7119
+    },
+    {
       "symbol": "LINKUSDT",
       "kline_rows": 2357,
       "start": "2020-01-17T00:00:00+00:00",
@@ -106,12 +98,20 @@ archives 2028/2028
       "funding_rows": 7070
     },
     {
-      "symbol": "DOTUSDT",
-      "kline_rows": 2139,
-      "start": "2020-08-22T00:00:00+00:00",
+      "symbol": "LTCUSDT",
+      "kline_rows": 2360,
+      "start": "2020-01-09T00:00:00+00:00",
       "end": "2026-06-30T00:00:00+00:00",
       "duplicates": 0,
-      "funding_rows": 6422
+      "funding_rows": 7094
+    },
+    {
+      "symbol": "SOLUSDT",
+      "kline_rows": 2111,
+      "start": "2020-09-14T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 6424
     },
     {
       "symbol": "TRXUSDT",
@@ -122,12 +122,12 @@ archives 2028/2028
       "funding_rows": 7076
     },
     {
-      "symbol": "SOLUSDT",
-      "kline_rows": 2111,
-      "start": "2020-09-14T00:00:00+00:00",
+      "symbol": "XRPUSDT",
+      "kline_rows": 2363,
+      "start": "2020-01-06T00:00:00+00:00",
       "end": "2026-06-30T00:00:00+00:00",
       "duplicates": 0,
-      "funding_rows": 6424
+      "funding_rows": 7103
     }
   ],
   "coverage_gate": {
@@ -329,21 +329,21 @@ archives 2028/2028
   "diagnostics": {
     "asset_pnl": {
       "ADAUSDT": 746.983117746139,
-      "BCHUSDT": 819.4812921599879,
-      "BNBUSDT": 1127.515412687677,
-      "BTCUSDT": 465.973971865796,
-      "DOGEUSDT": 1930.3231875996794,
+      "BCHUSDT": 819.4812921599878,
+      "BNBUSDT": 1127.5154126876782,
+      "BTCUSDT": 465.97397186579593,
+      "DOGEUSDT": 1930.323187599679,
       "DOTUSDT": -612.117165238278,
       "EOSUSDT": 1297.5148107564728,
-      "ETHUSDT": -607.789606925273,
+      "ETHUSDT": -607.7896069252732,
       "LINKUSDT": -44.36962743910263,
       "LTCUSDT": 592.012581530507,
       "SOLUSDT": 772.0322689253185,
       "TRXUSDT": 897.2047731278651,
-      "XRPUSDT": -579.1199231644384
+      "XRPUSDT": -579.1199231644388
     },
-    "long_leg_pnl": 6479.8276095461315,
-    "short_leg_pnl": 325.81748408622843,
+    "long_leg_pnl": 6479.82760954613,
+    "short_leg_pnl": 325.8174840862288,
     "symbols_traded": [
       "ADAUSDT",
       "BCHUSDT",
@@ -362,7 +362,7 @@ archives 2028/2028
     "symbol_count_traded": 13,
     "forced_exit_count": 4,
     "rebalance_events": 288,
-    "top_positive_asset_pnl_share": 0.22318348296258528
+    "top_positive_asset_pnl_share": 0.22318348296258522
   },
   "audit": {
     "name": "base",
