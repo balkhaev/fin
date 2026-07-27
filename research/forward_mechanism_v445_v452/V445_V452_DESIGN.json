@@ -1,0 +1,115 @@
+{
+  "program": "V445_V452_FORWARD_MARKET_MECHANISM_VALIDATOR",
+  "purpose": "Test forward-only whether V136 improves execution versus V75 in the market structures identified by V413-V444, without converting historical state attribution into a trading rule.",
+  "not_a_strategy": true,
+  "frozen_before_forward_observations": true,
+  "sources": {
+    "telemetry_contract": "V429_V436_STATE_CONDITIONED_TELEMETRY",
+    "telemetry_source_commit": "74a5a82448c508f1f8cb55e604dc9c3906eda716",
+    "market_state_model": "V413_V420_MARKET_STATE_OBSERVATORY",
+    "market_state_model_sha256": "187164615c057292cd1e7e8b47bfaa930e6fe97da4b42e253dff60ba15fd2690",
+    "failure_anatomy": "V437_V444_STATE_CONDITIONED_STRATEGY_ANATOMY",
+    "failure_anatomy_workflow_run": 30297024441,
+    "failure_anatomy_artifact": 8665055328,
+    "failure_anatomy_artifact_sha256": "45cbfd3581694a0245ea6d3af267759110597cbc760f67773c98b1c3f874637d"
+  },
+  "required_strategies": [
+    "V75_ATLAS_NX",
+    "V136_EXECUTION_PLATEAU",
+    "V28_GROWTH_CONTROL"
+  ],
+  "earliest_observation_start": "2026-07-28",
+  "frozen_contexts": {
+    "all": "all valid paired forward observations",
+    "early_state": "state_duration_days <= 2",
+    "intermediate_state": "3 <= state_duration_days <= 5",
+    "persistent_state": "state_duration_days > 5",
+    "novel": "novelty_flag == true",
+    "familiar": "novelty_flag == false",
+    "high_transition_surprise": "transition_surprise >= development 90th percentile",
+    "high_switching": "rolling 20-day state-change rate >= development 80th percentile",
+    "low_switching": "rolling 20-day state-change rate < development 80th percentile"
+  },
+  "reference_thresholds": {
+    "transition_surprise_quantile": 0.90,
+    "switching_window_days": 20,
+    "switching_rate_quantile": 0.80,
+    "reference_period": ["2021-01-01", "2024-01-01"],
+    "fit_uses_strategy_returns": false
+  },
+  "primary_mechanism_hypotheses": {
+    "persistent_regime_non_degradation": {
+      "context": "persistent_state",
+      "minimum_paired_days": 60,
+      "minimum_v136_target_changes": 8,
+      "v136_turnover_reduction_min": 0.10,
+      "v136_net_return_delta_min": 0.0,
+      "v136_max_drawdown_worsening_max": 0.02,
+      "paper_slippage_to_model_ratio_max": 1.5
+    },
+    "switching_regime_execution_benefit": {
+      "context": "high_switching",
+      "minimum_paired_days": 30,
+      "minimum_v136_target_changes": 8,
+      "v136_turnover_reduction_min": 0.10,
+      "v136_net_return_delta_min": 0.0,
+      "v136_max_drawdown_worsening_max": 0.02,
+      "paper_slippage_to_model_ratio_max": 1.5
+    }
+  },
+  "diagnostic_contexts": {
+    "early_state": {"minimum_paired_days": 20, "minimum_v136_target_changes": 5},
+    "novel": {"minimum_paired_days": 20, "minimum_v136_target_changes": 5},
+    "high_transition_surprise": {"minimum_paired_days": 20, "minimum_v136_target_changes": 5}
+  },
+  "uncertainty_protocol": {
+    "method": "deterministic circular block bootstrap on paired daily observations",
+    "block_days": 7,
+    "resamples": 2000,
+    "confidence_level": 0.90,
+    "seed": 445,
+    "statistical_support_requires": [
+      "turnover-reduction confidence interval lower bound > 0",
+      "net-return-delta confidence interval lower bound >= -0.005"
+    ],
+    "statistical_support_is_not_a_capital_gate": true
+  },
+  "global_gates_inherited_from_v429": {
+    "minimum_calendar_days": 180,
+    "minimum_v136_target_changes": 25,
+    "zero_reconciliation_breaks": true,
+    "source_hash_match_rate": 1.0,
+    "v136_turnover_reduction_min": 0.10,
+    "v136_net_return_delta_min": 0.0,
+    "v136_max_drawdown_worsening_max": 0.02,
+    "paper_slippage_to_model_ratio_max": 1.5,
+    "missing_or_stale_data_fail_closed": true
+  },
+  "decision_logic": {
+    "insufficient_evidence": "minimum paired days or target changes are not met",
+    "contradicted": "a frozen point gate fails after evidence minimums are met",
+    "provisional_support": "all frozen point gates pass but bootstrap support is incomplete",
+    "supported_forward_mechanism": "all frozen point gates and bootstrap support checks pass",
+    "capital_or_strategy_change_authorized": false
+  },
+  "prohibited_use": [
+    "historical state-conditioned exposure gating",
+    "using V437 failure states to edit V75 or V136",
+    "changing context definitions after forward observations",
+    "dropping weak contexts after observing results",
+    "capital allocation changes from context evidence alone",
+    "live execution or real leverage"
+  ],
+  "safety": {
+    "historical_parameter_search_closed": true,
+    "state_model_is_trading_signal": false,
+    "strategy_parameter_changes_permitted": false,
+    "allocation_changes_permitted": false,
+    "new_sleeve_allocation": 0.0,
+    "v136_capital_allocation": 0.0,
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
