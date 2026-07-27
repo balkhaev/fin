@@ -1,0 +1,61 @@
+{
+  "program": "V437_V444_STATE_CONDITIONED_STRATEGY_ANATOMY",
+  "files": {
+    "FAILURE_MAP.json": {
+      "bytes": 55375,
+      "sha256": "7ab33888d9cf892a1a3b650f302f464fcb253ee641ae3b660b7d0757ca8f085d"
+    },
+    "FROZEN_DECISION.json": {
+      "bytes": 1268,
+      "sha256": "184250ada6dd766babc2509f8ba0aacab9b20273af38639aab5b3228e262ea71"
+    },
+    "REPORT_RU.md": {
+      "bytes": 2915,
+      "sha256": "dde635f0c2173fad90cf3159e94d6d5cb02b1077b44439c8b1b37bbc84f44505"
+    },
+    "TECHNICAL_QUALITY.json": {
+      "bytes": 803,
+      "sha256": "f5887e63021939cc6c9ca5849be3b02669a47b79c498b71f1f46b0838ab82a6f"
+    },
+    "champion_year_state_context.csv": {
+      "bytes": 2424,
+      "sha256": "807da0fd9ce5482b0796d31dc8dd9cc5d1e5f7beeb1c91876afa9e004e7bae9f"
+    },
+    "joined_V285_LOW_SKEW_HOURLY_CONTROLLER.csv": {
+      "bytes": 1122915,
+      "sha256": "0456df8a98761dbde0ef7fbcd827eae442e86d50f0655da55b57189ecf1993d3"
+    },
+    "joined_V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE.csv": {
+      "bytes": 1117043,
+      "sha256": "e134ebcd7504a818b2d824e5ea133c98bfd6a16596dc47b9e6754ccebf2663a0"
+    },
+    "strategy_metrics_by_duration.csv": {
+      "bytes": 72074,
+      "sha256": "6f6a95db7006f9b0f4782aa7870b4085c4075424bea7ef628d233a10cd85d4ab"
+    },
+    "strategy_metrics_by_novelty.csv": {
+      "bytes": 6967,
+      "sha256": "ca8580a6a9a0971ec6a7c4707a4b5b8d4211f0f3aedd059cde91a78831a8cb90"
+    },
+    "strategy_metrics_by_period_state.csv": {
+      "bytes": 16684,
+      "sha256": "0b3b24ab39f7646c5d30fab7a5c255efff405e87e3d2c9535df443a0ccac7540"
+    },
+    "strategy_metrics_by_state.csv": {
+      "bytes": 5555,
+      "sha256": "63016885c86f098ed6cba0ac205279f758649edf2e8054ada1697cd296da70d2"
+    },
+    "strategy_metrics_by_transition.csv": {
+      "bytes": 44207,
+      "sha256": "5e9c93a8262a16ffa5303b9773841a5bc166fc4bd78eb0a7a225ac81a569373e"
+    },
+    "strategy_metrics_by_transition_surprise.csv": {
+      "bytes": 11303,
+      "sha256": "48461390e3fa18d8e79ee14b54a9738ebd55af6f1bf661ce59d029b600936aa2"
+    },
+    "worst_drawdown_episodes.csv": {
+      "bytes": 65521,
+      "sha256": "57fa0926f3d7c5b460d71bd89d5c480d29dec97d4f89b6331bd38ab62b4c2487"
+    }
+  }
+}

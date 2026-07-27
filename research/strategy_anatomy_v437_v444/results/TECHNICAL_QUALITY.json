@@ -1,0 +1,17 @@
+{
+  "state_rows": 2007,
+  "strategy_rows": {
+    "V285_LOW_SKEW_HOURLY_CONTROLLER": 2007,
+    "V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE": 2007
+  },
+  "state_model_sha256": "187164615c057292cd1e7e8b47bfaa930e6fe97da4b42e253dff60ba15fd2690",
+  "state_model_hash_match": true,
+  "state_file_sha256": "41441aadafb124f7b0eac52f24a8de69eb083b23b465a00567e27c2ec6fa7af5",
+  "v285_input_sha256": "c64dbe9f7f59fc68c33dd0045805f27afdfb948f0b628d5e6d74f2afb09d7378",
+  "v365_input_sha256": "9d39a3ebab2871901fa767f35496539dd890b433cadcc5be446ad712ed4bfc90",
+  "annual_context_sha256": "d280cd1df0707157b45a9a28a2cd9aec33dec58e2f97a83ea201857ea656565d",
+  "design_sha256": "1740ba124706785e13eff4d9f740655063df0db4e65ad8d9bcf6eecd74edaaa8",
+  "missing_state_rows": 0,
+  "nonfinite_equity_rows": 0,
+  "passed": true
+}

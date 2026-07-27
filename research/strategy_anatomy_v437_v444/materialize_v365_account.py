@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import sys
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -113,7 +114,7 @@ def main() -> int:
         "start": account.index.min(),
         "end": account.index.max(),
         "diagnostics": diagnostics,
-        "audit": clean(v365.AUDITS[0].__dict__),
+        "audit": clean(asdict(v365.AUDITS[0])),
         "neighboring_parameters_tested": 0,
     }
     (args.output / "V365_MATERIALIZATION.json").write_text(

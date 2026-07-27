@@ -97,7 +97,8 @@ def load_state(state_path: Path, model_path: Path) -> tuple[pd.DataFrame, dict[s
     missing = sorted(required - set(state.columns))
     if missing:
         raise ValueError(f"missing market-state fields: {missing}")
-    if state[list(required - {"state_label", "novelty_flag"})].isna().all(axis=None):
+    numeric_required = sorted(required - {"state_label", "novelty_flag"})
+    if state[numeric_required].isna().to_numpy().all():
         raise ValueError("market-state numeric fields are empty")
     return state, model
 
@@ -146,8 +147,10 @@ def load_v365(path: Path) -> pd.DataFrame:
     return finalize_account(daily[keep])
 
 
-def finalize_account(account: pd.DataFrame) -> pd.DataFrame:
-    if len(account) != EXPECTED_ROWS:
+def finalize_account(
+    account: pd.DataFrame, expected_rows: int = EXPECTED_ROWS
+) -> pd.DataFrame:
+    if len(account) != expected_rows:
         raise RuntimeError(
             f"unexpected {account.strategy_id.iloc[0]} daily rows: {len(account)}"
         )
@@ -398,7 +401,7 @@ def synthetic_self_test() -> None:
         },
         index=index,
     )
-    account = finalize_account(account)
+    account = finalize_account(account, expected_rows=len(account))
     joined = join_state(account, state)
     table = grouped_metrics(joined, ["state_label"])
     assert len(table) == 2

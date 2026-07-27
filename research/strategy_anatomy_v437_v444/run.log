@@ -1,0 +1,59 @@
+# V437–V444 — state-conditioned strategy failure anatomy
+
+## Решение
+
+Широкий поиск новых факторов не возобновляется. Два сильнейших rejected-after-OOS процесса разобраны в frozen V413 market-state coordinates. Attribution является описанием и не разрешает post-hoc state gating.
+
+```text
+status                              state_conditioned_failure_map_ready
+historical_state_gating             prohibited
+V285                                rejected OOS anti-control
+V365                                rejected OOS anti-control
+primary refinement                  V75/V136 forward execution telemetry
+new sleeve allocation               0%
+live_ready                          false
+real_leverage_authorized            false
+```
+
+## V285 — failure window 2025
+
+```text
+return                              -3.23%
+dollar P&L                          $-550.24
+turnover                            3.254x
+novel loss share                    8.9%
+state-entry loss share              7.9%
+persistent state >5d loss share     68.4%
+```
+
+Largest negative states: deleveraging (-7.68%), rotation (+0.18%), transition (+0.69%).
+
+## V365 — failure window 2024
+
+```text
+return                              -10.36%
+dollar P&L                          $-1,960.76
+turnover                            15.325x
+novel loss share                    24.1%
+state-entry loss share              7.5%
+persistent state >5d loss share     65.5%
+```
+
+Largest negative states: rotation (-5.74%), transition (-2.71%), transition_2 (-1.61%).
+
+## Общая структура
+
+Common negative states: `deleveraging`.
+
+Common negative transitions: `deleveraging->deleveraging`.
+
+Совпадение не превращается в торговое правило: оба failure windows уже просмотрены. Оно используется только для forward attribution V75/V136/V28 и для отказа от повторной настройки V285/V365.
+
+## Champion context
+
+`champion_year_state_context.csv` объединяет опубликованные годовые V75/V136 returns с occupancy, novelty, switching rate и средними market-state axes. Это coarse descriptive context; шесть календарных наблюдений не используются для regression, selection или изменения стратегии.
+
+## Следующий эффективный шаг
+
+Продолжать V429–V436 forward instrumentation. Новая исследовательская гипотеза допускается только при независимом источнике данных/payoff. State labels, duration, novelty и transition surprise пока используются как alert/attribution fields, а не как exposure controls.
+
