@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from decimal import Decimal
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping
 
 from finruntime.canonical import ContractError, require_decimal_string, sha256_id
-from finruntime.execution.paper_broker import PaperExecutionResult
 from finruntime.models import ExecutionPlan, MarketSnapshot, ReconciliationReport
 from finruntime.portfolio.accounting import (
     AccountingHalt,
@@ -12,6 +11,9 @@ from finruntime.portfolio.accounting import (
     margin_buffer_fraction,
 )
 from finruntime.portfolio.risk import ReferencePriceBook, decimal_text, get_reference_price
+
+if TYPE_CHECKING:
+    from finruntime.execution.paper_broker import PaperExecutionResult
 
 _ZERO = Decimal("0")
 
