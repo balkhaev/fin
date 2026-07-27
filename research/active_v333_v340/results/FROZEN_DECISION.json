@@ -1,0 +1,12 @@
+{
+  "candidate": "ACTIVE_V333_CORRECTED_COSKEW_BETA_HEDGE",
+  "status": "rejected_before_oos",
+  "development_reproof_passed": false,
+  "oos_opened": false,
+  "standalone_selection_passed": false,
+  "integration_permitted": false,
+  "promoted_candidates": [],
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
