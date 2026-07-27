@@ -39,8 +39,14 @@ jobs:
         run: python -m unittest discover -s tests/runtime -p 'test_*.py' -v
       - name: Runtime self-test
         run: python -m finruntime self-test
-      - name: Verify provenance, schemas and safety
-        run: python scripts/verify_runtime.py --full
+      - name: Verify V75 provenance
+        run: python scripts/verify_runtime.py --provenance-only --profile v75_atlas_nx
+      - name: Verify V136 provenance
+        run: python scripts/verify_runtime.py --provenance-only --profile v136_execution_shadow
+      - name: Verify V28 provenance
+        run: python scripts/verify_runtime.py --provenance-only --profile v28_growth_control
+      - name: Verify registry, schemas and safety
+        run: python scripts/verify_runtime.py --contracts-only
       - name: Reject opaque transport and live surface
         run: |
           set -euxo pipefail
