@@ -1,0 +1,76 @@
+{
+  "candidate": "ACTIVE_V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE",
+  "frozen_before_ensemble_results": true,
+  "source_cycle": "V341-V348",
+  "source_status": "0/108 eligible; OOS not opened",
+  "component_policies": [
+    "low_downside_vol_ratio_l14_k3_r7_dollar",
+    "low_downside_vol_ratio_l60_k3_r7_beta"
+  ],
+  "component_weights": [0.5, 0.5],
+  "neighboring_component_policies_tested": 0,
+  "neighboring_ensemble_weights_tested": 0,
+  "neighboring_gross_scales_tested": 0,
+  "selection_reason": "two complementary V341 near-misses with positive long and short legs: the first passed yearly stability but missed turnover/concentration; the second passed every gate except all-years-positive",
+  "chronology": {
+    "development": ["2021-01-01", "2023-12-31"],
+    "validation": ["2024-01-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "oos_open_condition": "all development gates pass",
+    "program_level_holdout_pristine": false,
+    "paper_forward_earliest_start": "2026-07-27"
+  },
+  "execution": {
+    "signal": "completed daily bars only",
+    "entry": "next UTC daily open",
+    "scheduled_component_targets_only": true,
+    "target_total_gross": 0.40,
+    "maximum_realized_close_gross": 0.70,
+    "actual_archived_funding": true,
+    "forced_delisting_penalty_bps": 100,
+    "survivor_replacement_permitted": false
+  },
+  "audits": {
+    "base_cost_bps_per_side": 30,
+    "severe_cost_bps_per_side": 60,
+    "extreme_cost_bps_per_side": 100,
+    "latency": "+1 completed daily bar"
+  },
+  "development_gates": {
+    "cagr_min": 0.05,
+    "sharpe_min": 1.0,
+    "max_drawdown_min": -0.15,
+    "rebalance_events_min": 24,
+    "annual_turnover_max": 20.0,
+    "max_realized_gross": 0.70,
+    "all_development_years_positive": true,
+    "net_long_leg_pnl_positive": true,
+    "net_short_leg_pnl_positive": true,
+    "symbols_traded_min": 10,
+    "top_positive_asset_pnl_share_max": 0.35
+  },
+  "post_oos_gates": {
+    "validation_return_positive": true,
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "full_cagr_min": 0.06,
+    "full_sharpe_min": 0.80,
+    "full_max_drawdown_min": -0.15,
+    "severe_full_cagr_positive": true,
+    "extreme_full_cagr_positive": true,
+    "latency_full_cagr_positive": true,
+    "worst_calendar_year_min": -0.10,
+    "full_long_leg_pnl_positive": true,
+    "full_short_leg_pnl_positive": true,
+    "all_audits_max_gross": 0.70,
+    "top_positive_asset_pnl_share_max": 0.35,
+    "forced_exit_count_max": 4
+  },
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "integration_permitted": false
+  }
+}
