@@ -1,0 +1,78 @@
+{
+  "checkpoint": "V380",
+  "date": "2026-07-27",
+  "new_candidate_found": false,
+  "new_sleeve_allocation": 0.0,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "benchmark": {
+    "strategy": "V75",
+    "status": "unchanged_paper_shadow_benchmark",
+    "allocation_change_authorized": false
+  },
+  "new_cycles": [
+    {
+      "versions": "V341-V348",
+      "family": "volatility_term_structure",
+      "status": "rejected_before_validation_near_miss",
+      "eligible_promotable_policies": 0,
+      "promotable_policy_count": 108,
+      "oos_opened": false,
+      "capital_allocation": 0.0
+    },
+    {
+      "versions": "V349-V356",
+      "family": "slow_attention_and_taker_flow",
+      "status": "rejected_before_validation",
+      "eligible_promotable_policies": 0,
+      "promotable_policy_count": 108,
+      "oos_opened": false,
+      "capital_allocation": 0.0
+    },
+    {
+      "versions": "V357-V364",
+      "family": "correlation_and_beta_stability",
+      "status": "rejected_before_validation",
+      "eligible_promotable_policies": 0,
+      "promotable_policy_count": 108,
+      "oos_opened": false,
+      "capital_allocation": 0.0
+    },
+    {
+      "versions": "V365-V372",
+      "family": "exact_downside_volatility_compression_ensemble",
+      "status": "rejected_after_oos",
+      "development_reproof_passed": true,
+      "oos_opened": true,
+      "validation_2024_return": -0.10358,
+      "holdout_2025_return": 0.003566,
+      "final_2026h1_return": -0.013158,
+      "capital_allocation": 0.0
+    },
+    {
+      "versions": "V373-V380",
+      "family": "idiosyncratic_jump_incidence_and_clustering",
+      "status": "rejected_before_validation",
+      "eligible_promotable_policies": 0,
+      "promotable_policy_count": 108,
+      "oos_opened": false,
+      "capital_allocation": 0.0
+    }
+  ],
+  "historical_tuning_closed": [
+    "downside_volatility_compression_and_V341_V365_mixtures",
+    "low_skew_and_lottery_quality",
+    "systematic_coskewness",
+    "low_risk_liquidity_attention_correlation_ranking",
+    "residual_reversal_path_quality_jump_incidence",
+    "funding_basis_calendar_spread_cross_venue_carry",
+    "depth_taker_flow_lead_lag_liquidation_proxies"
+  ],
+  "permitted_next_research": [
+    "new_independent_executable_dataset_with_frozen_chronology",
+    "forward_only_hypothesis_starting_after_2026-07-27",
+    "paper_shadow_runtime_for_existing_frozen_benchmarks"
+  ]
+}
