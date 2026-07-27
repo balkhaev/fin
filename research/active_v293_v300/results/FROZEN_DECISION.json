@@ -1,0 +1,11 @@
+{
+  "candidate": "ACTIVE_V293_CRYPTO_RESIDUAL_REVERSAL",
+  "status": "rejected_before_validation",
+  "eligible_policy_count": 0,
+  "standalone_selection_passed": false,
+  "integration_permitted": false,
+  "promoted_candidates": [],
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
