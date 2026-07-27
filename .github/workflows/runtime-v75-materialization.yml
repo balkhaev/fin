@@ -7,6 +7,12 @@ on:
       - 'scripts/recover_v75_v138.py'
       - '.github/workflows/runtime-v75-materialization.yml'
       - 'docs/checkpoints/runtime-v1/SOURCE_REGISTRY.json'
+  pull_request:
+    branches: [agent/runtime-contracts-m0-m1]
+    paths:
+      - 'scripts/recover_v75_v138.py'
+      - '.github/workflows/runtime-v75-materialization.yml'
+      - 'docs/checkpoints/runtime-v1/SOURCE_REGISTRY.json'
   workflow_dispatch:
 
 concurrency:
@@ -64,6 +70,7 @@ jobs:
           python scripts/verify_runtime.py --full
 
       - name: Commit direct recovered files
+        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
