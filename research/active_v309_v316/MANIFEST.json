@@ -1,0 +1,61 @@
+{
+  "candidate": "ACTIVE_V309_CRYPTO_RESIDUAL_PATH_QUALITY",
+  "files": {
+    "README.md": {
+      "bytes": 1483,
+      "sha256": "4c13e8b3510648e041857ed54536ed96b0736419d6b1205c1ba106bd4f140e6b"
+    },
+    "V309_V316_DESIGN.json": {
+      "bytes": 3320,
+      "sha256": "afe058b4221408806036281231965cf4e1e44091cdd24f2efafd5ac171e5bad5"
+    },
+    "bootstrap_path_quality.py": {
+      "bytes": 4866,
+      "sha256": "724444bad0f56b90ed740d25c02a872b1cd911e7f65edecc0a10eb799e4efceb"
+    },
+    "requirements.txt": {
+      "bytes": 47,
+      "sha256": "e4b80ba1592a07b6c9bfcad04477c3ae8e131719c30f33fa2c52a5078c608199"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 330,
+      "sha256": "81060cc9ca5816da442d675764482f8d70b94fcf989bb392b0102d789eab2836"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 198,
+      "sha256": "da00521206e0911ea77494b25e03a79857f52a0b9441191924ad8419e11dfaa9"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "835e74feaa3a20aa28af344b502b0a8b72aecb44f8af242315751465933141d4"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "0c5b6e01489a76a94785fcdf8e7ebf36d909bb6f197223464d75616477bf8ad3"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 8203,
+      "sha256": "1a63e40a44ab19f5f4dcc01cf8c9c95cf86fbbaf28847781c91fd42d6e782590"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 131678,
+      "sha256": "007b0c6c5dfb9dab205c472b88bf563e1972d6ea1dee43f997206246fa5bef6e"
+    },
+    "results/summary.json": {
+      "bytes": 41776,
+      "sha256": "712a9381f640b4bee5f57d0b05693965cff160fb2179d8a0fd5caaf68f0df881"
+    },
+    "run_research.py": {
+      "bytes": 13727,
+      "sha256": "44321022b1795b9f98179f93dd7ec0ea1ba6463af788e0613aec9e03e4dcacb0"
+    }
+  }
+}
