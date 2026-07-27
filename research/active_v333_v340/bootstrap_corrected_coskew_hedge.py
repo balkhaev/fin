@@ -42,6 +42,10 @@ if text.count(proof_needle) != 1:
 text = text.replace(proof_needle, proof_insert, 1)
 
 text = text.replace("V317", "V333").replace("V324", "V340")
+text = text.replace(
+    '"hedge_specification_source": "V333-V340 preregistration"',
+    '"hedge_specification_source": "V317-V324 preregistration"',
+)
 text = text.replace("v301_oos_opened", "v325_oos_opened")
 target.write_text(text)
 print(f"materialized {target} ({len(text)} bytes)")
