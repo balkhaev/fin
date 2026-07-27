@@ -35,6 +35,13 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Apply deterministic V246 daily funding fallback
+        run: |
+          set -euxo pipefail
+          python research/active_v245_v252/apply_v246_daily_funding_fallback.py
+          rm research/active_v245_v252/apply_v246_daily_funding_fallback.py
+          grep -q 'daily_reconstruction' research/active_v245_v252/data.py
+
       - name: Install, compile and causal self-test
         run: |
           set -euxo pipefail
@@ -48,7 +55,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/v245_dual_perp
-          key: v245-binance-dual-perp-1h-202101-202606-v1
+          key: v245-binance-dual-perp-1h-202101-202606-v2
 
       - name: Run frozen 144-policy research
         run: |
