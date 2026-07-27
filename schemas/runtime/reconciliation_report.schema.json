@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/reconciliation_report.schema.json",
+  "title": "ReconciliationReport",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "strategy_id",
+    "as_of_utc",
+    "model_targets",
+    "planned_positions",
+    "paper_positions",
+    "tracking_error_fraction",
+    "modelled_cost",
+    "realized_paper_cost",
+    "funding_pnl",
+    "margin_buffer",
+    "alerts",
+    "status",
+    "report_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "strategy_id": {"type": "string"},
+    "as_of_utc": {"type": "string", "pattern": "Z$"},
+    "model_targets": {"type": "object"},
+    "planned_positions": {"type": "object"},
+    "paper_positions": {"type": "object"},
+    "tracking_error_fraction": {"type": "string"},
+    "modelled_cost": {"type": "string"},
+    "realized_paper_cost": {"type": "string"},
+    "funding_pnl": {"type": "string"},
+    "margin_buffer": {"type": "string"},
+    "alerts": {"type": "array", "items": {"type": "string"}},
+    "status": {"enum": ["ok", "warn", "halt"]},
+    "report_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}
