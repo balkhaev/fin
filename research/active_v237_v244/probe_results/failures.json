@@ -1,0 +1,41 @@
+{
+  "missing_months": {
+    "BTC": {
+      "2026-06": [
+        "premium_index_5m",
+        "mark_price_5m",
+        "index_price_5m",
+        "perpetual_5m",
+        "funding"
+      ]
+    },
+    "ETH": {
+      "2026-06": [
+        "premium_index_5m",
+        "mark_price_5m",
+        "index_price_5m",
+        "perpetual_5m",
+        "funding"
+      ]
+    },
+    "SOL": {
+      "2021-01": [
+        "premium_index_5m",
+        "mark_price_5m",
+        "index_price_5m",
+        "perpetual_5m",
+        "funding"
+      ],
+      "2026-06": [
+        "premium_index_5m",
+        "mark_price_5m",
+        "index_price_5m",
+        "perpetual_5m",
+        "funding"
+      ]
+    }
+  },
+  "all_failures_http_status": 404,
+  "all_failures_checksum_status": 404,
+  "interpretation": "Missing archives are data-access failures and are not treated as zero observations."
+}
