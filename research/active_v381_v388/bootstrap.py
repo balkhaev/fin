@@ -134,8 +134,12 @@ replace_once('            (7, 14, 28),', '            (14, 28, 56),')
 replace_once('policy = v.Policy("low_residual_vol_ratio", 30, 3, 14, "dollar")', 'policy = v.Policy("low_residual_sign_entropy", 60, 3, 14, "dollar")')
 replace_once('print("V341-V348 causal volatility-term-structure self-test passed")', 'print("V381-V388 causal residual-entropy self-test passed")')
 replace_once('proof["window_pairs"] = {str(key): list(value) for key, value in WINDOWS.items()}', 'proof["lookbacks"] = list(WINDOWS)')
-replace_once('V341_V348_DESIGN.json', 'V381_V388_DESIGN.json')
-replace_once('V341_FIXED_UNIVERSE_DATA_COVERAGE', 'V381_FIXED_UNIVERSE_DATA_COVERAGE')
+if text.count('V341_V348_DESIGN.json') != 2:
+    raise SystemExit('unexpected design-path count')
+text = text.replace('V341_V348_DESIGN.json', 'V381_V388_DESIGN.json')
+if text.count('V341_FIXED_UNIVERSE_DATA_COVERAGE') != 2:
+    raise SystemExit('unexpected coverage-name count')
+text = text.replace('V341_FIXED_UNIVERSE_DATA_COVERAGE', 'V381_FIXED_UNIVERSE_DATA_COVERAGE')
 text = text.replace('V341–V348 — volatility term structure', 'V381–V388 — residual entropy')
 replace_once('Volatility compression is a statistical ranking, not an issuer-quality claim.', 'Residual entropy is a statistical path-complexity ranking, not an issuer-quality claim.')
 
