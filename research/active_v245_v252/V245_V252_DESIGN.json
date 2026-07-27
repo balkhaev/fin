@@ -1,0 +1,49 @@
+{
+  "candidate": "ACTIVE_V245_USDM_COINM_DUAL_PERP",
+  "frozen_before_profit_results": true,
+  "assets": ["BTC", "ETH"],
+  "venue": "Binance",
+  "legs": ["USD-M linear perpetual", "COIN-M inverse perpetual"],
+  "chronology": {
+    "development": ["2021-01-01", "2023-12-31"],
+    "validation": ["2024-01-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "selection_uses_2024_2026": false,
+    "program_level_holdout_pristine": false
+  },
+  "families": [
+    "dual_perp_basis_convergence",
+    "funding_spread_carry",
+    "funding_basis_joint",
+    "reversed_dual_perp_control"
+  ],
+  "grid": {
+    "lookback_hours": [168, 336],
+    "entry_abs_z": [2.0, 3.0, 4.0],
+    "minimum_expected_edge_bps": [10.0, 20.0],
+    "hold_hours": [8, 24, 72],
+    "policy_count": 144,
+    "promotable_policy_count": 108
+  },
+  "execution": {
+    "signal": "completed hourly close and paid funding observations only",
+    "entry": "next hourly open",
+    "same_base_notional": true,
+    "target_gross": 0.25,
+    "one_position_at_a_time": true
+  },
+  "costs": {
+    "base_pair_round_trip_bps": 24,
+    "severe_pair_round_trip_bps": 40,
+    "extreme_pair_round_trip_bps": 70,
+    "latency": "+1 completed hour"
+  },
+  "risk_caveat": "USD-M and COIN-M collateral are segregated; historical standalone pass would still require leg-level margin and collateral stress before integration.",
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "integration_permitted": false
+  }
+}
