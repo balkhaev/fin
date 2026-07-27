@@ -1,11 +1,6 @@
 name: Active V445-V452 forward market mechanism validator
 
 on:
-  push:
-    branches: [agent/active-v445-v452-forward-mechanism-validator]
-    paths:
-      - 'research/forward_mechanism_v445_v452/**'
-      - '.github/workflows/active-v445-v452-forward-mechanism.yml'
   pull_request:
     branches: [agent/active-v429-v436-state-telemetry]
     paths:
@@ -14,7 +9,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: active-v445-v452-${{ github.event_name }}-${{ github.ref }}
+  group: active-v445-v452-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -101,7 +96,7 @@ jobs:
           find research/forward_mechanism_v445_v452 docs/checkpoints/v452 -type f -name '*.pyc' -delete || true
 
       - name: Commit frozen validator evidence
-        if: github.event_name == 'push'
+        if: github.event_name == 'workflow_dispatch'
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
@@ -111,6 +106,8 @@ jobs:
             echo 'No V445-V452 changes'
           else
             git commit -m 'Archive V445-V452 forward mechanism validator [skip ci]'
+            git fetch origin agent/active-v445-v452-forward-mechanism-validator
+            git rebase origin/agent/active-v445-v452-forward-mechanism-validator
             git push origin HEAD:agent/active-v445-v452-forward-mechanism-validator
           fi
 
