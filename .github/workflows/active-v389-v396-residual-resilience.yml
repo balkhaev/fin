@@ -1,0 +1,135 @@
+name: Active V389-V396 fixed-universe residual resilience
+
+on:
+  push:
+    branches: [agent/active-v389-v396-residual-resilience]
+    paths:
+      - 'research/active_v389_v396/**'
+      - '.github/workflows/active-v389-v396-residual-resilience.yml'
+  pull_request:
+    branches: [agent/active-v341-v348-volatility-term-structure]
+    paths:
+      - 'research/active_v389_v396/**'
+      - '.github/workflows/active-v389-v396-residual-resilience.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v389-v396-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v389-v396-residual-resilience
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize readable residual-resilience source
+        run: |
+          set -euxo pipefail
+          python research/active_v389_v396/bootstrap.py
+          test -s research/active_v389_v396/run_research.py
+          grep -q 'high_residual_recovery_ratio' research/active_v389_v396/run_research.py
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v389_v396/requirements.txt
+          python -m compileall -q \
+            research/active_v389_v396 \
+            research/active_v341_v348 \
+            research/active_v269_v276 \
+            research/active_v253_v260 \
+            research/active_v9
+          python research/active_v389_v396/run_research.py --self-test
+
+      - name: Restore immutable V9 public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+
+      - name: Run frozen 144-policy residual-resilience research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v389_v396/results \
+                 research/active_v389_v396/MANIFEST.json \
+                 docs/checkpoints/v396
+          python research/active_v389_v396/run_research.py \
+            --root research/active_v389_v396 \
+            --cache .cache/v9 \
+            2>&1 | tee research/active_v389_v396/run.log
+
+      - name: Materialize V396 checkpoint
+        run: |
+          set -euxo pipefail
+          test -s research/active_v389_v396/results/summary.json
+          test -s research/active_v389_v396/results/FROZEN_DECISION.json
+          test -s research/active_v389_v396/results/coverage_gate.json
+          test -s research/active_v389_v396/results/selection_proof_before_validation.json
+          test -s research/active_v389_v396/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v396
+          cp research/active_v389_v396/results/summary.json docs/checkpoints/v396/CHECKPOINT_V396.json
+          cp research/active_v389_v396/results/REPORT_RU.md docs/checkpoints/v396/RESEARCH_CHECKPOINT_V396_RU.md
+          if test -s research/active_v389_v396/results/ANNUAL_RETURNS.csv; then
+            cp research/active_v389_v396/results/ANNUAL_RETURNS.csv docs/checkpoints/v396/ANNUAL_RETURNS.csv
+          fi
+
+      - name: Verify frozen chronology and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v389_v396')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_validation.json').read_text())
+          if not proof.get('selection_not_run'):
+              assert proof['selection_uses_2024'] is False
+              assert proof['selection_uses_2025'] is False
+              assert proof['selection_uses_2026'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v389_v396 docs/checkpoints/v396 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v389_v396 docs/checkpoints/v396 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and frozen decision
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v389_v396 docs/checkpoints/v396
+          if git diff --cached --quiet; then
+            echo 'No V389-V396 changes'
+          else
+            git commit -m 'Archive V389-V396 residual-resilience evidence [skip ci]'
+            git push origin HEAD:agent/active-v389-v396-residual-resilience
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v389-v396-residual-resilience
+          path: |
+            research/active_v389_v396/results
+            research/active_v389_v396/run.log
+            docs/checkpoints/v396
+          if-no-files-found: warn
+          retention-days: 30
