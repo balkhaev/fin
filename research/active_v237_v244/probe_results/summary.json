@@ -1,0 +1,24 @@
+{
+  "candidate": "ACTIVE_V237_FUNDING_SETTLEMENT_PREMIUM_COMPRESSION",
+  "status": "data_access_insufficient",
+  "coverage_gate": {
+    "candidate": "V237_PREMIUM_SETTLEMENT_DATA_GATE",
+    "sample_months": [
+      "2021-01",
+      "2021-10",
+      "2022-07",
+      "2023-10",
+      "2024-07",
+      "2025-07",
+      "2026-04",
+      "2026-06"
+    ],
+    "passed": false
+  },
+  "selection_run": false,
+  "full_backtest_run": false,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
