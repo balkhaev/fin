@@ -1,0 +1,132 @@
+name: Active V245-V252 USD-M COIN-M dual perpetual research
+
+on:
+  push:
+    branches: [agent/active-v245-v252-dual-perp-basis]
+    paths:
+      - 'research/active_v245_v252/**'
+      - '.github/workflows/active-v245-v252-dual-perp.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v245-v252-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v245-v252-dual-perp-basis
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v245_v252/requirements.txt
+          python -m compileall -q research/active_v245_v252
+          cd research/active_v245_v252
+          python run_research.py --self-test
+
+      - name: Restore immutable public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v245_dual_perp
+          key: v245-binance-dual-perp-1h-202101-202606-v1
+
+      - name: Run frozen 144-policy research
+        run: |
+          set -euxo pipefail
+          rm -rf research/active_v245_v252/results \
+                 research/active_v245_v252/inputs \
+                 research/active_v245_v252/MANIFEST.json \
+                 docs/checkpoints/v252
+          python research/active_v245_v252/run_research.py \
+            --root research/active_v245_v252 \
+            --cache .cache/v245_dual_perp \
+            2>&1 | tee research/active_v245_v252/run.log
+
+      - name: Materialize V252 checkpoint and compact manifest
+        run: |
+          set -euxo pipefail
+          test -s research/active_v245_v252/results/summary.json
+          test -s research/active_v245_v252/results/FROZEN_DECISION.json
+          test -s research/active_v245_v252/results/coverage_gate.json
+          test -s research/active_v245_v252/results/selection_proof_before_validation.json
+          test -s research/active_v245_v252/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v252
+          cp research/active_v245_v252/results/summary.json docs/checkpoints/v252/CHECKPOINT_V252.json
+          cp research/active_v245_v252/results/REPORT_RU.md docs/checkpoints/v252/RESEARCH_CHECKPOINT_V252_RU.md
+          if test -s research/active_v245_v252/results/ANNUAL_RETURNS.csv; then
+            cp research/active_v245_v252/results/ANNUAL_RETURNS.csv docs/checkpoints/v252/ANNUAL_RETURNS.csv
+          fi
+          rm -rf research/active_v245_v252/inputs/normalized
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('research/active_v245_v252/MANIFEST.json')
+          value = json.loads(path.read_text())
+          value['files'] = {
+              key: item for key, item in value['files'].items()
+              if not key.startswith('inputs/normalized/')
+          }
+          path.write_text(json.dumps(value, indent=2) + '\n')
+          PY
+
+      - name: Verify frozen evidence and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/active_v245_v252')
+          summary = json.loads((root / 'results/summary.json').read_text())
+          proof = json.loads((root / 'results/selection_proof_before_validation.json').read_text())
+          if not proof.get('selection_not_run'):
+              assert proof['selection_uses_2024'] is False
+              assert proof['selection_uses_2025'] is False
+              assert proof['selection_uses_2026'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          assert summary['collateral_audit_required'] is True
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/active_v245_v252 docs/checkpoints/v252 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/active_v245_v252 docs/checkpoints/v252 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and frozen decision
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/active_v245_v252 docs/checkpoints/v252
+          if git diff --cached --quiet; then
+            echo 'No V245-V252 changes'
+          else
+            git commit -m 'Archive V245-V252 dual perpetual evidence [skip ci]'
+            git push origin HEAD:agent/active-v245-v252-dual-perp-basis
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v245-v252-dual-perp
+          path: |
+            research/active_v245_v252/results
+            research/active_v245_v252/run.log
+            docs/checkpoints/v252
+          if-no-files-found: warn
+          retention-days: 30
