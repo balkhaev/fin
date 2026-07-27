@@ -1,0 +1,67 @@
+{
+  "program": "V429_V436_STATE_CONDITIONED_TELEMETRY",
+  "frozen_before_forward_observations": true,
+  "purpose": "measure V75, V136 and V28 paper execution by frozen market state, transition and novelty",
+  "source_state_model": "V413_V420_MARKET_STATE_OBSERVATORY",
+  "required_strategies": [
+    "V75_ATLAS_NX",
+    "V136_EXECUTION_PLATEAU",
+    "V28_GROWTH_CONTROL"
+  ],
+  "earliest_observation_start": "2026-07-28",
+  "primary_key": ["timestamp", "strategy_id"],
+  "required_fields": [
+    "timestamp",
+    "strategy_id",
+    "source_bundle_sha256",
+    "target_hash",
+    "realized_position_hash",
+    "gross_target",
+    "gross_realized",
+    "turnover",
+    "modelled_slippage_bps",
+    "paper_slippage_bps",
+    "net_return",
+    "equity",
+    "drawdown",
+    "reconciliation_ok",
+    "source_hash_match",
+    "data_stale",
+    "execution_complete"
+  ],
+  "state_conditioned_outputs": [
+    "strategy metrics by market state",
+    "strategy metrics by state transition",
+    "strategy metrics by novelty flag",
+    "V136 versus V75 return, turnover, drawdown and slippage comparison",
+    "reconciliation and stale-data incidents by state",
+    "forward acceptance decision"
+  ],
+  "forward_acceptance_gates": {
+    "minimum_calendar_days": 180,
+    "minimum_v136_target_changes": 25,
+    "zero_reconciliation_breaks": true,
+    "source_hash_match_rate": 1.0,
+    "v136_turnover_reduction_min": 0.10,
+    "v136_net_return_delta_min": 0.0,
+    "v136_max_drawdown_worsening_max": 0.02,
+    "paper_slippage_to_model_ratio_max": 1.5,
+    "missing_or_stale_data_fail_closed": true
+  },
+  "prohibited_use": [
+    "historical state-conditioned strategy retuning",
+    "capital changes before every forward gate passes",
+    "using missing state rows as a neutral state",
+    "ignoring reconciliation, hash or stale-data failures"
+  ],
+  "safety": {
+    "historical_parameter_search_closed": true,
+    "state_model_is_trading_signal": false,
+    "strategy_parameter_changes_permitted": false,
+    "allocation_changes_permitted": false,
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
