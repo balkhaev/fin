@@ -62,7 +62,7 @@
     "annual_turnover_max": 15.0,
     "max_realized_gross": 0.70,
     "all_development_years_positive": true,
-    "long_alpha_leg_pnl_positive": true,
+    "net_long_side_pnl_positive": true,
     "symbols_traded_min": 8,
     "top_positive_asset_pnl_share_max": 0.35,
     "realized_beta_abs_max": 0.20
@@ -78,7 +78,7 @@
     "extreme_full_cagr_positive": true,
     "latency_full_cagr_positive": true,
     "worst_calendar_year_min": -0.10,
-    "full_long_alpha_leg_pnl_positive": true,
+    "full_net_long_side_pnl_positive": true,
     "full_realized_beta_abs_max": 0.20,
     "all_audits_max_gross": 0.70,
     "top_positive_asset_pnl_share_max": 0.35,
