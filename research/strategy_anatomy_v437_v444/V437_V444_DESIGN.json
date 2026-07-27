@@ -1,0 +1,69 @@
+{
+  "program": "V437_V444_STATE_CONDITIONED_STRATEGY_ANATOMY",
+  "purpose": "Explain failure mechanisms of the two strongest rejected-after-OOS candidates and place V75/V136 annual behavior in the frozen V413 market-state context.",
+  "not_a_strategy": true,
+  "sources": {
+    "market_state_branch": "agent/active-v413-v420-market-state-observatory",
+    "market_state_commit": "d033f11e86718bd3d707b50bea155ba5f9fe2c1b",
+    "market_state_model_sha256": "187164615c057292cd1e7e8b47bfaa930e6fe97da4b42e253dff60ba15fd2690",
+    "v285_pr": 53,
+    "v285_commit": "0fc0f8bcf38e396aca52fa5b3e5c334fbbd05473",
+    "v365_pr": 63,
+    "v365_commit": "2af20f21379b7ca8358422377689c0bb6c369969",
+    "champion_annual_context": "docs/checkpoints/v138/ANNUAL_RETURNS.csv"
+  },
+  "causal_alignment": {
+    "state_date_t_uses_market_data_through": "t-1 completed UTC day",
+    "strategy_return_attribution": "return realized during UTC day t is joined to state row t",
+    "historical_state_gating": "prohibited",
+    "strategy_returns_used_to_fit_state_model": false
+  },
+  "frozen_subjects": [
+    {
+      "strategy": "V285_LOW_SKEW_HOURLY_CONTROLLER",
+      "status": "rejected_after_oos",
+      "primary_failure_window": "2025-01-01/2026-01-01"
+    },
+    {
+      "strategy": "V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE",
+      "status": "rejected_after_oos",
+      "primary_failure_window": "2024-01-01/2025-01-01"
+    }
+  ],
+  "descriptive_outputs": [
+    "daily joined strategy/state telemetry",
+    "metrics by strategy and market state",
+    "metrics by calendar period and state",
+    "metrics by state transition",
+    "metrics by novelty flag",
+    "metrics by state-duration bucket",
+    "worst drawdown episode anatomy",
+    "V75/V136 annual returns joined to annual state occupancy",
+    "common failure-state and transition map"
+  ],
+  "technical_gates": {
+    "state_rows_required": 2007,
+    "strategy_rows_required": 2007,
+    "missing_state_rows": 0,
+    "nonfinite_equity_rows": 0,
+    "source_commit_pins_required": true,
+    "market_state_model_hash_match_required": true
+  },
+  "prohibited_actions": [
+    "historical state label to trade mapping",
+    "historical state-conditioned exposure reduction",
+    "retuning V285 or V365 after OOS",
+    "changing V75 or V136 parameters from attribution",
+    "capital allocation changes from descriptive results"
+  ],
+  "allowed_next_action": "Use the failure map to prioritize forward-only monitoring and decide whether any genuinely new mechanism deserves a separately preregistered paper experiment.",
+  "safety": {
+    "historical_parameter_search_closed": true,
+    "strategy_parameter_changes_permitted": false,
+    "allocation_changes_permitted": false,
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
