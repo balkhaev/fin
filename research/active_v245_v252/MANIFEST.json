@@ -9,6 +9,10 @@
       "bytes": 1582,
       "sha256": "6c4f4959d0b654f50c83b37067a3ea25b0b24db1876ef265cdb4c2a177545bb3"
     },
+    "apply_v246_daily_funding_fallback.py": {
+      "bytes": 5422,
+      "sha256": "d3b1c8dfdaf0295fcc7f7ee7644e7f3c2b7c2c0735f615e2a9c6d0315088e02a"
+    },
     "config.py": {
       "bytes": 2491,
       "sha256": "67d4057a4d39bfd5f7700dcac8dce642b75c1232f55a85f137cf5389ad4b93c0"

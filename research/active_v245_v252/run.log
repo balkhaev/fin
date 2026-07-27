@@ -1,29 +1,5 @@
 loading BTC
-um BTCUSDT klines: 20/66
-um BTCUSDT klines: 40/66
-um BTCUSDT klines: 60/66
-cm BTCUSD_PERP klines: 20/66
-cm BTCUSD_PERP klines: 40/66
-cm BTCUSD_PERP klines: 60/66
-um BTCUSDT fundingRate: 20/66
-um BTCUSDT fundingRate: 40/66
-um BTCUSDT fundingRate: 60/66
-cm BTCUSD_PERP fundingRate: 20/66
-cm BTCUSD_PERP fundingRate: 40/66
-cm BTCUSD_PERP fundingRate: 60/66
 loading ETH
-um ETHUSDT klines: 20/66
-um ETHUSDT klines: 40/66
-um ETHUSDT klines: 60/66
-cm ETHUSD_PERP klines: 20/66
-cm ETHUSD_PERP klines: 40/66
-cm ETHUSD_PERP klines: 60/66
-um ETHUSDT fundingRate: 20/66
-um ETHUSDT fundingRate: 40/66
-um ETHUSDT fundingRate: 60/66
-cm ETHUSD_PERP fundingRate: 20/66
-cm ETHUSD_PERP fundingRate: 40/66
-cm ETHUSD_PERP fundingRate: 60/66
 {
   "status": "data_access_insufficient",
   "coverage": {
