@@ -42,6 +42,8 @@ jobs:
           rm -rf research/refinement_v405_v412/results docs/checkpoints/v412
           python research/refinement_v405_v412/build_refinement.py \
             2>&1 | tee research/refinement_v405_v412/run.log
+          python research/refinement_v405_v412/build_registry.py \
+            2>&1 | tee -a research/refinement_v405_v412/run.log
 
       - name: Materialize V412 checkpoint
         run: |
@@ -50,6 +52,7 @@ jobs:
           test -s research/refinement_v405_v412/results/CHAMPION_SCORECARD.json
           test -s research/refinement_v405_v412/results/REFINEMENT_DECISION.json
           test -s research/refinement_v405_v412/results/REFINEMENT_PLAN_RU.md
+          test -s research/refinement_v405_v412/results/FINAL_CANDIDATE_REGISTRY.json
           mkdir -p docs/checkpoints/v412
           cp research/refinement_v405_v412/results/CHAMPION_SCORECARD.json \
              docs/checkpoints/v412/CHAMPION_SCORECARD_V412.json
@@ -57,6 +60,8 @@ jobs:
              docs/checkpoints/v412/REFINEMENT_DECISION_V412.json
           cp research/refinement_v405_v412/results/REFINEMENT_PLAN_RU.md \
              docs/checkpoints/v412/CHAMPION_REFINEMENT_V412_RU.md
+          cp research/refinement_v405_v412/results/FINAL_CANDIDATE_REGISTRY.json \
+             docs/checkpoints/v412/FINAL_CANDIDATE_REGISTRY_V412.json
 
       - name: Verify frozen roles and safety
         run: |
@@ -67,6 +72,7 @@ jobs:
           root = Path('research/refinement_v405_v412/results')
           score = json.loads((root / 'CHAMPION_SCORECARD.json').read_text())
           decision = json.loads((root / 'REFINEMENT_DECISION.json').read_text())
+          registry = json.loads((root / 'FINAL_CANDIDATE_REGISTRY.json').read_text())
           assert score['champion'] == 'V75_ATLAS_NX'
           assert score['execution_shadow'] == 'V136_EXECUTION_PLATEAU'
           assert score['historical_v136_promotion_passed'] is False
@@ -76,6 +82,10 @@ jobs:
           assert decision['integration_permitted'] is False
           assert decision['live_ready'] is False
           assert decision['real_leverage_authorized'] is False
+          assert registry['decision']['primary_paper_shadow_champion'] == 'V75_ATLAS_NX'
+          assert registry['decision']['execution_shadow'] == 'V136_EXECUTION_PLATEAU'
+          assert registry['decision']['new_standalone_candidate'] is None
+          assert registry['decision']['new_sleeve_allocation'] == 0.0
           print(json.dumps(decision, indent=2))
           PY
           find research/refinement_v405_v412 docs/checkpoints/v412 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
