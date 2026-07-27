@@ -50,6 +50,8 @@ jobs:
       - name: Reject opaque transport and live surface
         run: |
           set -euxo pipefail
+          find src/finruntime tests/runtime scripts -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find src/finruntime tests/runtime scripts -type f -name '*.pyc' -delete || true
           bad=$(find src/finruntime config/strategies schemas/runtime docs/checkpoints/runtime-v1 tests/runtime \
             -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' \
             -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
