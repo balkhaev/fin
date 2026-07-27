@@ -7,7 +7,7 @@ This cycle does not create a strategy or a historical state gate. It tests, on f
 
 Early-state, novelty and high-transition-surprise contexts are mandatory diagnostics. They cannot be dropped after observing results.
 
-The validator inherits the V429 telemetry contract, uses deterministic seven-day block bootstrap intervals, and never authorizes capital or parameter changes by itself.
+The validator inherits the V429 telemetry contract, uses deterministic seven-day block bootstrap intervals, and never authorizes capital or parameter changes by itself. All evaluator modules are committed as ordinary readable Python source before any forward observation is accepted.
 
 ```text
 historical_parameter_search_closed = true
