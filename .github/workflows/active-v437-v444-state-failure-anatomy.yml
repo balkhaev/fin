@@ -1,11 +1,6 @@
 name: Active V437-V444 state-conditioned strategy anatomy
 
 on:
-  push:
-    branches: [agent/active-v437-v444-state-failure-anatomy]
-    paths:
-      - 'research/strategy_anatomy_v437_v444/**'
-      - '.github/workflows/active-v437-v444-state-failure-anatomy.yml'
   pull_request:
     branches: [agent/active-v421-v428-market-state-memory]
     paths:
@@ -14,7 +9,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: active-v437-v444-${{ github.event_name }}-${{ github.ref }}
+  group: active-v437-v444-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -149,6 +144,7 @@ jobs:
           find research/strategy_anatomy_v437_v444 docs/checkpoints/v444 -type f -name '*.pyc' -delete || true
 
       - name: Commit readable anatomy evidence
+        if: github.event_name == 'workflow_dispatch'
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
@@ -158,6 +154,8 @@ jobs:
             echo 'No V437-V444 changes'
           else
             git commit -m 'Archive V437-V444 state-conditioned failure anatomy [skip ci]'
+            git fetch origin agent/active-v437-v444-state-failure-anatomy
+            git rebase origin/agent/active-v437-v444-state-failure-anatomy
             git push origin HEAD:agent/active-v437-v444-state-failure-anatomy
           fi
 
