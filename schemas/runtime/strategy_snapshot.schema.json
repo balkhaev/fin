@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/strategy_snapshot.schema.json",
+  "title": "StrategySnapshot",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "strategy_id",
+    "strategy_version",
+    "decision_time_utc",
+    "market_snapshot_id",
+    "state_sequence",
+    "targets",
+    "gross_target",
+    "cash_target",
+    "risk",
+    "reasons",
+    "quality_flags",
+    "target_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "strategy_id": {"type": "string", "minLength": 1},
+    "strategy_version": {"type": "string", "minLength": 1},
+    "decision_time_utc": {"type": "string", "pattern": "Z$"},
+    "market_snapshot_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "state_sequence": {"type": "integer", "minimum": 0},
+    "targets": {"type": "object"},
+    "gross_target": {"type": "string"},
+    "cash_target": {"type": "string"},
+    "risk": {"type": "object"},
+    "reasons": {"type": "array", "items": {"type": "string"}},
+    "quality_flags": {"type": "array", "items": {"type": "string"}},
+    "target_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}
