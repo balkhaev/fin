@@ -1,0 +1,61 @@
+{
+  "candidate": "ACTIVE_V325_CORRECTED_SYSTEMATIC_TAIL",
+  "files": {
+    "README.md": {
+      "bytes": 1509,
+      "sha256": "4a851a5600a77c42a230b4787dca06f22c52743692ff92b46a2aad2afd3c2e7b"
+    },
+    "V325_V332_DESIGN.json": {
+      "bytes": 3070,
+      "sha256": "49afd83b68a124e7e54a8a9968631457a062920119c16e731d879a797480c27b"
+    },
+    "bootstrap_corrected_coskewness.py": {
+      "bytes": 3912,
+      "sha256": "9592b19c7d15fd1782bfc93b00c6475b8b5ac8cc0c71f7a04daf88aa60a2bf22"
+    },
+    "requirements.txt": {
+      "bytes": 47,
+      "sha256": "e4b80ba1592a07b6c9bfcad04477c3ae8e131719c30f33fa2c52a5078c608199"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 327,
+      "sha256": "8abdd0b0939fbb815bd361ff45e2586a7f2af87a6c75986f8c21500e814d1be0"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 202,
+      "sha256": "835c2728509d99a7fb59f9fb0821559e2bfd2f0d49ae8919cea36e68316bf2bd"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "835e74feaa3a20aa28af344b502b0a8b72aecb44f8af242315751465933141d4"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "200e9fa4d39e4f6a00da5c55509f676ceb4b3b874831640933d81a35b0e1b5d7"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 8334,
+      "sha256": "3f6b6a50ab28abea25f78d7da5c3b3356085ab1c4b613df79c632986353f8c80"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 129324,
+      "sha256": "2f812d07630418f0ba89d259d9819e87c506d171d45cc5943fa3e764e08623ce"
+    },
+    "results/summary.json": {
+      "bytes": 41739,
+      "sha256": "ac41c8bbc1d0237df8857d537ae4867a93529fbb5420a6dafc06f39a8bc2c677"
+    },
+    "run_research.py": {
+      "bytes": 15834,
+      "sha256": "054265e51ab5e7a912e993a37ea93762e6520be5ab98f87c794c47fd8a447564"
+    }
+  }
+}
