@@ -80,3 +80,5 @@ jobs:
             research/active_v237_v244/probe.log
           if-no-files-found: warn
           retention-days: 30
+
+# Activated after immutable design freeze.
