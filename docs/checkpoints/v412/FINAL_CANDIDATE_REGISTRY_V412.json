@@ -1,0 +1,47 @@
+{
+  "checkpoint": "V412",
+  "date": "2026-07-27",
+  "historical_parameter_search_closed": true,
+  "primary_paper_shadow_champion": "V75_ATLAS_NX",
+  "execution_shadow": "V136_EXECUTION_PLATEAU",
+  "mandatory_control": "V28_GROWTH_CONTROL",
+  "new_standalone_candidate": null,
+  "new_sleeve_allocation": 0.0,
+  "v136_historical_promotion_passed": false,
+  "rejected_oos_anti_controls": {
+    "V285_LOW_SKEW_HOURLY_CONTROLLER": {
+      "validation_2024_return": 0.0105,
+      "holdout_2025_return": -0.0336,
+      "final_2026h1_return": 0.0412,
+      "status": "rejected_after_oos"
+    },
+    "V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE": {
+      "development_cagr": 0.2375,
+      "development_sharpe": 2.079,
+      "validation_2024_return": -0.1036,
+      "holdout_2025_return": 0.0036,
+      "final_2026h1_return": -0.0132,
+      "status": "rejected_after_oos"
+    }
+  },
+  "final_batch_rejected": {
+    "V381_RESIDUAL_ENTROPY": "0/108 eligible",
+    "V389_RESIDUAL_RESILIENCE": "0/108 eligible",
+    "V397_DISPERSION_SENSITIVITY": "0/108 eligible"
+  },
+  "next_evidence": {
+    "type": "paper_forward_execution_comparison",
+    "earliest_start": "2026-07-28",
+    "minimum_calendar_days": 180,
+    "minimum_v136_target_changes": 25,
+    "zero_reconciliation_breaks": true,
+    "source_hash_match_rate": 1.0,
+    "v136_turnover_reduction_min": 0.1,
+    "v136_net_return_delta_min": 0.0,
+    "v136_max_drawdown_worsening_max": 0.02,
+    "paper_slippage_to_model_ratio_max": 1.5
+  },
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "integration_permitted": false
+}
