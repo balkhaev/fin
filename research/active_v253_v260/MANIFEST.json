@@ -31,7 +31,7 @@
     },
     "results/data_manifest.csv": {
       "bytes": 427935,
-      "sha256": "87237b16d4569b36bc6f570ea12302961a008f3ac46448e17b0d3045e137e0f8"
+      "sha256": "bc2f4c269df8fa943039cfcec8f2369ffdd618857d89963c762625fd146ae5f5"
     },
     "results/data_quality.csv": {
       "bytes": 990,
@@ -47,7 +47,7 @@
     },
     "results/summary.json": {
       "bytes": 35839,
-      "sha256": "bc2872f9bbc88100c91608b726b550308137a7e38ff3b9fe053d9d373e369671"
+      "sha256": "00598d010a6bd107a552819f7021490b124ea5591110e3ed07751f562a5d78b3"
     },
     "run_research.py": {
       "bytes": 37659,

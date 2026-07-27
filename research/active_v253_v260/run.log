@@ -805,5 +805,5 @@ processed 144/144 policies
     "Fixed universe includes delisted names; forced exits carry a 100 bps penalty.",
     "Program-level holdout is not pristine."
   ],
-  "data_manifest_sha256": "ee5dbc91faa499c887069eb40e85b00a1a65172afe749d390b5f560466201311"
+  "data_manifest_sha256": "3f4583dfbed808753464aaf938db3b6719cc332e89145239bce0fc4885e9eb09"
 }
