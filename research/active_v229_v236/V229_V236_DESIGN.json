@@ -1,6 +1,8 @@
 {
   "candidate": "ACTIVE_V229_USDM_PERP_QUARTERLY_SPREAD",
-  "frozen_before_data_results": true,
+  "data_design_frozen_before_data_results": true,
+  "profit_grid_frozen_before_profit_results": true,
+  "arithmetic_correction_before_profit_results": "removed an unintended second DTE grid dimension so four families times 36 policies equals the predeclared 144 total",
   "assets": ["BTC", "ETH"],
   "venue": "Binance USD-M",
   "contracts": ["perpetual", "quarterly delivery"],
@@ -22,26 +24,52 @@
     "latest_required_expiry": "2026-06-26",
     "coin_m_fallback_permitted": false
   },
-  "planned_families_after_gate": [
+  "families": [
     "perp_dated_basis_convergence",
     "funding_adjusted_calendar_carry",
     "front_next_curve_convergence",
     "reversed_basis_control"
   ],
-  "planned_grid": {
+  "grid": {
     "lookback_hours": [168, 336],
     "entry_abs_z": [2.0, 3.0, 4.0],
     "minimum_expected_edge_bps": [20, 35],
     "hold_hours": [24, 72, 168],
-    "dte_band_days": [[10, 45], [20, 75]],
+    "dte_band_days": [10, 75],
     "policy_count": 144
   },
   "execution": {
-    "signal": "completed 1h observations",
+    "signal": "completed 1h observations and paid funding events only",
     "entry": "next 1h open",
     "equal_base_notional": true,
     "target_total_gross": 0.5,
-    "close_before_expiry_hours": 48
+    "close_before_expiry_hours": 48,
+    "one_position_at_a_time": true
+  },
+  "audits": {
+    "base_pair_round_trip_bps": 20,
+    "severe_pair_round_trip_bps": 35,
+    "extreme_pair_round_trip_bps": 60,
+    "latency": "+1 completed 1h bar"
+  },
+  "development_gates": {
+    "cagr_min": 0.04,
+    "sharpe_min": 0.8,
+    "max_drawdown_min": -0.10,
+    "closed_trades_min": 20,
+    "all_development_years_positive": true,
+    "btc_pnl_positive": true,
+    "eth_pnl_positive": true,
+    "annual_turnover_max": 40.0
+  },
+  "post_selection_gates": {
+    "validation_return_positive": true,
+    "holdout_return_positive": true,
+    "final_return_positive": true,
+    "severe_full_cagr_positive": true,
+    "latency_full_cagr_positive": true,
+    "worst_calendar_year_min": -0.08,
+    "zero_unplanned_forced_exits": true
   },
   "safety": {
     "live_ready": false,
