@@ -1,0 +1,17 @@
+{
+  "program": "V429_V436_STATE_CONDITIONED_TELEMETRY",
+  "status": "forward_instrumentation_ready_no_live_observations",
+  "source_state_model": "V413_V420_MARKET_STATE_OBSERVATORY",
+  "earliest_observation_start": "2026-07-28",
+  "paper_observation_count": 0,
+  "state_conditioned_performance_claim": false,
+  "historical_parameter_search_closed": true,
+  "strategy_parameter_changes_permitted": false,
+  "allocation_changes_permitted": false,
+  "new_sleeve_allocation": 0.0,
+  "v136_capital_allocation": 0.0,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
