@@ -149,7 +149,6 @@ jobs:
           find research/strategy_anatomy_v437_v444 docs/checkpoints/v444 -type f -name '*.pyc' -delete || true
 
       - name: Commit readable anatomy evidence
-        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           git config user.name github-actions[bot]
