@@ -1,0 +1,61 @@
+{
+  "candidate": "ACTIVE_V397_CRYPTO_DISPERSION_SENSITIVITY",
+  "files": {
+    "README.md": {
+      "bytes": 939,
+      "sha256": "ee963570bba793a64157fe7121cb4dd35b8eb1db76eb7557f967817173787ab7"
+    },
+    "V397_V404_DESIGN.json": {
+      "bytes": 1918,
+      "sha256": "7cc8b858ebca0006f095f975e31f6b1829e154688638378320f90b2a0495858e"
+    },
+    "bootstrap.py": {
+      "bytes": 6204,
+      "sha256": "73c871caa592cc1f73a943a05642b8fec303b48c1814573c5dcd2cd96616479d"
+    },
+    "requirements.txt": {
+      "bytes": 13,
+      "sha256": "7c3194b101c68d4c524948fd09ec3dff5e7ecf54f11e8ccc23440ff932a604e7"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 331,
+      "sha256": "f7f01c13a41df9ee8d019c82834fd73ec4840e44d9a9a09080ad748749fd02d8"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 192,
+      "sha256": "e88bc3c7ef2f0fae9166a7e564810f62027512421bb2e952e34c1dd3e8884d0a"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "835e74feaa3a20aa28af344b502b0a8b72aecb44f8af242315751465933141d4"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "e1edc45f128ce6b0bb91e59b747fe449bd90a56d7c971045e352093f18ec3f8d"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 8251,
+      "sha256": "b8ccacba4ecdc8529bd24ab6e5cb39ad768febe39c390b09f9dc0dc7ede7cd11"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 132330,
+      "sha256": "6f8b0fc67727a2a3878970b4324bef1591f3cec20a48f24c2c69709352f44f20"
+    },
+    "results/summary.json": {
+      "bytes": 41816,
+      "sha256": "cd219458455d2855d46fff8e4059ca5e8017c91e218cfd5a2759075f229c1e6f"
+    },
+    "run_research.py": {
+      "bytes": 14909,
+      "sha256": "cf4b40099ad9bfe2dc2dcc2c9e9ec0f5e645dc5c2a2b855de118e0d7a644c24e"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "candidate": "ACTIVE_V397_CRYPTO_DISPERSION_SENSITIVITY",
+  "frozen_before_profit_results": true,
+  "universe": ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "LTCUSDT", "BCHUSDT", "EOSUSDT", "DOGEUSDT", "LINKUSDT", "DOTUSDT", "TRXUSDT", "SOLUSDT"],
+  "families": [
+    "low_residual_dispersion_beta",
+    "stable_residual_dispersion_beta",
+    "low_high_dispersion_participation",
+    "reversed_high_dispersion_beta_control"
+  ],
+  "lookbacks_days": [60, 120, 240],
+  "inner_dispersion_beta_days": 30,
+  "high_dispersion_quantile": 0.8,
+  "long_short_k": [3, 4],
+  "rebalance_days": [14, 28, 56],
+  "neutralization": ["dollar", "beta"],
+  "policy_count": 144,
+  "promotable_policy_count": 108,
+  "residual_beta_lookback_days": 90,
+  "chronology": {
+    "development": ["2021-01-01", "2023-12-31"],
+    "validation": ["2024-01-01", "2024-12-31"],
+    "holdout": ["2025-01-01", "2025-12-31"],
+    "final": ["2026-01-01", "2026-06-30"],
+    "selection_uses_2024": false,
+    "selection_uses_2025": false,
+    "selection_uses_2026": false
+  },
+  "execution": {
+    "signal": "completed daily close",
+    "entry": "next UTC open",
+    "scheduled_rebalances_only": true,
+    "target_gross": 0.4,
+    "maximum_realized_close_gross": 0.7,
+    "actual_archived_funding": true,
+    "forced_delisting_penalty_bps": 100
+  },
+  "cost_audits_bps_per_side": [30, 60, 100],
+  "latency_audit": "+1 completed day",
+  "development_gates": {
+    "cagr_min": 0.05,
+    "sharpe_min": 1.0,
+    "max_drawdown_min": -0.15,
+    "rebalance_events_min": 24,
+    "annual_turnover_max": 20.0,
+    "max_realized_gross": 0.7,
+    "all_development_years_positive": true,
+    "both_legs_positive": true,
+    "symbols_traded_min": 10,
+    "top_positive_asset_pnl_share_max": 0.35
+  },
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "integration_permitted": false
+  }
+}
