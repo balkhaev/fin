@@ -7,7 +7,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210326/1h/BTCUSDT_210326-1h-2020-09.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -19,7 +19,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210326/1h/BTCUSDT_210326-1h-2020-10.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -31,7 +31,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210326/1h/BTCUSDT_210326-1h-2020-11.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -55,7 +55,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210326/1h/BTCUSDT_210326-1h-2021-01.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -131,7 +131,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210625/1h/BTCUSDT_210625-1h-2021-01.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -143,7 +143,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210625/1h/BTCUSDT_210625-1h-2021-02.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -271,7 +271,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_210924/1h/BTCUSDT_210924-1h-2021-04.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -399,7 +399,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_211231/1h/BTCUSDT_211231-1h-2021-06.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -411,7 +411,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_211231/1h/BTCUSDT_211231-1h-2021-07.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -423,7 +423,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_211231/1h/BTCUSDT_211231-1h-2021-08.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -679,7 +679,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_220624/1h/BTCUSDT_220624-1h-2021-12.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -831,7 +831,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_220930/1h/BTCUSDT_220930-1h-2022-04.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -959,7 +959,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_221230/1h/BTCUSDT_221230-1h-2022-06.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -983,7 +983,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_221230/1h/BTCUSDT_221230-1h-2022-08.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -1099,7 +1099,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230331/1h/BTCUSDT_230331-1h-2022-09.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -1251,7 +1251,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230630/1h/BTCUSDT_230630-1h-2023-01.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -1379,7 +1379,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230929/1h/BTCUSDT_230929-1h-2023-03.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -1403,7 +1403,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT_230929/1h/BTCUSDT_230929-1h-2023-05.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -3493,7 +3493,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_210326/1h/ETHUSDT_210326-1h-2020-09.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -3505,7 +3505,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_210326/1h/ETHUSDT_210326-1h-2020-10.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -3517,7 +3517,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_210326/1h/ETHUSDT_210326-1h-2020-11.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -3529,7 +3529,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_210326/1h/ETHUSDT_210326-1h-2020-12.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -3541,7 +3541,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_210326/1h/ETHUSDT_210326-1h-2021-01.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -3617,7 +3617,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_210625/1h/ETHUSDT_210625-1h-2021-01.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -3757,7 +3757,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_210924/1h/ETHUSDT_210924-1h-2021-04.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -3897,7 +3897,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_211231/1h/ETHUSDT_211231-1h-2021-07.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4037,7 +4037,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_220325/1h/ETHUSDT_220325-1h-2021-10.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4049,7 +4049,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_220325/1h/ETHUSDT_220325-1h-2021-11.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4165,7 +4165,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_220624/1h/ETHUSDT_220624-1h-2021-12.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4177,7 +4177,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_220624/1h/ETHUSDT_220624-1h-2022-01.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4189,7 +4189,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_220624/1h/ETHUSDT_220624-1h-2022-02.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4457,7 +4457,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_221230/1h/ETHUSDT_221230-1h-2022-07.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4609,7 +4609,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_230331/1h/ETHUSDT_230331-1h-2022-11.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4725,7 +4725,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_230630/1h/ETHUSDT_230630-1h-2022-12.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4737,7 +4737,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_230630/1h/ETHUSDT_230630-1h-2023-01.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 349,
+    "bytes": 369,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
@@ -4749,7 +4749,7 @@
     "url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT_230630/1h/ETHUSDT_230630-1h-2023-02.zip",
     "checksum_status": 404,
     "http_status": 404,
-    "bytes": 369,
+    "bytes": 349,
     "valid": false,
     "reason": "missing_archive_or_checksum"
   },
