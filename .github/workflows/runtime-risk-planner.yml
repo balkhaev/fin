@@ -69,6 +69,8 @@ jobs:
           assert contract['live_ready'] is False
           assert contract['real_leverage_authorized'] is False
           PY
+          find src/finruntime tests/runtime -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find src/finruntime tests/runtime -type f -name '*.pyc' -delete || true
           bad=$(find src/finruntime/portfolio src/finruntime/execution tests/runtime \
             -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' \
             -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
