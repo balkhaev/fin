@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/market_snapshot.schema.json",
+  "title": "MarketSnapshot",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "snapshot_id",
+    "as_of_utc",
+    "decision_time_utc",
+    "sources",
+    "spot",
+    "perp",
+    "funding_events",
+    "onchain",
+    "cash_rate",
+    "quality_flags"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "snapshot_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "as_of_utc": {"type": "string", "pattern": "Z$"},
+    "decision_time_utc": {"type": "string", "pattern": "Z$"},
+    "sources": {"type": "object", "minProperties": 1},
+    "spot": {"type": "object"},
+    "perp": {"type": "object"},
+    "funding_events": {"type": "array"},
+    "onchain": {"type": "object"},
+    "cash_rate": {"type": "object"},
+    "quality_flags": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
