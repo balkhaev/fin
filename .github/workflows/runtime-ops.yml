@@ -81,3 +81,20 @@ jobs:
           test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
           ! grep -R --line-number --fixed-strings 'submit_order' src/finruntime
           ! grep -R --line-number --fixed-strings 'mode="live"' src/finruntime
+
+      - name: Upload exact runtime source snapshot
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-ops-source-snapshot
+          path: |
+            src/finruntime
+            tests/runtime
+            scripts/verify_runtime.py
+            docs/checkpoints/runtime-v1
+            config/strategies
+            schemas/runtime
+            pyproject.toml
+            .github/workflows/runtime-ops.yml
+          if-no-files-found: error
+          retention-days: 7
