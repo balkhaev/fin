@@ -1,0 +1,21 @@
+{
+  "strategy_id": "v517_tristate_guard_shadow",
+  "strategy_version": "runtime-v1",
+  "role": "shadow",
+  "allowed_modes": ["shadow"],
+  "source_checkpoint": "V524",
+  "high_leverage": 2.075,
+  "base_leverage": 0.97,
+  "low_leverage": 0.60,
+  "rebalance_days": 10,
+  "no_trade_band": 0.04,
+  "minimum_state_hold_days": 14,
+  "guard_enter_drawdown": -0.245,
+  "guard_exit_drawdown": -0.18,
+  "guard_cap": 1.0,
+  "historical_target_non_pristine": true,
+  "position_level_margin_replay_complete": false,
+  "forward_validation_complete": false,
+  "live_ready": false,
+  "real_leverage_authorized": false
+}

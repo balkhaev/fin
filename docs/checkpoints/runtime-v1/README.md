@@ -14,3 +14,12 @@ frozen implementation plan:
 It does **not** port the V75 or V28 target engine and does not create a broker
 submission path. `live_execution_available`, `live_ready` and
 `real_leverage_authorized` remain false.
+
+## V517 shadow risk-budget adapter
+
+`finruntime.profiles.v517_guard` adds a deterministic shadow-only adapter for the
+non-pristine V517/V524 tri-state risk budget. It consumes a sealed V75 snapshot
+and completed V75 equity history, applies an explicit outer leverage cap, and
+remains subject to the existing fail-closed planner. See
+`V517_RISK_BUDGET_RUNTIME_RU.md`. No exchange submission or live authorization
+is added.

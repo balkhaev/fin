@@ -52,6 +52,26 @@ STRATEGIES: dict[str, FrozenStrategy] = {
             "risk_reduction_buffer": 0.02,
         },
     ),
+    "v517_tristate_guard_shadow": FrozenStrategy(
+        strategy_id="v517_tristate_guard_shadow",
+        role="shadow",
+        allowed_modes=("shadow",),
+        live_ready=False,
+        real_leverage_authorized=False,
+        parameters={
+            "high_leverage": 2.075,
+            "base_leverage": 0.97,
+            "low_leverage": 0.60,
+            "rebalance_days": 10,
+            "no_trade_band": 0.04,
+            "minimum_state_hold_days": 14,
+            "guard_enter_drawdown": -0.245,
+            "guard_exit_drawdown": -0.18,
+            "guard_cap": 1.0,
+            "source_checkpoint": "V524",
+            "historical_target_non_pristine": True,
+        },
+    ),
 }
 
 
