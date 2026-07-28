@@ -1,4 +1,4 @@
-name: Research checkpoint V68 reproof
+name: Research checkpoint V68 immutable reproof
 
 on:
   push:
@@ -7,14 +7,14 @@ on:
       - "research/checkpoint_v68/**"
       - "verify_checkpoint_v68.py"
       - "MANIFEST.json"
-      - "README.md"
+      - ".github/workflows/research-checkpoint-v68.yml"
   pull_request:
     paths:
       - "docs/checkpoints/v68/**"
       - "research/checkpoint_v68/**"
       - "verify_checkpoint_v68.py"
       - "MANIFEST.json"
-      - "README.md"
+      - ".github/workflows/research-checkpoint-v68.yml"
   workflow_dispatch:
 
 permissions:
@@ -26,7 +26,26 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python verify_checkpoint_v68.py
+      - name: Ensure immutable V68 evidence has not changed
+        run: |
+          set -euxo pipefail
+          checkpoint=f99747b9ee547848c2ecf4ad49ea29e1380ab9ec
+          git cat-file -e "$checkpoint^{commit}"
+          git diff --exit-code "$checkpoint" -- \
+            docs/checkpoints/v68 \
+            research/checkpoint_v68 \
+            verify_checkpoint_v68.py \
+            MANIFEST.json
+      - name: Reproof exact checkpoint bytes in an isolated tree
+        run: |
+          set -euxo pipefail
+          checkpoint=f99747b9ee547848c2ecf4ad49ea29e1380ab9ec
+          rm -rf /tmp/fin-v68
+          mkdir -p /tmp/fin-v68
+          git archive "$checkpoint" | tar -x -C /tmp/fin-v68
+          python /tmp/fin-v68/verify_checkpoint_v68.py
