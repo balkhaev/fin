@@ -36,10 +36,13 @@ jobs:
           python-version: '3.12'
 
       - name: Install, compile and self-test frozen source
+        timeout-minutes: 12
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: '1'
         run: |
           set -euxo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -r research/global_rotation_v493_v500/requirements.txt
+          python -m pip install --retries 3 --timeout 30 \
+            -r research/global_rotation_v493_v500/requirements.txt
           python -m compileall -q research/global_rotation_v493_v500 research/active_v103_v110
           (cd research/active_v103_v110 && python run_research.py --self-test)
 
