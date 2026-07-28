@@ -1,0 +1,67 @@
+    neighborhood = table[~table["primary"] & ~table["policy"].str.endswith("control")]
+    neighbor_pass_count = int(neighborhood["all_gates_passed"].sum())
+    primary_full = period_metrics(primary_accounts["base"], "full")
+    severe_full = period_metrics(primary_accounts["severe"], "full")
+    extreme_full = period_metrics(primary_accounts["extreme"], "full")
+    delay_full = period_metrics(primary_accounts["delay_1d"], "full")
+
+    status = (
+        "historical_target_met_non_pristine_no_capital_authority"
+        if all_passed
+        else "historical_target_not_met"
+    )
+    decision = {
+        "program": PROGRAM,
+        "status": status,
+        "selection_performed": False,
+        "parameters_informed_by_known_history": True,
+        "program_level_holdout_pristine": False,
+        "historical_50pct_target_met": bool(primary_checks["full_cagr_ge_50pct"]),
+        "modeled_robustness_gates_passed": all_passed,
+        "primary_policy": PRIMARY.name,
+        "neighbor_policy_count": int(len(neighborhood)),
+        "neighbor_all_gate_pass_count": neighbor_pass_count,
+        "promotion_permitted": False,
+        "integration_permitted": False,
+        "capital_change_authorized": False,
+        "live_ready": False,
+        "real_leverage_authorized": False,
+        "profitability_proven": False,
+    }
+    summary = {
+        **decision,
+        "primary_policy_spec": asdict(PRIMARY),
+        "design_sha256": sha256_file(design_path),
+        "v75_equivalence": equivalence,
+        "acceptance_checks": primary_checks,
+        "base_full": primary_full,
+        "severe_full": severe_full,
+        "extreme_full": extreme_full,
+        "delay_full": delay_full,
+        "annual_returns": annual.to_dict(orient="records"),
+        "evidence_boundary": {
+            "account_level_only": True,
+            "position_level_margin_replay_complete": False,
+            "forward_period_complete": False,
+            "parameters_informed_by_known_history": True,
+        },
+    }
+    write_json(output / "FROZEN_DECISION.json", decision)
+    write_json(output / "summary.json", summary)
+
+    report = [
+        "# V517–V524 — V75 tri-state drawdown guard",
+        "",
+        f"Status: `{status}`.",
+        "",
+        "## Primary historical model",
+        "",
+        f"- Full CAGR: {100 * primary_full['cagr']:.2f}%",
+        f"- Full Sharpe: {primary_full['sharpe']:.3f}",
+        f"- Full Max DD: {100 * primary_full['max_drawdown']:.2f}%",
+        f"- Average target leverage: {primary_full['average_target_leverage']:.3f}x",
+        f"- Maximum target leverage: {primary_full['maximum_target_leverage']:.3f}x",
+        f"- Severe CAGR / DD: {100 * severe_full['cagr']:.2f}% / {100 * severe_full['max_drawdown']:.2f}%",
+        f"- Extreme CAGR / DD: {100 * extreme_full['cagr']:.2f}% / {100 * extreme_full['max_drawdown']:.2f}%",
+        f"- 1-day delay CAGR / DD: {100 * delay_full['cagr']:.2f}% / {100 * delay_full['max_drawdown']:.2f}%",
+        "",
