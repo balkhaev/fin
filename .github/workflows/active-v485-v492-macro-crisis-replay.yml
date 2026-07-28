@@ -6,6 +6,11 @@ on:
     paths:
       - 'research/macro_crisis_v485_v492/**'
       - '.github/workflows/active-v485-v492-macro-crisis-replay.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/macro_crisis_v485_v492/**'
+      - '.github/workflows/active-v485-v492-macro-crisis-replay.yml'
   workflow_dispatch:
 
 permissions:
@@ -91,6 +96,7 @@ jobs:
           PY
 
       - name: Commit readable data and results
+        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           find research/macro_crisis_v485_v492 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
