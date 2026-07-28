@@ -1,0 +1,57 @@
+{
+  "frozen_contexts": {
+    "all": "all valid paired forward observations",
+    "early_state": "state_duration_days <= 2",
+    "intermediate_state": "3 <= state_duration_days <= 5",
+    "persistent_state": "state_duration_days > 5",
+    "novel": "novelty_flag == true",
+    "familiar": "novelty_flag == false",
+    "high_transition_surprise": "transition_surprise >= development 90th percentile",
+    "high_switching": "rolling 20-day state-change rate >= development 80th percentile",
+    "low_switching": "rolling 20-day state-change rate < development 80th percentile"
+  },
+  "reference_thresholds": {
+    "transition_surprise_quantile": 0.9,
+    "switching_window_days": 20,
+    "switching_rate_quantile": 0.8,
+    "reference_period": [
+      "2021-01-01",
+      "2024-01-01"
+    ],
+    "fit_uses_strategy_returns": false
+  },
+  "primary_mechanism_hypotheses": {
+    "persistent_regime_non_degradation": {
+      "context": "persistent_state",
+      "minimum_paired_days": 60,
+      "minimum_v136_target_changes": 8,
+      "v136_turnover_reduction_min": 0.1,
+      "v136_net_return_delta_min": 0.0,
+      "v136_max_drawdown_worsening_max": 0.02,
+      "paper_slippage_to_model_ratio_max": 1.5
+    },
+    "switching_regime_execution_benefit": {
+      "context": "high_switching",
+      "minimum_paired_days": 30,
+      "minimum_v136_target_changes": 8,
+      "v136_turnover_reduction_min": 0.1,
+      "v136_net_return_delta_min": 0.0,
+      "v136_max_drawdown_worsening_max": 0.02,
+      "paper_slippage_to_model_ratio_max": 1.5
+    }
+  },
+  "diagnostic_contexts": {
+    "early_state": {
+      "minimum_paired_days": 20,
+      "minimum_v136_target_changes": 5
+    },
+    "novel": {
+      "minimum_paired_days": 20,
+      "minimum_v136_target_changes": 5
+    },
+    "high_transition_surprise": {
+      "minimum_paired_days": 20,
+      "minimum_v136_target_changes": 5
+    }
+  }
+}

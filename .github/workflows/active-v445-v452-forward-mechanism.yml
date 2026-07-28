@@ -1,0 +1,123 @@
+name: Active V445-V452 forward market mechanism validator
+
+on:
+  pull_request:
+    branches: [agent/active-v429-v436-state-telemetry]
+    paths:
+      - 'research/forward_mechanism_v445_v452/**'
+      - '.github/workflows/active-v445-v452-forward-mechanism.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v445-v452-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  mechanism-validator:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v445-v452-forward-mechanism-validator
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and deterministic self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/forward_mechanism_v445_v452/requirements.txt
+          python -m compileall -q research/forward_mechanism_v445_v452
+          python research/forward_mechanism_v445_v452/evaluate_forward_mechanism.py \
+            --design research/forward_mechanism_v445_v452/V445_V452_DESIGN.json \
+            --output /tmp/v445-self-test \
+            --self-test
+
+      - name: Initialize frozen no-observation checkpoint
+        run: |
+          set -euxo pipefail
+          rm -rf research/forward_mechanism_v445_v452/results docs/checkpoints/v452
+          python research/forward_mechanism_v445_v452/evaluate_forward_mechanism.py \
+            --design research/forward_mechanism_v445_v452/V445_V452_DESIGN.json \
+            --output research/forward_mechanism_v445_v452/results \
+            --initialize \
+            2>&1 | tee research/forward_mechanism_v445_v452/run.log
+
+      - name: Verify frozen mechanism contract and safety
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/forward_mechanism_v445_v452/results')
+          decision = json.loads((root / 'FORWARD_MECHANISM_DECISION.json').read_text())
+          definitions = json.loads((root / 'CONTEXT_DEFINITIONS.json').read_text())
+          assert decision['status'] == 'forward_mechanism_validator_ready_no_observations'
+          assert decision['paper_observation_count'] == 0
+          assert set(definitions['primary_mechanism_hypotheses']) == {
+              'persistent_regime_non_degradation',
+              'switching_regime_execution_benefit',
+          }
+          assert {'early_state', 'novel', 'high_transition_surprise'} <= set(definitions['diagnostic_contexts'])
+          assert decision['market_mechanism_claim_supported'] is False
+          assert decision['capital_change_authorized'] is False
+          assert decision['strategy_parameter_change_authorized'] is False
+          assert decision['new_sleeve_allocation'] == 0.0
+          assert decision['v136_capital_allocation'] == 0.0
+          assert decision['integration_permitted'] is False
+          assert decision['live_ready'] is False
+          assert decision['real_leverage_authorized'] is False
+          assert decision['profitability_proven'] is False
+          print(json.dumps(decision, indent=2))
+          PY
+
+      - name: Materialize V452 checkpoint
+        run: |
+          set -euxo pipefail
+          root=research/forward_mechanism_v445_v452/results
+          test -s "$root/FORWARD_MECHANISM_DECISION.json"
+          test -s "$root/CONTEXT_DEFINITIONS.json"
+          test -s "$root/CONTEXT_COMPARISON.csv"
+          test -s "$root/REPORT_RU.md"
+          test -s "$root/MANIFEST.json"
+          mkdir -p docs/checkpoints/v452
+          cp "$root/FORWARD_MECHANISM_DECISION.json" docs/checkpoints/v452/FORWARD_MECHANISM_DECISION_V452.json
+          cp "$root/CONTEXT_DEFINITIONS.json" docs/checkpoints/v452/CONTEXT_DEFINITIONS_V452.json
+          cp "$root/REPORT_RU.md" docs/checkpoints/v452/FORWARD_MECHANISM_VALIDATOR_V452_RU.md
+          find research/forward_mechanism_v445_v452 docs/checkpoints/v452 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/forward_mechanism_v445_v452 docs/checkpoints/v452 -type f -name '*.pyc' -delete || true
+
+      - name: Commit frozen validator evidence
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/forward_mechanism_v445_v452 docs/checkpoints/v452
+          if git diff --cached --quiet; then
+            echo 'No V445-V452 changes'
+          else
+            git commit -m 'Archive V445-V452 forward mechanism validator [skip ci]'
+            git fetch origin agent/active-v445-v452-forward-mechanism-validator
+            git rebase origin/agent/active-v445-v452-forward-mechanism-validator
+            git push origin HEAD:agent/active-v445-v452-forward-mechanism-validator
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v445-v452-forward-mechanism-validator
+          path: |
+            research/forward_mechanism_v445_v452/results
+            research/forward_mechanism_v445_v452/run.log
+            docs/checkpoints/v452
+          if-no-files-found: warn
+          retention-days: 30

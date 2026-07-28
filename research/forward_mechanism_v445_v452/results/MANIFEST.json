@@ -1,0 +1,21 @@
+{
+  "program": "V445_V452_FORWARD_MARKET_MECHANISM_VALIDATOR",
+  "files": {
+    "CONTEXT_COMPARISON.csv": {
+      "bytes": 193,
+      "sha256": "adc061777bfc094320de426e16d128c26472567efada795a2f454270be390954"
+    },
+    "CONTEXT_DEFINITIONS.json": {
+      "bytes": 1882,
+      "sha256": "2efd25844abd30aa3a858bdf34fd6345b4f3af442e719c9b708117003d30550f"
+    },
+    "FORWARD_MECHANISM_DECISION.json": {
+      "bytes": 2682,
+      "sha256": "552a57aee63106563954ed6ae5293707388e696cc9f8777feeebb6f66da31215"
+    },
+    "REPORT_RU.md": {
+      "bytes": 1266,
+      "sha256": "265191f1243c88cab18f238936ef4ac9f9018c7423567212d17ae16177efd352"
+    }
+  }
+}
