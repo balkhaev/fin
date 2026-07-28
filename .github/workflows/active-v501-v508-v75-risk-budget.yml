@@ -6,13 +6,18 @@ on:
     paths:
       - 'research/v75_risk_budget_v501_v508/**'
       - '.github/workflows/active-v501-v508-v75-risk-budget.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/v75_risk_budget_v501_v508/**'
+      - '.github/workflows/active-v501-v508-v75-risk-budget.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: active-v501-v508-v75-risk-budget
+  group: active-v501-v508-v75-risk-budget-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
@@ -88,6 +93,7 @@ jobs:
           PY
 
       - name: Commit readable source, pinned input and results
+        if: github.event_name != 'pull_request'
         run: |
           set -euxo pipefail
           rm -rf research/v75_risk_budget_v501_v508/source_parts
