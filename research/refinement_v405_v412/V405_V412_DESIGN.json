@@ -1,0 +1,52 @@
+{
+  "program": "V405-V412_CHAMPION_REFINEMENT",
+  "frozen_before_forward_observations": true,
+  "historical_parameter_search_closed": true,
+  "primary_champion": "V75_ATLAS_NX",
+  "execution_shadow": "V136_EXECUTION_PLATEAU",
+  "mandatory_control": "V28_GROWTH_CONTROL",
+  "rejected_oos_anti_controls": [
+    "V285_LOW_SKEW_HOURLY_CONTROLLER",
+    "V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE"
+  ],
+  "source_registry": {
+    "repository_commit": "4d8fe27e703d8330dc38bb0233ce19f669c6a43b",
+    "v138_checkpoint_blob_sha": "f411cd9bc989a98fbbb2b58ae350d266e935ef74",
+    "v136_summary_blob_sha": "029ab7a14101fce0ae9753deb3ad788e7c51f347",
+    "v131_v138_research_source_blob_sha": "22246b66237f3526cf584283ac8b3108981fbf47",
+    "data_requirements_blob_sha": "a8da9cbc8baa9b20cf6fbb07e7154c648c0d33fc",
+    "canonical_v75_source_sha256": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc"
+  },
+  "forbidden_changes": [
+    "V75 alpha parameters",
+    "V75 risk ratchet thresholds",
+    "V136 band, age, step fraction or risk-reduction buffer",
+    "historical sample boundaries",
+    "cost assumptions after forward observations",
+    "automatic live or leverage enablement"
+  ],
+  "paper_forward": {
+    "earliest_start": "2026-07-28",
+    "minimum_calendar_days": 180,
+    "minimum_v136_target_changes": 25,
+    "zero_reconciliation_breaks": true,
+    "source_hash_match_rate": 1.0,
+    "v136_turnover_reduction_min": 0.10,
+    "v136_net_return_delta_min": 0.0,
+    "v136_max_drawdown_worsening_max": 0.02,
+    "paper_slippage_to_model_ratio_max": 1.5,
+    "missing_or_stale_data_fail_closed": true
+  },
+  "promotion_logic": {
+    "v75_remains_primary_until_all_forward_gates_pass": true,
+    "v136_shadow_only": true,
+    "v285_v365_capital_allocation": 0.0,
+    "new_sleeve_allocation": 0.0
+  },
+  "safety": {
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "integration_permitted": false
+  }
+}

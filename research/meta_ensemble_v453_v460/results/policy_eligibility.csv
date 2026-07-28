@@ -1,0 +1,9 @@
+policy,wf_2022_positive,wf_2023_positive,development_cagr_vs_control,development_sharpe_vs_control,development_dd,meta_turnover,max_leverage,eligible,score
+invvol_63_r14,True,True,False,False,True,True,True,False,1.6551703767500796
+invvol_126_r28,True,True,False,False,True,True,True,False,1.6429314026463513
+online_global_126_r14,True,False,False,False,True,False,True,False,0.3605930591590244
+online_state_duration_budget_126_r14,True,False,False,False,True,False,True,False,-0.020766353005131355
+online_state_duration_126_r14,True,False,False,False,True,False,True,False,-0.4119142461672796
+online_state_126_r14,True,False,False,False,True,False,True,False,-0.4349646136078751
+online_state_duration_budget_vol22_cap125,True,False,False,False,False,False,False,False,-0.8932724780671093
+online_state_duration_budget_vol18_cap125,True,False,False,False,False,False,False,False,-0.8981748163916422

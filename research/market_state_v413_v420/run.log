@@ -1,0 +1,73 @@
+/home/runner/work/fin/fin/research/active_v9/data.py:18: UserWarning: Converting to Period representation will drop timezone information.
+  x=utc(a).to_period('M').to_timestamp().tz_localize('UTC');e=utc(b)
+archives 200/2028
+archives 400/2028
+archives 600/2028
+archives 800/2028
+archives 1000/2028
+archives 1200/2028
+archives 1400/2028
+archives 1600/2028
+archives 1800/2028
+archives 2000/2028
+archives 2028/2028
+{
+  "decision": {
+    "program": "V413_V420_MARKET_STATE_OBSERVATORY",
+    "status": "observatory_ready_for_forward_attribution",
+    "observatory_ready_for_forward_attribution": true,
+    "market_state_model_is_trading_signal": false,
+    "strategy_parameter_changes_permitted": false,
+    "allocation_changes_permitted": false,
+    "historical_parameter_search_closed": true,
+    "primary_champion": "V75_ATLAS_NX",
+    "execution_shadow": "V136_EXECUTION_PLATEAU",
+    "mandatory_control": "V28_GROWTH_CONTROL",
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  },
+  "quality": {
+    "technical_gates": {
+      "development_assignment_days_min": 800,
+      "development_feature_row_coverage_min": 0.9,
+      "oos_feature_row_coverage_min": 0.85,
+      "development_min_state_occupancy": 0.01,
+      "development_max_state_occupancy": 0.7,
+      "minimum_centroid_distance": 0.6,
+      "oos_novelty_rate_max": 0.35,
+      "mean_assignment_confidence_min": 0.05
+    },
+    "checks": {
+      "development_assignment_days": true,
+      "development_feature_row_coverage": true,
+      "oos_feature_row_coverage": true,
+      "development_min_state_occupancy": true,
+      "development_max_state_occupancy": true,
+      "minimum_centroid_distance": true,
+      "oos_novelty_rate": true,
+      "mean_assignment_confidence": true
+    },
+    "passed": true,
+    "development_feature_coverage": {
+      "row_complete_share": 1.0,
+      "cell_nonmissing_share": 1.0,
+      "rows": 1095
+    },
+    "oos_feature_coverage": {
+      "row_complete_share": 1.0,
+      "cell_nonmissing_share": 1.0,
+      "rows": 912
+    },
+    "development_assignment_days": 1095,
+    "oos_assignment_days": 912,
+    "development_min_state_occupancy": 0.039269406392694065,
+    "development_max_state_occupancy": 0.2593607305936073,
+    "minimum_centroid_distance": 1.3956009370989464,
+    "oos_novelty_rate": 0.09758771929824561,
+    "oos_mean_assignment_confidence": 0.3536410827082413,
+    "mean_development_self_transition_probability": 0.886057897547779,
+    "program": "V413_V420_MARKET_STATE_OBSERVATORY"
+  }
+}

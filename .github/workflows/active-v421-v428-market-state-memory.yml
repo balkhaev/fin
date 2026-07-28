@@ -1,0 +1,53 @@
+name: Active V421-V428 market-state memory
+
+on:
+  push:
+    branches: [agent/active-v421-v428-market-state-memory]
+    paths:
+      - 'research/market_state_v421_v428/**'
+      - '.github/workflows/active-v421-v428-market-state-memory.yml'
+  pull_request:
+    branches: [agent/active-v413-v420-market-state-observatory]
+  workflow_dispatch:
+
+jobs:
+  state-memory:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v421-v428-market-state-memory
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize and verify source
+        run: |
+          python research/market_state_v421_v428/bootstrap_state_memory.py
+          python -m pip install -r research/market_state_v421_v428/requirements.txt
+          python -m compileall -q research/market_state_v421_v428
+          python research/market_state_v421_v428/analyze_state_memory.py --self-test
+      - name: Build frozen market-state memory
+        run: |
+          python research/market_state_v421_v428/analyze_state_memory.py \
+            --root research/market_state_v421_v428 \
+            --source research/market_state_v413_v420/results \
+            2>&1 | tee research/market_state_v421_v428/run.log
+      - name: Verify outputs
+        run: |
+          test -s research/market_state_v421_v428/results/FROZEN_DECISION.json
+          test -s research/market_state_v421_v428/results/DRIFT_MONITOR_QUALITY.json
+          test -s research/market_state_v421_v428/results/CURRENT_MARKET_CONTEXT.json
+          test -s research/market_state_v421_v428/results/SCENARIO_GRAPH.json
+          test -s research/market_state_v421_v428/results/REPORT_RU.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v421-v428-market-state-memory
+          path: |
+            research/market_state_v421_v428/results
+            research/market_state_v421_v428/run.log
+          if-no-files-found: warn
+          retention-days: 30

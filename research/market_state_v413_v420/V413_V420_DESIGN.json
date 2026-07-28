@@ -1,0 +1,96 @@
+{
+  "program": "V413_V420_MARKET_STATE_OBSERVATORY",
+  "frozen_before_state_results": true,
+  "purpose": "causal market description, transition, novelty and strategy-attribution layer; not a trading signal",
+  "source_universe": [
+    "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "LTCUSDT",
+    "BCHUSDT", "EOSUSDT", "DOGEUSDT", "LINKUSDT", "DOTUSDT", "TRXUSDT", "SOLUSDT"
+  ],
+  "chronology": {
+    "warmup_start": "2020-01-01",
+    "state_fit": ["2021-01-01", "2023-12-31"],
+    "validation_diagnostics": ["2024-01-01", "2024-12-31"],
+    "holdout_diagnostics": ["2025-01-01", "2025-12-31"],
+    "final_diagnostics": ["2026-01-01", "2026-06-30"],
+    "state_fit_uses_2024": false,
+    "state_fit_uses_2025": false,
+    "state_fit_uses_2026": false,
+    "oos_use": "state stability, occupancy, transition and novelty diagnostics only"
+  },
+  "causality": {
+    "observation": "completed UTC daily bars and paid funding",
+    "state_date": "feature observations are shifted one completed day and describe information available before the dated UTC open",
+    "survivor_replacement_permitted": false,
+    "strategy_returns_used_for_fit": false
+  },
+  "raw_features": [
+    "market_trend_63",
+    "breadth_positive_63",
+    "breadth_above_100d",
+    "market_vol_30",
+    "downside_vol_ratio_14_90",
+    "average_pairwise_corr_60",
+    "cross_sectional_dispersion_20",
+    "liquidity_level_20",
+    "liquidity_breadth_90",
+    "taker_buy_pressure_20",
+    "funding_level_14",
+    "funding_dispersion_14",
+    "drawdown_breadth_90",
+    "downside_jump_breadth_5"
+  ],
+  "interpretable_axes": {
+    "trend": ["market_trend_63", "breadth_positive_63", "breadth_above_100d"],
+    "breadth": ["breadth_positive_63", "breadth_above_100d"],
+    "stress": ["market_vol_30", "downside_vol_ratio_14_90", "average_pairwise_corr_60", "drawdown_breadth_90", "downside_jump_breadth_5"],
+    "rotation": ["cross_sectional_dispersion_20", "negative average_pairwise_corr_60"],
+    "liquidity": ["liquidity_level_20", "liquidity_breadth_90", "taker_buy_pressure_20"],
+    "leverage": ["funding_level_14", "funding_dispersion_14"]
+  },
+  "normalization": {
+    "method": "development-only median and interquartile range",
+    "clip": [-4.0, 4.0],
+    "missing_component_rule": "weighted axis requires at least 60 percent of absolute component weight"
+  },
+  "state_codebook": {
+    "algorithm": "deterministic k-means",
+    "state_count": 6,
+    "random_seed": 413,
+    "n_init": 32,
+    "maximum_iterations": 400,
+    "confidence": "distance margin between nearest and second-nearest centroid",
+    "novelty": "nearest-centroid distance divided by development 95th percentile",
+    "transition_surprise": "negative log probability from development transition matrix with Laplace smoothing"
+  },
+  "technical_gates": {
+    "development_assignment_days_min": 800,
+    "development_feature_row_coverage_min": 0.90,
+    "oos_feature_row_coverage_min": 0.85,
+    "development_min_state_occupancy": 0.01,
+    "development_max_state_occupancy": 0.70,
+    "minimum_centroid_distance": 0.60,
+    "oos_novelty_rate_max": 0.35,
+    "mean_assignment_confidence_min": 0.05
+  },
+  "authorized_use": [
+    "state-conditioned attribution of V75, V136 and V28 paper returns",
+    "state-conditioned turnover, slippage, drawdown and reconciliation diagnostics",
+    "transition and novelty alerts",
+    "market narrative and post-mortem generation"
+  ],
+  "prohibited_use": [
+    "historical retuning of V75 or V136",
+    "capital allocation changes from state-conditioned historical returns",
+    "turning state labels directly into trades",
+    "using OOS diagnostics to refit centroids or feature weights"
+  ],
+  "safety": {
+    "historical_parameter_search_closed": true,
+    "strategy_parameter_changes_permitted": false,
+    "allocation_changes_permitted": false,
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}

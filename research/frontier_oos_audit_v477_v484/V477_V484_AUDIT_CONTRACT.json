@@ -1,0 +1,43 @@
+{
+  "program": "V477_V484_FRONTIER_OOS_AUDIT",
+  "date_frozen": "2026-07-28",
+  "selection_performed": false,
+  "purpose": "Open 2024, 2025 and 2026 H1 only for exact diagnostic comparison of the already-defined V453-V469 frontier.",
+  "models": [
+    "V285_raw",
+    "V365_raw",
+    "static_40_60",
+    "persistent_budget",
+    "vol22_budget",
+    "barbell_equal",
+    "barbell_static_vol_equal",
+    "triple_equal"
+  ],
+  "periods": {
+    "development": ["2021-01-01", "2024-01-01"],
+    "validation": ["2024-01-01", "2025-01-01"],
+    "holdout": ["2025-01-01", "2026-01-01"],
+    "final": ["2026-01-01", "2026-07-01"]
+  },
+  "audits": ["base", "severe", "extreme", "delay_1d"],
+  "diagnostics": [
+    "period metrics",
+    "calendar returns",
+    "state attribution",
+    "component-return correlation",
+    "cost and delay sensitivity",
+    "all-OOS-period positivity"
+  ],
+  "limitations": {
+    "pristine_holdout": false,
+    "capital_authority": false,
+    "reason": "component outcomes were known before this diagnostic cycle"
+  },
+  "safety": {
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false,
+    "capital_change_authorized": false
+  }
+}

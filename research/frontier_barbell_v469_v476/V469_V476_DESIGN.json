@@ -1,0 +1,57 @@
+{
+  "program": "V469_V476_FRONTIER_BARBELL_ENSEMBLE",
+  "date_frozen": "2026-07-28",
+  "purpose": "Combine the development Sharpe leader and development CAGR leader into a fixed barbell without any new alpha or regime thresholds.",
+  "limitations": {
+    "pristine_holdout": false,
+    "reason": "Underlying V285/V365 OOS outcomes were known before this program.",
+    "capital_authority": false
+  },
+  "components": {
+    "static": "40% V285 / 60% V365 at constant 1.0 risky budget",
+    "persistent": "V461 persistent_budget_75_115_r28_s14",
+    "vol22": "V461 persistent_budget_75_125_vol22",
+    "inverted": "V461 inverted persistent budget negative control"
+  },
+  "recipes": [
+    {"name": "static_40_60_control", "allocations": {"static": 1.0}, "promotable": false},
+    {"name": "persistent_control", "allocations": {"persistent": 1.0}, "promotable": false},
+    {"name": "vol22_control", "allocations": {"vol22": 1.0}, "promotable": false},
+    {"name": "barbell_equal", "allocations": {"persistent": 0.5, "vol22": 0.5}},
+    {"name": "barbell_defensive_2to1", "allocations": {"persistent": 0.6666666666666666, "vol22": 0.3333333333333333}},
+    {"name": "barbell_static_vol_equal", "allocations": {"static": 0.5, "vol22": 0.5}},
+    {"name": "triple_equal", "allocations": {"static": 0.3333333333333333, "persistent": 0.3333333333333333, "vol22": 0.3333333333333334}},
+    {"name": "inverted_barbell_control", "allocations": {"inverted": 0.5, "vol22": 0.5}, "promotable": false}
+  ],
+  "selection": {
+    "period": ["2021-01-01", "2024-01-01"],
+    "walk_forward_folds": ["2022", "2023"],
+    "control_recipe": "static_40_60_control",
+    "development_cagr_uplift_min": 0.005,
+    "development_sharpe_loss_max": 0.08,
+    "development_max_drawdown_min": -0.05,
+    "annual_meta_turnover_max": 1.5,
+    "max_leverage": 1.25
+  },
+  "post_oos": {
+    "full_cagr_uplift_min": 0.005,
+    "full_sharpe_loss_max": 0.05,
+    "full_max_drawdown_min": -0.10,
+    "worst_calendar_year_min": -0.08,
+    "max_leverage": 1.25,
+    "all_validation_holdout_final_periods_positive": true
+  },
+  "audits": {
+    "inherits_v453": true,
+    "base": "5 bps meta cost, 8% financing above 1x",
+    "severe": "20 bps meta cost, 30 bps extra underlying cost, 10% financing",
+    "extreme": "40 bps meta cost, 70 bps extra underlying cost, 12% financing",
+    "delay": "one-day delayed component weights"
+  },
+  "safety": {
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}

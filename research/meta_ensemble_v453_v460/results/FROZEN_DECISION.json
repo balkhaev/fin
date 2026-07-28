@@ -1,0 +1,11 @@
+{
+  "program": "V453_V460_CAUSAL_META_ENSEMBLE",
+  "status": "rejected_before_oos",
+  "eligible_policy_count": 0,
+  "selected_policies": [],
+  "oos_opened": false,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

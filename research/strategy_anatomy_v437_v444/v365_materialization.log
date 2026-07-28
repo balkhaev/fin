@@ -1,0 +1,373 @@
+/home/runner/work/fin/fin/.external/v437_v444/v365_root/research/active_v9/data.py:18: UserWarning: Converting to Period representation will drop timezone information.
+  x=utc(a).to_period('M').to_timestamp().tz_localize('UTC');e=utc(b)
+archives 200/2028
+archives 400/2028
+archives 600/2028
+archives 800/2028
+archives 1000/2028
+archives 1200/2028
+archives 1400/2028
+archives 1600/2028
+archives 1800/2028
+archives 2000/2028
+archives 2028/2028
+{
+  "program": "V437_V444_STATE_CONDITIONED_STRATEGY_ANATOMY",
+  "materialized_strategy": "V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE",
+  "source_commit": "2af20f21379b7ca8358422377689c0bb6c369969",
+  "source_path": "research/active_v365_v372/run_research.py",
+  "source_sha256": "5f9c28f37588bb05e031dcb22ebbb6787b5c514d7ee44dc16c125784fda82948",
+  "account_sha256": "20aaa8599b2730d02a5d28c71ce3878bf1fee9253d86c8f0b7e8185fd8c8083a",
+  "weights_sha256": "d0446d0021e99218bce405b5cf3eb1bd488ee0ffa16773942ecbe72c50231d3f",
+  "component_hashes": {
+    "low_downside_vol_ratio_l14_k3_r7_dollar": "19186c7561bb6cb8ee824ed7faaa83c4188f91ebe40e5b9fb7743b2605058d10",
+    "low_downside_vol_ratio_l60_k3_r7_beta": "385190e7f8652fe58fbdb9343addc3b761e31b30334b6813bb25e7880444ca53"
+  },
+  "data_manifest_sha256": "5a63fad25eb56271966a4ae7475928be3a1d6d923b6491c93304b5239d995283",
+  "data_quality": [
+    {
+      "symbol": "ADAUSDT",
+      "kline_rows": 2343,
+      "start": "2020-01-31T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7063
+    },
+    {
+      "symbol": "BCHUSDT",
+      "kline_rows": 2373,
+      "start": "2020-01-01T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7119
+    },
+    {
+      "symbol": "BNBUSDT",
+      "kline_rows": 2333,
+      "start": "2020-02-10T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 6998
+    },
+    {
+      "symbol": "BTCUSDT",
+      "kline_rows": 2373,
+      "start": "2020-01-01T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7119
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "kline_rows": 2182,
+      "start": "2020-07-10T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 6545
+    },
+    {
+      "symbol": "DOTUSDT",
+      "kline_rows": 2139,
+      "start": "2020-08-22T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 6422
+    },
+    {
+      "symbol": "EOSUSDT",
+      "kline_rows": 1961,
+      "start": "2020-01-08T00:00:00+00:00",
+      "end": "2025-05-21T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7097
+    },
+    {
+      "symbol": "ETHUSDT",
+      "kline_rows": 2373,
+      "start": "2020-01-01T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7119
+    },
+    {
+      "symbol": "LINKUSDT",
+      "kline_rows": 2357,
+      "start": "2020-01-17T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7070
+    },
+    {
+      "symbol": "LTCUSDT",
+      "kline_rows": 2360,
+      "start": "2020-01-09T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7094
+    },
+    {
+      "symbol": "SOLUSDT",
+      "kline_rows": 2111,
+      "start": "2020-09-14T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 6424
+    },
+    {
+      "symbol": "TRXUSDT",
+      "kline_rows": 2354,
+      "start": "2020-01-15T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7076
+    },
+    {
+      "symbol": "XRPUSDT",
+      "kline_rows": 2363,
+      "start": "2020-01-06T00:00:00+00:00",
+      "end": "2026-06-30T00:00:00+00:00",
+      "duplicates": 0,
+      "funding_rows": 7103
+    }
+  ],
+  "coverage_gate": {
+    "candidate": "V253_FIXED_UNIVERSE_DATA_COVERAGE",
+    "fixed_universe_size": 13,
+    "minimum_price_active_month_share": 0.95,
+    "minimum_funding_active_month_share": 0.9,
+    "minimum_development_price_months": 34,
+    "details": {
+      "BTCUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2026-06",
+        "active_month_count": 78,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": true,
+        "latest_present": true,
+        "rows": 2373,
+        "timestamp_min": "2020-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "ETHUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2026-06",
+        "active_month_count": 78,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": true,
+        "latest_present": true,
+        "rows": 2373,
+        "timestamp_min": "2020-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "BNBUSDT": {
+        "first_price_month": "2020-02",
+        "last_price_month": "2026-06",
+        "active_month_count": 77,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2333,
+        "timestamp_min": "2020-02-10T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "XRPUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2026-06",
+        "active_month_count": 78,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2363,
+        "timestamp_min": "2020-01-06T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "ADAUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2026-06",
+        "active_month_count": 78,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2343,
+        "timestamp_min": "2020-01-31T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "LTCUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2026-06",
+        "active_month_count": 78,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2360,
+        "timestamp_min": "2020-01-09T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "BCHUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2026-06",
+        "active_month_count": 78,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2373,
+        "timestamp_min": "2020-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "EOSUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2025-05",
+        "active_month_count": 65,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": false,
+        "rows": 1961,
+        "timestamp_min": "2020-01-08T00:00:00+00:00",
+        "timestamp_max": "2025-05-21T00:00:00+00:00",
+        "passed": true
+      },
+      "DOGEUSDT": {
+        "first_price_month": "2020-07",
+        "last_price_month": "2026-06",
+        "active_month_count": 72,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2182,
+        "timestamp_min": "2020-07-10T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "LINKUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2026-06",
+        "active_month_count": 78,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2357,
+        "timestamp_min": "2020-01-17T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "DOTUSDT": {
+        "first_price_month": "2020-08",
+        "last_price_month": "2026-06",
+        "active_month_count": 71,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2139,
+        "timestamp_min": "2020-08-22T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "TRXUSDT": {
+        "first_price_month": "2020-01",
+        "last_price_month": "2026-06",
+        "active_month_count": 78,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2354,
+        "timestamp_min": "2020-01-15T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      },
+      "SOLUSDT": {
+        "first_price_month": "2020-09",
+        "last_price_month": "2026-06",
+        "active_month_count": 70,
+        "price_active_month_share": 1.0,
+        "funding_active_month_share": 1.0,
+        "development_price_months": 36,
+        "latest_required": false,
+        "latest_present": true,
+        "rows": 2111,
+        "timestamp_min": "2020-09-14T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T00:00:00+00:00",
+        "passed": true
+      }
+    },
+    "passed": true,
+    "survivor_replacement_permitted": false
+  },
+  "rows": 2007,
+  "start": "2021-01-01T00:00:00+00:00",
+  "end": "2026-06-30T00:00:00+00:00",
+  "diagnostics": {
+    "asset_pnl": {
+      "ADAUSDT": 746.983117746139,
+      "BCHUSDT": 819.4812921599878,
+      "BNBUSDT": 1127.5154126876782,
+      "BTCUSDT": 465.97397186579593,
+      "DOGEUSDT": 1930.323187599679,
+      "DOTUSDT": -612.117165238278,
+      "EOSUSDT": 1297.5148107564728,
+      "ETHUSDT": -607.7896069252732,
+      "LINKUSDT": -44.36962743910263,
+      "LTCUSDT": 592.012581530507,
+      "SOLUSDT": 772.0322689253185,
+      "TRXUSDT": 897.2047731278651,
+      "XRPUSDT": -579.1199231644388
+    },
+    "long_leg_pnl": 6479.82760954613,
+    "short_leg_pnl": 325.8174840862288,
+    "symbols_traded": [
+      "ADAUSDT",
+      "BCHUSDT",
+      "BNBUSDT",
+      "BTCUSDT",
+      "DOGEUSDT",
+      "DOTUSDT",
+      "EOSUSDT",
+      "ETHUSDT",
+      "LINKUSDT",
+      "LTCUSDT",
+      "SOLUSDT",
+      "TRXUSDT",
+      "XRPUSDT"
+    ],
+    "symbol_count_traded": 13,
+    "forced_exit_count": 4,
+    "rebalance_events": 288,
+    "top_positive_asset_pnl_share": 0.22318348296258522
+  },
+  "audit": {
+    "name": "base",
+    "cost_bps_per_side": 30.0,
+    "execution_delay_days": 0
+  },
+  "neighboring_parameters_tested": 0
+}

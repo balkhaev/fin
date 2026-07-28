@@ -1,0 +1,16 @@
+{
+  "program": "V413_V420_MARKET_STATE_OBSERVATORY",
+  "status": "observatory_ready_for_forward_attribution",
+  "observatory_ready_for_forward_attribution": true,
+  "market_state_model_is_trading_signal": false,
+  "strategy_parameter_changes_permitted": false,
+  "allocation_changes_permitted": false,
+  "historical_parameter_search_closed": true,
+  "primary_champion": "V75_ATLAS_NX",
+  "execution_shadow": "V136_EXECUTION_PLATEAU",
+  "mandatory_control": "V28_GROWTH_CONTROL",
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

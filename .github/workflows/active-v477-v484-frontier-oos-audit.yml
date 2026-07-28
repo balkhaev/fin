@@ -1,0 +1,123 @@
+name: Active V477-V484 frontier OOS audit
+
+on:
+  push:
+    branches: [agent/active-v477-v484-frontier-oos-audit]
+    paths:
+      - 'research/frontier_oos_audit_v477_v484/**'
+      - '.bootstrap_meta_v477_xz/**'
+      - '.github/workflows/active-v477-v484-frontier-oos-audit.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v477-v484-frontier-oos-audit
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v477-v484-frontier-oos-audit
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize exact verified source
+        run: |
+          set -euxo pipefail
+          cat .bootstrap_meta_v477_xz/part_*.b64 | tr -d '\n\r' > /tmp/run_research.py.xz.b64
+          echo '1573cdc6bca33a56e2e19865dd24e81252ffde6306cdba48cbba8310f8ec7dea  /tmp/run_research.py.xz.b64' | sha256sum -c -
+          base64 -d /tmp/run_research.py.xz.b64 > /tmp/run_research.py.xz
+          echo '9bb520982e3897b4494983e25a5f93a27c9d32c056152b41d7585ef1abe07838  /tmp/run_research.py.xz' | sha256sum -c -
+          xz -dc /tmp/run_research.py.xz > research/frontier_oos_audit_v477_v484/run_research.py
+          echo '31b7c2f2fe6b768d981fc863297f56a84f9df5e2ddc534705b09d127a620dfae  research/frontier_oos_audit_v477_v484/run_research.py' | sha256sum -c -
+          echo '87e255bb99fb44e6351eb1f7fe4d392979d3cb4fafecfbefbf01b927414b0159  research/frontier_barbell_v469_v476/run_research.py' | sha256sum -c -
+
+      - name: Verify pinned inputs and frozen contract
+        run: |
+          set -euxo pipefail
+          test -s research/strategy_anatomy_v437_v444/results/joined_V285_LOW_SKEW_HOURLY_CONTROLLER.csv
+          test -s research/strategy_anatomy_v437_v444/results/joined_V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE.csv
+          test -s research/frontier_oos_audit_v477_v484/V477_V484_AUDIT_CONTRACT.json
+          test -s research/frontier_barbell_v469_v476/results/summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          contract=json.loads(Path('research/frontier_oos_audit_v477_v484/V477_V484_AUDIT_CONTRACT.json').read_text())
+          assert contract['selection_performed'] is False
+          assert contract['safety']['capital_change_authorized'] is False
+          assert len(contract['models']) == 8
+          PY
+          bad=$(find research/frontier_oos_audit_v477_v484 -type f \( -name '*.zip' -o -name '*.b64' -o -name '*.pyfrag' \) -print || true)
+          test -z "$bad"
+
+      - name: Install, compile and self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/frontier_oos_audit_v477_v484/requirements.txt
+          python -m py_compile research/frontier_oos_audit_v477_v484/run_research.py
+          python research/frontier_oos_audit_v477_v484/run_research.py --self-test
+
+      - name: Run exact diagnostic OOS audit
+        run: |
+          set -euxo pipefail
+          rm -rf research/frontier_oos_audit_v477_v484/results
+          python research/frontier_oos_audit_v477_v484/run_research.py \
+            --v285 research/strategy_anatomy_v437_v444/results/joined_V285_LOW_SKEW_HOURLY_CONTROLLER.csv \
+            --v365 research/strategy_anatomy_v437_v444/results/joined_V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE.csv \
+            --output research/frontier_oos_audit_v477_v484/results \
+            2>&1 | tee research/frontier_oos_audit_v477_v484/run.log
+
+      - name: Verify audit decision
+        run: |
+          set -euxo pipefail
+          test -s research/frontier_oos_audit_v477_v484/results/summary.json
+          test -s research/frontier_oos_audit_v477_v484/results/model_period_metrics.csv
+          test -s research/frontier_oos_audit_v477_v484/results/audit_full_metrics.csv
+          test -s research/frontier_oos_audit_v477_v484/results/state_attribution.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary=json.loads(Path('research/frontier_oos_audit_v477_v484/results/summary.json').read_text())
+          assert summary['selection_performed'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          assert summary['capital_change_authorized'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/frontier_oos_audit_v477_v484 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/frontier_oos_audit_v477_v484 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and results
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/frontier_oos_audit_v477_v484
+          git rm -r .bootstrap_meta_v477_xz
+          if git diff --cached --quiet; then
+            echo 'No audit changes'
+          else
+            git commit -m 'Add V477-V484 exact frontier OOS audit [skip ci]'
+            git push origin HEAD:agent/active-v477-v484-frontier-oos-audit
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v477-v484-frontier-oos-audit
+          path: research/frontier_oos_audit_v477_v484
+          if-no-files-found: warn
+          retention-days: 30

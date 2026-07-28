@@ -1,0 +1,311 @@
+{
+  "program": "V413_V420_MARKET_STATE_OBSERVATORY",
+  "fit_period": [
+    "2021-01-01",
+    "2024-01-01"
+  ],
+  "state_count": 6,
+  "random_seed": 413,
+  "raw_features": [
+    "market_trend_63",
+    "breadth_positive_63",
+    "breadth_above_100d",
+    "market_vol_30",
+    "downside_vol_ratio_14_90",
+    "average_pairwise_corr_60",
+    "cross_sectional_dispersion_20",
+    "liquidity_level_20",
+    "liquidity_breadth_90",
+    "taker_buy_pressure_20",
+    "funding_level_14",
+    "funding_dispersion_14",
+    "drawdown_breadth_90",
+    "downside_jump_breadth_5"
+  ],
+  "axis_components": {
+    "trend": {
+      "market_trend_63": 0.45,
+      "breadth_positive_63": 0.3,
+      "breadth_above_100d": 0.25
+    },
+    "breadth": {
+      "breadth_positive_63": 0.5,
+      "breadth_above_100d": 0.5
+    },
+    "stress": {
+      "market_vol_30": 0.25,
+      "downside_vol_ratio_14_90": 0.25,
+      "average_pairwise_corr_60": 0.15,
+      "drawdown_breadth_90": 0.2,
+      "downside_jump_breadth_5": 0.15
+    },
+    "rotation": {
+      "cross_sectional_dispersion_20": 0.55,
+      "average_pairwise_corr_60": -0.45
+    },
+    "liquidity": {
+      "liquidity_level_20": 0.45,
+      "liquidity_breadth_90": 0.35,
+      "taker_buy_pressure_20": 0.2
+    },
+    "leverage": {
+      "funding_level_14": 0.55,
+      "funding_dispersion_14": 0.45
+    }
+  },
+  "feature_scaler": {
+    "market_trend_63": {
+      "median": 0.26606604944430645,
+      "q25": -0.6110870021009875,
+      "q75": 1.0963627951491621,
+      "scale": 1.7074497972501497
+    },
+    "breadth_positive_63": {
+      "median": 0.07692307692307687,
+      "q25": -0.8461538461538461,
+      "q75": 0.8461538461538463,
+      "scale": 1.6923076923076925
+    },
+    "breadth_above_100d": {
+      "median": -0.23076923076923073,
+      "q25": -0.8461538461538461,
+      "q75": 0.8461538461538463,
+      "scale": 1.6923076923076925
+    },
+    "market_vol_30": {
+      "median": 0.6571761755005439,
+      "q25": 0.45678940455922257,
+      "q75": 0.8216071727445318,
+      "scale": 0.3648177681853092
+    },
+    "downside_vol_ratio_14_90": {
+      "median": 0.845133960506609,
+      "q25": 0.7204665434221016,
+      "q75": 1.0068969112176243,
+      "scale": 0.28643036779552267
+    },
+    "average_pairwise_corr_60": {
+      "median": 0.7030904881311303,
+      "q25": 0.6063844185197702,
+      "q75": 0.7557984104573521,
+      "scale": 0.14941399193758187
+    },
+    "cross_sectional_dispersion_20": {
+      "median": 0.023006647241866202,
+      "q25": 0.01839182840511967,
+      "q75": 0.028893617747015134,
+      "scale": 0.010501789341895464
+    },
+    "liquidity_level_20": {
+      "median": 19.7389120886225,
+      "q25": 19.51456924473103,
+      "q75": 20.034501367682896,
+      "scale": 0.5199321229518645
+    },
+    "liquidity_breadth_90": {
+      "median": 0.46153846153846156,
+      "q25": 0.23076923076923078,
+      "q75": 0.7692307692307693,
+      "scale": 0.5384615384615385
+    },
+    "taker_buy_pressure_20": {
+      "median": -0.008306971196781254,
+      "q25": -0.015842041561864972,
+      "q75": -0.005178474290884749,
+      "scale": 0.010663567270980223
+    },
+    "funding_level_14": {
+      "median": 0.00019436285714285716,
+      "q25": 6.491071428571426e-05,
+      "q75": 0.00034638964285714285,
+      "scale": 0.00028147892857142856
+    },
+    "funding_dispersion_14": {
+      "median": 0.00032486688240180927,
+      "q25": 0.00023479387811210778,
+      "q75": 0.0005182694298334709,
+      "scale": 0.00028347555172136314
+    },
+    "drawdown_breadth_90": {
+      "median": 0.9230769230769231,
+      "q25": 0.6153846153846154,
+      "q75": 1.0,
+      "scale": 0.3846153846153846
+    },
+    "downside_jump_breadth_5": {
+      "median": 0.030769230769230792,
+      "q25": 0.015384615384615385,
+      "q75": 0.06666666666666667,
+      "scale": 0.05128205128205128
+    }
+  },
+  "axis_scaler": {
+    "trend": {
+      "median": 0.0095264225076541,
+      "q25": -0.4678733672847989,
+      "q75": 0.5023570925334,
+      "scale": 0.9702304598181989
+    },
+    "breadth": {
+      "median": 2.7755575615628914e-17,
+      "q25": -0.409090909090909,
+      "q75": 0.5454545454545454,
+      "scale": 0.9545454545454544
+    },
+    "stress": {
+      "median": -0.029935907472237053,
+      "q25": -0.30612311354052485,
+      "q75": 0.2949239506724659,
+      "scale": 0.6010470642129908
+    },
+    "rotation": {
+      "median": -0.0540176846197889,
+      "q25": -0.30623638897946714,
+      "q75": 0.5236738250823199,
+      "scale": 0.829910214061787
+    },
+    "liquidity": {
+      "median": 0.0021550118163862764,
+      "q25": -0.2323169742636182,
+      "q75": 0.24943467151295864,
+      "scale": 0.4817516457765768
+    },
+    "leverage": {
+      "median": -0.011611057549834616,
+      "q25": -0.2562371557382521,
+      "q75": 0.5220631332158989,
+      "scale": 0.778300288954151
+    }
+  },
+  "centroids": {
+    "0": {
+      "label": "deleveraging",
+      "trend": -0.4447658909158853,
+      "breadth": -0.35850340136054293,
+      "stress": 0.7212338107642217,
+      "rotation": -0.14723531377093202,
+      "liquidity": 0.11885452791434173,
+      "leverage": -0.20172372370342184
+    },
+    "1": {
+      "label": "transition",
+      "trend": -0.3695007953176291,
+      "breadth": -0.30101178873108714,
+      "stress": -0.25487933093475684,
+      "rotation": -0.3177324077315664,
+      "liquidity": -0.8582754972836693,
+      "leverage": -0.2473597281666755
+    },
+    "2": {
+      "label": "rotation",
+      "trend": 0.26002268081364954,
+      "breadth": 0.3077175697865351,
+      "stress": 0.19860454001592237,
+      "rotation": 0.6015656764983378,
+      "liquidity": 0.8668915993510696,
+      "leverage": 1.3126573341053187
+    },
+    "3": {
+      "label": "speculative_risk_on",
+      "trend": 0.398345972226336,
+      "breadth": 0.5071982281284606,
+      "stress": 0.5705204185233761,
+      "rotation": 3.4285238685576376,
+      "liquidity": 2.151979632569614,
+      "leverage": 2.5879444224195014
+    },
+    "4": {
+      "label": "transition_2",
+      "trend": 0.43805638196753127,
+      "breadth": 0.41633037395749234,
+      "stress": -0.45783501359309975,
+      "rotation": 0.25684996266267934,
+      "liquidity": 0.14905831430952093,
+      "leverage": 0.021567580834986444
+    },
+    "5": {
+      "label": "calm_risk_on",
+      "trend": 0.7270070676954078,
+      "breadth": 0.6132075471698105,
+      "stress": -0.23460329625119966,
+      "rotation": 3.0475942591199434,
+      "liquidity": 0.05887817450710873,
+      "leverage": 3.762328929171283
+    }
+  },
+  "development_inertia": 1288.2009647306422,
+  "development_nearest_distance_q95": 1.7392579905355567,
+  "transition_matrix": {
+    "deleveraging": {
+      "deleveraging": 0.8327464788732394,
+      "transition": 0.12852112676056338,
+      "rotation": 0.008802816901408451,
+      "speculative_risk_on": 0.0017605633802816902,
+      "transition_2": 0.02640845070422535,
+      "calm_risk_on": 0.0017605633802816902
+    },
+    "transition": {
+      "deleveraging": 0.10975609756097561,
+      "transition": 0.837979094076655,
+      "rotation": 0.005226480836236934,
+      "speculative_risk_on": 0.0017421602787456446,
+      "transition_2": 0.04355400696864112,
+      "calm_risk_on": 0.0017421602787456446
+    },
+    "rotation": {
+      "deleveraging": 0.023809523809523808,
+      "transition": 0.003401360544217687,
+      "rotation": 0.9081632653061225,
+      "speculative_risk_on": 0.003401360544217687,
+      "transition_2": 0.05782312925170068,
+      "calm_risk_on": 0.003401360544217687
+    },
+    "speculative_risk_on": {
+      "deleveraging": 0.010869565217391304,
+      "transition": 0.010869565217391304,
+      "rotation": 0.03260869565217391,
+      "speculative_risk_on": 0.9021739130434783,
+      "transition_2": 0.010869565217391304,
+      "calm_risk_on": 0.03260869565217391
+    },
+    "transition_2": {
+      "deleveraging": 0.04811715481171548,
+      "transition": 0.03556485355648536,
+      "rotation": 0.03556485355648536,
+      "speculative_risk_on": 0.0020920502092050207,
+      "transition_2": 0.8765690376569037,
+      "calm_risk_on": 0.0020920502092050207
+    },
+    "calm_risk_on": {
+      "deleveraging": 0.0045871559633027525,
+      "transition": 0.0045871559633027525,
+      "rotation": 0.0045871559633027525,
+      "speculative_risk_on": 0.022935779816513763,
+      "transition_2": 0.0045871559633027525,
+      "calm_risk_on": 0.9587155963302753
+    }
+  },
+  "current_state": {
+    "date": "2026-06-30T00:00:00+00:00",
+    "trend": -0.8797666900730305,
+    "breadth": -0.5714285714285715,
+    "stress": -0.1098542085145394,
+    "rotation": -0.5336667326224068,
+    "liquidity": -1.2194456623966021,
+    "leverage": -0.6679295370641978,
+    "state_id": 1,
+    "state_label": "transition",
+    "assignment_confidence": 0.5206229962360047,
+    "nearest_distance": 0.8417121187424194,
+    "novelty_ratio": 0.4839489732533799,
+    "novelty_flag": false,
+    "transition_surprise": 0.17676212621380524,
+    "state_duration_days": 12
+  },
+  "selection_uses_strategy_returns": false,
+  "selection_uses_2024": false,
+  "selection_uses_2025": false,
+  "selection_uses_2026": false,
+  "oos_used_only_for_stability_and_novelty_diagnostics": true,
+  "model_sha256": "187164615c057292cd1e7e8b47bfaa930e6fe97da4b42e253dff60ba15fd2690"
+}

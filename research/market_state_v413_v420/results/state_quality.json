@@ -1,0 +1,42 @@
+{
+  "technical_gates": {
+    "development_assignment_days_min": 800,
+    "development_feature_row_coverage_min": 0.9,
+    "oos_feature_row_coverage_min": 0.85,
+    "development_min_state_occupancy": 0.01,
+    "development_max_state_occupancy": 0.7,
+    "minimum_centroid_distance": 0.6,
+    "oos_novelty_rate_max": 0.35,
+    "mean_assignment_confidence_min": 0.05
+  },
+  "checks": {
+    "development_assignment_days": true,
+    "development_feature_row_coverage": true,
+    "oos_feature_row_coverage": true,
+    "development_min_state_occupancy": true,
+    "development_max_state_occupancy": true,
+    "minimum_centroid_distance": true,
+    "oos_novelty_rate": true,
+    "mean_assignment_confidence": true
+  },
+  "passed": true,
+  "development_feature_coverage": {
+    "row_complete_share": 1.0,
+    "cell_nonmissing_share": 1.0,
+    "rows": 1095
+  },
+  "oos_feature_coverage": {
+    "row_complete_share": 1.0,
+    "cell_nonmissing_share": 1.0,
+    "rows": 912
+  },
+  "development_assignment_days": 1095,
+  "oos_assignment_days": 912,
+  "development_min_state_occupancy": 0.039269406392694065,
+  "development_max_state_occupancy": 0.2593607305936073,
+  "minimum_centroid_distance": 1.3956009370989464,
+  "oos_novelty_rate": 0.09758771929824561,
+  "oos_mean_assignment_confidence": 0.3536410827082413,
+  "mean_development_self_transition_probability": 0.886057897547779,
+  "program": "V413_V420_MARKET_STATE_OBSERVATORY"
+}

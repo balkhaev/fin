@@ -1,0 +1,10 @@
+{
+  "status": "champion_refinement_started",
+  "primary_champion": "V75_ATLAS_NX",
+  "execution_shadow": "V136_EXECUTION_PLATEAU",
+  "historical_parameter_search_closed": true,
+  "new_sleeve_allocation": 0.0,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "integration_permitted": false
+}

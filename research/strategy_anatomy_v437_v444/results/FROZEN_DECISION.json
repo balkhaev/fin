@@ -1,0 +1,38 @@
+{
+  "program": "V437_V444_STATE_CONDITIONED_STRATEGY_ANATOMY",
+  "status": "state_conditioned_failure_map_ready",
+  "historical_parameter_search_closed": true,
+  "historical_state_gating_permitted": false,
+  "strategy_parameter_changes_permitted": false,
+  "allocation_changes_permitted": false,
+  "v285_revisit_status": "archive_as_rejected_oos_anti_control",
+  "v365_revisit_status": "archive_as_rejected_oos_anti_control",
+  "primary_refinement_priority": "V75_V136_forward_state_conditioned_execution_telemetry",
+  "new_candidate_search_priority": "low_until_genuinely_independent_data_or_payoff_is_available",
+  "common_negative_states": [
+    "deleveraging"
+  ],
+  "common_negative_transitions": [
+    "deleveraging->deleveraging"
+  ],
+  "forward_alert_only_hypothesis": {
+    "inputs": [
+      "state_label",
+      "state_duration_days",
+      "novelty_flag",
+      "transition_surprise",
+      "liquidity",
+      "leverage",
+      "stress"
+    ],
+    "action": "telemetry_alert_only",
+    "trade_or_allocation_action": false,
+    "earliest_start": "2026-07-28"
+  },
+  "new_sleeve_allocation": 0.0,
+  "v136_capital_allocation": 0.0,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

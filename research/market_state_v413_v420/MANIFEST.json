@@ -1,0 +1,93 @@
+{
+  "program": "V413_V420_MARKET_STATE_OBSERVATORY",
+  "files": {
+    "README.md": {
+      "bytes": 3962,
+      "sha256": "bf75b0465a829814312d86f51de7a7ce870ac8f4569fb136d693cb65400d4b0a"
+    },
+    "STRATEGY_TELEMETRY_CONTRACT.json": {
+      "bytes": 2126,
+      "sha256": "0046c5deaa81dd06fd4a4816707128def5ede177f6c7acac3cf904a745e157c8"
+    },
+    "V413_V420_DESIGN.json": {
+      "bytes": 3982,
+      "sha256": "4a8d73788ec9416399711c4c56f2d5ce4ced32915d913abc52983eaeb5ff3280"
+    },
+    "core.py": {
+      "bytes": 13734,
+      "sha256": "bd5c4dedac22f952635731a27495f1435a8f9aaf1185e54854c5e8d6fdf5d4a9"
+    },
+    "requirements.txt": {
+      "bytes": 34,
+      "sha256": "8b180638a176d62c014090aa6b8faacd44b81da193d8d5793add280308bbbe88"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 607,
+      "sha256": "26a857b8d41abed8864d07a1bcc395cbd83fac16c95badc89c82e707b62cf28b"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 1470,
+      "sha256": "0652fced1deac0da0af9dbaeddcfba70a477ef2162e6c958252bef66f3a8fcb4"
+    },
+    "results/STATE_MODEL.json": {
+      "bytes": 9257,
+      "sha256": "94f45e140016c9cff37a28178c81adbe5ba11af90803ee6ee4317fcff2733b43"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 4871,
+      "sha256": "602cb19cd21f302f430f04332dca44556b7015518290ad569fa7bd70f04a15ab"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "fc8e07776d62eba00b13ae00f07eb885be84f0ee2f6547cd9b56f4ef8d7637e3"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/feature_panel.csv": {
+      "bytes": 572604,
+      "sha256": "c71624cd1cb3c5e3d1c977d83ab8089f68c0c1df50ab12390970230043af6d78"
+    },
+    "results/market_state_axes.csv": {
+      "bytes": 289809,
+      "sha256": "470c13cb24efab439e68fb24d6dad0f60d1d6cdbbe703e86f16432c9288a815e"
+    },
+    "results/market_state_daily.csv": {
+      "bytes": 489875,
+      "sha256": "41441aadafb124f7b0eac52f24a8de69eb083b23b465a00567e27c2ec6fa7af5"
+    },
+    "results/standardized_feature_panel.csv": {
+      "bytes": 596132,
+      "sha256": "142426ae0726504171873d365db20cd18a65fc849dc88f864afaa5b56e3ccddf"
+    },
+    "results/state_centroids.csv": {
+      "bytes": 871,
+      "sha256": "ec847ea361855cd726f5ff7a891e61ead5d775585bd1bfdded59d48a204cc081"
+    },
+    "results/state_market_diagnostics.csv": {
+      "bytes": 3467,
+      "sha256": "74898563f498ca26cf73402be5ccb248bcba93dec9c60f0f15f4df2922f92895"
+    },
+    "results/state_occupancy_by_period.csv": {
+      "bytes": 2379,
+      "sha256": "b96e5d4e2d77c6a9824e947fd88839fb4c8537be7a34d7d2726088b8515553a3"
+    },
+    "results/state_quality.json": {
+      "bytes": 1422,
+      "sha256": "4c73a8d163425e6b91d413bf74151bf12944a2edac9828adbe9bf46042a61676"
+    },
+    "results/state_transition_matrix.csv": {
+      "bytes": 902,
+      "sha256": "d9058f6a5a5111a988db1c0096b2824cc97e7f7429b79db4c93008da611c2614"
+    },
+    "run_observatory.py": {
+      "bytes": 13243,
+      "sha256": "e451178f7ea32e67c8a245c9068379279b8a0b218e4e42d0d57a1f713ecaed1a"
+    },
+    "state_model.py": {
+      "bytes": 12726,
+      "sha256": "a188b3f9b461999212cf2bb9c872c690ff436003ed82933be73a29ec0536a235"
+    }
+  }
+}

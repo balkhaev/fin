@@ -1,0 +1,60 @@
+{
+  "program": "V453_V460_CAUSAL_META_ENSEMBLE",
+  "date_frozen": "2026-07-28",
+  "purpose": "Exploratory causal meta-allocation across V285 and V365 with V413 state context.",
+  "limitations": {
+    "pristine_holdout": false,
+    "reason": "V285/V365 families and their 2024-2026 outcomes were already known before this cycle.",
+    "capital_authority": false
+  },
+  "inputs": {
+    "v285": "pinned V437 joined V285 daily account",
+    "v365": "pinned V437 joined V365 daily account",
+    "state_model_sha256": "187164615c057292cd1e7e8b47bfaa930e6fe97da4b42e253dff60ba15fd2690"
+  },
+  "policies": [
+    {"name": "static_50_50", "kind": "static", "lookback_days": 126, "rebalance_days": 28, "static_v285": 0.5, "static_v365": 0.5, "promotable": false},
+    {"name": "static_60_40_v285", "kind": "static", "lookback_days": 126, "rebalance_days": 28, "static_v285": 0.6, "static_v365": 0.4, "promotable": false},
+    {"name": "static_40_60_v285", "kind": "static", "lookback_days": 126, "rebalance_days": 28, "static_v285": 0.4, "static_v365": 0.6, "promotable": false},
+    {"name": "invvol_63_r14", "kind": "invvol", "lookback_days": 63, "rebalance_days": 14, "promotable": true},
+    {"name": "invvol_126_r28", "kind": "invvol", "lookback_days": 126, "rebalance_days": 28, "promotable": true},
+    {"name": "online_global_126_r14", "kind": "online", "lookback_days": 126, "rebalance_days": 14, "promotable": true},
+    {"name": "online_state_126_r14", "kind": "online", "lookback_days": 126, "rebalance_days": 14, "state_conditioning": true, "rebalance_on_state_change": true, "promotable": true},
+    {"name": "online_state_duration_126_r14", "kind": "online", "lookback_days": 126, "rebalance_days": 14, "state_conditioning": true, "duration_conditioning": true, "rebalance_on_state_change": true, "promotable": true},
+    {"name": "online_state_duration_budget_126_r14", "kind": "online", "lookback_days": 126, "rebalance_days": 14, "state_conditioning": true, "duration_conditioning": true, "market_budget": true, "rebalance_on_state_change": true, "promotable": true},
+    {"name": "online_state_duration_budget_vol18_cap125", "kind": "online", "lookback_days": 126, "rebalance_days": 14, "state_conditioning": true, "duration_conditioning": true, "market_budget": true, "target_vol": 0.18, "max_leverage": 1.25, "rebalance_on_state_change": true, "promotable": true},
+    {"name": "online_state_duration_budget_vol22_cap125", "kind": "online", "lookback_days": 126, "rebalance_days": 14, "state_conditioning": true, "duration_conditioning": true, "market_budget": true, "target_vol": 0.22, "max_leverage": 1.25, "rebalance_on_state_change": true, "promotable": true},
+    {"name": "inverted_state_budget_control", "kind": "online", "lookback_days": 126, "rebalance_days": 14, "state_conditioning": true, "duration_conditioning": true, "market_budget": true, "target_vol": 0.18, "max_leverage": 1.25, "rebalance_on_state_change": true, "promotable": false, "inverted_budget_control": true}
+  ],
+  "selection": {
+    "period": ["2021-01-01", "2024-01-01"],
+    "walk_forward_folds": ["2022", "2023"],
+    "control_policy": "static_50_50",
+    "selected_policy_count": 3,
+    "development_cagr_uplift_min": 0.01,
+    "development_sharpe_uplift_min": 0.05,
+    "development_max_drawdown_min": -0.12,
+    "annual_meta_turnover_max": 18.0,
+    "max_leverage": 1.25
+  },
+  "post_oos": {
+    "full_cagr_uplift_min": 0.02,
+    "full_sharpe_uplift_min": 0.10,
+    "full_max_drawdown_min": -0.12,
+    "worst_calendar_year_min": -0.08,
+    "max_leverage": 1.25,
+    "all_validation_holdout_final_periods_positive": true
+  },
+  "audits": {
+    "base": {"meta_cost_bps": 5, "extra_underlying_cost_bps": 0, "financing_rate": 0.08},
+    "severe": {"meta_cost_bps": 20, "extra_underlying_cost_bps": 30, "financing_rate": 0.10},
+    "extreme": {"meta_cost_bps": 40, "extra_underlying_cost_bps": 70, "financing_rate": 0.12},
+    "delay_1d": {"weight_delay_days": 1}
+  },
+  "safety": {
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
