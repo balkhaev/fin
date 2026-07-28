@@ -2,35 +2,50 @@ name: Active V429-V436 state-conditioned telemetry
 
 on:
   push:
-    branches: [agent/active-v429-v436-state-telemetry]
+    branches: [main, agent/forward-evidence-direct-source]
     paths:
       - 'research/state_telemetry_v429_v436/**'
       - '.github/workflows/active-v429-v436-state-telemetry.yml'
   pull_request:
-    branches: [agent/active-v413-v420-market-state-observatory]
+    branches: [main]
+    paths:
+      - 'research/state_telemetry_v429_v436/**'
+      - '.github/workflows/active-v429-v436-state-telemetry.yml'
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: active-v429-v436-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   instrumentation:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: agent/active-v429-v436-state-telemetry
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Materialize and test evaluator
+
+      - name: Install, compile and test direct evaluator
         run: |
-          python research/state_telemetry_v429_v436/bootstrap_telemetry.py
-          python -m pip install -r research/state_telemetry_v429_v436/requirements.txt
+          set -euxo pipefail
+          test -s research/state_telemetry_v429_v436/evaluate_state_telemetry.py
+          test ! -e research/state_telemetry_v429_v436/bootstrap_telemetry.py
+          python -m pip install --disable-pip-version-check \
+            -r research/state_telemetry_v429_v436/requirements.txt
           python -m compileall -q research/state_telemetry_v429_v436
           python research/state_telemetry_v429_v436/evaluate_state_telemetry.py --self-test
+
       - name: Verify frozen template and governance
         run: |
+          set -euxo pipefail
           python research/state_telemetry_v429_v436/evaluate_state_telemetry.py \
             --template /tmp/paper_telemetry_template.csv
           diff -u research/state_telemetry_v429_v436/paper_telemetry_template.csv \
@@ -51,11 +66,11 @@ jobs:
           assert decision['profitability_proven'] is False
           print(json.dumps(decision,indent=2))
           PY
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: active-v429-v436-state-telemetry
-          path: |
-            research/state_telemetry_v429_v436
+          path: research/state_telemetry_v429_v436
           if-no-files-found: error
           retention-days: 30
