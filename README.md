@@ -1,56 +1,78 @@
-# fin
+# FIN
 
-Репозиторий воспроизводимых исследований и fail-closed paper/shadow runtime для торговых алгоритмов.
+Воспроизводимая исследовательская и paper/shadow платформа для торговых стратегий.
 
-Цель — сохранять код, происхождение данных, отрицательные результаты, положительные кандидаты и операционные ограничения, не выдавая переобучение за готовую live-стратегию.
+Репозиторий объединяет:
 
-## FIN Control Room
+- канонический research ledger и отрицательные результаты;
+- V75 ATLAS-NX benchmark и V136 execution shadow;
+- V517 tri-state risk-budget profile;
+- deterministic planner, paper broker, accounting, funding и reconciliation;
+- append-only hash-chain journal и atomic paper cycles;
+- V413/V421 market-state observatory, drift и state memory;
+- state-conditioned forward telemetry и mechanism validator;
+- FIN Control Room с автоматическим runtime monitoring.
 
-Новый статический frontend показывает V75/V136/V509/V517, equity и drawdown, stress surface, архивное состояние рынка, runtime telemetry и все блокеры перед real-money live.
+## Текущий исторический engineering target
 
-```bash
-python scripts/build_frontend_data.py
-python -m http.server 8000 --directory frontend
-```
-
-Откройте `http://localhost:8000`.
-
-- [Frontend](frontend/)
-- [Инструкция frontend](frontend/README.md)
-- [Handoff research → shadow → live](docs/LIVE_HANDOFF_RU.md)
-
-## Текущий стек
+V517/V524 показывает на известной истории около `50.55% CAGR`, Sharpe `1.460` и Max DD `-23.68%`. Это не pristine OOS и не обещание будущей доходности. Position-level margin replay, frozen forward acceptance и exchange adapter отсутствуют, поэтому:
 
 ```text
-V75 ATLAS-NX                  primary historical benchmark
-V136 Execution Plateau       execution shadow
-V517 Tri-state Guard         research/shadow risk-budget adapter
-V413/V421                    market-state observatory and memory
-V429/V445                    forward telemetry and mechanism validation
-finruntime                   deterministic paper broker, journal and reconciliation
+live_ready                 false
+real_leverage_authorized   false
+exchange submission        unavailable
 ```
 
-V517 достиг исторической engineering-цели около `50.55% CAGR`, Sharpe `1.460` и Max DD `-23.68%`, но параметры informed известной историей, pristine holdout отсутствует, position-level margin replay не завершён и forward evidence ещё нет.
-
-## Что можно запускать сейчас
-
-```text
-paper/shadow runtime          готов
-V136 execution shadow         готов
-V517 risk-budget shadow       готов
-state-conditioned telemetry   готов
-real exchange submission      отсутствует
-real leverage                 не разрешено
-```
-
-Проверка:
+## Быстрый запуск Control Room
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 python -m pip install -e .
-python scripts/live_preflight.py --mode shadow
+python scripts/build_frontend_data.py
+fin-control-room --runtime-root runtime --open-browser
 ```
 
-Real-money live остаётся fail-closed до прохождения exact target producer, position-level margin/liquidation replay, минимум 180 дней frozen forward evidence и testnet-проверенного exchange adapter.
+Операторский экран откроется по `http://127.0.0.1:8000/live.html`; исторический research dashboard остаётся на `/index.html`.
+
+Control Room автоматически читает:
+
+```text
+runtime/<strategy-id>/forward_telemetry.csv
+runtime/<strategy-id>/events.jsonl
+runtime/<strategy-id>/account_state.json
+runtime/<strategy-id>/cycles/*/COMMITTED.json
+```
+
+API полностью read-only:
+
+```text
+GET /api/v1/dashboard
+GET /api/v1/runtime
+GET /api/v1/incidents
+GET /api/v1/health
+GET /api/v1/events
+```
+
+POST/order endpoints отсутствуют.
+
+## Paper operations
+
+```bash
+python -m finruntime init-account --help
+python -m finruntime paper-cycle --help
+python -m finruntime status --help
+python -m finruntime verify-journal --help
+```
+
+## Проверка readiness
+
+```bash
+python scripts/live_preflight.py --mode shadow
+python scripts/live_preflight.py --mode live
+```
+
+Shadow preflight должен пройти. Live preflight обязан fail-closed до появления всех внешних доказательств.
 
 ## Исследовательские правила
 
@@ -60,6 +82,12 @@ Real-money live остаётся fail-closed до прохождения exact t
 - selection proof фиксируется до final;
 - пороги не ослабляются после просмотра;
 - отрицательные результаты не удаляются;
-- ноль при нулевой экспозиции не является forward-подтверждением;
-- API keys не коммитятся;
-- missing/stale/reconciliation failure → fail closed.
+- missing data не заменяется нулём;
+- historical metric не является capital authorization.
+
+Подробности:
+
+- `docs/LIVE_HANDOFF_RU.md`;
+- `docs/CONTROL_ROOM_RUNTIME_RU.md`;
+- `docs/checkpoints/runtime-v1/OPERATIONS_RUNBOOK_RU.md`;
+- `frontend/README.md`.

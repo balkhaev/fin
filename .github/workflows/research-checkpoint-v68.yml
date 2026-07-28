@@ -1,4 +1,4 @@
-name: Research checkpoint V68 reproof
+name: Research checkpoint V68 core evidence reproof
 
 on:
   push:
@@ -7,14 +7,14 @@ on:
       - "research/checkpoint_v68/**"
       - "verify_checkpoint_v68.py"
       - "MANIFEST.json"
-      - "README.md"
+      - ".github/workflows/research-checkpoint-v68.yml"
   pull_request:
     paths:
       - "docs/checkpoints/v68/**"
       - "research/checkpoint_v68/**"
       - "verify_checkpoint_v68.py"
       - "MANIFEST.json"
-      - "README.md"
+      - ".github/workflows/research-checkpoint-v68.yml"
   workflow_dispatch:
 
 permissions:
@@ -26,7 +26,78 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python verify_checkpoint_v68.py
+      - name: Ensure economic V68 evidence has not changed
+        run: |
+          set -euxo pipefail
+          checkpoint=b4d59f268e493e7f3defb9b87481e18a4e8c3274
+          git cat-file -e "$checkpoint^{commit}"
+          git diff --exit-code "$checkpoint" -- \
+            research/checkpoint_v68/source \
+            research/checkpoint_v68/results \
+            docs/checkpoints/v68/ANNUAL_RETURNS.csv \
+            docs/checkpoints/v68/ARTIFACT_SHA256.txt \
+            docs/checkpoints/v68/LOCAL_VERIFIER_RESULTS.txt \
+            docs/checkpoints/v68/RESEARCH_CHECKPOINT_V68_FULL_RU.md \
+            docs/checkpoints/v68/RESEARCH_LEDGER_V1_V68.csv \
+            docs/checkpoints/v68/VERIFICATION_LEDGER.json
+      - name: Verify causal source and semantic decisions
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import csv
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root=Path('.')
+          sources=list((root/'research/checkpoint_v68/source').glob('*.py'))
+          assert len(sources)==2, sources
+          for path in sources:
+              compile(path.read_text(), str(path), 'exec')
+
+          proof=json.loads((root/'research/checkpoint_v68/results/v67_selection_proof_before_final.json').read_text())
+          stored=proof.pop('selection_proof_sha256')
+          calculated=hashlib.sha256(json.dumps(proof,sort_keys=True,default=list).encode()).hexdigest()
+          assert stored==calculated=='5795fc62a02e8a8ba423eedc2db4cbbcf6d0028c78e247860bf7fa555b78a6e5'
+
+          summary=json.loads((root/'research/checkpoint_v68/results/v67_summary.json').read_text())
+          assert summary['selection_proof_sha256']==stored
+          assert summary['checks']['eligible_before_final'] and not summary['checks']['final_nonzero']
+          assert summary['prefinal']['liquidations']==0 and summary['prefinal']['max_gross']<1.08
+
+          audit=json.loads((root/'research/checkpoint_v68/results/v68_summary.json').read_text())
+          assert audit['checks']['no_liquidations'] and audit['checks']['min_buffer_positive']
+          assert not audit['checks']['final_nonzero']
+
+          reproof=json.loads((root/'docs/checkpoints/v68/V67_V68_LOCAL_REPROOF.json').read_text())
+          assert reproof['status']=='passed' and not reproof['failed']
+          assert all(reproof['checks'].values())
+          assert reproof['computed_metrics']['liquidations']==0
+
+          ledger=list(csv.DictReader((root/'docs/checkpoints/v68/RESEARCH_LEDGER_V1_V68.csv').open()))
+          assert any(item['version']=='61' and 'incomplete' in item['status'] for item in ledger)
+          assert any(item['version']=='54a' for item in ledger)
+          assert any(item['version']=='54b' for item in ledger)
+          assert all(any(item['version']==str(version) for item in ledger) for version in range(1,54))
+
+          registry=json.loads((root/'docs/checkpoints/v68/PUBLIC_COMPUTE_REGISTRY.json').read_text())
+          public=registry['CHECKPOINT_V68_PUBLIC_REPROOF']
+          assert public['checkpoint_commit']=='b4d59f268e493e7f3defb9b87481e18a4e8c3274'
+          assert public['workflow_run']==30134353937 and public['status']=='success'
+          assert public['archive_sha256']=='fded3ac08f838f7bff7818acf3d4cd43aa332062b0bf11b8afc9dc8269df4255'
+          print('V68 immutable Git evidence, semantics and public reproof boundary passed')
+          PY
+      - name: Explain the metadata boundary
+        run: |
+          cat <<'EOF'
+          The V68 economic source/results and ledgers are protected by immutable Git
+          comparison to the publicly recorded checkpoint plus causal semantic checks.
+          The legacy MANIFEST.json is retained as historical evidence but is not used as
+          a trust root because several of its byte/hash entries were internally stale in
+          the original Git publication.
+          EOF

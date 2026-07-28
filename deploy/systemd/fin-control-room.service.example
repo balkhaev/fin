@@ -1,0 +1,21 @@
+[Unit]
+Description=FIN read-only paper/shadow control room
+After=network.target
+
+[Service]
+Type=simple
+User=fin
+Group=fin
+WorkingDirectory=/opt/fin
+Environment=FIN_RUNTIME_ROOT=/var/lib/fin/runtime
+ExecStart=/opt/fin/.venv/bin/fin-control-room --host 127.0.0.1 --port 8000 --runtime-root /var/lib/fin/runtime
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/fin /var/lib/fin/runtime
+
+[Install]
+WantedBy=multi-user.target

@@ -1,12 +1,18 @@
-name: FIN frontend control room
+name: FIN frontend and live control plane
 
 on:
   push:
-    branches: [main, agent/frontend-control-room]
+    branches: [main, agent/live-control-plane]
     paths:
       - 'frontend/**'
+      - 'src/finruntime/observability/**'
       - 'scripts/build_frontend_data.py'
+      - 'scripts/run_control_room.py'
       - 'tests/frontend/**'
+      - 'tests/runtime/**'
+      - 'docs/CONTROL_ROOM_RUNTIME_RU.md'
+      - 'deploy/systemd/fin-control-room.service.example'
+      - 'pyproject.toml'
       - '.github/workflows/frontend-control-room.yml'
       - 'docs/checkpoints/v138/CHECKPOINT_V138.json'
       - 'research/v75_tristate_guard_v517_v524/results/**'
@@ -17,8 +23,13 @@ on:
     branches: [main]
     paths:
       - 'frontend/**'
-      - 'scripts/build_frontend_data.py'
+      - 'src/finruntime/observability/**'
+      - 'scripts/run_control_room.py'
       - 'tests/frontend/**'
+      - 'tests/runtime/**'
+      - 'docs/CONTROL_ROOM_RUNTIME_RU.md'
+      - 'deploy/systemd/fin-control-room.service.example'
+      - 'pyproject.toml'
       - '.github/workflows/frontend-control-room.yml'
   workflow_dispatch:
 
@@ -32,9 +43,11 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -42,37 +55,105 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Build dashboard evidence bundle
+      - name: Install, compile and build evidence bundle
         env:
           GITHUB_SHA: ${{ github.sha }}
         run: |
           set -euxo pipefail
+          python -m pip install --disable-pip-version-check -e .
+          python -m compileall -q src scripts tests
           python scripts/build_frontend_data.py --output /tmp/dashboard.json
           python scripts/build_frontend_data.py --check --output /tmp/dashboard.json
 
-      - name: Test Python data layer
+      - name: Run runtime and frontend suites
         run: |
           set -euxo pipefail
+          python -m unittest discover -s tests/runtime -p 'test_*.py' -v
           python -m unittest discover -s tests/frontend -p 'test_*.py' -v
+          python scripts/verify_runtime.py --full
+          node --check frontend/app.js
+          node --check frontend/live.js
+          ! grep -R -E 'https?://(cdn|unpkg|jsdelivr)' frontend
+          ! grep -R -E 'submit_order|/api/v1/orders' frontend src/finruntime/observability
 
-      - name: Check static frontend
+      - name: Build synthetic paper feed
         run: |
           set -euxo pipefail
-          node --check frontend/app.js
-          test -s frontend/index.html
-          test -s frontend/styles.css
-          test -s frontend/data/dashboard.json
-          ! grep -R -E 'https?://(cdn|unpkg|jsdelivr)' frontend
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          from finruntime.operations.cycle import TELEMETRY_FIELDS
+          root=Path('/tmp/fin-runtime/v75_atlas_nx')
+          root.mkdir(parents=True)
+          row={
+            'timestamp':'2026-07-28T12:00:00Z',
+            'strategy_id':'v75_atlas_nx',
+            'source_bundle_sha256':'sha256:'+'1'*64,
+            'target_hash':'sha256:'+'2'*64,
+            'realized_position_hash':'sha256:'+'3'*64,
+            'gross_target':0.8,'gross_realized':0.79,'turnover':0.04,
+            'modelled_slippage_bps':4.0,'paper_slippage_bps':4.5,
+            'net_return':0.001,'equity':10010,'drawdown':-0.01,
+            'reconciliation_ok':True,'source_hash_match':True,
+            'data_stale':False,'execution_complete':True,
+          }
+          with (root/'forward_telemetry.csv').open('w',newline='',encoding='utf-8') as handle:
+              writer=csv.DictWriter(handle,fieldnames=TELEMETRY_FIELDS)
+              writer.writeheader(); writer.writerow(row)
+          PY
+
+      - name: Exercise read-only HTTP API and SSE
+        run: |
+          set -euxo pipefail
+          fin-control-room \
+            --host 127.0.0.1 \
+            --port 8765 \
+            --frontend-root frontend \
+            --dashboard /tmp/dashboard.json \
+            --runtime-root /tmp/fin-runtime \
+            --stale-after-seconds 1000000000 \
+            >/tmp/control-room.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid || true' EXIT
+          for attempt in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8765/api/v1/health >/tmp/health.json && break
+            sleep 0.2
+          done
+          curl -fsS http://127.0.0.1:8765/api/v1/dashboard >/tmp/live-dashboard.json
+          curl -fsS 'http://127.0.0.1:8765/api/v1/events?once=1' >/tmp/events.txt
+          curl -fsS http://127.0.0.1:8765/live.html >/tmp/live.html
+          status=$(curl -sS -o /tmp/post.json -w '%{http_code}' -X POST http://127.0.0.1:8765/api/v1/orders)
+          test "$status" = 405
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          dashboard=json.loads(Path('/tmp/live-dashboard.json').read_text())
+          health=json.loads(Path('/tmp/health.json').read_text())
+          rejected=json.loads(Path('/tmp/post.json').read_text())
+          assert dashboard['runtime']['aggregate']['observation_count']==1
+          assert dashboard['environment']['live_ready'] is False
+          assert health['read_only'] is True
+          assert health['exchange_submission_available'] is False
+          assert rejected['exchange_submission_available'] is False
+          assert 'event: snapshot' in Path('/tmp/events.txt').read_text()
+          assert 'FIN Runtime Control Plane' in Path('/tmp/live.html').read_text()
+          PY
 
       - name: Assemble preview artifact
         run: |
           set -euxo pipefail
           cp /tmp/dashboard.json frontend/data/dashboard.json
-          python -m zipfile -c /tmp/fin-control-room.zip frontend
+          python -m zipfile -c /tmp/fin-control-room.zip frontend docs/CONTROL_ROOM_RUNTIME_RU.md deploy/systemd/fin-control-room.service.example
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: fin-control-room
-          path: /tmp/fin-control-room.zip
-          if-no-files-found: error
+          path: |
+            /tmp/fin-control-room.zip
+            /tmp/control-room.log
+            /tmp/live-dashboard.json
+            /tmp/health.json
+            /tmp/events.txt
+          if-no-files-found: warn
           retention-days: 30

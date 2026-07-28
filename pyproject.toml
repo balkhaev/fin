@@ -4,13 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "finruntime"
-version = "0.1.0"
-description = "Deterministic paper/shadow runtime contracts for frozen FIN strategies"
+version = "0.2.0"
+description = "Deterministic FIN paper/shadow runtime and read-only control room"
 requires-python = ">=3.11"
 dependencies = []
 
 [project.scripts]
 finruntime = "finruntime.cli:main"
+fin-control-room = "finruntime.observability.server:main"
 
 [project.optional-dependencies]
 runtime-dev = []
