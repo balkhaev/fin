@@ -1,0 +1,56 @@
+{
+  "program": "V501_V508_V75_ACCOUNT_LEVEL_RISK_BUDGET",
+  "objective": {
+    "full_cagr_target": 0.50,
+    "development_cagr_floor": 0.45,
+    "max_drawdown_floor": -0.25,
+    "full_max_drawdown_floor": -0.27,
+    "sharpe_floor": 1.35,
+    "description": "Seek approximately 50% historical CAGR without materially exceeding the V75 drawdown envelope."
+  },
+  "sources": {
+    "v75_equity": {
+      "ref": "agent/active-v139-v146-global-futures",
+      "path": "research/active_v139_v146/inputs/v75_stress_equity.csv",
+      "sha256": "f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01",
+      "economic_reference": "docs/checkpoints/v138/CHECKPOINT_V138.json"
+    },
+    "stabilizer": "research/frontier_oos_audit_v477_v484/results/equity_persistent_budget.csv",
+    "market_state": "research/market_state_v413_v420/results/market_state_daily.csv"
+  },
+  "chronology": {
+    "development": ["2021-01-01", "2024-01-01"],
+    "validation": ["2024-01-01", "2025-01-01"],
+    "holdout": ["2025-01-01", "2026-01-01"],
+    "final": ["2026-01-01", "2026-07-01"]
+  },
+  "mechanisms": [
+    "constant account leverage controls",
+    "causal portfolio volatility targeting",
+    "continuous market-state risk budget",
+    "completed-equity drawdown governor",
+    "optional 10-15% persistent V285/V365 stabilizer",
+    "scheduled rebalancing with no-trade bands"
+  ],
+  "risk_limits": {
+    "maximum_account_leverage": 1.95,
+    "maximum_average_account_leverage": 1.65,
+    "development_max_drawdown": -0.25,
+    "full_max_drawdown": -0.27,
+    "severe_development_max_drawdown": -0.32,
+    "no_liquidation_claim": false
+  },
+  "audits": {
+    "base": {"transfer_cost_bps": 10, "financing_rate": 0.08, "extra_underlying_cost_bps": 0, "signal_delay_days": 0},
+    "severe": {"transfer_cost_bps": 25, "financing_rate": 0.14, "extra_underlying_cost_bps": 40, "signal_delay_days": 1},
+    "extreme": {"transfer_cost_bps": 50, "financing_rate": 0.22, "extra_underlying_cost_bps": 80, "signal_delay_days": 2},
+    "delay_1d": {"transfer_cost_bps": 10, "financing_rate": 0.08, "extra_underlying_cost_bps": 0, "signal_delay_days": 1}
+  },
+  "evidence_limits": {
+    "program_level_holdout_pristine": false,
+    "account_level_overlay_not_position_level_margin_model": true,
+    "capital_change_authorized": false,
+    "live_ready": false,
+    "real_leverage_authorized": false
+  }
+}
