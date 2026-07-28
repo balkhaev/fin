@@ -1,0 +1,120 @@
+    high = False
+    age = policy.minimum_hold_days
+    states: list[bool] = []
+    switches: list[int] = []
+    ages: list[int] = []
+    for value in values:
+        switched = 0
+        if np.isfinite(value):
+            if high:
+                if age >= policy.minimum_hold_days and value < policy.exit_return:
+                    high = False
+                    age = 0
+                    switched = 1
+                else:
+                    age += 1
+            else:
+                if age >= policy.minimum_hold_days and value > policy.entry_return:
+                    high = True
+                    age = 0
+                    switched = 1
+                else:
+                    age += 1
+        else:
+            age += 1
+        states.append(high)
+        switches.append(switched)
+        ages.append(age)
+    if policy.inverted:
+        states = [not item for item in states]
+    return pd.DataFrame(
+        {"high_state": states, "signal_switched": switches, "state_age_days": ages},
+        index=score.index,
+    )
+
+
+def desired_leverage(equity: pd.Series, policy: Policy, delay: int = 0) -> pd.DataFrame:
+    score = momentum20(equity)
+    if policy.name == "constant_l175_control":
+        state = pd.DataFrame(
+            {"high_state": True, "signal_switched": 0, "state_age_days": np.arange(len(score))},
+            index=score.index,
+        )
+    else:
+        state = hysteresis_state(score, policy)
+    desired = pd.Series(
+        np.where(state["high_state"], policy.high_leverage, policy.low_leverage),
+        index=score.index,
+        dtype=float,
+        name="desired_leverage",
+    )
+    if delay:
+        desired = desired.shift(delay).fillna(policy.low_leverage)
+        state = state.shift(delay).fillna(
+            {"high_state": False, "signal_switched": 0, "state_age_days": 0}
+        )
+    return pd.concat([score, desired, state], axis=1)
+
+
+def simulate(
+    returns: pd.Series,
+    equity_source: pd.Series,
+    policy: Policy,
+    audit: Audit,
+    start: pd.Timestamp = START,
+    end: pd.Timestamp = END,
+) -> pd.DataFrame:
+    index = returns.index[(returns.index >= start) & (returns.index < end)]
+    signal = desired_leverage(equity_source, policy, audit.signal_delay_days).reindex(index)
+    r = returns.reindex(index).to_numpy(float)
+    desired = signal["desired_leverage"].to_numpy(float)
+    high_state = signal["high_state"].astype(bool).to_numpy()
+    switched = signal["signal_switched"].fillna(0).to_numpy(int)
+    state_age = signal["state_age_days"].fillna(0).to_numpy(int)
+    score = signal["momentum20"].to_numpy(float)
+
+    holdings = 0.0
+    cash = INITIAL_EQUITY
+    equity = INITIAL_EQUITY
+    previous_target = 0.0
+    records: list[dict[str, Any]] = []
+    for i, timestamp in enumerate(index):
+        previous_equity = equity
+        current_weight = holdings / max(equity, 1e-12)
+        target = float(desired[i])
+        l1_change = abs(target - current_weight)
+        risk_reduction = target < abs(current_weight) - 0.04
+        scheduled = i == 0 or i % policy.rebalance_days == 0
+        target_changed = abs(target - previous_target) >= policy.no_trade_band
+        rebalance = i == 0 or risk_reduction or (scheduled and target_changed)
+        meta_turnover = 0.0
+        transfer_cost = 0.0
+        if rebalance:
+            meta_turnover = l1_change
+            transfer_cost = equity * meta_turnover * audit.transfer_cost_rate
+            after = max(equity - transfer_cost, 1e-12)
+            holdings = target * after
+            cash = after - holdings
+            previous_target = target
+        else:
+            cash = equity - holdings
+
+        financing_cost = max(-cash, 0.0) * audit.financing_rate / 365.0
+        cash -= financing_cost
+        close_open_leverage = abs(holdings) / max(equity, 1e-12)
+        extra_underlying_cost = (
+            equity
+            * close_open_leverage
+            * V75_ANNUAL_TURNOVER
+            * audit.extra_underlying_cost_rate
+            / 365.0
+        )
+        cash -= extra_underlying_cost
+        holdings *= 1.0 + r[i]
+        equity = float(cash + holdings)
+        if not np.isfinite(equity) or equity <= 0.0:
+            raise RuntimeError(f"non-positive equity at {timestamp}: {equity}")
+        records.append(
+            {
+                "net_return": equity / previous_equity - 1.0,
+                "equity": equity,
