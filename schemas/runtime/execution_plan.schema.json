@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/execution_plan.schema.json",
+  "title": "ExecutionPlan",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "plan_id",
+    "strategy_id",
+    "mode",
+    "created_at_utc",
+    "market_snapshot_id",
+    "state_sequence",
+    "target_hash",
+    "intents",
+    "risk_summary",
+    "plan_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "plan_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "strategy_id": {"type": "string"},
+    "mode": {"enum": ["paper", "shadow"]},
+    "created_at_utc": {"type": "string", "pattern": "Z$"},
+    "market_snapshot_id": {"type": "string"},
+    "state_sequence": {"type": "integer", "minimum": 0},
+    "target_hash": {"type": "string"},
+    "intents": {"type": "array"},
+    "risk_summary": {"type": "object"},
+    "plan_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

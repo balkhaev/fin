@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finruntime"
+version = "0.1.0"
+description = "Deterministic paper/shadow runtime contracts for frozen FIN strategies"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+finruntime = "finruntime.cli:main"
+
+[project.optional-dependencies]
+runtime-dev = []
+
+[tool.setuptools.packages.find]
+where = ["src"]

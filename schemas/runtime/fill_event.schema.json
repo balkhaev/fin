@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/fill_event.schema.json",
+  "title": "FillEvent",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "plan_id",
+    "intent_id",
+    "filled_at_utc",
+    "status",
+    "filled_quantity",
+    "price",
+    "fee",
+    "fee_currency",
+    "slippage_bps",
+    "source_observation_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "event_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "plan_id": {"type": "string"},
+    "intent_id": {"type": "string"},
+    "filled_at_utc": {"type": "string", "pattern": "Z$"},
+    "status": {"enum": ["partial", "filled", "rejected", "expired"]},
+    "filled_quantity": {"type": "string"},
+    "price": {"type": "string"},
+    "fee": {"type": "string"},
+    "fee_currency": {"type": "string"},
+    "slippage_bps": {"type": "string"},
+    "source_observation_hash": {"type": "string"}
+  },
+  "additionalProperties": false
+}

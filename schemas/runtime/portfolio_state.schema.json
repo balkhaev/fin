@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/portfolio_state.schema.json",
+  "title": "PortfolioState",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "strategy_id",
+    "sequence",
+    "as_of_utc",
+    "cash",
+    "equity",
+    "high_water",
+    "positions",
+    "held_targets",
+    "target_age_days",
+    "pending_plan_id",
+    "last_market_snapshot_id",
+    "last_target_hash",
+    "last_plan_hash",
+    "state_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "strategy_id": {"type": "string"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "as_of_utc": {"type": "string", "pattern": "Z$"},
+    "cash": {"type": "string"},
+    "equity": {"type": "string"},
+    "high_water": {"type": "string"},
+    "positions": {"type": "object"},
+    "held_targets": {"type": "object"},
+    "target_age_days": {"type": "integer", "minimum": 0},
+    "pending_plan_id": {"type": ["string", "null"]},
+    "last_market_snapshot_id": {"type": ["string", "null"]},
+    "last_target_hash": {"type": ["string", "null"]},
+    "last_plan_hash": {"type": ["string", "null"]},
+    "state_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

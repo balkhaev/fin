@@ -1,0 +1,9 @@
+{
+  "strategy_id": "v75_atlas_nx",
+  "strategy_version": "runtime-v1",
+  "role": "primary",
+  "allowed_modes": ["paper", "shadow"],
+  "source_checkpoint": "V138",
+  "live_ready": false,
+  "real_leverage_authorized": false
+}

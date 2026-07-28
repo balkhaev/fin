@@ -1,0 +1,12 @@
+{
+  "strategy_id": "v136_execution_shadow",
+  "strategy_version": "runtime-v1",
+  "role": "shadow",
+  "allowed_modes": ["shadow"],
+  "l1_no_trade_band": 0.08,
+  "maximum_target_age_days": 28,
+  "step_fraction": 1.0,
+  "risk_reduction_buffer": 0.02,
+  "live_ready": false,
+  "real_leverage_authorized": false
+}

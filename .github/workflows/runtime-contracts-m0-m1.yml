@@ -1,0 +1,60 @@
+name: Runtime contracts M0-M1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/finruntime/**'
+      - 'config/strategies/**'
+      - 'schemas/runtime/**'
+      - 'docs/checkpoints/runtime-v1/**'
+      - 'tests/runtime/**'
+      - 'scripts/verify_runtime.py'
+      - 'pyproject.toml'
+      - '.github/workflows/runtime-contracts-m0-m1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile
+        run: python -m compileall -q src/finruntime tests/runtime scripts/verify_runtime.py
+      - name: Unit and causal contract tests
+        run: python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+      - name: Runtime self-test
+        run: python -m finruntime self-test
+      - name: Verify V75 provenance
+        run: python scripts/verify_runtime.py --provenance-only --profile v75_atlas_nx
+      - name: Verify V136 provenance
+        run: python scripts/verify_runtime.py --provenance-only --profile v136_execution_shadow
+      - name: Verify V28 provenance
+        run: python scripts/verify_runtime.py --provenance-only --profile v28_growth_control
+      - name: Verify registry, schemas and safety
+        run: python scripts/verify_runtime.py --contracts-only
+      - name: Reject opaque transport and live surface
+        run: |
+          set -euxo pipefail
+          find src/finruntime tests/runtime scripts -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find src/finruntime tests/runtime scripts -type f -name '*.pyc' -delete || true
+          bad=$(find src/finruntime config/strategies schemas/runtime docs/checkpoints/runtime-v1 tests/runtime \
+            -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' \
+            -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+          ! grep -R --line-number --fixed-strings 'submit_order' src/finruntime
+          ! grep -R --line-number --fixed-strings '"mode": "live"' src/finruntime config/strategies

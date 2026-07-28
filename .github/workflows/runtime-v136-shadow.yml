@@ -1,0 +1,69 @@
+name: Runtime V136 execution shadow
+
+on:
+  pull_request:
+    branches: [agent/runtime-contracts-m0-m1]
+    paths:
+      - 'src/finruntime/execution/**'
+      - 'tests/runtime/test_v136_execution.py'
+      - 'docs/checkpoints/runtime-v1/V136_SHADOW_*'
+      - '.github/workflows/runtime-v136-shadow.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v136-shadow:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile runtime
+        run: python -m compileall -q src/finruntime tests/runtime
+      - name: Run complete runtime test suite
+        run: python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+      - name: Verify V136 provenance
+        run: python scripts/verify_runtime.py --provenance-only --profile v136_execution_shadow
+      - name: Verify frozen V136 contract
+        run: |
+          python - <<'PY'
+          import json
+          from decimal import Decimal
+          from pathlib import Path
+          from finruntime.execution.v136_filter import FROZEN_V136_POLICY
+
+          contract = json.loads(
+              Path('docs/checkpoints/runtime-v1/V136_SHADOW_CONTRACT.json').read_text()
+          )
+          frozen = contract['frozen_policy']
+          assert Decimal(frozen['l1_no_trade_band']) == FROZEN_V136_POLICY.l1_no_trade_band
+          assert frozen['maximum_target_age_days'] == FROZEN_V136_POLICY.maximum_target_age_days
+          assert Decimal(frozen['step_fraction']) == FROZEN_V136_POLICY.step_fraction
+          assert Decimal(frozen['risk_reduction_buffer']) == FROZEN_V136_POLICY.risk_reduction_buffer
+          assert contract['status'] == 'state_machine_ready_historical_regression_blocked_on_v75_target_fixture'
+          assert contract['live_ready'] is False
+          assert contract['real_leverage_authorized'] is False
+          assert contract['integration_permitted'] is False
+          print(json.dumps(contract, indent=2))
+          PY
+      - name: Verify no live surface or generated artifacts
+        run: |
+          set -euxo pipefail
+          find src/finruntime tests/runtime -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find src/finruntime tests/runtime -type f -name '*.pyc' -delete || true
+          bad=$(find src/finruntime/execution tests/runtime docs/checkpoints/runtime-v1 \
+            -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' \
+            -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+          ! grep -R --line-number --fixed-strings 'submit_order' src/finruntime/execution
