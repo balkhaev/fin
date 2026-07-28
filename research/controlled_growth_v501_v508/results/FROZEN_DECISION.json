@@ -1,0 +1,11 @@
+{
+  "program": "V501_V508_CONTROLLED_GROWTH_ENGINE",
+  "status": "diagnostic_oos_after_development_failure",
+  "historical_target_passed": false,
+  "selected_policy": "diversified_growth_k4_growth",
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
