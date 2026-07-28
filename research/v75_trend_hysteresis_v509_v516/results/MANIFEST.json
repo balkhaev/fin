@@ -1,0 +1,53 @@
+{
+  "program": "V509_V516_V75_TREND_HYSTERESIS_ACCELERATOR",
+  "files": {
+    "ANNUAL_RETURNS.csv": {
+      "bytes": 160,
+      "sha256": "4dcd63b098a75f84674510d97e5e94a344749c19c71a846987cebb7480fb0c1e"
+    },
+    "FROZEN_DECISION.json": {
+      "bytes": 1054,
+      "sha256": "c5970f384eea1adc91b1ee4f599e1f3dbcc28b1ffcc2113a5d02a2e70ef41d04"
+    },
+    "REPORT_RU.md": {
+      "bytes": 472,
+      "sha256": "c7b24f01ac32b508af6d9f2b2b1b08c2dac4b1adbe1e9b94ba49151b23353afc"
+    },
+    "V75_ECONOMIC_EQUIVALENCE.json": {
+      "bytes": 821,
+      "sha256": "ec39ff88af4875825d60f9cafdf99918532c2d991760f2c27ae21b9b12f1dbef"
+    },
+    "audit_metrics.csv": {
+      "bytes": 7435,
+      "sha256": "a875d8d8758af87f64ee1c0d7581860e5cf8cc5ff58929029684a4c5bcb7b0cb"
+    },
+    "development_ranking.csv": {
+      "bytes": 19436,
+      "sha256": "57144d4db1e6a79e87edd3716f3f4ceb6ed8b4d9466f04e912597859e2fc18e5"
+    },
+    "equity_base.csv": {
+      "bytes": 330707,
+      "sha256": "ea68c45a79b5053241c11f0569f5847fa3512439fec83c98d86a068b089a5dbb"
+    },
+    "equity_delay_1d.csv": {
+      "bytes": 330702,
+      "sha256": "f9bbfda6b4a77e03936e9f727ebad7a743ac981a720ad15a1676d117c741bb18"
+    },
+    "equity_extreme.csv": {
+      "bytes": 360197,
+      "sha256": "dc71149fd6929d05d0816550d0926fd0d19a8fb8e45cb83f95cacda6ca836544"
+    },
+    "equity_severe.csv": {
+      "bytes": 360244,
+      "sha256": "9594c9bc221a3eee21b322897d664404f1f98ca25ca4b66b8e8f78fdca3e37d3"
+    },
+    "selection_proof_before_oos.json": {
+      "bytes": 59271,
+      "sha256": "f6324ab8b1afbff137509512791ae2b7e1dac4317414d24abf8ed6e7f67fe53a"
+    },
+    "summary.json": {
+      "bytes": 69355,
+      "sha256": "f9f56d69633d5213f969f25288fe6015ec396d2e66f40e4f50b0e320e94586bf"
+    }
+  }
+}
