@@ -1,0 +1,101 @@
+{
+  "program": "V501_V508_CONTROLLED_GROWTH_ENGINE",
+  "files": {
+    "README.md": {
+      "bytes": 738,
+      "sha256": "91b1430ce04e0efab89329bc320a39c7444f39644b904c1fa8a0a43569aba571"
+    },
+    "V509_V516_AUDIT_CONTRACT.json": {
+      "bytes": 1069,
+      "sha256": "dc630ea961d370f1f3fb809b09263e7b9b1397020fa89be7f636ab2a97211ecb"
+    },
+    "requirements.txt": {
+      "bytes": 29,
+      "sha256": "321449af8d7f9338d4fa581ea6d7a712133a9cb08fff5ba948b7f808c6d4461c"
+    },
+    "results/ANNUAL_RETURNS.csv": {
+      "bytes": 542,
+      "sha256": "6b34fab0c2aced07ab8b58646b7e0b6e7ad3163b884cce424932a9326ae171be"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 336,
+      "sha256": "fbe22934d1762eff1a5f56903c08bf89222a3adc671c8d1a312c305a3ea4af30"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 840,
+      "sha256": "452c02aff998fa7abad57ce9a4b07120540d7d46b54b60aa8a1c984608670373"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 22146,
+      "sha256": "812c6a6d18864b2a59f4588f24fabbcedf44023d096425a000d917ca6d1308ae"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "a3026c1b3eb4d911e9c8a33e3a8e13a99b994ff7fd9bb293f196794630f0fa1d"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "a0c2ab882877dec1c421512c75c6daf732a134a064f200c642b329f3473cb1af"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/equity_diversified_growth_k3_convex.csv": {
+      "bytes": 359040,
+      "sha256": "2e43fb91580caf64a883415608330d509f1f97d0661c7e6eb2f138ac8720033d"
+    },
+    "results/equity_diversified_growth_k4_balanced.csv": {
+      "bytes": 340482,
+      "sha256": "ce9abfb918bef0167e862880b6160506442286f28f9bdfe5122a07faa0dd0486"
+    },
+    "results/equity_diversified_growth_k4_convex.csv": {
+      "bytes": 341162,
+      "sha256": "1e197e08b60319198286c4197f49833a85a3a4f095dd555ef5b1f464981a3ccb"
+    },
+    "results/equity_diversified_growth_k4_growth.csv": {
+      "bytes": 324218,
+      "sha256": "e5cfa130ded548e5eb28636b901a8d5fa8830bb8ac2733c57babd3d0a904b82a"
+    },
+    "results/risk_budget_diversified_growth_k3_convex.csv": {
+      "bytes": 101194,
+      "sha256": "77f5d0b6247205d13d302cae9836c814344461d98f18b549cb9540f120d2b6db"
+    },
+    "results/risk_budget_diversified_growth_k4_balanced.csv": {
+      "bytes": 101152,
+      "sha256": "fb608c2be06dae7c721e715a442e6d507d68089b2209436f5ba3ee1964e7502c"
+    },
+    "results/risk_budget_diversified_growth_k4_convex.csv": {
+      "bytes": 101628,
+      "sha256": "73faf78f901a9c11aaf6afd58c7fbc1ea7d1762b552ae94be7e05081815d0887"
+    },
+    "results/risk_budget_diversified_growth_k4_growth.csv": {
+      "bytes": 99484,
+      "sha256": "7984d2f26a20695aa4954418acc32b9e8c1894a6eec056b03c476ecb6a57a365"
+    },
+    "results/summary.json": {
+      "bytes": 50583,
+      "sha256": "88f8b122bc9a7d652591aea56109ff2b8900bdbca04208fa6c46356b72f62088"
+    },
+    "results/unit_weights_diversified_growth_k3_convex.csv": {
+      "bytes": 238901,
+      "sha256": "b9ecb842e68396f2d3e380873e97964bfeb0bfc7f840c7f0aa62f9e3a5f43591"
+    },
+    "results/unit_weights_diversified_growth_k4_balanced.csv": {
+      "bytes": 249783,
+      "sha256": "9b7a013040bd120e8cbc47621b493d4372f7b96f8c138e627a3dd3a3ec80fa6f"
+    },
+    "results/unit_weights_diversified_growth_k4_convex.csv": {
+      "bytes": 252015,
+      "sha256": "6bc0302d2957fb8003cd83945096310bf4f00a4c118ebc34ef45dc2e159a590c"
+    },
+    "results/unit_weights_diversified_growth_k4_growth.csv": {
+      "bytes": 249783,
+      "sha256": "9b7a013040bd120e8cbc47621b493d4372f7b96f8c138e627a3dd3a3ec80fa6f"
+    },
+    "run_audit.py": {
+      "bytes": 12542,
+      "sha256": "ca684a96baf7bee639b11e40c0cf5b3930a0a48246d82a1ba0b13ea85e4aa95e"
+    }
+  }
+}

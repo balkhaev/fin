@@ -1,0 +1,140 @@
+name: Active V509-V516 controlled growth frontier audit
+
+on:
+  push:
+    branches: [agent/active-v509-v516-controlled-growth-frontier-audit]
+    paths:
+      - 'research/controlled_growth_v501_v508/**'
+      - 'research/controlled_growth_frontier_v509_v516/**'
+      - '.github/workflows/active-v509-v516-controlled-growth-frontier.yml'
+  pull_request:
+    branches: [agent/active-v501-v508-controlled-growth]
+    paths:
+      - 'research/controlled_growth_frontier_v509_v516/**'
+      - '.github/workflows/active-v509-v516-controlled-growth-frontier.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: active-v509-v516-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v509-v516-controlled-growth-frontier-audit
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize pinned fixed-universe engine
+        run: |
+          set -euxo pipefail
+          git archive 751b519d74d10f58ee4433783f6d9abd38d1d148 \
+            research/active_v9 research/active_v253_v260 | tar -x
+          test "$(git hash-object research/active_v9/data.py)" = e349fa80c2d75db5d9ec0bcd0ac4c3e8333c031d
+          test "$(git hash-object research/active_v253_v260/run_research.py)" = 0a6ff050727f7fd4df61568a6b0f52ac84e1ddaf
+
+      - name: Install, compile and self-test exact audit
+        run: |
+          set -euxo pipefail
+          python -m pip install --retries 3 --timeout 30 \
+            -r research/controlled_growth_frontier_v509_v516/requirements.txt
+          python -m compileall -q \
+            research/controlled_growth_v501_v508 \
+            research/controlled_growth_frontier_v509_v516 \
+            research/active_v9 research/active_v253_v260
+          python research/controlled_growth_v501_v508/run_research.py --self-test
+          python research/controlled_growth_frontier_v509_v516/run_audit.py --self-test
+
+      - name: Restore immutable Binance public archive cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/v9
+          key: binance-usdm-daily-fixed-universe-2020-2026-v9
+
+      - name: Run exact four-policy OOS audit
+        run: |
+          set -euxo pipefail
+          rm -rf research/controlled_growth_frontier_v509_v516/results \
+                 research/controlled_growth_frontier_v509_v516/MANIFEST.json \
+                 docs/checkpoints/v516
+          python research/controlled_growth_frontier_v509_v516/run_audit.py \
+            --root research/controlled_growth_frontier_v509_v516 \
+            --cache .cache/v9 \
+            --state research/market_state_v413_v420/results/market_state_daily.csv \
+            2>&1 | tee research/controlled_growth_frontier_v509_v516/run.log
+
+      - name: Verify and materialize V516 evidence
+        run: |
+          set -euxo pipefail
+          test -s research/controlled_growth_frontier_v509_v516/results/summary.json
+          test -s research/controlled_growth_frontier_v509_v516/results/FROZEN_DECISION.json
+          test -s research/controlled_growth_frontier_v509_v516/results/audit_metrics.csv
+          test -s research/controlled_growth_frontier_v509_v516/results/ANNUAL_RETURNS.csv
+          test -s research/controlled_growth_frontier_v509_v516/results/REPORT_RU.md
+          mkdir -p docs/checkpoints/v516
+          cp research/controlled_growth_frontier_v509_v516/results/summary.json \
+             docs/checkpoints/v516/CHECKPOINT_V516.json
+          cp research/controlled_growth_frontier_v509_v516/results/REPORT_RU.md \
+             docs/checkpoints/v516/RESEARCH_CHECKPOINT_V516_RU.md
+          cp research/controlled_growth_frontier_v509_v516/results/ANNUAL_RETURNS.csv \
+             docs/checkpoints/v516/ANNUAL_RETURNS.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary=json.loads(Path('research/controlled_growth_frontier_v509_v516/results/summary.json').read_text())
+          assert summary['selection_performed'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['capital_change_authorized'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Remove transient dependencies
+        run: |
+          rm -rf research/active_v9 research/active_v253_v260
+          find research/controlled_growth_v501_v508 \
+               research/controlled_growth_frontier_v509_v516 \
+               docs/checkpoints/v516 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/controlled_growth_v501_v508 \
+               research/controlled_growth_frontier_v509_v516 \
+               docs/checkpoints/v516 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable frontier evidence
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/controlled_growth_frontier_v509_v516 docs/checkpoints/v516
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'No V509-V516 changes'
+          else
+            git commit -m 'Add V509-V516 controlled growth frontier results [skip ci]'
+            git push origin HEAD:agent/active-v509-v516-controlled-growth-frontier-audit
+          fi
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v509-v516-controlled-growth-frontier
+          path: |
+            research/controlled_growth_frontier_v509_v516/results
+            research/controlled_growth_frontier_v509_v516/run.log
+            docs/checkpoints/v516
+          if-no-files-found: warn
+          retention-days: 30

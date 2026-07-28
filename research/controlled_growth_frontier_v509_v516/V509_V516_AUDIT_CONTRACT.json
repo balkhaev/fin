@@ -1,0 +1,34 @@
+{
+  "program": "V509_V516_CONTROLLED_GROWTH_FRONTIER_AUDIT",
+  "selection_performed": false,
+  "audited_policies": [
+    "diversified_growth_k3_convex",
+    "diversified_growth_k4_convex",
+    "diversified_growth_k4_balanced",
+    "diversified_growth_k4_growth"
+  ],
+  "periods": {
+    "development": ["2021-01-01", "2024-01-01"],
+    "validation_2024": ["2024-01-01", "2025-01-01"],
+    "holdout_2025": ["2025-01-01", "2026-01-01"],
+    "final_2026h1": ["2026-01-01", "2026-07-01"],
+    "full": ["2021-01-01", "2026-07-01"]
+  },
+  "target_gates": {
+    "all_oos_periods_positive": true,
+    "full_cagr_min": 0.50,
+    "full_sharpe_min": 1.30,
+    "full_max_drawdown_min": -0.25,
+    "severe_full_cagr_min": 0.35,
+    "extreme_full_cagr_min": 0.15,
+    "worst_calendar_year_min": -0.10,
+    "liquidations_max": 0,
+    "minimum_margin_buffer": 0.10
+  },
+  "economics_changed_from_v501": false,
+  "program_level_holdout_pristine": false,
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false
+}
