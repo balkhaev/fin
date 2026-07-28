@@ -1,0 +1,102 @@
+name: Active V493-V500 global rotation replay
+
+on:
+  push:
+    branches: [agent/active-v493-v500-global-rotation-replay]
+    paths:
+      - 'research/global_rotation_v493_v500/**'
+      - '.github/workflows/active-v493-v500-global-rotation-replay.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/global_rotation_v493_v500/**'
+      - '.github/workflows/active-v493-v500-global-rotation-replay.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: active-v493-v500-global-rotation-replay-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v493-v500-global-rotation-replay
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and self-test frozen source
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/global_rotation_v493_v500/requirements.txt
+          python -m compileall -q research/global_rotation_v493_v500 research/active_v103_v110
+          (cd research/active_v103_v110 && python run_research.py --self-test)
+
+      - name: Run exact standalone V103 engine
+        run: |
+          set -euxo pipefail
+          rm -rf research/global_rotation_v493_v500/cache research/global_rotation_v493_v500/raw_results
+          mkdir -p research/global_rotation_v493_v500/cache research/global_rotation_v493_v500/raw_results
+          cd research/active_v103_v110
+          python run_research.py \
+            --cache ../global_rotation_v493_v500/cache \
+            --atlas ../macro_crisis_v485_v492/data/flat_atlas_interface.csv \
+            --output ../global_rotation_v493_v500/raw_results \
+            2>&1 | tee ../global_rotation_v493_v500/raw_results/run.log
+
+      - name: Build frozen decision
+        run: |
+          set -euxo pipefail
+          rm -rf research/global_rotation_v493_v500/results
+          python research/global_rotation_v493_v500/finalize.py \
+            --root research/global_rotation_v493_v500 \
+            --raw research/global_rotation_v493_v500/raw_results
+          test -s research/global_rotation_v493_v500/results/summary.json
+          test -s research/global_rotation_v493_v500/results/REPORT_RU.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary=json.loads(Path('research/global_rotation_v493_v500/results/summary.json').read_text())
+          assert summary['integration_permitted'] is False
+          assert summary['capital_change_authorized'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Commit readable data and results
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          find research/global_rotation_v493_v500 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/global_rotation_v493_v500 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/global_rotation_v493_v500/cache research/global_rotation_v493_v500/results
+          git diff --cached --check
+          git commit -m 'Add V493-V500 global rotation replay results [skip ci]'
+          git push origin HEAD:agent/active-v493-v500-global-rotation-replay
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v493-v500-global-rotation-replay
+          path: |
+            research/global_rotation_v493_v500/cache
+            research/global_rotation_v493_v500/raw_results
+            research/global_rotation_v493_v500/results
+          if-no-files-found: warn
+          retention-days: 30
