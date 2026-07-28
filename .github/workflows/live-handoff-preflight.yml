@@ -42,11 +42,17 @@ jobs:
           python -m pip install --disable-pip-version-check -e .
           python -m compileall -q src scripts tests
 
-      - name: Run complete runtime suite
+      - name: Run complete runtime unit suite
         run: |
-          set -euxo pipefail
-          python -m unittest discover -s tests/runtime -p 'test_*.py' -v
-          python scripts/verify_runtime.py --full
+          set -o pipefail
+          python -m unittest discover -s tests/runtime -p 'test_*.py' -v \
+            2>&1 | tee /tmp/runtime-tests.log
+
+      - name: Verify runtime provenance and contracts
+        run: |
+          set -o pipefail
+          python scripts/verify_runtime.py --full \
+            2>&1 | tee /tmp/runtime-verification.log
 
       - name: Shadow preflight must pass
         run: |
@@ -82,3 +88,15 @@ jobs:
           assert len(value['blockers'])>=4
           assert value['exchange_submission_attempted'] is False
           PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-handoff-preflight-${{ matrix.python-version }}
+          path: |
+            /tmp/runtime-tests.log
+            /tmp/runtime-verification.log
+            /tmp/shadow_preflight.json
+            /tmp/live_preflight.json
+          if-no-files-found: warn
+          retention-days: 7
