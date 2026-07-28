@@ -43,9 +43,9 @@ jobs:
           test -s research/active_v9/data.py
           test -s research/active_v9/market.py
           test -s research/active_v253_v260/run_research.py
-          echo 'e349fa80c2d75db5d9ec0bcd0ac4c3e8333c031d  research/active_v9/data.py' | sha256sum -c -
-          echo 'c8c7f4c598779f49ae01c80bb5baf39cb48267fb  research/active_v9/market.py' | sha256sum -c -
-          echo '0a6ff050727f7fd4df61568a6b0f52ac84e1ddaf  research/active_v253_v260/run_research.py' | sha256sum -c -
+          test "$(git hash-object research/active_v9/data.py)" = e349fa80c2d75db5d9ec0bcd0ac4c3e8333c031d
+          test "$(git hash-object research/active_v9/market.py)" = c8c7f4c598779f49ae01c80bb5baf39cb48267fb
+          test "$(git hash-object research/active_v253_v260/run_research.py)" = 0a6ff050727f7fd4df61568a6b0f52ac84e1ddaf
 
       - name: Install, compile and causal self-test
         run: |
