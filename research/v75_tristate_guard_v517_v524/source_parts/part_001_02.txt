@@ -1,0 +1,38 @@
+                    guard_age += 1
+            else:
+                guard_age += 1
+        else:
+            guard_active = False
+            guard_age += 1
+
+        state = int(state_frame.at[timestamp, "market_state"])
+        raw_target = (
+            policy.high_leverage
+            if state == 1
+            else policy.low_leverage
+            if state == -1
+            else policy.base_leverage
+        )
+        target = min(raw_target, policy.guard_cap) if guard_active else raw_target
+        current_weight = holdings / max(equity, 1e-12)
+        risk_reduction = target < abs(current_weight) - policy.no_trade_band
+        scheduled = number == 0 or number % policy.rebalance_days == 0
+        target_changed = abs(target - previous_target) >= policy.no_trade_band
+        rebalance = number == 0 or risk_reduction or (scheduled and target_changed)
+        meta_turnover = 0.0
+        transfer_cost = 0.0
+        if rebalance:
+            meta_turnover = abs(target - current_weight)
+            transfer_cost = equity * meta_turnover * audit.transfer_cost_rate
+            after_cost = max(equity - transfer_cost, 1e-12)
+            holdings = target * after_cost
+            cash = after_cost - holdings
+            previous_target = target
+        else:
+            cash = equity - holdings
+
+        financing_cost = max(-cash, 0.0) * audit.financing_rate / 365.0
+        cash -= financing_cost
+        open_leverage = abs(holdings) / max(equity, 1e-12)
+        extra_underlying_cost = (
+            equity
