@@ -1,0 +1,5 @@
+recipe,wf_2022_positive,wf_2023_positive,development_cagr_uplift,development_sharpe_floor,development_dd,meta_turnover,max_leverage,eligible,score
+triple_equal,True,True,False,True,True,True,True,False,2.219830687734285
+barbell_defensive_2to1,True,True,False,True,True,True,True,False,2.2129392044209704
+barbell_static_vol_equal,True,True,True,False,True,True,True,False,2.194998083725875
+barbell_equal,True,True,True,False,True,True,True,False,2.184476712202717
