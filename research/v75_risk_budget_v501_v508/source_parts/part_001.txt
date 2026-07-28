@@ -1,0 +1,132 @@
+                "scheduled_rebalances": int(extra["scheduled_rebalance"].sum()),
+            }
+        )
+    return metrics
+
+
+def yearly_returns(returns: pd.Series, name: str = "return") -> pd.DataFrame:
+    rows = [
+        {"year": int(year), name: float((1.0 + group).prod() - 1.0)}
+        for year, group in returns.groupby(returns.index.year)
+    ]
+    return pd.DataFrame(rows)
+
+
+def load_v75(path: Path) -> tuple[pd.Series, dict[str, Any]]:
+    actual_sha = sha256_file(path)
+    if actual_sha != EXPECTED_V75_SHA256:
+        raise RuntimeError(f"unexpected V75 compact stream SHA-256: {actual_sha}")
+    frame = pd.read_csv(path, index_col=0, parse_dates=True)
+    frame.index = pd.to_datetime(frame.index, utc=True)
+    frame = frame.sort_index()
+    if frame.index.duplicated().any() or "equity" not in frame:
+        raise ValueError("invalid V75 equity stream")
+    equity = pd.to_numeric(frame["equity"], errors="coerce")
+    if not np.isfinite(equity).all() or (equity <= 0.0).any():
+        raise ValueError("non-finite or non-positive V75 equity")
+    returns = equity.pct_change(fill_method=None)
+    returns.iloc[0] = equity.iloc[0] / INITIAL_EQUITY - 1.0
+    metrics = returns_metrics(returns)
+    annual = yearly_returns(returns).set_index("year")["return"].to_dict()
+    checks = {
+        "sha256": actual_sha == EXPECTED_V75_SHA256,
+        "rows": len(frame) == EXPECTED_V75["rows"],
+        "start": str(frame.index.min()) == EXPECTED_V75["start"],
+        "end": str(frame.index.max()) == EXPECTED_V75["end"],
+        "total_return": abs(metrics["total_return"] - EXPECTED_V75["total_return"]) <= 1e-10,
+        "cagr": abs(metrics["cagr"] - EXPECTED_V75["cagr"]) <= 5e-4,
+        "max_drawdown": abs(metrics["max_drawdown"] - EXPECTED_V75["max_drawdown"]) <= 1e-10,
+        "sharpe": abs(metrics["sharpe"] - EXPECTED_V75["sharpe"]) <= 5e-4,
+        "annual_returns": all(
+            abs(float(annual.get(year, np.nan)) - expected) <= 1e-10
+            for year, expected in EXPECTED_V75["annual_returns"].items()
+        ),
+    }
+    if not all(checks.values()):
+        raise RuntimeError(f"V75 economic equivalence failed: {checks}, metrics={metrics}, annual={annual}")
+    evidence = {
+        "program": PROGRAM,
+        "file_sha256": actual_sha,
+        "checks": checks,
+        "metrics": metrics,
+        "annual_returns": annual,
+        "economic_equivalence_passed": True,
+    }
+    return returns.rename("v75_return"), evidence
+
+
+def load_stabilizer(path: Path) -> pd.Series:
+    frame = pd.read_csv(path)
+    if "open_time" not in frame or "net_return" not in frame:
+        raise ValueError("invalid persistent stabilizer stream")
+    frame["open_time"] = pd.to_datetime(frame["open_time"], utc=True)
+    frame = frame.set_index("open_time").sort_index()
+    if frame.index.duplicated().any():
+        raise ValueError("duplicate stabilizer dates")
+    values = pd.to_numeric(frame["net_return"], errors="coerce")
+    if not np.isfinite(values).all():
+        raise ValueError("non-finite stabilizer returns")
+    return values.rename("stabilizer_return")
+
+
+def load_state(path: Path) -> pd.DataFrame:
+    frame = pd.read_csv(path)
+    if "open_time" not in frame:
+        raise ValueError("market-state file lacks open_time")
+    frame["open_time"] = pd.to_datetime(frame["open_time"], utc=True)
+    frame = frame.set_index("open_time").sort_index()
+    required = {
+        "trend",
+        "breadth",
+        "stress",
+        "rotation",
+        "liquidity",
+        "leverage",
+        "assignment_confidence",
+        "novelty_ratio",
+        "novelty_flag",
+        "state_duration_days",
+    }
+    missing = sorted(required - set(frame.columns))
+    if missing:
+        raise ValueError(f"missing state fields: {missing}")
+    return frame
+
+
+def aligned_inputs(v75: pd.Series, stabilizer: pd.Series, state: pd.DataFrame) -> pd.DataFrame:
+    index = v75.index.intersection(stabilizer.index).intersection(state.index).sort_values()
+    index = index[(index >= START) & (index < END)]
+    if len(index) != EXPECTED_V75["rows"]:
+        raise RuntimeError(f"unexpected aligned rows: {len(index)}")
+    output = pd.concat([v75.reindex(index), stabilizer.reindex(index), state.reindex(index)], axis=1)
+    if output[["v75_return", "stabilizer_return"]].isna().any().any():
+        raise RuntimeError("missing strategy returns after alignment")
+    return output
+
+
+def continuous_state_score(frame: pd.DataFrame) -> pd.Series:
+    raw = (
+        0.24 * pd.to_numeric(frame["trend"], errors="coerce")
+        + 0.18 * pd.to_numeric(frame["breadth"], errors="coerce")
+        - 0.20 * pd.to_numeric(frame["stress"], errors="coerce")
+        - 0.08 * pd.to_numeric(frame["rotation"], errors="coerce")
+        + 0.18 * pd.to_numeric(frame["liquidity"], errors="coerce")
+        + 0.18 * pd.to_numeric(frame["leverage"], errors="coerce")
+    ).fillna(0.0)
+    confidence = pd.to_numeric(frame["assignment_confidence"], errors="coerce").fillna(0.0).clip(0.0, 1.0)
+    novelty_ratio = pd.to_numeric(frame["novelty_ratio"], errors="coerce").fillna(1.0).clip(lower=0.0)
+    novelty_penalty = np.where(frame["novelty_flag"].astype(bool), 0.35, 0.0) + 0.15 * (novelty_ratio - 1.0).clip(lower=0.0)
+    score = raw * (0.65 + 0.35 * confidence) - novelty_penalty
+    return pd.Series(score, index=frame.index, name="state_score").clip(-4.0, 4.0)
+
+
+def policy_book() -> tuple[Policy, ...]:
+    items = [
+        Policy("constant_core100_l145", "constant", 1.00, 1.45, 0.0, 0.0, 1.45, 1.45, 14, 0.08, 1, False, False),
+        Policy("constant_core100_l160", "constant", 1.00, 1.60, 0.0, 0.0, 1.60, 1.60, 14, 0.08, 1, False, False),
+        Policy("constant_core100_l175", "constant", 1.00, 1.75, 0.0, 0.0, 1.75, 1.75, 14, 0.08, 1, False, False),
+        Policy("dd_core100_l160", "constant", 1.00, 1.60, 0.0, 0.0, 0.45, 1.60, 7, 0.06, 3, True),
+        Policy("dd_core100_l175", "constant", 1.00, 1.75, 0.0, 0.0, 0.45, 1.75, 7, 0.06, 3, True),
+        Policy("state_core100_l155_s25", "state", 1.00, 1.55, 0.0, 0.25, 0.55, 1.85, 7, 0.06, 7, True),
+        Policy("state_core100_l165_s40", "state", 1.00, 1.65, 0.0, 0.40, 0.50, 1.95, 7, 0.06, 7, True),
+    ]
