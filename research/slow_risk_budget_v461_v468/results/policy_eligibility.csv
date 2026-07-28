@@ -1,0 +1,9 @@
+policy,wf_2022_positive,wf_2023_positive,development_cagr_uplift,development_sharpe_floor,development_dd,meta_turnover,max_leverage,eligible,score
+persistent_budget_75_115_r56_s28,True,True,False,True,True,True,True,False,1.9035839647696644
+persistent_budget_75_115_r28_s14,True,True,False,True,True,True,True,False,1.901246255035161
+slow_budget_80_115_r28_s14,True,True,False,True,True,True,True,False,1.8979666045145693
+slow_budget_75_110_r28_s14,True,True,False,True,True,True,True,False,1.8835674982191464
+persistent_budget_65_110_r28_s14,True,True,False,True,True,True,True,False,1.8807155783736458
+slow_budget_65_105_r28_s14,True,True,False,True,True,True,True,False,1.8564297441270736
+persistent_budget_75_120_vol18,True,True,True,False,True,True,True,False,1.7640440251656706
+persistent_budget_75_125_vol22,True,True,True,False,True,True,True,False,1.7427823465963028
