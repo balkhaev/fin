@@ -1,0 +1,11 @@
+{
+  "program": "V509_V516_CONTROLLED_GROWTH_FRONTIER_AUDIT",
+  "status": "frontier_audit_complete_no_target_pass",
+  "target_passes": [],
+  "selection_performed": false,
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
