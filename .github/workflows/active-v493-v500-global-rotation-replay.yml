@@ -35,7 +35,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install, compile and verify cached transport equality
+      - name: Install, compile and verify exact causal transport
         timeout-minutes: 12
         env:
           PIP_DISABLE_PIP_VERSION_CHECK: '1'
@@ -44,7 +44,7 @@ jobs:
           python -m pip install --retries 3 --timeout 30 \
             -r research/global_rotation_v493_v500/requirements.txt
           python -m compileall -q research/global_rotation_v493_v500 research/active_v103_v110
-          (cd research/active_v103_v110 && python run_research.py --self-test)
+          python research/global_rotation_v493_v500/test_causality.py
           python research/global_rotation_v493_v500/run_optimized.py --self-test
 
       - name: Run exact standalone V103 engine with cached computation
