@@ -17,7 +17,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: active-v485-v492-macro-crisis-replay
+  group: active-v485-v492-macro-crisis-replay-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
