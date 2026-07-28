@@ -1,0 +1,115 @@
+name: Active V453-V460 causal meta-ensemble
+
+on:
+  push:
+    branches: [agent/active-v453-v460-causal-meta-ensemble]
+    paths:
+      - 'research/meta_ensemble_v453_v460/**'
+      - '.bootstrap_meta_v453/**'
+      - '.bootstrap_meta_v453_xz/**'
+      - '.github/workflows/active-v453-v460-causal-meta-ensemble.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: active-v453-v460-causal-meta-ensemble
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v453-v460-causal-meta-ensemble
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Materialize exact verified research source
+        run: |
+          set -euxo pipefail
+          cat .bootstrap_meta_v453_xz/part_*.b64 | tr -d '\n\r' > /tmp/run_research.py.xz.b64
+          echo '2135b4c40b8febb996d2ae39f492604d7a5814ad35465ff8f13f4e1fa6175ca9  /tmp/run_research.py.xz.b64' | sha256sum -c -
+          base64 -d /tmp/run_research.py.xz.b64 > /tmp/run_research.py.xz
+          echo '542ccc0304a2fff7d7721177d8ac2c43854da6ed37c39a48dea16397cb736132  /tmp/run_research.py.xz' | sha256sum -c -
+          xz -dc /tmp/run_research.py.xz > research/meta_ensemble_v453_v460/run_research.py
+          echo '59c10dc2a0b05b39862d39172c5fc11841758591180ce76c1669001afe32fbed  research/meta_ensemble_v453_v460/run_research.py' | sha256sum -c -
+
+      - name: Verify pinned input evidence
+        run: |
+          set -euxo pipefail
+          test -s research/strategy_anatomy_v437_v444/results/joined_V285_LOW_SKEW_HOURLY_CONTROLLER.csv
+          test -s research/strategy_anatomy_v437_v444/results/joined_V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE.csv
+          test -s research/meta_ensemble_v453_v460/V453_V460_DESIGN.json
+          bad=$(find research/meta_ensemble_v453_v460 -type f \( -name '*.zip' -o -name '*.b64' -o -name '*.pyfrag' \) -print || true)
+          test -z "$bad"
+
+      - name: Install, compile and causal self-test
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/meta_ensemble_v453_v460/requirements.txt
+          python -m py_compile research/meta_ensemble_v453_v460/run_research.py
+          python research/meta_ensemble_v453_v460/run_research.py --self-test
+
+      - name: Run frozen backtest
+        run: |
+          set -euxo pipefail
+          rm -rf research/meta_ensemble_v453_v460/results
+          python research/meta_ensemble_v453_v460/run_research.py \
+            --v285 research/strategy_anatomy_v437_v444/results/joined_V285_LOW_SKEW_HOURLY_CONTROLLER.csv \
+            --v365 research/strategy_anatomy_v437_v444/results/joined_V365_DOWNSIDE_VOL_COMPRESSION_ENSEMBLE.csv \
+            --design research/meta_ensemble_v453_v460/V453_V460_DESIGN.json \
+            --output research/meta_ensemble_v453_v460/results \
+            2>&1 | tee research/meta_ensemble_v453_v460/run.log
+
+      - name: Verify decision contract
+        run: |
+          set -euxo pipefail
+          test -s research/meta_ensemble_v453_v460/results/summary.json
+          test -s research/meta_ensemble_v453_v460/results/selection_proof_before_oos.json
+          test -s research/meta_ensemble_v453_v460/results/policy_development_ranking.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary=json.loads(Path('research/meta_ensemble_v453_v460/results/summary.json').read_text())
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['profitability_proven'] is False
+          assert summary['selection']['selection_uses_2024'] is False
+          assert summary['selection']['selection_uses_2025'] is False
+          assert summary['selection']['selection_uses_2026'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+          find research/meta_ensemble_v453_v460 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/meta_ensemble_v453_v460 -type f -name '*.pyc' -delete || true
+
+      - name: Commit readable source and results
+        run: |
+          set -euxo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/meta_ensemble_v453_v460
+          git rm -r .bootstrap_meta_v453 .bootstrap_meta_v453_xz
+          if git diff --cached --quiet; then
+            echo 'No result changes'
+          else
+            git commit -m 'Add V453-V460 causal meta-ensemble results [skip ci]'
+            git push origin HEAD:agent/active-v453-v460-causal-meta-ensemble
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v453-v460-causal-meta-ensemble
+          path: research/meta_ensemble_v453_v460
+          if-no-files-found: warn
+          retention-days: 30
