@@ -1,0 +1,112 @@
+name: Active V501-V508 V75 risk budget
+
+on:
+  push:
+    branches: [agent/active-v501-v508-v75-risk-budget]
+    paths:
+      - 'research/v75_risk_budget_v501_v508/**'
+      - '.github/workflows/active-v501-v508-v75-risk-budget.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: active-v501-v508-v75-risk-budget
+  cancel-in-progress: true
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v501-v508-v75-risk-budget
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Reconstruct readable source and run causal self-test
+        run: |
+          set -euxo pipefail
+          cat research/v75_risk_budget_v501_v508/source_parts/part_*.txt \
+            > research/v75_risk_budget_v501_v508/run_research.py
+          echo '56fde1232114a04f68dcd2240b236bb8f0d8a96bbe3da10a97e087056338c2c5  research/v75_risk_budget_v501_v508/run_research.py' \
+            | sha256sum -c -
+          python -m pip install --disable-pip-version-check \
+            -r research/v75_risk_budget_v501_v508/requirements.txt
+          python -m compileall -q research/v75_risk_budget_v501_v508
+          python research/v75_risk_budget_v501_v508/run_research.py --self-test
+
+      - name: Materialize pinned daily V75 stream
+        run: |
+          set -euxo pipefail
+          mkdir -p research/v75_risk_budget_v501_v508/inputs
+          git fetch --no-tags origin \
+            agent/active-v139-v146-global-futures:refs/remotes/origin/v139-v75-source
+          git show \
+            refs/remotes/origin/v139-v75-source:research/active_v139_v146/inputs/v75_stress_equity.csv \
+            > research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv
+          echo 'f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01  research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv' \
+            | sha256sum -c -
+
+      - name: Run frozen V501-V508 research
+        run: |
+          set -euxo pipefail
+          rm -rf research/v75_risk_budget_v501_v508/results
+          python research/v75_risk_budget_v501_v508/run_research.py \
+            --v75 research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv \
+            --stabilizer research/frontier_oos_audit_v477_v484/results/equity_persistent_budget.csv \
+            --state research/market_state_v413_v420/results/market_state_daily.csv \
+            --design research/v75_risk_budget_v501_v508/V501_V508_DESIGN.json \
+            --output research/v75_risk_budget_v501_v508/results \
+            2>&1 | tee research/v75_risk_budget_v501_v508/run.log
+
+      - name: Verify frozen result and safety flags
+        run: |
+          set -euxo pipefail
+          test -s research/v75_risk_budget_v501_v508/results/summary.json
+          test -s research/v75_risk_budget_v501_v508/results/selection_proof_before_oos.json
+          test -s research/v75_risk_budget_v501_v508/results/V75_ECONOMIC_EQUIVALENCE.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('research/v75_risk_budget_v501_v508/results')
+          s=json.loads((root/'summary.json').read_text())
+          e=json.loads((root/'V75_ECONOMIC_EQUIVALENCE.json').read_text())
+          assert e['economic_equivalence_passed'] is True
+          assert s['integration_permitted'] is False
+          assert s['capital_change_authorized'] is False
+          assert s['live_ready'] is False
+          assert s['real_leverage_authorized'] is False
+          assert s['profitability_proven'] is False
+          print(json.dumps(s, indent=2))
+          PY
+
+      - name: Commit readable source, pinned input and results
+        run: |
+          set -euxo pipefail
+          rm -rf research/v75_risk_budget_v501_v508/source_parts
+          find research/v75_risk_budget_v501_v508 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/v75_risk_budget_v501_v508 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/v75_risk_budget_v501_v508
+          git diff --cached --check
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add V501-V508 V75 risk-budget results [skip ci]'
+            git push origin HEAD:agent/active-v501-v508-v75-risk-budget
+          fi
+
+      - name: Upload full research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v501-v508-v75-risk-budget
+          path: research/v75_risk_budget_v501_v508
+          if-no-files-found: error
+          retention-days: 30
