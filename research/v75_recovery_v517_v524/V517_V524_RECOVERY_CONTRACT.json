@@ -1,0 +1,25 @@
+{
+  "program": "V517_V524_EXACT_V75_PROVENANCE_RECOVERY",
+  "expected_sha256": {
+    "canonical_v75_engine": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc",
+    "v75_daily_regression_fixture": "0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b"
+  },
+  "search_scope": [
+    "all Git blob objects including unreachable objects",
+    "all paths in git rev-list --objects --all",
+    "all historical .bootstrap_v87 payload variants",
+    "all historical .bootstrap_v87b payload variants",
+    "all historical .bootstrap_v138 payload variants",
+    "recursive xz/gzip/bzip2/zip/tar decoding",
+    "base64/base85/ascii85/hex transport decoding"
+  ],
+  "acceptance": {
+    "exact_sha256_required": true,
+    "approximate_source_rewrite_permitted": false,
+    "filename_only_match_sufficient": false
+  },
+  "strategy_parameters_changed": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false
+}
