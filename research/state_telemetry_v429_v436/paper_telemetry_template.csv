@@ -1,0 +1,2 @@
+timestamp,strategy_id,source_bundle_sha256,target_hash,realized_position_hash,gross_target,gross_realized,turnover,modelled_slippage_bps,paper_slippage_bps,net_return,equity,drawdown,reconciliation_ok,source_hash_match,data_stale,execution_complete
+,,,,,,,,,,,,,,,,

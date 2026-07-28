@@ -1,0 +1,61 @@
+name: Active V429-V436 state-conditioned telemetry
+
+on:
+  push:
+    branches: [agent/active-v429-v436-state-telemetry]
+    paths:
+      - 'research/state_telemetry_v429_v436/**'
+      - '.github/workflows/active-v429-v436-state-telemetry.yml'
+  pull_request:
+    branches: [agent/active-v413-v420-market-state-observatory]
+  workflow_dispatch:
+
+jobs:
+  instrumentation:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v429-v436-state-telemetry
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize and test evaluator
+        run: |
+          python research/state_telemetry_v429_v436/bootstrap_telemetry.py
+          python -m pip install -r research/state_telemetry_v429_v436/requirements.txt
+          python -m compileall -q research/state_telemetry_v429_v436
+          python research/state_telemetry_v429_v436/evaluate_state_telemetry.py --self-test
+      - name: Verify frozen template and governance
+        run: |
+          python research/state_telemetry_v429_v436/evaluate_state_telemetry.py \
+            --template /tmp/paper_telemetry_template.csv
+          diff -u research/state_telemetry_v429_v436/paper_telemetry_template.csv \
+            /tmp/paper_telemetry_template.csv
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source=json.loads(Path('research/market_state_v413_v420/results/FROZEN_DECISION.json').read_text())
+          decision=json.loads(Path('research/state_telemetry_v429_v436/FORWARD_INSTRUMENTATION_DECISION.json').read_text())
+          assert source['observatory_ready_for_forward_attribution'] is True
+          assert decision['status']=='forward_instrumentation_ready_no_live_observations'
+          assert decision['paper_observation_count']==0
+          assert decision['strategy_parameter_changes_permitted'] is False
+          assert decision['allocation_changes_permitted'] is False
+          assert decision['integration_permitted'] is False
+          assert decision['live_ready'] is False
+          assert decision['real_leverage_authorized'] is False
+          assert decision['profitability_proven'] is False
+          print(json.dumps(decision,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: active-v429-v436-state-telemetry
+          path: |
+            research/state_telemetry_v429_v436
+          if-no-files-found: error
+          retention-days: 30
