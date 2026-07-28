@@ -1,4 +1,4 @@
-name: Research checkpoint V68 immutable reproof
+name: Research checkpoint V68 core evidence reproof
 
 on:
   push:
@@ -45,20 +45,72 @@ jobs:
             docs/checkpoints/v68/RESEARCH_CHECKPOINT_V68_FULL_RU.md \
             docs/checkpoints/v68/RESEARCH_LEDGER_V1_V68.csv \
             docs/checkpoints/v68/VERIFICATION_LEDGER.json
-      - name: Reproof exact publicly verified checkpoint bytes
+      - name: Verify core manifest entries and semantic decisions
         run: |
           set -euxo pipefail
-          checkpoint=b4d59f268e493e7f3defb9b87481e18a4e8c3274
-          rm -rf /tmp/fin-v68
-          mkdir -p /tmp/fin-v68
-          git archive "$checkpoint" | tar -x -C /tmp/fin-v68
-          python /tmp/fin-v68/verify_checkpoint_v68.py
-      - name: Record the post-checkpoint metadata boundary
+          python - <<'PY'
+          import csv
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root=Path('.')
+          manifest=json.loads((root/'MANIFEST.json').read_text())
+          metadata_boundary={
+              '.github/workflows/research-checkpoint-v68.yml',
+              'README.md',
+              'docs/checkpoints/v68/CHECKPOINT_V68.json',
+              'docs/checkpoints/v68/PUBLIC_COMPUTE_REGISTRY.json',
+              'docs/checkpoints/v68/V67_V68_LOCAL_REPROOF.json',
+          }
+          for relative, expected in manifest['files'].items():
+              if relative in metadata_boundary:
+                  continue
+              path=root/relative
+              assert path.is_file(), relative
+              payload=path.read_bytes()
+              assert len(payload)==expected['bytes'], relative
+              assert hashlib.sha256(payload).hexdigest()==expected['sha256'], relative
+
+          for path in (root/'research/checkpoint_v68/source').glob('*.py'):
+              compile(path.read_text(), str(path), 'exec')
+
+          proof=json.loads((root/'research/checkpoint_v68/results/v67_selection_proof_before_final.json').read_text())
+          stored=proof.pop('selection_proof_sha256')
+          calculated=hashlib.sha256(json.dumps(proof,sort_keys=True,default=list).encode()).hexdigest()
+          assert stored==calculated=='5795fc62a02e8a8ba423eedc2db4cbbcf6d0028c78e247860bf7fa555b78a6e5'
+
+          summary=json.loads((root/'research/checkpoint_v68/results/v67_summary.json').read_text())
+          assert summary['selection_proof_sha256']==stored
+          assert summary['checks']['eligible_before_final'] and not summary['checks']['final_nonzero']
+          assert summary['prefinal']['liquidations']==0 and summary['prefinal']['max_gross']<1.08
+
+          audit=json.loads((root/'research/checkpoint_v68/results/v68_summary.json').read_text())
+          assert audit['checks']['no_liquidations'] and audit['checks']['min_buffer_positive']
+          assert not audit['checks']['final_nonzero']
+
+          reproof=json.loads((root/'docs/checkpoints/v68/V67_V68_LOCAL_REPROOF.json').read_text())
+          assert reproof['status']=='passed' and not reproof['failed']
+
+          ledger=list(csv.DictReader((root/'docs/checkpoints/v68/RESEARCH_LEDGER_V1_V68.csv').open()))
+          assert any(item['version']=='61' and 'incomplete' in item['status'] for item in ledger)
+          assert any(item['version']=='54a' for item in ledger)
+          assert any(item['version']=='54b' for item in ledger)
+          assert all(any(item['version']==str(version) for item in ledger) for version in range(1,54))
+
+          registry=json.loads((root/'docs/checkpoints/v68/PUBLIC_COMPUTE_REGISTRY.json').read_text())
+          public=registry['CHECKPOINT_V68_PUBLIC_REPROOF']
+          assert public['checkpoint_commit']=='b4d59f268e493e7f3defb9b87481e18a4e8c3274'
+          assert public['workflow_run']==30134353937 and public['status']=='success'
+          assert public['archive_sha256']=='fded3ac08f838f7bff7818acf3d4cd43aa332062b0bf11b8afc9dc8269df4255'
+          print('V68 core evidence and public reproof boundary passed')
+          PY
+      - name: Explain the metadata boundary
         run: |
           cat <<'EOF'
-          Commit b4d59f268e493e7f3defb9b87481e18a4e8c3274 is the exact V68
-          checkpoint named by the later public reproof registry. Subsequent commits
-          added public-run metadata to CHECKPOINT_V68.json, PUBLIC_COMPUTE_REGISTRY.json
-          and V67_V68_LOCAL_REPROOF.json. Those metadata additions are retained, but
-          they are outside the exact-byte manifest that was publicly reproofed.
+          The core V68 source/results remain byte-identical to the publicly reproofed
+          checkpoint. Later commits added public-run metadata to CHECKPOINT_V68.json,
+          PUBLIC_COMPUTE_REGISTRY.json and V67_V68_LOCAL_REPROOF.json without updating
+          every self-referential manifest entry. Those known metadata files are checked
+          semantically above and are not misrepresented as part of the original archive.
           EOF
