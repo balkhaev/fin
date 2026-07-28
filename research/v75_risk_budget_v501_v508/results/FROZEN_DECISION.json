@@ -1,0 +1,13 @@
+{
+  "program": "V501_V508_V75_ACCOUNT_LEVEL_RISK_BUDGET",
+  "status": "rejected_before_oos",
+  "eligible_policy_count": 0,
+  "selected_policy": null,
+  "oos_opened": false,
+  "historical_50pct_target_met": false,
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

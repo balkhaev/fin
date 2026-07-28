@@ -1,0 +1,29 @@
+{
+  "program": "V501_V508_V75_ACCOUNT_LEVEL_RISK_BUDGET",
+  "files": {
+    "FROZEN_DECISION.json": {
+      "bytes": 379,
+      "sha256": "bb310ed60040f3062a04ef45f63a6380d6b249280563f1c51523ea4bf8ec733f"
+    },
+    "REPORT_RU.md": {
+      "bytes": 174,
+      "sha256": "4292d74eac39a39d5065f18e923d3803db16b30eaf928d3969f387ee33bbc63f"
+    },
+    "V75_ECONOMIC_EQUIVALENCE.json": {
+      "bytes": 933,
+      "sha256": "78835e7821c219d12726e5d4b9c9294a44eeaa43e1ad7c8f9280d4fc3803a596"
+    },
+    "development_ranking.csv": {
+      "bytes": 21349,
+      "sha256": "4ace54189664b3e0d1c1feca386c00c8e648d9f2c55ef173099632b75c81f358"
+    },
+    "selection_proof_before_oos.json": {
+      "bytes": 62138,
+      "sha256": "58bfa771fbbaf5b93ff9997936ec92eee5e5e25453c4dc2ea26ae382368938fc"
+    },
+    "summary.json": {
+      "bytes": 65315,
+      "sha256": "a1c2ecd02a7f4880b00d924cd1d0aa5f1a67975878ead3e9401eba14c86e0806"
+    }
+  }
+}
