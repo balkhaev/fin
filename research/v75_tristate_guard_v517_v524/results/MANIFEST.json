@@ -1,0 +1,49 @@
+{
+  "program": "V517_V524_V75_TRISTATE_DRAWDOWN_GUARD",
+  "files": {
+    "ANNUAL_RETURNS.csv": {
+      "bytes": 159,
+      "sha256": "d49d08d175d58e26972e5267ed52076ad75064a301faa73392d577caab39e1f4"
+    },
+    "FROZEN_DECISION.json": {
+      "bytes": 650,
+      "sha256": "c1b6b2eaaa0018aab38d3c89204b8aa292d954d0b0380fa6e35c6039787bcee9"
+    },
+    "REPORT_RU.md": {
+      "bytes": 783,
+      "sha256": "a04c7571729159b50a63a0fa1709676e79faf82acf140bf6b07de1c83cb6a3ce"
+    },
+    "V75_ECONOMIC_EQUIVALENCE.json": {
+      "bytes": 841,
+      "sha256": "516375acba4b4fbd698df4bc1b301e3bd4f59696b5fbcf487e5a06b4b2e17684"
+    },
+    "equity_primary_base.csv": {
+      "bytes": 386506,
+      "sha256": "73f252ccd3f40768847bfa7dec531a898bb78436f2beabdbc1f36da5f6817aca"
+    },
+    "equity_primary_delay_1d.csv": {
+      "bytes": 385283,
+      "sha256": "e9429751c76c0212fbb376a782f5c1e79424d833b78f95f5a189c348299aedba"
+    },
+    "equity_primary_extreme.csv": {
+      "bytes": 416738,
+      "sha256": "ff14d3be73c4ebcfc9b3741dc13a24a251ca2bdeaf659a94ec71cc14ff7df31a"
+    },
+    "equity_primary_severe.csv": {
+      "bytes": 413168,
+      "sha256": "72e245ce4925ea8ec755a6edf4198fc22bf85a922b696b673f64ec3090da49d2"
+    },
+    "policy_audit_metrics.csv": {
+      "bytes": 22593,
+      "sha256": "2b87e46b5a578e657030c6dfe4e5fc8bc7d3a2ba07b0c653c77e791e35734f81"
+    },
+    "primary_period_metrics.csv": {
+      "bytes": 7526,
+      "sha256": "9e6ecdae21cd861b58ea4e665a1e4afa26eaa2a0e72f9b38157bb7ad900c13df"
+    },
+    "summary.json": {
+      "bytes": 6834,
+      "sha256": "2f3f263d77174d12f69a5b5e68d1f94eadf39b3847673b55d522f713d996df1e"
+    }
+  }
+}

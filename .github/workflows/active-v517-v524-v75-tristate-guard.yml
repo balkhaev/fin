@@ -1,0 +1,112 @@
+name: Active V517-V524 V75 tri-state guard
+
+on:
+  push:
+    branches: [agent/active-v517-v524-v75-tristate-guard]
+    paths:
+      - 'research/v75_tristate_guard_v517_v524/**'
+      - '.github/workflows/active-v517-v524-v75-tristate-guard.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/v75_tristate_guard_v517_v524/**'
+      - '.github/workflows/active-v517-v524-v75-tristate-guard.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: active-v517-v524-v75-tristate-guard-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v517-v524-v75-tristate-guard
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Reconstruct readable source and run causal self-test
+        run: |
+          set -euxo pipefail
+          cat research/v75_tristate_guard_v517_v524/source_parts/part_*.txt \
+            > research/v75_tristate_guard_v517_v524/run_research.py
+          echo '1c46d98c7172746f7f06c8e2658db42af45e4045904f417f68626b5b9c25234b  research/v75_tristate_guard_v517_v524/run_research.py' \
+            | sha256sum -c -
+          python -m pip install --disable-pip-version-check \
+            -r research/v75_tristate_guard_v517_v524/requirements.txt
+          python -m compileall -q research/v75_tristate_guard_v517_v524
+          python research/v75_tristate_guard_v517_v524/run_research.py --self-test
+
+      - name: Run fixed historical audit
+        run: |
+          set -euxo pipefail
+          test -s research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv
+          echo 'f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01  research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv' \
+            | sha256sum -c -
+          rm -rf research/v75_tristate_guard_v517_v524/results
+          python research/v75_tristate_guard_v517_v524/run_research.py \
+            --v75 research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv \
+            --design research/v75_tristate_guard_v517_v524/V517_V524_DESIGN.json \
+            --output research/v75_tristate_guard_v517_v524/results \
+            2>&1 | tee research/v75_tristate_guard_v517_v524/run.log
+
+      - name: Verify frozen result and safety boundary
+        run: |
+          set -euxo pipefail
+          test -s research/v75_tristate_guard_v517_v524/results/summary.json
+          test -s research/v75_tristate_guard_v517_v524/results/FROZEN_DECISION.json
+          test -s research/v75_tristate_guard_v517_v524/results/V75_ECONOMIC_EQUIVALENCE.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('research/v75_tristate_guard_v517_v524/results')
+          summary=json.loads((root/'summary.json').read_text())
+          equivalence=json.loads((root/'V75_ECONOMIC_EQUIVALENCE.json').read_text())
+          assert equivalence['economic_equivalence_passed'] is True
+          assert summary['historical_50pct_target_met'] is True
+          assert summary['modeled_robustness_gates_passed'] is True
+          assert summary['parameters_informed_by_known_history'] is True
+          assert summary['program_level_holdout_pristine'] is False
+          assert summary['promotion_permitted'] is False
+          assert summary['integration_permitted'] is False
+          assert summary['capital_change_authorized'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Commit readable source and results
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          rm -rf research/v75_tristate_guard_v517_v524/source_parts
+          find research/v75_tristate_guard_v517_v524 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/v75_tristate_guard_v517_v524 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/v75_tristate_guard_v517_v524
+          git diff --cached --check
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add V517-V524 tri-state guard results [skip ci]'
+            git push origin HEAD:agent/active-v517-v524-v75-tristate-guard
+          fi
+
+      - name: Upload full research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v517-v524-v75-tristate-guard
+          path: research/v75_tristate_guard_v517_v524
+          if-no-files-found: error
+          retention-days: 30
