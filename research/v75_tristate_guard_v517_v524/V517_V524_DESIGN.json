@@ -1,0 +1,62 @@
+{
+  "program": "V517_V524_V75_TRISTATE_DRAWDOWN_GUARD",
+  "objective": "Test an account-level V75 accelerator near 50% historical CAGR while limiting modeled drawdown and stress degradation.",
+  "selection_performed": false,
+  "parameters_informed_by_known_history": true,
+  "program_level_holdout_pristine": false,
+  "source": {
+    "path": "research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv",
+    "sha256": "f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01"
+  },
+  "tri_state_signal": {
+    "formation_delay_days": 1,
+    "fast_lookback_days": 20,
+    "medium_lookback_days": 60,
+    "high_entry": {"fast_gt": 0.05, "medium_gt": -0.04, "confirmation_days": 1},
+    "high_exit": {"fast_lt": -0.01, "or_medium_lt": 0.0},
+    "low_entry": {"fast_lt": -0.05, "medium_lt": -0.10, "confirmation_days": 3},
+    "low_exit": {"fast_gt": 0.01},
+    "minimum_state_hold_days": 14
+  },
+  "primary_policy": {
+    "high_leverage": 2.075,
+    "base_leverage": 0.97,
+    "low_leverage": 0.60,
+    "rebalance_days": 10,
+    "no_trade_band": 0.04,
+    "guard_enter_drawdown": -0.245,
+    "guard_exit_drawdown": -0.18,
+    "guard_cap": 1.00,
+    "guard_minimum_hold_days": 7
+  },
+  "audits": {
+    "base": {"transfer_cost_bps": 10, "financing_rate": 0.08, "extra_underlying_cost_bps": 0, "signal_delay_days": 0},
+    "severe": {"transfer_cost_bps": 25, "financing_rate": 0.14, "extra_underlying_cost_bps": 40, "signal_delay_days": 1},
+    "extreme": {"transfer_cost_bps": 50, "financing_rate": 0.22, "extra_underlying_cost_bps": 80, "signal_delay_days": 2},
+    "delay_1d": {"transfer_cost_bps": 10, "financing_rate": 0.08, "extra_underlying_cost_bps": 0, "signal_delay_days": 1}
+  },
+  "historical_acceptance_gates": {
+    "full_cagr_min": 0.50,
+    "full_sharpe_min": 1.45,
+    "full_max_drawdown_min": -0.25,
+    "full_worst_rolling_365_min": -0.22,
+    "all_calendar_years_positive": true,
+    "average_target_leverage_max": 1.35,
+    "maximum_target_leverage_max": 2.10,
+    "annual_meta_turnover_max": 6.0,
+    "severe_full_cagr_min": 0.40,
+    "severe_full_max_drawdown_min": -0.30,
+    "extreme_full_cagr_min": 0.25,
+    "extreme_full_max_drawdown_min": -0.40,
+    "delay_full_cagr_min": 0.45,
+    "delay_full_max_drawdown_min": -0.25
+  },
+  "safety": {
+    "promotion_permitted": false,
+    "integration_permitted": false,
+    "capital_change_authorized": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
