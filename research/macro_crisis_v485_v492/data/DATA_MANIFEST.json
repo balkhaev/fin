@@ -180,8 +180,8 @@
   "data_gate_passed": true,
   "files": {
     "etf_adjusted_close.csv": {
-      "bytes": 1373562,
-      "sha256": "46fa7045238c0776849c5bcb3945920eb49916407321b4d2c38167bc4fdf3db6"
+      "bytes": 1373686,
+      "sha256": "d579d1f8a0b63e5ce03ea17fb7fc88f272a2909c870916ff9a3d671700ed17dc"
     },
     "fx_reference_prices.csv": {
       "bytes": 796367,

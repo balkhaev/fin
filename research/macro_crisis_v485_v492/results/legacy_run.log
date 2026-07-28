@@ -7,7 +7,7 @@ candidate 600 / 702
 candidate 700 / 702
 {
   "research": "ACTIVE_V95_V102_GLOBAL_CRISIS_ALPHA",
-  "selection_proof_sha256": "a17d7beb8b9afff7f48186dbdc8e181fc9398983ce596cac8a022584fdb2ce22",
+  "selection_proof_sha256": "c2d4502ae4f939a07de42b746ced96958bd91343c165012b55311c5203126db1",
   "selected_processes": [
     "tsmom+relative__vol08__cap075__r20__b10",
     "tsmom+crisis__vol08__cap100__r20__b05"
@@ -26,44 +26,44 @@ candidate 700 / 702
     "extreme_full_positive": false
   },
   "standalone_concentration": {
-    "best_positive_year_log_share": 0.16538023608265023,
-    "worst_rolling_252": -0.0829754068603582,
-    "post_2020_cagr": 0.020263957499844,
+    "best_positive_year_log_share": 0.1653986249683051,
+    "worst_rolling_252": -0.08297541853422408,
+    "post_2020_cagr": 0.02026396519485507,
     "positive_year_fraction": 0.7777777777777778
   },
   "stress_prefinal": {
-    "annualized_return": 0.020785525261381554,
-    "total_return": 0.46697545660692996,
-    "max_drawdown": -0.11393059426840046,
-    "sharpe": 0.38574135527835207,
-    "annual_turnover": 9.073536088748176,
-    "average_gross": 0.7807605124401428,
-    "max_gross": 0.8750000000000006
+    "annualized_return": 0.02078237566676533,
+    "total_return": 0.46689114764566275,
+    "max_drawdown": -0.11393051185104486,
+    "sharpe": 0.3856814629642822,
+    "annual_turnover": 9.07369067260435,
+    "average_gross": 0.7807595657522081,
+    "max_gross": 0.8750000000000004
   },
   "stress_final_2026h1": {
-    "annualized_return": -0.02480360722336905,
-    "total_return": -0.012676503985794674,
-    "max_drawdown": -0.058572476760117786,
-    "sharpe": -0.4348356999736254,
-    "annual_turnover": 10.867623491029665,
-    "average_gross": 0.8220126184592818,
-    "max_gross": 0.8750000000000004
+    "annualized_return": -0.024803616506734683,
+    "total_return": -0.012676508759793204,
+    "max_drawdown": -0.05857249567221545,
+    "sharpe": -0.43483579801560346,
+    "annual_turnover": 10.867619568308907,
+    "average_gross": 0.8220126913673893,
+    "max_gross": 0.8750000000000003
   },
   "strict_costs": {
     "stress": {
-      "full_cagr": 0.01970795959026872,
-      "full_return": 0.4527267665759813,
-      "full_dd": -0.11393059426840046
+      "full_cagr": 0.019704896700898145,
+      "full_return": 0.45264327276646577,
+      "full_dd": -0.11393051185104486
     },
     "severe": {
-      "full_cagr": 0.005844263067740663,
-      "full_return": 0.11795821255707484,
-      "full_dd": -0.15700502655700432
+      "full_cagr": 0.00584098847722303,
+      "full_return": 0.11788857144905118,
+      "full_dd": -0.15700534806911115
     },
     "extreme": {
-      "full_cagr": -0.016859534563090084,
-      "full_return": -0.2777300414253001,
-      "full_dd": -0.36792608373087565
+      "full_cagr": -0.016863148381991877,
+      "full_return": -0.2777808412899503,
+      "full_dd": -0.36792623877395436
     }
   },
   "atlas_daily_correlation": NaN,

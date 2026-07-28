@@ -14,11 +14,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.02294669941330317,
-      "selection_cagr": 0.017329470283052872,
-      "selection_dd": -0.10332031423892574,
-      "selection_sharpe": 0.334426700761237,
-      "selection_turnover": 8.614113610795219
+      "score": 0.022924951578691802,
+      "selection_cagr": 0.017321073870718795,
+      "selection_dd": -0.10332050387027947,
+      "selection_sharpe": 0.33426095653462207,
+      "selection_turnover": 8.614165912784896
     },
     {
       "candidate": "tsmom+relative__vol08__cap075__r20__b05",
@@ -31,11 +31,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.022663504993996983,
-      "selection_cagr": 0.017234761086578843,
-      "selection_dd": -0.10328976078823249,
-      "selection_sharpe": 0.33274402064597847,
-      "selection_turnover": 8.675053999757722
+      "score": 0.022641637663261494,
+      "selection_cagr": 0.017226315708051443,
+      "selection_dd": -0.1032899304206728,
+      "selection_sharpe": 0.3325773068588911,
+      "selection_turnover": 8.675103894412691
     },
     {
       "candidate": "tsmom+relative__vol08__cap100__r20__b10",
@@ -48,11 +48,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.022030738115342823,
-      "selection_cagr": 0.02147689593378499,
-      "selection_dd": -0.12975608678236794,
-      "selection_sharpe": 0.34375792953527934,
-      "selection_turnover": 11.386258002403084
+      "score": 0.022009712556248312,
+      "selection_cagr": 0.021467905247655406,
+      "selection_dd": -0.12975638876535311,
+      "selection_sharpe": 0.3436099305873156,
+      "selection_turnover": 11.386384948094577
     },
     {
       "candidate": "tsmom+relative__vol08__cap100__r20__b05",
@@ -65,11 +65,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.021943571088225,
-      "selection_cagr": 0.021445842666000026,
-      "selection_dd": -0.12975608678236827,
-      "selection_sharpe": 0.34325648539775167,
-      "selection_turnover": 11.40225623073366
+      "score": 0.02192254975340011,
+      "selection_cagr": 0.021436853527285304,
+      "selection_dd": -0.12975638876535134,
+      "selection_sharpe": 0.34310851822830685,
+      "selection_turnover": 11.40238304185245
     },
     {
       "candidate": "tsmom+relative__vol10__cap100__r20__b10",
@@ -82,11 +82,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.021099147888697618,
-      "selection_cagr": 0.022374819702324134,
-      "selection_dd": -0.13359212323772673,
-      "selection_sharpe": 0.3297869494602415,
-      "selection_turnover": 11.553409607838471
+      "score": 0.02107461735462817,
+      "selection_cagr": 0.022363795028828237,
+      "selection_dd": -0.1335924414620887,
+      "selection_sharpe": 0.3296199157302901,
+      "selection_turnover": 11.553483850371656
     },
     {
       "candidate": "tsmom+relative__vol10__cap100__r20__b05",
@@ -99,11 +99,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.021007386774211864,
-      "selection_cagr": 0.022340254919727798,
-      "selection_dd": -0.1335921232377265,
-      "selection_sharpe": 0.32927501167904444,
-      "selection_turnover": 11.56965091723214
+      "score": 0.020982860602935926,
+      "selection_cagr": 0.022329231905678038,
+      "selection_dd": -0.13359244146209204,
+      "selection_sharpe": 0.3291080100423216,
+      "selection_turnover": 11.569725023875664
     },
     {
       "candidate": "tsmom+relative__vol10__cap075__r20__b10",
@@ -116,11 +116,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.01963009470100471,
-      "selection_cagr": 0.017244182363862492,
-      "selection_dd": -0.11179855802531968,
-      "selection_sharpe": 0.31669947465143683,
-      "selection_turnover": 8.671809802352406
+      "score": 0.01960856136139858,
+      "selection_cagr": 0.017235567615669245,
+      "selection_dd": -0.11179876691284807,
+      "selection_sharpe": 0.31653804033257726,
+      "selection_turnover": 8.671769909949454
     },
     {
       "candidate": "tsmom+relative__vol10__cap075__r20__b05",
@@ -133,11 +133,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.019348894333310593,
-      "selection_cagr": 0.01714799578873749,
-      "selection_dd": -0.11176707431634081,
-      "selection_sharpe": 0.31505847450624663,
-      "selection_turnover": 8.732835717553865
+      "score": 0.019327376992827487,
+      "selection_cagr": 0.017139387077463653,
+      "selection_dd": -0.11176726336594567,
+      "selection_sharpe": 0.3148971045691221,
+      "selection_turnover": 8.732795608433351
     },
     {
       "candidate": "tsmom+crisis__vol08__cap100__r20__b05",
@@ -150,11 +150,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.019186920760429278,
-      "selection_cagr": 0.022325774902621998,
-      "selection_dd": -0.13746613474136882,
-      "selection_sharpe": 0.3394343394442677,
-      "selection_turnover": 10.338179345694943
+      "score": 0.01918705026056852,
+      "selection_cagr": 0.02232583271307842,
+      "selection_dd": -0.13746637013433138,
+      "selection_sharpe": 0.33943520851918285,
+      "selection_turnover": 10.338182225531625
     },
     {
       "candidate": "tsmom+crisis__vol08__cap100__r20__b10",
@@ -167,11 +167,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.019181987187278787,
-      "selection_cagr": 0.022321148065711505,
-      "selection_dd": -0.1375209326794179,
-      "selection_sharpe": 0.3393287455879051,
-      "selection_turnover": 10.317329471978915
+      "score": 0.019182120908349254,
+      "selection_cagr": 0.022321206934804216,
+      "selection_dd": -0.13752115802903941,
+      "selection_sharpe": 0.3393296305064213,
+      "selection_turnover": 10.317332782539152
     },
     {
       "candidate": "tsmom+crisis__vol08__cap075__r20__b10",
@@ -184,11 +184,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.01816297547422324,
-      "selection_cagr": 0.017537730027788134,
-      "selection_dd": -0.1146389834968391,
-      "selection_sharpe": 0.31543659298365767,
-      "selection_turnover": 7.8125949162564385
+      "score": 0.018163045026459115,
+      "selection_cagr": 0.017537751421119685,
+      "selection_dd": -0.11463905258147256,
+      "selection_sharpe": 0.31543694782026244,
+      "selection_turnover": 7.812598110194872
     },
     {
       "candidate": "tsmom+relative__vol12__cap100__r20__b10",
@@ -201,11 +201,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.017669639203491433,
-      "selection_cagr": 0.02216534362940159,
-      "selection_dd": -0.14247352428714755,
-      "selection_sharpe": 0.31298958789683806,
-      "selection_turnover": 11.578814710200465
+      "score": 0.017644778400668505,
+      "selection_cagr": 0.022153795021429,
+      "selection_dd": -0.14247376876660178,
+      "selection_sharpe": 0.31282316537576643,
+      "selection_turnover": 11.57876132771709
     },
     {
       "candidate": "tsmom+relative__vol12__cap100__r20__b05",
@@ -218,11 +218,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.017572069677099508,
-      "selection_cagr": 0.022127305693668164,
-      "selection_dd": -0.1424735242871472,
-      "selection_sharpe": 0.31245149789431614,
-      "selection_turnover": 11.595299100657222
+      "score": 0.017547213146453897,
+      "selection_cagr": 0.022115758813360697,
+      "selection_dd": -0.14247376876660112,
+      "selection_sharpe": 0.3122851054645635,
+      "selection_turnover": 11.595245580967234
     },
     {
       "candidate": "tsmom+crisis__vol08__cap075__r20__b05",
@@ -235,11 +235,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.017504647947052872,
-      "selection_cagr": 0.01729448368245423,
-      "selection_dd": -0.1146980932035413,
-      "selection_sharpe": 0.3110136029244163,
-      "selection_turnover": 7.86027037714133
+      "score": 0.017504715304267646,
+      "selection_cagr": 0.017294504765205332,
+      "selection_dd": -0.11469816894849172,
+      "selection_sharpe": 0.3110139523488451,
+      "selection_turnover": 7.860273491316762
     },
     {
       "candidate": "tsmom+relative__vol12__cap075__r20__b10",
@@ -252,11 +252,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.01603713577837624,
-      "selection_cagr": 0.017065892802289317,
-      "selection_dd": -0.12085432091516835,
-      "selection_sharpe": 0.2985043383740642,
-      "selection_turnover": 8.745767708648748
+      "score": 0.016016268729814622,
+      "selection_cagr": 0.017057288672242876,
+      "selection_dd": -0.12085451934672653,
+      "selection_sharpe": 0.29835108294006374,
+      "selection_turnover": 8.745728011228918
     },
     {
       "candidate": "tsmom+relative__vol12__cap075__r20__b05",
@@ -269,11 +269,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.015760951013151968,
-      "selection_cagr": 0.0169696774010768,
-      "selection_dd": -0.12082368996704718,
-      "selection_sharpe": 0.29692876423121756,
-      "selection_turnover": 8.806793161315362
+      "score": 0.01574010001208786,
+      "selection_cagr": 0.016961079302114657,
+      "selection_dd": -0.1208238688126122,
+      "selection_sharpe": 0.2967755745285488,
+      "selection_turnover": 8.806753247284826
     },
     {
       "candidate": "tsmom+crisis__vol10__cap100__r20__b05",
@@ -286,11 +286,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.014782254129640108,
-      "selection_cagr": 0.022393291543214344,
-      "selection_dd": -0.14897704909311582,
-      "selection_sharpe": 0.30850248046328227,
-      "selection_turnover": 10.513028514127482
+      "score": 0.014782363115097591,
+      "selection_cagr": 0.022393335346793553,
+      "selection_dd": -0.14897717106586938,
+      "selection_sharpe": 0.3085030733764194,
+      "selection_turnover": 10.51303358562122
     },
     {
       "candidate": "tsmom+crisis__vol10__cap100__r20__b10",
@@ -303,11 +303,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.014759375068383566,
-      "selection_cagr": 0.02238551799258759,
-      "selection_dd": -0.14909782330849308,
-      "selection_sharpe": 0.30835551920071513,
-      "selection_turnover": 10.488246176808444
+      "score": 0.014759488582232128,
+      "selection_cagr": 0.022385562953123772,
+      "selection_dd": -0.14909793436894136,
+      "selection_sharpe": 0.3083561276344846,
+      "selection_turnover": 10.488251652962317
     },
     {
       "candidate": "tsmom+crisis__vol10__cap075__r20__b10",
@@ -320,11 +320,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.01314949948055675,
-      "selection_cagr": 0.016861820055817267,
-      "selection_dd": -0.12279858974022917,
-      "selection_sharpe": 0.2846339198185729,
-      "selection_turnover": 7.847961554953743
+      "score": 0.013149545338632577,
+      "selection_cagr": 0.016861833056004416,
+      "selection_dd": -0.12279865961121805,
+      "selection_sharpe": 0.28463410694272306,
+      "selection_turnover": 7.847964880488305
     },
     {
       "candidate": "tsmom+crisis__vol10__cap075__r20__b05",
@@ -337,11 +337,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.012495658045313534,
-      "selection_cagr": 0.01660642484864372,
-      "selection_dd": -0.12283040898462882,
-      "selection_sharpe": 0.28030704550038704,
-      "selection_turnover": 7.896177550757291
+      "score": 0.012495703745972813,
+      "selection_cagr": 0.01660643801329731,
+      "selection_dd": -0.12283048728026391,
+      "selection_sharpe": 0.2803072351508972,
+      "selection_turnover": 7.8961806956584795
     },
     {
       "candidate": "tsmom__vol08__cap075__r20__b10",
@@ -354,11 +354,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.010829603915494118,
-      "selection_cagr": 0.012661579964626801,
-      "selection_dd": -0.14625697157018092,
-      "selection_sharpe": 0.24313473142567218,
-      "selection_turnover": 4.932155729004686
+      "score": 0.010829335947064481,
+      "selection_cagr": 0.012661475812821843,
+      "selection_dd": -0.1462567252374074,
+      "selection_sharpe": 0.24313275150345515,
+      "selection_turnover": 4.932157351092046
     },
     {
       "candidate": "tsmom+relative__vol08__cap075__r10__b05",
@@ -371,11 +371,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.010826382695386957,
-      "selection_cagr": 0.013762472764518474,
-      "selection_dd": -0.11810776313272653,
-      "selection_sharpe": 0.26893460260533353,
-      "selection_turnover": 10.470406631728027
+      "score": 0.010804701373824535,
+      "selection_cagr": 0.013754122400338353,
+      "selection_dd": -0.11810791970651002,
+      "selection_sharpe": 0.2687684381676801,
+      "selection_turnover": 10.47043507200649
     },
     {
       "candidate": "tsmom+relative__vol08__cap075__r10__b10",
@@ -388,11 +388,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.010810583413331047,
-      "selection_cagr": 0.013731587462191497,
-      "selection_dd": -0.11852268705336266,
-      "selection_sharpe": 0.26794898743456447,
-      "selection_turnover": 10.358680054195235
+      "score": 0.01078883618658761,
+      "selection_cagr": 0.013723203255076033,
+      "selection_dd": -0.11852286901465581,
+      "selection_sharpe": 0.26778241354830573,
+      "selection_turnover": 10.358704312131184
     },
     {
       "candidate": "tsmom__vol08__cap075__r20__b05",
@@ -405,11 +405,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.0104779499168614,
-      "selection_cagr": 0.012532230581419945,
-      "selection_dd": -0.1462569715701827,
-      "selection_sharpe": 0.24058614717930726,
-      "selection_turnover": 4.950573604721142
+      "score": 0.010477674962144488,
+      "selection_cagr": 0.012532123837946996,
+      "selection_dd": -0.1462567252374083,
+      "selection_sharpe": 0.2405841170922432,
+      "selection_turnover": 4.950575608240391
     },
     {
       "candidate": "tsmom+crisis__vol12__cap100__r20__b10",
@@ -422,11 +422,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.009645037098248639,
-      "selection_cagr": 0.021524314049105264,
-      "selection_dd": -0.15785672828460473,
-      "selection_sharpe": 0.28044204676878687,
-      "selection_turnover": 10.468162546305058
+      "score": 0.00964510342951857,
+      "selection_cagr": 0.021524336772933417,
+      "selection_dd": -0.1578568299532762,
+      "selection_sharpe": 0.280442308924807,
+      "selection_turnover": 10.468166926385654
     },
     {
       "candidate": "tsmom+crisis__vol12__cap100__r20__b05",
@@ -439,11 +439,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.009596451855558616,
-      "selection_cagr": 0.02151528576108075,
-      "selection_dd": -0.15789276968393684,
-      "selection_sharpe": 0.2803751766625311,
-      "selection_turnover": 10.493975065070632
+      "score": 0.009596513554665523,
+      "selection_cagr": 0.021515307282475415,
+      "selection_dd": -0.15789288254084521,
+      "selection_sharpe": 0.2803754234540722,
+      "selection_turnover": 10.493979037568133
     },
     {
       "candidate": "tsmom+breakout__vol08__cap075__r20__b05",
@@ -456,11 +456,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.009390372811207503,
-      "selection_cagr": 0.012564083034966922,
-      "selection_dd": -0.14872863570635841,
-      "selection_sharpe": 0.2392480533185871,
-      "selection_turnover": 5.510807501374967
+      "score": 0.009390155527884542,
+      "selection_cagr": 0.012563994840950388,
+      "selection_dd": -0.14872834307714822,
+      "selection_sharpe": 0.23924639608939008,
+      "selection_turnover": 5.5108084408119264
     },
     {
       "candidate": "tsmom+breakout__vol08__cap075__r20__b10",
@@ -473,11 +473,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.009390372811207503,
-      "selection_cagr": 0.012564083034966922,
-      "selection_dd": -0.14872863570635841,
-      "selection_sharpe": 0.2392480533185871,
-      "selection_turnover": 5.510807501374967
+      "score": 0.009390155527884542,
+      "selection_cagr": 0.012563994840950388,
+      "selection_dd": -0.14872834307714822,
+      "selection_sharpe": 0.23924639608939008,
+      "selection_turnover": 5.5108084408119264
     },
     {
       "candidate": "tsmom+relative__vol08__cap075__r5__b10",
@@ -490,11 +490,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.009077961917693741,
-      "selection_cagr": 0.012875238933250266,
-      "selection_dd": -0.12192895463982156,
-      "selection_sharpe": 0.25500192098303726,
-      "selection_turnover": 12.917588084246113
+      "score": 0.009056049743511287,
+      "selection_cagr": 0.012866839846167988,
+      "selection_dd": -0.12192874894714334,
+      "selection_sharpe": 0.25483263462075934,
+      "selection_turnover": 12.917567481519804
     },
     {
       "candidate": "tsmom+relative__vol10__cap075__r10__b05",
@@ -507,11 +507,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.009067584116017404,
-      "selection_cagr": 0.013884376561448919,
-      "selection_dd": -0.12025483802486814,
-      "selection_sharpe": 0.2576967485734632,
-      "selection_turnover": 10.547939703084502
+      "score": 0.009046182340317063,
+      "selection_cagr": 0.013875837043886952,
+      "selection_dd": -0.12025502394046639,
+      "selection_sharpe": 0.25753561670879543,
+      "selection_turnover": 10.547899311285379
     },
     {
       "candidate": "tsmom+relative__vol10__cap075__r10__b10",
@@ -524,11 +524,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.008984451245769628,
-      "selection_cagr": 0.013835340566385135,
-      "selection_dd": -0.12066875176229352,
-      "selection_sharpe": 0.2563919672654372,
-      "selection_turnover": 10.435051724023598
+      "score": 0.008963063003722462,
+      "selection_cagr": 0.013826799101089415,
+      "selection_dd": -0.12066896298960761,
+      "selection_sharpe": 0.256231071523652,
+      "selection_turnover": 10.435011608616115
     },
     {
       "candidate": "tsmom+crisis__vol12__cap075__r20__b10",
@@ -541,11 +541,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.008589892690472844,
-      "selection_cagr": 0.016287293266376013,
-      "selection_dd": -0.13300496199867662,
-      "selection_sharpe": 0.26185407092928087,
-      "selection_turnover": 7.854595944935056
+      "score": 0.008589934445790292,
+      "selection_cagr": 0.016287304702686134,
+      "selection_dd": -0.13300502422373095,
+      "selection_sharpe": 0.26185421613627446,
+      "selection_turnover": 7.854599480591981
     },
     {
       "candidate": "tsmom+relative__vol08__cap100__r10__b10",
@@ -558,11 +558,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.00831529383323098,
-      "selection_cagr": 0.01684212363985038,
-      "selection_dd": -0.1436862484210264,
-      "selection_sharpe": 0.2711489356753129,
-      "selection_turnover": 13.711748097906039
+      "score": 0.00829436269826363,
+      "selection_cagr": 0.016833147675727744,
+      "selection_dd": -0.14368630712837782,
+      "selection_sharpe": 0.2710012197768729,
+      "selection_turnover": 13.71188497522122
     },
     {
       "candidate": "tsmom+relative__vol08__cap100__r10__b05",
@@ -575,11 +575,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.008275327791060086,
-      "selection_cagr": 0.016820340383690402,
-      "selection_dd": -0.14368624842102606,
-      "selection_sharpe": 0.27090389263371695,
-      "selection_turnover": 13.736446534001088
+      "score": 0.00825442046635347,
+      "selection_cagr": 0.01681137615820183,
+      "selection_dd": -0.1436863071283776,
+      "selection_sharpe": 0.27075631327670496,
+      "selection_turnover": 13.736583138649639
     },
     {
       "candidate": "tsmom__vol08__cap100__r20__b05",
@@ -592,11 +592,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.007926422893812205,
-      "selection_cagr": 0.015000987190998849,
-      "selection_dd": -0.17669878165219743,
-      "selection_sharpe": 0.2408074569346874,
-      "selection_turnover": 6.530935563820445
+      "score": 0.007926072774010503,
+      "selection_cagr": 0.015000841778427532,
+      "selection_dd": -0.17669851485991905,
+      "selection_sharpe": 0.2408052035993165,
+      "selection_turnover": 6.530938588215596
     },
     {
       "candidate": "tsmom__vol08__cap100__r20__b10",
@@ -609,11 +609,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.007926422893812205,
-      "selection_cagr": 0.015000987190998849,
-      "selection_dd": -0.17669878165219743,
-      "selection_sharpe": 0.2408074569346874,
-      "selection_turnover": 6.530935563820445
+      "score": 0.007926072774010503,
+      "selection_cagr": 0.015000841778427532,
+      "selection_dd": -0.17669851485991905,
+      "selection_sharpe": 0.2408052035993165,
+      "selection_turnover": 6.530938588215596
     },
     {
       "candidate": "tsmom+crisis__vol12__cap075__r20__b05",
@@ -626,11 +626,11 @@
       "check_validation_b_positive": false,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.007915890619556167,
-      "selection_cagr": 0.0160152188768925,
-      "selection_dd": -0.1330318499455283,
-      "selection_sharpe": 0.25748686832780976,
-      "selection_turnover": 7.904743439413631
+      "score": 0.007915929143418626,
+      "selection_cagr": 0.016015229599499303,
+      "selection_dd": -0.1330319199556892,
+      "selection_sharpe": 0.25748700238397104,
+      "selection_turnover": 7.904746791181061
     },
     {
       "candidate": "tsmom+relative__vol08__cap100__r5__b10",
@@ -643,11 +643,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.007754430525751234,
-      "selection_cagr": 0.01632594712680735,
-      "selection_dd": -0.1503435149535346,
-      "selection_sharpe": 0.26498167925917476,
-      "selection_turnover": 17.2383928600446
+      "score": 0.007733553542258194,
+      "selection_cagr": 0.016317015604724094,
+      "selection_dd": -0.15034312221428936,
+      "selection_sharpe": 0.26483351842618935,
+      "selection_turnover": 17.23850791804948
     },
     {
       "candidate": "tsmom__vol10__cap075__r20__b10",
@@ -660,11 +660,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.007207947005616665,
-      "selection_cagr": 0.012408654238960537,
-      "selection_dd": -0.15567306188568897,
-      "selection_sharpe": 0.2240431248278541,
-      "selection_turnover": 4.942992781069147
+      "score": 0.007207658900308827,
+      "selection_cagr": 0.012408543031180885,
+      "selection_dd": -0.15567288435082183,
+      "selection_sharpe": 0.22404110548491524,
+      "selection_turnover": 4.942995029722247
     },
     {
       "candidate": "tsmom+relative__vol08__cap075__r5__b05",
@@ -677,11 +677,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.0070795290894943175,
-      "selection_cagr": 0.012381724052623833,
-      "selection_dd": -0.12233635455943748,
-      "selection_sharpe": 0.2454893504252047,
-      "selection_turnover": 13.306901816874388
+      "score": 0.007057897773923851,
+      "selection_cagr": 0.01237345485753516,
+      "selection_dd": -0.12233606203245118,
+      "selection_sharpe": 0.24532257682600517,
+      "selection_turnover": 13.306938715192535
     },
     {
       "candidate": "tsmom__vol10__cap075__r20__b05",
@@ -694,11 +694,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.006841195795832267,
-      "selection_cagr": 0.012267880739471604,
-      "selection_dd": -0.15567306188568963,
-      "selection_sharpe": 0.22143674289496368,
-      "selection_turnover": 4.960459936733541
+      "score": 0.0068409001806147745,
+      "selection_cagr": 0.012267766556728787,
+      "selection_dd": -0.15567288435082383,
+      "selection_sharpe": 0.22143466974220433,
+      "selection_turnover": 4.960462415547351
     },
     {
       "candidate": "tsmom+breakout__vol08__cap100__r20__b05",
@@ -711,11 +711,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.006825707776521927,
-      "selection_cagr": 0.015149165604925185,
-      "selection_dd": -0.17865986501113296,
-      "selection_sharpe": 0.2412623324900859,
-      "selection_turnover": 7.252332137705459
+      "score": 0.006825420740126841,
+      "selection_cagr": 0.015149040972328276,
+      "selection_dd": -0.17865952853983236,
+      "selection_sharpe": 0.2412604299199343,
+      "selection_turnover": 7.252333775382642
     },
     {
       "candidate": "tsmom+breakout__vol08__cap100__r20__b10",
@@ -728,11 +728,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.006825707776521927,
-      "selection_cagr": 0.015149165604925185,
-      "selection_dd": -0.17865986501113296,
-      "selection_sharpe": 0.2412623324900859,
-      "selection_turnover": 7.252332137705459
+      "score": 0.006825420740126841,
+      "selection_cagr": 0.015149040972328276,
+      "selection_dd": -0.17865952853983236,
+      "selection_sharpe": 0.2412604299199343,
+      "selection_turnover": 7.252333775382642
     },
     {
       "candidate": "tsmom__vol10__cap100__r20__b05",
@@ -745,11 +745,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.0067189184334355565,
-      "selection_cagr": 0.01573940366537152,
-      "selection_dd": -0.18729648261612697,
-      "selection_sharpe": 0.2314352121602836,
-      "selection_turnover": 6.62525889101572
+      "score": 0.006718602193575264,
+      "selection_cagr": 0.015739268892055902,
+      "selection_dd": -0.1872961987741366,
+      "selection_sharpe": 0.2314332714225422,
+      "selection_turnover": 6.625263392708747
     },
     {
       "candidate": "tsmom__vol10__cap100__r20__b10",
@@ -762,11 +762,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.0067189184334355565,
-      "selection_cagr": 0.01573940366537152,
-      "selection_dd": -0.18729648261612697,
-      "selection_sharpe": 0.2314352121602836,
-      "selection_turnover": 6.62525889101572
+      "score": 0.006718602193575264,
+      "selection_cagr": 0.015739268892055902,
+      "selection_dd": -0.1872961987741366,
+      "selection_sharpe": 0.2314332714225422,
+      "selection_turnover": 6.625263392708747
     },
     {
       "candidate": "tsmom+relative__vol10__cap100__r10__b05",
@@ -779,11 +779,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.006381153656815616,
-      "selection_cagr": 0.017520474720325918,
-      "selection_dd": -0.15306101886917745,
-      "selection_sharpe": 0.2612180918911666,
-      "selection_turnover": 13.952887490974803
+      "score": 0.006357172356335384,
+      "selection_cagr": 0.01750969433465599,
+      "selection_dd": -0.15306119913640326,
+      "selection_sharpe": 0.26105377028643945,
+      "selection_turnover": 13.952937016646295
     },
     {
       "candidate": "tsmom+relative__vol10__cap100__r10__b10",
@@ -796,11 +796,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.006327691661501104,
-      "selection_cagr": 0.017516310815801406,
-      "selection_dd": -0.15306101886917522,
-      "selection_sharpe": 0.2610095196334659,
-      "selection_turnover": 13.926741220600217
+      "score": 0.0063034109601209035,
+      "selection_cagr": 0.017505389823002426,
+      "selection_dd": -0.15306119913640315,
+      "selection_sharpe": 0.26084310770433067,
+      "selection_turnover": 13.926781437553768
     },
     {
       "candidate": "tsmom+relative__vol10__cap075__r5__b10",
@@ -813,11 +813,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": true,
       "eligible_selection": false,
-      "score": 0.0062663204137803526,
-      "selection_cagr": 0.012612791306938709,
-      "selection_dd": -0.12269072942085046,
-      "selection_sharpe": 0.23710772766986132,
-      "selection_turnover": 13.040639960538478
+      "score": 0.00624492040868432,
+      "selection_cagr": 0.012604305714176478,
+      "selection_dd": -0.12269057227693347,
+      "selection_sharpe": 0.2369457178521245,
+      "selection_turnover": 13.04059920293908
     },
     {
       "candidate": "tsmom+ma+breakout+relative+crisis__vol08__cap100__r20__b10",
@@ -830,11 +830,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.006016293073868424,
-      "selection_cagr": 0.02006911366123365,
-      "selection_dd": -0.14924610554770934,
-      "selection_sharpe": 0.311678403193121,
-      "selection_turnover": 21.062390973564707
+      "score": 0.005940972713217703,
+      "selection_cagr": 0.020056517179798394,
+      "selection_dd": -0.14938827039879965,
+      "selection_sharpe": 0.311482587334856,
+      "selection_turnover": 21.075685490746675
     },
     {
       "candidate": "tsmom+ma+breakout+relative+crisis__vol08__cap075__r20__b10",
@@ -847,11 +847,11 @@
       "check_validation_b_positive": true,
       "check_worst_severe_period_min": false,
       "eligible_selection": false,
-      "score": 0.0059276761320541105,
-      "selection_cagr": 0.015159114106473082,
-      "selection_dd": -0.12647718043804335,
-      "selection_sharpe": 0.28118835687106075,
-      "selection_turnover": 16.21285106143453
+      "score": 0.005868639753595788,
+      "selection_cagr": 0.015149676639129472,
+      "selection_dd": -0.1265865772130108,
+      "selection_sharpe": 0.28101318350470506,
+      "selection_turnover": 16.222822953254617
     }
   ],
   "selected": [
