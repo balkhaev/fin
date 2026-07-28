@@ -14,20 +14,36 @@ class StaticAssetTests(unittest.TestCase):
             "frontend/styles.css",
             "frontend/mobile.css",
             "frontend/app.js",
+            "frontend/live.html",
+            "frontend/live.css",
+            "frontend/live.js",
             "frontend/data/dashboard.json",
+            "scripts/run_control_room.py",
+            "src/finruntime/observability/control_room.py",
+            "src/finruntime/observability/server.py",
+            "src/finruntime/observability/telemetry.py",
         ):
             path = ROOT / relative
             self.assertTrue(path.is_file(), relative)
             self.assertGreater(path.stat().st_size, 100, relative)
 
-    def test_html_has_accessible_landmarks(self) -> None:
+    def test_historical_html_remains_accessible(self) -> None:
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
         self.assertIn("<main>", html)
         self.assertIn("aria-label", html)
-        self.assertIn("telemetry-file", html)
-        self.assertIn("./mobile.css", html)
+        self.assertIn('id="telemetry-file"', html)
         self.assertNotIn("http://cdn", html)
         self.assertNotIn("https://cdn", html)
+
+    def test_live_page_uses_read_only_api(self) -> None:
+        html = (ROOT / "frontend/live.html").read_text(encoding="utf-8")
+        script = (ROOT / "frontend/live.js").read_text(encoding="utf-8")
+        self.assertIn('id="strategy-rows"', html)
+        self.assertIn('id="incident-list"', html)
+        self.assertIn("./api/v1/dashboard", script)
+        self.assertIn("EventSource", script)
+        self.assertNotIn("submit_order", script)
+        self.assertNotIn("/api/v1/orders", script)
 
     def test_committed_dashboard_does_not_authorize_live(self) -> None:
         value = json.loads((ROOT / "frontend/data/dashboard.json").read_text(encoding="utf-8"))
