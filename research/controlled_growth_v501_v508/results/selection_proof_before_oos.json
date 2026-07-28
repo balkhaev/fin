@@ -1,0 +1,103 @@
+{
+  "program": "V501_V508_CONTROLLED_GROWTH_ENGINE",
+  "design_sha256": "91731ffbad0fe119e8d2100ee8edeb6b1f1a894294bcf20b159b49f3d843c293",
+  "selection_period": [
+    "2021-01-01",
+    "2024-01-01"
+  ],
+  "selection_uses_2024": false,
+  "selection_uses_2025": false,
+  "selection_uses_2026": false,
+  "program_level_holdout_pristine": false,
+  "policy_count": 18,
+  "control_count": 2,
+  "eligible_policy_count": 0,
+  "development_passed": false,
+  "selected_policy": "diversified_growth_k4_growth",
+  "selected_policy_is_diagnostic_only": true,
+  "selected_development": {
+    "policy": "diversified_growth_k4_growth",
+    "promotable": true,
+    "factor_mix": "diversified_growth",
+    "top_k": 4,
+    "risk_profile": "growth",
+    "eligible": false,
+    "score": 0.8209010599648654,
+    "development_total_return": 4.325230053478725,
+    "development_cagr": 0.7478135580717413,
+    "development_sharpe": 1.4320474607171239,
+    "development_max_drawdown": -0.29123820704957404,
+    "development_annual_turnover": 13.250064512548581,
+    "development_average_gross": 0.1275974868104794,
+    "development_max_gross": 0.8800044535338106,
+    "development_max_stress_gross": 0.8528058883702107,
+    "development_minimum_margin_buffer": 0.5978629913386949,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 4527.121133347697,
+    "development_funding_pnl": -6217.912986370858,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 338,
+    "development_average_risk_budget": 0.12606870994910757,
+    "development_final_equity": 53252.300534787246,
+    "development_severe_cagr": 0.5338400280743927,
+    "development_extreme_cagr": 0.24772522224019888,
+    "development_top_positive_asset_pnl_share": 0.567730066389633,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 4.33127757082741
+      },
+      {
+        "year": 2022,
+        "return": 0.0
+      },
+      {
+        "year": 2023,
+        "return": -0.0011343467430374732
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": true,
+      "max_drawdown": false,
+      "severe_cagr": true,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  "development_gates": {
+    "cagr_min": 0.5,
+    "sharpe_min": 1.4,
+    "max_drawdown_min": -0.25,
+    "severe_cagr_min": 0.35,
+    "extreme_cagr_min": 0.15,
+    "annual_turnover_max": 18.0,
+    "all_years_positive": true,
+    "top_positive_asset_pnl_share_max": 0.45,
+    "liquidations_max": 0,
+    "minimum_margin_buffer": 0.1
+  },
+  "post_oos_gates": {
+    "full_cagr_min": 0.5,
+    "full_sharpe_min": 1.3,
+    "full_max_drawdown_min": -0.25,
+    "severe_full_cagr_min": 0.35,
+    "extreme_full_cagr_min": 0.15,
+    "worst_calendar_year_min": -0.1,
+    "liquidations_max": 0,
+    "minimum_margin_buffer": 0.1
+  },
+  "source_commits": {
+    "v253_base": "751b519d74d10f58ee4433783f6d9abd38d1d148",
+    "v269_low_skew": "ac09ad1206ffc0af349519ec0cda7408e2f6bd46",
+    "v341_vol_term": "7907703aa909548fed491032c51d89fb7cd900a6",
+    "v357_correlation": "a3f81dc4fa969932cd79d0684e68b976aacb5762",
+    "v389_resilience": "f422b5a191896435fc07682d843e365206255374"
+  },
+  "selection_proof_sha256": "ef93f9bf203d01e65387f7881eaa0aee5edec19d92b42be045259421014210a3"
+}

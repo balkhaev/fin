@@ -1,0 +1,1102 @@
+[
+  {
+    "policy": "quality_k3_balanced",
+    "promotable": true,
+    "factor_mix": "quality",
+    "top_k": 3,
+    "risk_profile": "balanced",
+    "eligible": false,
+    "score": 0.4152022420624416,
+    "development_total_return": 1.7399181241869233,
+    "development_cagr": 0.4000480278035594,
+    "development_sharpe": 0.9733529772365482,
+    "development_max_drawdown": -0.25754324629586556,
+    "development_annual_turnover": 13.849068159744848,
+    "development_average_gross": 0.11636793260948675,
+    "development_max_gross": 0.7140794976346969,
+    "development_max_stress_gross": 0.6318832849784224,
+    "development_minimum_margin_buffer": 0.6833603777253893,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 3192.3779338600775,
+    "development_funding_pnl": -3180.6173524087617,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 490,
+    "development_average_risk_budget": 0.11494917300000092,
+    "development_final_equity": 27399.18124186923,
+    "development_severe_cagr": 0.28006774761296893,
+    "development_extreme_cagr": 0.14631554894076904,
+    "development_top_positive_asset_pnl_share": 0.6001966413972345,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.808414157581606
+      },
+      {
+        "year": 2022,
+        "return": 0.0
+      },
+      {
+        "year": 2023,
+        "return": -0.02438957701796618
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "quality_k3_growth",
+    "promotable": true,
+    "factor_mix": "quality",
+    "top_k": 3,
+    "risk_profile": "growth",
+    "eligible": false,
+    "score": 0.5471668658147598,
+    "development_total_return": 2.5938687050040774,
+    "development_cagr": 0.5327800026068394,
+    "development_sharpe": 1.0619293287940546,
+    "development_max_drawdown": -0.3001562680686287,
+    "development_annual_turnover": 14.856468722343637,
+    "development_average_gross": 0.12069944991429352,
+    "development_max_gross": 0.9230057746566703,
+    "development_max_stress_gross": 0.9058007548479691,
+    "development_minimum_margin_buffer": 0.6190181602257585,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 4238.46066684811,
+    "development_funding_pnl": -4700.032117315141,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 354,
+    "development_average_risk_budget": 0.11951826150748082,
+    "development_final_equity": 35938.687050040775,
+    "development_severe_cagr": 0.3326422724600948,
+    "development_extreme_cagr": 0.16999746324981246,
+    "development_top_positive_asset_pnl_share": 0.6193703658921388,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 2.5949708427119473
+      },
+      {
+        "year": 2022,
+        "return": 0.0
+      },
+      {
+        "year": 2023,
+        "return": -0.00030657764863406545
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "quality_k3_convex",
+    "promotable": true,
+    "factor_mix": "quality",
+    "top_k": 3,
+    "risk_profile": "convex",
+    "eligible": false,
+    "score": 0.428027442603517,
+    "development_total_return": 1.7828177131713887,
+    "development_cagr": 0.4073286970502208,
+    "development_sharpe": 1.052879398166316,
+    "development_max_drawdown": -0.25566427253722823,
+    "development_annual_turnover": 14.612745729519578,
+    "development_average_gross": 0.11405265878330026,
+    "development_max_gross": 1.0273318010306491,
+    "development_max_stress_gross": 1.024296591534567,
+    "development_minimum_margin_buffer": 0.7431890078258112,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 3202.1179284270665,
+    "development_funding_pnl": -3103.5401656758836,
+    "development_financing_drag": 0.4156771331423641,
+    "development_rebalance_events": 526,
+    "development_average_risk_budget": 0.11295890216591398,
+    "development_final_equity": 27828.17713171389,
+    "development_severe_cagr": 0.2686677619402742,
+    "development_extreme_cagr": 0.16440035722822577,
+    "development_top_positive_asset_pnl_share": 0.6596881953788117,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.8146253929287006
+      },
+      {
+        "year": 2022,
+        "return": -0.0031381082212549316
+      },
+      {
+        "year": 2023,
+        "return": -0.008188445248851539
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "quality_k4_balanced",
+    "promotable": true,
+    "factor_mix": "quality",
+    "top_k": 4,
+    "risk_profile": "balanced",
+    "eligible": false,
+    "score": 0.38024733757836254,
+    "development_total_return": 1.5258633852472787,
+    "development_cagr": 0.3625373936457037,
+    "development_sharpe": 1.0252039493908012,
+    "development_max_drawdown": -0.2520160440954865,
+    "development_annual_turnover": 12.20686506606645,
+    "development_average_gross": 0.11098278351106193,
+    "development_max_gross": 0.6859843430478516,
+    "development_max_stress_gross": 0.5824932959987033,
+    "development_minimum_margin_buffer": 0.6801449256171707,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 2645.280973144071,
+    "development_funding_pnl": -2979.694171406117,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 454,
+    "development_average_risk_budget": 0.10965754917504156,
+    "development_final_equity": 25258.633852472787,
+    "development_severe_cagr": 0.24405799565967823,
+    "development_extreme_cagr": 0.10405878486344955,
+    "development_top_positive_asset_pnl_share": 0.5238677385135142,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.5939310058896758
+      },
+      {
+        "year": 2022,
+        "return": 0.0
+      },
+      {
+        "year": 2023,
+        "return": -0.026241106832774808
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "quality_k4_growth",
+    "promotable": true,
+    "factor_mix": "quality",
+    "top_k": 4,
+    "risk_profile": "growth",
+    "eligible": false,
+    "score": 0.47952257282060273,
+    "development_total_return": 2.1224320099372487,
+    "development_cagr": 0.4624845140754723,
+    "development_sharpe": 1.1100435119103071,
+    "development_max_drawdown": -0.29745125472747813,
+    "development_annual_turnover": 12.526179904130922,
+    "development_average_gross": 0.1143432332283215,
+    "development_max_gross": 0.9049774532758535,
+    "development_max_stress_gross": 0.8866444224527775,
+    "development_minimum_margin_buffer": 0.5522949559021681,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 3157.5576380293323,
+    "development_funding_pnl": -4123.4411842501995,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 308,
+    "development_average_risk_budget": 0.11315880240842972,
+    "development_final_equity": 31224.320099372486,
+    "development_severe_cagr": 0.30009584974079373,
+    "development_extreme_cagr": 0.12499278185332674,
+    "development_top_positive_asset_pnl_share": 0.5096455936925687,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 2.1346613385105013
+      },
+      {
+        "year": 2022,
+        "return": 0.0
+      },
+      {
+        "year": 2023,
+        "return": -0.0039013237005902646
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "quality_k4_convex",
+    "promotable": true,
+    "factor_mix": "quality",
+    "top_k": 4,
+    "risk_profile": "convex",
+    "eligible": false,
+    "score": 0.3556467395976475,
+    "development_total_return": 1.4224369546353102,
+    "development_cagr": 0.3436507985860078,
+    "development_sharpe": 1.019160347592049,
+    "development_max_drawdown": -0.2618007138816911,
+    "development_annual_turnover": 11.706534862327766,
+    "development_average_gross": 0.10329330101044629,
+    "development_max_gross": 1.0259972830211852,
+    "development_max_stress_gross": 1.023033305265064,
+    "development_minimum_margin_buffer": 0.6131034360634666,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 2302.4033121245275,
+    "development_funding_pnl": -2824.632568531336,
+    "development_financing_drag": 0.3491484727267883,
+    "development_rebalance_events": 425,
+    "development_average_risk_budget": 0.1022824554605373,
+    "development_final_equity": 24224.3695463531,
+    "development_severe_cagr": 0.2269792684069143,
+    "development_extreme_cagr": 0.07730405643166649,
+    "development_top_positive_asset_pnl_share": 0.5746108044156605,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.4436264349956471
+      },
+      {
+        "year": 2022,
+        "return": 0.0
+      },
+      {
+        "year": 2023,
+        "return": -0.008671325558144427
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "growth_quality_k3_balanced",
+    "promotable": true,
+    "factor_mix": "growth_quality",
+    "top_k": 3,
+    "risk_profile": "balanced",
+    "eligible": false,
+    "score": 0.37019844601508134,
+    "development_total_return": 1.4594212407190423,
+    "development_cagr": 0.3504650745519631,
+    "development_sharpe": 1.142676860929596,
+    "development_max_drawdown": -0.2824665308104096,
+    "development_annual_turnover": 9.43360674590861,
+    "development_average_gross": 0.1055791169858574,
+    "development_max_gross": 0.6935844836081195,
+    "development_max_stress_gross": 0.6326702659342883,
+    "development_minimum_margin_buffer": 0.6873478961146341,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 1707.6907521377425,
+    "development_funding_pnl": -2504.4973518732845,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 381,
+    "development_average_risk_budget": 0.10268676179145711,
+    "development_final_equity": 24594.21240719042,
+    "development_severe_cagr": 0.2306673320072119,
+    "development_extreme_cagr": 0.08285717500030376,
+    "development_top_positive_asset_pnl_share": 0.44714280905045795,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.477779236316172
+      },
+      {
+        "year": 2022,
+        "return": -0.026882036648809282
+      },
+      {
+        "year": 2023,
+        "return": 0.020010918742114248
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": true,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "growth_quality_k3_growth",
+    "promotable": true,
+    "factor_mix": "growth_quality",
+    "top_k": 3,
+    "risk_profile": "growth",
+    "eligible": false,
+    "score": 0.4593585236882863,
+    "development_total_return": 2.0491828713828517,
+    "development_cagr": 0.45093963138123905,
+    "development_sharpe": 1.131992727394804,
+    "development_max_drawdown": -0.32587175669804225,
+    "development_annual_turnover": 11.170807205288344,
+    "development_average_gross": 0.1198721717840529,
+    "development_max_gross": 0.8896440450328487,
+    "development_max_stress_gross": 0.85975456453155,
+    "development_minimum_margin_buffer": 0.6243989767893362,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 2295.3037682969675,
+    "development_funding_pnl": -3319.772221757805,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 280,
+    "development_average_risk_budget": 0.11716327398232837,
+    "development_final_equity": 30491.828713828516,
+    "development_severe_cagr": 0.27331531655858066,
+    "development_extreme_cagr": 0.10091360553900075,
+    "development_top_positive_asset_pnl_share": 0.5128968802182383,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 2.0320521121068715
+      },
+      {
+        "year": 2022,
+        "return": -0.01824525548819189
+      },
+      {
+        "year": 2023,
+        "return": 0.024339220241737847
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "growth_quality_k3_convex",
+    "promotable": true,
+    "factor_mix": "growth_quality",
+    "top_k": 3,
+    "risk_profile": "convex",
+    "eligible": false,
+    "score": 0.34069093288557384,
+    "development_total_return": 1.3864783700663375,
+    "development_cagr": 0.33695873293780765,
+    "development_sharpe": 0.9884710212796006,
+    "development_max_drawdown": -0.26784836393987443,
+    "development_annual_turnover": 11.327799488453458,
+    "development_average_gross": 0.11192834935331156,
+    "development_max_gross": 0.8814592620840075,
+    "development_max_stress_gross": 0.8497274144952274,
+    "development_minimum_margin_buffer": 0.6777534758864469,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 1956.8547853405032,
+    "development_funding_pnl": -2311.0160029661806,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 467,
+    "development_average_risk_budget": 0.11037560054736639,
+    "development_final_equity": 23864.783700663374,
+    "development_severe_cagr": 0.19066373536491366,
+    "development_extreme_cagr": 0.0586870624709841,
+    "development_top_positive_asset_pnl_share": 0.5760441471024345,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.370755769668282
+      },
+      {
+        "year": 2022,
+        "return": -0.020446805960633085
+      },
+      {
+        "year": 2023,
+        "return": 0.027643929790184485
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "growth_quality_k4_balanced",
+    "promotable": true,
+    "factor_mix": "growth_quality",
+    "top_k": 4,
+    "risk_profile": "balanced",
+    "eligible": false,
+    "score": 0.39315858210295396,
+    "development_total_return": 1.4931462942088793,
+    "development_cagr": 0.35661959231133,
+    "development_sharpe": 1.2552023557495127,
+    "development_max_drawdown": -0.26353120653343864,
+    "development_annual_turnover": 10.292864756536868,
+    "development_average_gross": 0.11066179866298695,
+    "development_max_gross": 0.6632851274952406,
+    "development_max_stress_gross": 0.6419827855620924,
+    "development_minimum_margin_buffer": 0.6809320302941848,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 2000.7429492957458,
+    "development_funding_pnl": -2830.8524195055547,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 381,
+    "development_average_risk_budget": 0.10881781856421793,
+    "development_final_equity": 24931.462942088794,
+    "development_severe_cagr": 0.2400376506359223,
+    "development_extreme_cagr": 0.13235390725815122,
+    "development_top_positive_asset_pnl_share": 0.47647547975505755,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.5478417231683679
+      },
+      {
+        "year": 2022,
+        "return": -0.015003431174721804
+      },
+      {
+        "year": 2023,
+        "return": -0.006562384545311661
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "growth_quality_k4_growth",
+    "promotable": true,
+    "factor_mix": "growth_quality",
+    "top_k": 4,
+    "risk_profile": "growth",
+    "eligible": false,
+    "score": 0.511863048540221,
+    "development_total_return": 2.221414635227249,
+    "development_cagr": 0.4778021332131004,
+    "development_sharpe": 1.2794948535300792,
+    "development_max_drawdown": -0.3095990675716943,
+    "development_annual_turnover": 10.54180533377529,
+    "development_average_gross": 0.11557393275791894,
+    "development_max_gross": 0.8524131102951598,
+    "development_max_stress_gross": 0.8214382973044074,
+    "development_minimum_margin_buffer": 0.5483246582228354,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 2417.8375174910175,
+    "development_funding_pnl": -3918.4139896771035,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 240,
+    "development_average_risk_budget": 0.1138107866170817,
+    "development_final_equity": 32214.146352272488,
+    "development_severe_cagr": 0.33282950751978,
+    "development_extreme_cagr": 0.14221609129814983,
+    "development_top_positive_asset_pnl_share": 0.524793368595516,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 2.2110318383006833
+      },
+      {
+        "year": 2022,
+        "return": -0.007705859224903633
+      },
+      {
+        "year": 2023,
+        "return": 0.011024287625101215
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "growth_quality_k4_convex",
+    "promotable": true,
+    "factor_mix": "growth_quality",
+    "top_k": 4,
+    "risk_profile": "convex",
+    "eligible": false,
+    "score": 0.4106450847571212,
+    "development_total_return": 1.6254812427049092,
+    "development_cagr": 0.38024746987899793,
+    "development_sharpe": 1.2024896458706114,
+    "development_max_drawdown": -0.2750452841419869,
+    "development_annual_turnover": 9.911066420403294,
+    "development_average_gross": 0.10092960843662739,
+    "development_max_gross": 0.8983411228209266,
+    "development_max_stress_gross": 0.878643834172205,
+    "development_minimum_margin_buffer": 0.6176200652845563,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 1919.0201982905726,
+    "development_funding_pnl": -2924.581555341073,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 350,
+    "development_average_risk_budget": 0.09942314307530037,
+    "development_final_equity": 26254.81242704909,
+    "development_severe_cagr": 0.2579369805013165,
+    "development_extreme_cagr": 0.11569860063087378,
+    "development_top_positive_asset_pnl_share": 0.5495028422018193,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.6148996216167935
+      },
+      {
+        "year": 2022,
+        "return": -0.0017433919831822964
+      },
+      {
+        "year": 2023,
+        "return": 0.005800168304115116
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "diversified_growth_k3_balanced",
+    "promotable": true,
+    "factor_mix": "diversified_growth",
+    "top_k": 3,
+    "risk_profile": "balanced",
+    "eligible": false,
+    "score": 0.6264798682555411,
+    "development_total_return": 2.8953280552161478,
+    "development_cagr": 0.5745586759296402,
+    "development_sharpe": 1.1752334634175454,
+    "development_max_drawdown": -0.2603687784889437,
+    "development_annual_turnover": 12.902125562443262,
+    "development_average_gross": 0.11394272335671252,
+    "development_max_gross": 0.721154477046135,
+    "development_max_stress_gross": 0.5866126908395696,
+    "development_minimum_margin_buffer": 0.7351521297240553,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 3657.4167226237805,
+    "development_funding_pnl": -4155.954921853225,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 455,
+    "development_average_risk_budget": 0.11235189643753564,
+    "development_final_equity": 38953.28055216148,
+    "development_severe_cagr": 0.42045605737744185,
+    "development_extreme_cagr": 0.2664146281020239,
+    "development_top_positive_asset_pnl_share": 0.5190286662610715,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 2.9419471543332327
+      },
+      {
+        "year": 2022,
+        "return": -0.02010675967414688
+      },
+      {
+        "year": 2023,
+        "return": 0.008450252851073037
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": true,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "diversified_growth_k3_growth",
+    "promotable": true,
+    "factor_mix": "diversified_growth",
+    "top_k": 3,
+    "risk_profile": "growth",
+    "eligible": false,
+    "score": 0.7708523940445454,
+    "development_total_return": 4.031043078923541,
+    "development_cagr": 0.7149652871273255,
+    "development_sharpe": 1.2625419879150332,
+    "development_max_drawdown": -0.29839731311403905,
+    "development_annual_turnover": 14.527191031673349,
+    "development_average_gross": 0.12680471775725485,
+    "development_max_gross": 0.8130844499171554,
+    "development_max_stress_gross": 0.7788992624057738,
+    "development_minimum_margin_buffer": 0.6227143819709169,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 5065.772408323918,
+    "development_funding_pnl": -5688.778428671675,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 329,
+    "development_average_risk_budget": 0.12518331315772122,
+    "development_final_equity": 50310.43078923541,
+    "development_severe_cagr": 0.497333379922384,
+    "development_extreme_cagr": 0.32920780747000866,
+    "development_top_positive_asset_pnl_share": 0.5845789827951372,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 3.993271253425039
+      },
+      {
+        "year": 2022,
+        "return": -0.01180269857359062
+      },
+      {
+        "year": 2023,
+        "return": 0.019598559545444427
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": true,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "diversified_growth_k3_convex",
+    "promotable": true,
+    "factor_mix": "diversified_growth",
+    "top_k": 3,
+    "risk_profile": "convex",
+    "eligible": false,
+    "score": 0.6502117769350426,
+    "development_total_return": 3.012380358578117,
+    "development_cagr": 0.5901995864179892,
+    "development_sharpe": 1.2265756095237095,
+    "development_max_drawdown": -0.24338058751656433,
+    "development_annual_turnover": 14.534535870979996,
+    "development_average_gross": 0.12380060485991148,
+    "development_max_gross": 0.8608547147475225,
+    "development_max_stress_gross": 0.8251721040241428,
+    "development_minimum_margin_buffer": 0.7466024595547054,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 4202.295305849055,
+    "development_funding_pnl": -4055.092743507785,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 520,
+    "development_average_risk_budget": 0.12229543269207946,
+    "development_final_equity": 40123.80358578117,
+    "development_severe_cagr": 0.40380470992570805,
+    "development_extreme_cagr": 0.3264330164805034,
+    "development_top_positive_asset_pnl_share": 0.539648957694416,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 2.9787086533893667
+      },
+      {
+        "year": 2022,
+        "return": -0.016502233311777026
+      },
+      {
+        "year": 2023,
+        "return": 0.025384100990507363
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": false,
+      "max_drawdown": true,
+      "severe_cagr": true,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "diversified_growth_k4_balanced",
+    "promotable": true,
+    "factor_mix": "diversified_growth",
+    "top_k": 4,
+    "risk_profile": "balanced",
+    "eligible": false,
+    "score": 0.6227115606136875,
+    "development_total_return": 2.7935463144347015,
+    "development_cagr": 0.5607017385324657,
+    "development_sharpe": 1.3211588574757613,
+    "development_max_drawdown": -0.25147230666016585,
+    "development_annual_turnover": 12.466162775040507,
+    "development_average_gross": 0.11805712543357152,
+    "development_max_gross": 0.6883200337333494,
+    "development_max_stress_gross": 0.6184293889941714,
+    "development_minimum_margin_buffer": 0.6892953810789685,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 3387.5522460784982,
+    "development_funding_pnl": -4363.869364476652,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 444,
+    "development_average_risk_budget": 0.11580639350540296,
+    "development_final_equity": 37935.46314434701,
+    "development_severe_cagr": 0.41343611537845515,
+    "development_extreme_cagr": 0.18228876211851608,
+    "development_top_positive_asset_pnl_share": 0.475381744936236,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 2.8703187451710424
+      },
+      {
+        "year": 2022,
+        "return": 0.0
+      },
+      {
+        "year": 2023,
+        "return": -0.01983620362848082
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": true,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "diversified_growth_k4_growth",
+    "promotable": true,
+    "factor_mix": "diversified_growth",
+    "top_k": 4,
+    "risk_profile": "growth",
+    "eligible": false,
+    "score": 0.8209010599648654,
+    "development_total_return": 4.325230053478725,
+    "development_cagr": 0.7478135580717413,
+    "development_sharpe": 1.4320474607171239,
+    "development_max_drawdown": -0.29123820704957404,
+    "development_annual_turnover": 13.250064512548581,
+    "development_average_gross": 0.1275974868104794,
+    "development_max_gross": 0.8800044535338106,
+    "development_max_stress_gross": 0.8528058883702107,
+    "development_minimum_margin_buffer": 0.5978629913386949,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 4527.121133347697,
+    "development_funding_pnl": -6217.912986370858,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 338,
+    "development_average_risk_budget": 0.12606870994910757,
+    "development_final_equity": 53252.300534787246,
+    "development_severe_cagr": 0.5338400280743927,
+    "development_extreme_cagr": 0.24772522224019888,
+    "development_top_positive_asset_pnl_share": 0.567730066389633,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 4.33127757082741
+      },
+      {
+        "year": 2022,
+        "return": 0.0
+      },
+      {
+        "year": 2023,
+        "return": -0.0011343467430374732
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": true,
+      "max_drawdown": false,
+      "severe_cagr": true,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "diversified_growth_k4_convex",
+    "promotable": true,
+    "factor_mix": "diversified_growth",
+    "top_k": 4,
+    "risk_profile": "convex",
+    "eligible": false,
+    "score": 0.6344985000520837,
+    "development_total_return": 2.879482963069342,
+    "development_cagr": 0.5724174480242266,
+    "development_sharpe": 1.346035210844618,
+    "development_max_drawdown": -0.26737415725348124,
+    "development_annual_turnover": 11.526207266676215,
+    "development_average_gross": 0.10811703330388771,
+    "development_max_gross": 0.9196528716685025,
+    "development_max_stress_gross": 0.9028327846031082,
+    "development_minimum_margin_buffer": 0.7090521880760916,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 2934.110241621144,
+    "development_funding_pnl": -4321.75360721896,
+    "development_financing_drag": 0.0,
+    "development_rebalance_events": 418,
+    "development_average_risk_budget": 0.10637260276916745,
+    "development_final_equity": 38794.82963069342,
+    "development_severe_cagr": 0.4233384574118315,
+    "development_extreme_cagr": 0.1913189499032646,
+    "development_top_positive_asset_pnl_share": 0.5274169545190159,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 2.8362903402621096
+      },
+      {
+        "year": 2022,
+        "return": -0.002631474831699454
+      },
+      {
+        "year": 2023,
+        "return": 0.013927079241688567
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": true,
+      "extreme_cagr": true,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "growth_quality_k3_constant_100",
+    "promotable": false,
+    "factor_mix": "growth_quality",
+    "top_k": 3,
+    "risk_profile": "constant_100",
+    "eligible": false,
+    "score": 0.41162845046568286,
+    "development_total_return": 1.9500285105985107,
+    "development_cagr": 0.4350136546065848,
+    "development_sharpe": 1.0808110240573818,
+    "development_max_drawdown": -0.42201983674005683,
+    "development_annual_turnover": 12.862011998924274,
+    "development_average_gross": 0.1288483165784279,
+    "development_max_gross": 1.0068692241758195,
+    "development_max_stress_gross": 1.0000000000000002,
+    "development_minimum_margin_buffer": 0.41604353117212384,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 2742.3960199401076,
+    "development_funding_pnl": -3911.0167803505446,
+    "development_financing_drag": 3.5381359139559785e-14,
+    "development_rebalance_events": 295,
+    "development_average_risk_budget": 0.12729019366831618,
+    "development_final_equity": 29500.285105985105,
+    "development_severe_cagr": 0.28840883975795073,
+    "development_extreme_cagr": 0.14415997958231652,
+    "development_top_positive_asset_pnl_share": 0.4947286750261457,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 1.951833322699537
+      },
+      {
+        "year": 2022,
+        "return": -0.026822361618017765
+      },
+      {
+        "year": 2023,
+        "return": 0.026933357127041146
+      }
+    ],
+    "gate_results": {
+      "cagr": false,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": false,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  },
+  {
+    "policy": "growth_quality_k3_constant_150",
+    "promotable": false,
+    "factor_mix": "growth_quality",
+    "top_k": 3,
+    "risk_profile": "constant_150",
+    "eligible": false,
+    "score": 0.6353656561241637,
+    "development_total_return": 3.3917332506548927,
+    "development_cagr": 0.638891639476683,
+    "development_sharpe": 1.1515595983378215,
+    "development_max_drawdown": -0.3831775677777244,
+    "development_annual_turnover": 14.578848931084188,
+    "development_average_gross": 0.1449627921322298,
+    "development_max_gross": 1.550919244054642,
+    "development_max_stress_gross": 1.6099778252857797,
+    "development_minimum_margin_buffer": 0.5874636592676329,
+    "development_liquidations": 0,
+    "development_forced_exits": 0,
+    "development_costs": 4142.159213581765,
+    "development_funding_pnl": -5305.240821862621,
+    "development_financing_drag": 86.21594513856996,
+    "development_rebalance_events": 271,
+    "development_average_risk_budget": 0.1456277639489621,
+    "development_final_equity": 43917.332506548926,
+    "development_severe_cagr": 0.372637907560899,
+    "development_extreme_cagr": 0.07814003508617451,
+    "development_top_positive_asset_pnl_share": 0.6148832786274808,
+    "development_annual_returns": [
+      {
+        "year": 2021,
+        "return": 3.399549358887863
+      },
+      {
+        "year": 2022,
+        "return": -0.04017359907609164
+      },
+      {
+        "year": 2023,
+        "return": 0.040004139134772965
+      }
+    ],
+    "gate_results": {
+      "cagr": true,
+      "sharpe": false,
+      "max_drawdown": false,
+      "severe_cagr": true,
+      "extreme_cagr": false,
+      "annual_turnover": true,
+      "all_years_positive": false,
+      "concentration": false,
+      "liquidations": true,
+      "margin_buffer": true
+    }
+  }
+]
