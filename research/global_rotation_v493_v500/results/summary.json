@@ -1,0 +1,353 @@
+{
+  "program": "V493_V500_FIXED_UNIVERSE_GLOBAL_ROTATION_REPLAY",
+  "status": "rejected_after_frozen_oos",
+  "selection_end": "2020-12-31",
+  "selection_uses_post_2020": false,
+  "selected": [
+    "sector_l126-252_k4_s00__r20__v15__g100"
+  ],
+  "legacy_status": "rejected_or_needs_iteration",
+  "legacy_checks": {
+    "bridge_positive": true,
+    "holdout_positive": true,
+    "cagr": true,
+    "sharpe": false,
+    "dd": true,
+    "post2020": false,
+    "concentration": true,
+    "rolling": true,
+    "extreme": false
+  },
+  "frozen_post_selection_gates": {
+    "legacy_checks_all": false,
+    "holdout_2024_2025_return_positive": true,
+    "final_2026h1_return_positive": true,
+    "full_stress_cagr_min": true,
+    "full_stress_sharpe_min": false,
+    "full_stress_max_drawdown_min": true,
+    "extreme_full_cagr_positive": false
+  },
+  "standalone_candidate": false,
+  "metrics": {
+    "bridge_2021_2023": {
+      "scenario": "stress",
+      "period": "bridge",
+      "total_return": 0.2460425429388704,
+      "annualized_return": 0.0763937312425835,
+      "sharpe": 0.5216816382167538,
+      "max_drawdown": -0.1960936921125972,
+      "calmar": 0.3895777085920651,
+      "annual_turnover": 25.074120567928304,
+      "average_gross": 0.8665045222871666,
+      "max_gross": 1.0,
+      "final_equity": 36873.51532674109
+    },
+    "holdout_2024_2025": {
+      "scenario": "stress",
+      "period": "holdout",
+      "total_return": 0.0171042864000301,
+      "annualized_return": 0.0085499555186823,
+      "sharpe": 0.068252358751112,
+      "max_drawdown": -0.1910872218628782,
+      "calmar": 0.0447437323926225,
+      "annual_turnover": 24.325713793470072,
+      "average_gross": 0.929080959842366,
+      "max_gross": 1.0,
+      "final_equity": 37116.964065586784
+    },
+    "final_2026h1": {
+      "scenario": "stress",
+      "period": "final_2026h1",
+      "total_return": 0.1094824439373978,
+      "annualized_return": 0.2372055678254543,
+      "sharpe": 1.8524168581596017,
+      "max_drawdown": -0.0599147578987379,
+      "calmar": 3.959050760521408,
+      "annual_turnover": 20.48780487804878,
+      "average_gross": 1.0,
+      "max_gross": 1.0,
+      "final_equity": 41559.4200897232
+    },
+    "full_stress": {
+      "scenario": "stress",
+      "period": "full",
+      "total_return": 3.15594200897232,
+      "annualized_return": 0.0759641948408624,
+      "sharpe": 0.5990259361170344,
+      "max_drawdown": -0.1960936921125972,
+      "calmar": 0.387387243426697,
+      "annual_turnover": 19.71546367872026,
+      "average_gross": 0.8133901594368552,
+      "max_gross": 1.0,
+      "final_equity": 41559.4200897232
+    },
+    "full_severe": {
+      "scenario": "severe",
+      "period": "full",
+      "total_return": 1.3375580584884488,
+      "annualized_return": 0.0446079330804873,
+      "sharpe": 0.3515969339390273,
+      "max_drawdown": -0.2158753279730642,
+      "calmar": 0.2066374768220541,
+      "annual_turnover": 19.71546367872026,
+      "average_gross": 0.8133901594368552,
+      "max_gross": 1.0,
+      "final_equity": 23375.580584884487
+    },
+    "full_extreme": {
+      "scenario": "extreme",
+      "period": "full",
+      "total_return": -0.1050897627154788,
+      "annualized_return": -0.0056904636246088,
+      "sharpe": -0.0446841827154547,
+      "max_drawdown": -0.3805422374206946,
+      "calmar": -0.0149535664245281,
+      "annual_turnover": 19.71546367872026,
+      "average_gross": 0.8133901594368552,
+      "max_gross": 1.0,
+      "final_equity": 8949.102372845211
+    }
+  },
+  "data_manifest": [
+    {
+      "ticker": "XLB",
+      "raw": "research/global_rotation_v493_v500/cache/XLB.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLE",
+      "raw": "research/global_rotation_v493_v500/cache/XLE.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLF",
+      "raw": "research/global_rotation_v493_v500/cache/XLF.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLI",
+      "raw": "research/global_rotation_v493_v500/cache/XLI.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLK",
+      "raw": "research/global_rotation_v493_v500/cache/XLK.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLP",
+      "raw": "research/global_rotation_v493_v500/cache/XLP.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLU",
+      "raw": "research/global_rotation_v493_v500/cache/XLU.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLV",
+      "raw": "research/global_rotation_v493_v500/cache/XLV.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLY",
+      "raw": "research/global_rotation_v493_v500/cache/XLY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWA",
+      "raw": "research/global_rotation_v493_v500/cache/EWA.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWC",
+      "raw": "research/global_rotation_v493_v500/cache/EWC.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWG",
+      "raw": "research/global_rotation_v493_v500/cache/EWG.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWH",
+      "raw": "research/global_rotation_v493_v500/cache/EWH.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWJ",
+      "raw": "research/global_rotation_v493_v500/cache/EWJ.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWS",
+      "raw": "research/global_rotation_v493_v500/cache/EWS.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWT",
+      "raw": "research/global_rotation_v493_v500/cache/EWT.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWU",
+      "raw": "research/global_rotation_v493_v500/cache/EWU.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWW",
+      "raw": "research/global_rotation_v493_v500/cache/EWW.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWY",
+      "raw": "research/global_rotation_v493_v500/cache/EWY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWZ",
+      "raw": "research/global_rotation_v493_v500/cache/EWZ.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "IEF",
+      "raw": "research/global_rotation_v493_v500/cache/IEF.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "TLT",
+      "raw": "research/global_rotation_v493_v500/cache/TLT.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "SHY",
+      "raw": "research/global_rotation_v493_v500/cache/SHY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "GLD",
+      "raw": "research/global_rotation_v493_v500/cache/GLD.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "DBC",
+      "raw": "research/global_rotation_v493_v500/cache/DBC.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "UUP",
+      "raw": "research/global_rotation_v493_v500/cache/UUP.json",
+      "rows": 4864,
+      "start": "2007-03-01 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    }
+  ],
+  "atlas_correlation_is_flat_interface_artifact": true,
+  "design_sha256": "bc3707e7a46f161269a8f3f3bc3129215cd42c21f3cf94c46f1c06a3a0967741",
+  "files": {
+    "legacy_metrics.csv": {
+      "bytes": 4874,
+      "sha256": "61020e67509bff03761c5f8333af480e70b89acfcc8bed59b6378dda1993223a"
+    },
+    "legacy_run.log": {
+      "bytes": 9702,
+      "sha256": "771da767420f841054d3db71db46228057fef2a31f7b03049ff041febc733e76"
+    },
+    "legacy_selection_proof_before_post2020.json": {
+      "bytes": 21303,
+      "sha256": "65a9a0dfa8232c6bd13d08b17e32098b7487f8c561375d3f58591cf551baea9d"
+    },
+    "legacy_selection_ranking.csv": {
+      "bytes": 433704,
+      "sha256": "51e0ab3fa720db2247933f26fe6a7c3f84ef3ac810ae7e3442023e10c607a64c"
+    },
+    "legacy_summary.json": {
+      "bytes": 7051,
+      "sha256": "e43248ffc40fbb4b0f5adf65f9e906ec5b48c44c47cede81a68aee1cc47e84d4"
+    },
+    "legacy_v103_extreme_equity.csv": {
+      "bytes": 327703,
+      "sha256": "7a1ea5ea21cdcb00eb771cdfdc56601ae0b6afba04c8183685b943470975d24d"
+    },
+    "legacy_v103_severe_equity.csv": {
+      "bytes": 328657,
+      "sha256": "a4c266dae234d61ff445d6f16307af767219428a683bf98018f1eae42fb32746"
+    },
+    "legacy_v103_stress_equity.csv": {
+      "bytes": 328136,
+      "sha256": "9c75802dc9bdd77231056e7e7ced89cbfc3b7c1ccd71d13e71998accef596251"
+    },
+    "legacy_v103_target_weights.csv": {
+      "bytes": 729054,
+      "sha256": "0c6e2fe61a01e98fa73d10374be1b4295fcc4a844a93196290cc48c4eb3df143"
+    },
+    "legacy_yearly.csv": {
+      "bytes": 910,
+      "sha256": "f325f0d43952a4906e3d9cd4c7e125bcaf3c268e00ccc82638c0e1f5d99e5d87"
+    }
+  },
+  "evidence_limits": {
+    "vendor_adjusted_prices_execution_grade": false,
+    "program_level_holdout_pristine": false,
+    "integration_permitted": false,
+    "capital_change_authorized": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  },
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

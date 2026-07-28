@@ -1,0 +1,243 @@
+{
+  "research": "ACTIVE_V103_V110_GLOBAL_ROTATION",
+  "status": "rejected_or_needs_iteration",
+  "selection_proof_sha256": "65a9a0dfa8232c6bd13d08b17e32098b7487f8c561375d3f58591cf551baea9d",
+  "selected": [
+    "sector_l126-252_k4_s00__r20__v15__g100"
+  ],
+  "checks": {
+    "bridge_positive": true,
+    "holdout_positive": true,
+    "cagr": true,
+    "sharpe": false,
+    "dd": true,
+    "post2020": false,
+    "concentration": true,
+    "rolling": true,
+    "extreme": false
+  },
+  "diagnostics": {
+    "best_positive_year_log_share": 0.19556766347646679,
+    "worst_rolling_252": -0.15803378362778886,
+    "post2020_cagr": 0.0443512970476001,
+    "positive_year_fraction": 0.6842105263157895
+  },
+  "stress_prefinal": {
+    "annualized_return": 0.07158757347051492,
+    "total_return": 2.7116964065586786,
+    "max_drawdown": -0.1960936921125972,
+    "sharpe": 0.564765312607967,
+    "annual_turnover": 19.69558962693837,
+    "average_gross": 0.8085882744181802,
+    "max_gross": 1.0
+  },
+  "final_2026h1": {
+    "annualized_return": 0.23720556782545432,
+    "total_return": 0.10948244393739781,
+    "max_drawdown": -0.0599147578987379,
+    "sharpe": 1.8524168581596019
+  },
+  "strict_costs": {
+    "stress": {
+      "cagr": 0.07596419484086248,
+      "dd": -0.1960936921125972
+    },
+    "severe": {
+      "cagr": 0.04460793308048738,
+      "dd": -0.2158753279730642
+    },
+    "extreme": {
+      "cagr": -0.005690463624608899,
+      "dd": -0.3805422374206946
+    }
+  },
+  "atlas_correlation": NaN,
+  "blend_selected_weight": null,
+  "transport": "cached_exact_equal_to_legacy",
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "data_manifest": [
+    {
+      "ticker": "XLB",
+      "raw": "research/global_rotation_v493_v500/cache/XLB.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLE",
+      "raw": "research/global_rotation_v493_v500/cache/XLE.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLF",
+      "raw": "research/global_rotation_v493_v500/cache/XLF.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLI",
+      "raw": "research/global_rotation_v493_v500/cache/XLI.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLK",
+      "raw": "research/global_rotation_v493_v500/cache/XLK.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLP",
+      "raw": "research/global_rotation_v493_v500/cache/XLP.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLU",
+      "raw": "research/global_rotation_v493_v500/cache/XLU.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLV",
+      "raw": "research/global_rotation_v493_v500/cache/XLV.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLY",
+      "raw": "research/global_rotation_v493_v500/cache/XLY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWA",
+      "raw": "research/global_rotation_v493_v500/cache/EWA.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWC",
+      "raw": "research/global_rotation_v493_v500/cache/EWC.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWG",
+      "raw": "research/global_rotation_v493_v500/cache/EWG.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWH",
+      "raw": "research/global_rotation_v493_v500/cache/EWH.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWJ",
+      "raw": "research/global_rotation_v493_v500/cache/EWJ.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWS",
+      "raw": "research/global_rotation_v493_v500/cache/EWS.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWT",
+      "raw": "research/global_rotation_v493_v500/cache/EWT.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWU",
+      "raw": "research/global_rotation_v493_v500/cache/EWU.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWW",
+      "raw": "research/global_rotation_v493_v500/cache/EWW.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWY",
+      "raw": "research/global_rotation_v493_v500/cache/EWY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWZ",
+      "raw": "research/global_rotation_v493_v500/cache/EWZ.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "IEF",
+      "raw": "research/global_rotation_v493_v500/cache/IEF.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "TLT",
+      "raw": "research/global_rotation_v493_v500/cache/TLT.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "SHY",
+      "raw": "research/global_rotation_v493_v500/cache/SHY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "GLD",
+      "raw": "research/global_rotation_v493_v500/cache/GLD.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "DBC",
+      "raw": "research/global_rotation_v493_v500/cache/DBC.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "UUP",
+      "raw": "research/global_rotation_v493_v500/cache/UUP.json",
+      "rows": 4864,
+      "start": "2007-03-01 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    }
+  ]
+}

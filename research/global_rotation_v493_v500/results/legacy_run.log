@@ -1,0 +1,333 @@
+process 1/90 candidates=27
+process 2/90 candidates=54
+process 3/90 candidates=81
+process 4/90 candidates=108
+process 5/90 candidates=135
+process 6/90 candidates=162
+process 7/90 candidates=189
+process 8/90 candidates=216
+process 9/90 candidates=243
+process 10/90 candidates=270
+process 11/90 candidates=297
+process 12/90 candidates=324
+process 13/90 candidates=351
+process 14/90 candidates=378
+process 15/90 candidates=405
+process 16/90 candidates=432
+process 17/90 candidates=459
+process 18/90 candidates=486
+process 19/90 candidates=513
+process 20/90 candidates=540
+process 21/90 candidates=567
+process 22/90 candidates=594
+process 23/90 candidates=621
+process 24/90 candidates=648
+process 25/90 candidates=675
+process 26/90 candidates=702
+process 27/90 candidates=729
+process 28/90 candidates=756
+process 29/90 candidates=783
+process 30/90 candidates=810
+process 31/90 candidates=837
+process 32/90 candidates=864
+process 33/90 candidates=891
+process 34/90 candidates=918
+process 35/90 candidates=945
+process 36/90 candidates=972
+process 37/90 candidates=999
+process 38/90 candidates=1026
+process 39/90 candidates=1053
+process 40/90 candidates=1080
+process 41/90 candidates=1107
+process 42/90 candidates=1134
+process 43/90 candidates=1161
+process 44/90 candidates=1188
+process 45/90 candidates=1215
+process 46/90 candidates=1242
+process 47/90 candidates=1269
+process 48/90 candidates=1296
+process 49/90 candidates=1323
+process 50/90 candidates=1350
+process 51/90 candidates=1377
+process 52/90 candidates=1404
+process 53/90 candidates=1431
+process 54/90 candidates=1458
+process 55/90 candidates=1485
+process 56/90 candidates=1512
+process 57/90 candidates=1539
+process 58/90 candidates=1566
+process 59/90 candidates=1593
+process 60/90 candidates=1620
+process 61/90 candidates=1647
+process 62/90 candidates=1674
+process 63/90 candidates=1701
+process 64/90 candidates=1728
+process 65/90 candidates=1755
+process 66/90 candidates=1782
+process 67/90 candidates=1809
+process 68/90 candidates=1836
+process 69/90 candidates=1863
+process 70/90 candidates=1890
+process 71/90 candidates=1917
+process 72/90 candidates=1944
+process 73/90 candidates=1971
+process 74/90 candidates=1998
+process 75/90 candidates=2025
+process 76/90 candidates=2052
+process 77/90 candidates=2079
+process 78/90 candidates=2106
+process 79/90 candidates=2133
+process 80/90 candidates=2160
+process 81/90 candidates=2187
+process 82/90 candidates=2214
+process 83/90 candidates=2241
+process 84/90 candidates=2268
+process 85/90 candidates=2295
+process 86/90 candidates=2322
+process 87/90 candidates=2349
+process 88/90 candidates=2376
+process 89/90 candidates=2403
+process 90/90 candidates=2430
+{
+  "research": "ACTIVE_V103_V110_GLOBAL_ROTATION",
+  "status": "rejected_or_needs_iteration",
+  "selection_proof_sha256": "65a9a0dfa8232c6bd13d08b17e32098b7487f8c561375d3f58591cf551baea9d",
+  "selected": [
+    "sector_l126-252_k4_s00__r20__v15__g100"
+  ],
+  "checks": {
+    "bridge_positive": true,
+    "holdout_positive": true,
+    "cagr": true,
+    "sharpe": false,
+    "dd": true,
+    "post2020": false,
+    "concentration": true,
+    "rolling": true,
+    "extreme": false
+  },
+  "diagnostics": {
+    "best_positive_year_log_share": 0.19556766347646679,
+    "worst_rolling_252": -0.15803378362778886,
+    "post2020_cagr": 0.0443512970476001,
+    "positive_year_fraction": 0.6842105263157895
+  },
+  "stress_prefinal": {
+    "annualized_return": 0.07158757347051492,
+    "total_return": 2.7116964065586786,
+    "max_drawdown": -0.1960936921125972,
+    "sharpe": 0.564765312607967,
+    "annual_turnover": 19.69558962693837,
+    "average_gross": 0.8085882744181802,
+    "max_gross": 1.0
+  },
+  "final_2026h1": {
+    "annualized_return": 0.23720556782545432,
+    "total_return": 0.10948244393739781,
+    "max_drawdown": -0.0599147578987379,
+    "sharpe": 1.8524168581596019
+  },
+  "strict_costs": {
+    "stress": {
+      "cagr": 0.07596419484086248,
+      "dd": -0.1960936921125972
+    },
+    "severe": {
+      "cagr": 0.04460793308048738,
+      "dd": -0.2158753279730642
+    },
+    "extreme": {
+      "cagr": -0.005690463624608899,
+      "dd": -0.3805422374206946
+    }
+  },
+  "atlas_correlation": NaN,
+  "blend_selected_weight": null,
+  "transport": "cached_exact_equal_to_legacy",
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "data_manifest": [
+    {
+      "ticker": "XLB",
+      "raw": "research/global_rotation_v493_v500/cache/XLB.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLE",
+      "raw": "research/global_rotation_v493_v500/cache/XLE.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLF",
+      "raw": "research/global_rotation_v493_v500/cache/XLF.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLI",
+      "raw": "research/global_rotation_v493_v500/cache/XLI.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLK",
+      "raw": "research/global_rotation_v493_v500/cache/XLK.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLP",
+      "raw": "research/global_rotation_v493_v500/cache/XLP.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLU",
+      "raw": "research/global_rotation_v493_v500/cache/XLU.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLV",
+      "raw": "research/global_rotation_v493_v500/cache/XLV.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "XLY",
+      "raw": "research/global_rotation_v493_v500/cache/XLY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWA",
+      "raw": "research/global_rotation_v493_v500/cache/EWA.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWC",
+      "raw": "research/global_rotation_v493_v500/cache/EWC.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWG",
+      "raw": "research/global_rotation_v493_v500/cache/EWG.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWH",
+      "raw": "research/global_rotation_v493_v500/cache/EWH.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWJ",
+      "raw": "research/global_rotation_v493_v500/cache/EWJ.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWS",
+      "raw": "research/global_rotation_v493_v500/cache/EWS.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWT",
+      "raw": "research/global_rotation_v493_v500/cache/EWT.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWU",
+      "raw": "research/global_rotation_v493_v500/cache/EWU.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWW",
+      "raw": "research/global_rotation_v493_v500/cache/EWW.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWY",
+      "raw": "research/global_rotation_v493_v500/cache/EWY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "EWZ",
+      "raw": "research/global_rotation_v493_v500/cache/EWZ.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "IEF",
+      "raw": "research/global_rotation_v493_v500/cache/IEF.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "TLT",
+      "raw": "research/global_rotation_v493_v500/cache/TLT.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "SHY",
+      "raw": "research/global_rotation_v493_v500/cache/SHY.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "GLD",
+      "raw": "research/global_rotation_v493_v500/cache/GLD.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "DBC",
+      "raw": "research/global_rotation_v493_v500/cache/DBC.json",
+      "rows": 4903,
+      "start": "2007-01-03 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    },
+    {
+      "ticker": "UUP",
+      "raw": "research/global_rotation_v493_v500/cache/UUP.json",
+      "rows": 4864,
+      "start": "2007-03-01 00:00:00+00:00",
+      "end": "2026-06-30 00:00:00+00:00"
+    }
+  ]
+}
