@@ -1,0 +1,59 @@
+            * open_leverage
+            * V75_ANNUAL_TURNOVER
+            * audit.extra_underlying_cost_rate
+            / 365.0
+        )
+        cash -= extra_underlying_cost
+        holdings *= 1.0 + float(returns.at[timestamp])
+        equity = float(cash + holdings)
+        if not np.isfinite(equity) or equity <= 0.0:
+            raise RuntimeError(f"non-positive equity at {timestamp}: {equity}")
+        high_water = max(high_water, equity)
+        records.append(
+            {
+                "net_return": equity / previous_equity - 1.0,
+                "equity": equity,
+                "desired_leverage": target,
+                "raw_target_leverage": raw_target,
+                "close_gross": abs(holdings) / equity,
+                "meta_turnover": meta_turnover,
+                "transfer_cost": transfer_cost,
+                "financing_cost": financing_cost,
+                "extra_underlying_cost": extra_underlying_cost,
+                "risk_reduction": int(risk_reduction and rebalance),
+                "scheduled_rebalance": int(scheduled and rebalance and not risk_reduction),
+                "guard_active": bool(guard_active),
+                "guard_age_days": int(guard_age),
+                "drawdown_open": drawdown_open,
+                "market_state": state,
+                "momentum20": state_frame.at[timestamp, "momentum20"],
+                "momentum60": state_frame.at[timestamp, "momentum60"],
+            }
+        )
+    return pd.DataFrame(records, index=returns.index)
+
+
+def period_metrics(account: pd.DataFrame, period: str) -> dict[str, Any]:
+    start, end = PERIODS[period]
+    part = account.loc[(account.index >= start) & (account.index < end)]
+    return metrics(part["net_return"], part)
+
+
+def acceptance_checks(accounts: dict[str, pd.DataFrame]) -> dict[str, bool]:
+    base = period_metrics(accounts["base"], "full")
+    severe = period_metrics(accounts["severe"], "full")
+    extreme = period_metrics(accounts["extreme"], "full")
+    delay = period_metrics(accounts["delay_1d"], "full")
+    annual = yearly_returns(accounts["base"]["net_return"]).set_index("year")["return"].to_dict()
+    return {
+        "full_cagr_ge_50pct": base["cagr"] >= 0.50,
+        "full_sharpe_ge_1_45": base["sharpe"] >= 1.45,
+        "full_max_dd_ge_minus25pct": base["max_drawdown"] >= -0.25,
+        "full_worst_rolling_365_ge_minus22pct": base["worst_rolling_365"] >= -0.22,
+        "all_calendar_years_positive": all(value > 0.0 for value in annual.values()),
+        "average_target_leverage_le_1_35": base["average_target_leverage"] <= 1.35,
+        "maximum_target_leverage_le_2_10": base["maximum_target_leverage"] <= 2.1000001,
+        "annual_meta_turnover_le_6x": base["annual_meta_turnover"] <= 6.0,
+        "severe_full_cagr_ge_40pct": severe["cagr"] >= 0.40,
+        "severe_full_dd_ge_minus30pct": severe["max_drawdown"] >= -0.30,
+        "extreme_full_cagr_ge_25pct": extreme["cagr"] >= 0.25,
