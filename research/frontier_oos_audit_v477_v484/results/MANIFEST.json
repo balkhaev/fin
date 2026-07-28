@@ -1,0 +1,97 @@
+{
+  "program": "V477_V484_FRONTIER_OOS_AUDIT",
+  "files": {
+    "REPORT_RU.md": {
+      "bytes": 344,
+      "sha256": "bf203b0a8a25e4dd84522b8b0368c8d8ce78726e32da71d0935ff3f5a87718e5"
+    },
+    "audit_full_metrics.csv": {
+      "bytes": 8317,
+      "sha256": "b6bbfac103080ee2808331d08f33e0acd8d28d1c2bdaf6949dcf1699b9347a6a"
+    },
+    "diagnostic_robustness.csv": {
+      "bytes": 1253,
+      "sha256": "d98ab5c810be5b953b866e944fa3503ac2078ac4bbf9915b160573c896ac4f0f"
+    },
+    "equity_V285_raw.csv": {
+      "bytes": 359083,
+      "sha256": "6065a4a3eda9d93e27769ad112a1b735a24f64cdf7720395f419b89ab32f9023"
+    },
+    "equity_V365_raw.csv": {
+      "bytes": 365002,
+      "sha256": "bc25382c03fbf6352a15fd2a85355929411be04d8b1c7ff1926669bc7c055ea6"
+    },
+    "equity_barbell_equal.csv": {
+      "bytes": 538798,
+      "sha256": "39c52685ae0f5feca32b670e28fc88e0b45a0d2560f653e2fe9d568b66cea5c6"
+    },
+    "equity_barbell_static_vol_equal.csv": {
+      "bytes": 432297,
+      "sha256": "0308cb6991ccca87b30d1f01486a301d97cee5fcaf4d26f69df53e783e136734"
+    },
+    "equity_persistent_budget.csv": {
+      "bytes": 500948,
+      "sha256": "b73cca254739dd090dd5d32e22beccbd040d6d97cc44b09837e2c8226b5c45d4"
+    },
+    "equity_static_40_60.csv": {
+      "bytes": 373963,
+      "sha256": "7fa4a6b1d8c43156bed8775884dccdd57129ea352940acc0a8504e9dda3b1413"
+    },
+    "equity_triple_equal.csv": {
+      "bytes": 538990,
+      "sha256": "aec3202bfb14346af2e522c357bdae66949dbe8a8f4d58e70e697cf2a3a4ef8f"
+    },
+    "equity_vol22_budget.csv": {
+      "bytes": 421443,
+      "sha256": "93f3ade216334f6336e45c2dd8791eff460f97d068034037bf346992213d22b2"
+    },
+    "model_period_metrics.csv": {
+      "bytes": 9993,
+      "sha256": "ac91ed85ca37017932a0ceacd6de2ba19bc919628176f3daceb2a8a4ed241e74"
+    },
+    "state_attribution.csv": {
+      "bytes": 6262,
+      "sha256": "4ffea5b553deddbb3a01c8e45509cbb0f7063634ed4358d62c528c42d12d1e37"
+    },
+    "summary.json": {
+      "bytes": 49821,
+      "sha256": "483e497cd020435537c4599af085f5afb40e34d1702914d83c208c320c029b53"
+    },
+    "weights_V285_raw.csv": {
+      "bytes": 92380,
+      "sha256": "69c15c93887aa91c3d3d4879b1a603924a8f715dafb6bfb2353678ec746299c8"
+    },
+    "weights_V365_raw.csv": {
+      "bytes": 92380,
+      "sha256": "2602fb13d9dc32f772a4daddf968bb9baba5867cdde8bc4d45381590911a09c8"
+    },
+    "weights_barbell_equal.csv": {
+      "bytes": 285697,
+      "sha256": "418d16c02d2112cbc86a26af72508d7e91c754f35c9a13fe6f62e936a7c27f24"
+    },
+    "weights_barbell_static_vol_equal.csv": {
+      "bytes": 181967,
+      "sha256": "201f940a265f88648c1c555f5a716fa59f723fba9ef7af9b3d29d78ce7e1732d"
+    },
+    "weights_persistent_budget.csv": {
+      "bytes": 284549,
+      "sha256": "cc5d717212ddd18f575f5097d3e099161b3255c4be6779589cece26141a7a794"
+    },
+    "weights_static_40_60.csv": {
+      "bytes": 163027,
+      "sha256": "8dcc655e4adc1f6e4a2a4b5f28a06ef59492d2b3d0384c65add111d37234dc9f"
+    },
+    "weights_triple_equal.csv": {
+      "bytes": 285719,
+      "sha256": "ef2963f226df36ac5343d8d4115a2573c01398e15cc6ac686ccea24d6c0bdb97"
+    },
+    "weights_vol22_budget.csv": {
+      "bytes": 174247,
+      "sha256": "605279cbe88ae4223d25c9e2377ad87ae2a3b66b6342903e517c31a202890298"
+    },
+    "yearly_returns.csv": {
+      "bytes": 1128,
+      "sha256": "5accfa60373532e987f988265f9be26fd700b066167d395c13cb12373379c7e2"
+    }
+  }
+}
