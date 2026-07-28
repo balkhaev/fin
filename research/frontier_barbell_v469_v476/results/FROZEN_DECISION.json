@@ -1,0 +1,11 @@
+{
+  "program": "V469_V476_FRONTIER_BARBELL_ENSEMBLE",
+  "status": "rejected_before_oos",
+  "eligible_recipe_count": 0,
+  "selected_recipe": null,
+  "oos_opened": false,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
