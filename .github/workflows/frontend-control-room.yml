@@ -1,0 +1,78 @@
+name: FIN frontend control room
+
+on:
+  push:
+    branches: [main, agent/frontend-control-room]
+    paths:
+      - 'frontend/**'
+      - 'scripts/build_frontend_data.py'
+      - 'tests/frontend/**'
+      - '.github/workflows/frontend-control-room.yml'
+      - 'docs/checkpoints/v138/CHECKPOINT_V138.json'
+      - 'research/v75_tristate_guard_v517_v524/results/**'
+      - 'research/v75_trend_hysteresis_v509_v516/results/**'
+      - 'research/market_state_v413_v420/results/market_state_daily.csv'
+      - 'research/state_telemetry_v429_v436/FORWARD_INSTRUMENTATION_DECISION.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'scripts/build_frontend_data.py'
+      - 'tests/frontend/**'
+      - '.github/workflows/frontend-control-room.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-control-room-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build dashboard evidence bundle
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euxo pipefail
+          python scripts/build_frontend_data.py --output /tmp/dashboard.json
+          python scripts/build_frontend_data.py --check --output /tmp/dashboard.json
+
+      - name: Test Python data layer
+        run: |
+          set -euxo pipefail
+          python -m unittest discover -s tests/frontend -p 'test_*.py' -v
+
+      - name: Check static frontend
+        run: |
+          set -euxo pipefail
+          node --check frontend/app.js
+          test -s frontend/index.html
+          test -s frontend/styles.css
+          test -s frontend/data/dashboard.json
+          ! grep -R -E 'https?://(cdn|unpkg|jsdelivr)' frontend
+
+      - name: Assemble preview artifact
+        run: |
+          set -euxo pipefail
+          cp /tmp/dashboard.json frontend/data/dashboard.json
+          python -m zipfile -c /tmp/fin-control-room.zip frontend
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fin-control-room
+          path: /tmp/fin-control-room.zip
+          if-no-files-found: error
+          retention-days: 30
