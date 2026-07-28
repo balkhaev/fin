@@ -1,0 +1,138 @@
+    policy = next(item for item in policy_book() if item.name == "statevol_core90_tv38_s25")
+    account = simulate(state, policy, AUDITS[0])
+    assert len(account) == len(index)
+    assert np.isfinite(account.to_numpy(dtype=object)[:, :13].astype(float)).all()
+    assert float(account["leverage"].max()) <= policy.max_leverage + 1e-12
+    changed = state.copy()
+    changed.iloc[-1, changed.columns.get_loc("trend")] *= 100.0
+    changed_account = simulate(changed, policy, AUDITS[0])
+    pd.testing.assert_series_equal(
+        account["equity"].iloc[:-1], changed_account["equity"].iloc[:-1], check_names=False
+    )
+    delayed = simulate(state, policy, AUDITS[-1])
+    assert not delayed.equals(account)
+    print("V501-V508 risk-budget self-test passed")
+
+
+def run(v75_path: Path, stabilizer_path: Path, state_path: Path, output: Path, design: Path) -> int:
+    output.mkdir(parents=True, exist_ok=True)
+    v75, equivalence = load_v75(v75_path)
+    stabilizer = load_stabilizer(stabilizer_path)
+    state = load_state(state_path)
+    frame = aligned_inputs(v75, stabilizer, state)
+    write_json(output / "V75_ECONOMIC_EQUIVALENCE.json", equivalence)
+
+    rows: list[dict[str, Any]] = []
+    accounts: dict[tuple[str, str], pd.DataFrame] = {}
+    for number, policy in enumerate(policy_book(), 1):
+        base = simulate(frame, policy, AUDITS[0])
+        severe = simulate(frame, policy, AUDITS[1])
+        accounts[(policy.name, "base")] = base
+        accounts[(policy.name, "severe")] = severe
+        base_dev = metrics_for_account(base, "development")
+        severe_dev = metrics_for_account(severe, "development")
+        annual = yearly_returns(cut(base, "development")["net_return"])
+        checks = development_checks(base_dev, severe_dev, annual, policy)
+        eligible = bool(all(checks.values()))
+        row = {
+            "policy": policy.name,
+            **asdict(policy),
+            "eligible": eligible,
+            "score": score_candidate(base_dev, annual),
+            **{f"development_{key}": value for key, value in base_dev.items()},
+            **{f"severe_development_{key}": value for key, value in severe_dev.items()},
+            **{f"gate_{key}": value for key, value in checks.items()},
+        }
+        rows.append(row)
+        print(
+            f"{number}/{len(policy_book())} {policy.name} "
+            f"CAGR={base_dev['cagr']:.4f} DD={base_dev['max_drawdown']:.4f} "
+            f"Sharpe={base_dev['sharpe']:.3f} eligible={eligible}",
+            flush=True,
+        )
+
+    ranking = pd.DataFrame(rows).sort_values(["eligible", "score"], ascending=[False, False])
+    ranking.to_csv(output / "development_ranking.csv", index=False)
+    eligible = ranking[ranking["eligible"]]
+    selected_name = str(eligible.iloc[0]["policy"]) if len(eligible) else None
+    proof = {
+        "program": PROGRAM,
+        "design_sha256": sha256_file(design),
+        "v75_economic_equivalence": equivalence,
+        "selection_period": [str(PERIODS["development"][0]), str(PERIODS["development"][1])],
+        "selection_uses_2024": False,
+        "selection_uses_2025": False,
+        "selection_uses_2026": False,
+        "program_level_holdout_pristine": False,
+        "policy_count": len(policy_book()),
+        "eligible_policies": list(eligible["policy"].astype(str)),
+        "selected_policy": selected_name,
+        "ranking_top": ranking.head(20).to_dict(orient="records"),
+    }
+    proof["selection_proof_sha256"] = canonical_hash(proof)
+    write_json(output / "selection_proof_before_oos.json", proof)
+
+    if selected_name is None:
+        decision = {
+            "program": PROGRAM,
+            "status": "rejected_before_oos",
+            "eligible_policy_count": 0,
+            "selected_policy": None,
+            "oos_opened": False,
+            "historical_50pct_target_met": False,
+            "integration_permitted": False,
+            "capital_change_authorized": False,
+            "live_ready": False,
+            "real_leverage_authorized": False,
+            "profitability_proven": False,
+        }
+        summary = {**decision, "selection": proof}
+        write_json(output / "FROZEN_DECISION.json", decision)
+        write_json(output / "summary.json", summary)
+        (output / "REPORT_RU.md").write_text(
+            "# V501–V508 V75 risk budget\n\n"
+            "Status: `rejected_before_oos`. Ни одна политика не прошла development gates; "
+            "2024–2026 H1 не открывались.\n",
+            encoding="utf-8",
+        )
+        write_manifest(output)
+        return 0
+
+    selected_policy = next(item for item in policy_book() if item.name == selected_name)
+    audits: dict[str, pd.DataFrame] = {}
+    audit_rows: list[dict[str, Any]] = []
+    for audit in AUDITS:
+        account = simulate(frame, selected_policy, audit)
+        audits[audit.name] = account
+        account.to_csv(output / f"equity_{audit.name}.csv", index_label="open_time")
+        for period in PERIODS:
+            audit_rows.append(
+                {
+                    "audit": audit.name,
+                    "period": period,
+                    **asdict(audit),
+                    **metrics_for_account(account, period),
+                }
+            )
+    audit_table = pd.DataFrame(audit_rows)
+    audit_table.to_csv(output / "audit_metrics.csv", index=False)
+    annual = yearly_returns(audits["base"]["net_return"])
+    annual.to_csv(output / "ANNUAL_RETURNS.csv", index=False)
+    checks = post_oos_checks(audits)
+    target_met = bool(checks["full_cagr_ge_50pct_target"])
+    robustness_passed = bool(all(value for key, value in checks.items() if key != "full_cagr_ge_50pct_target"))
+    status = (
+        "exploratory_50pct_target_met_no_capital_authority"
+        if target_met and robustness_passed
+        else "rejected_after_frozen_oos"
+    )
+    decision = {
+        "program": PROGRAM,
+        "status": status,
+        "eligible_policy_count": int(len(eligible)),
+        "selected_policy": selected_name,
+        "oos_opened": True,
+        "post_oos_checks": checks,
+        "historical_50pct_target_met": target_met,
+        "robustness_passed": robustness_passed,
+        "integration_permitted": False,
