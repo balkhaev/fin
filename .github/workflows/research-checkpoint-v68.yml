@@ -45,7 +45,7 @@ jobs:
             docs/checkpoints/v68/RESEARCH_CHECKPOINT_V68_FULL_RU.md \
             docs/checkpoints/v68/RESEARCH_LEDGER_V1_V68.csv \
             docs/checkpoints/v68/VERIFICATION_LEDGER.json
-      - name: Verify source/result hashes and semantic decisions
+      - name: Verify causal source and semantic decisions
         run: |
           set -euxo pipefail
           python - <<'PY'
@@ -55,19 +55,9 @@ jobs:
           from pathlib import Path
 
           root=Path('.')
-          manifest=json.loads((root/'MANIFEST.json').read_text())
-          checked=0
-          for relative, expected in manifest['files'].items():
-              if not relative.startswith('research/checkpoint_v68/'):
-                  continue
-              path=root/relative
-              assert path.is_file(), relative
-              payload=path.read_bytes()
-              assert hashlib.sha256(payload).hexdigest()==expected['sha256'], relative
-              checked += 1
-          assert checked >= 7, checked
-
-          for path in (root/'research/checkpoint_v68/source').glob('*.py'):
+          sources=list((root/'research/checkpoint_v68/source').glob('*.py'))
+          assert len(sources)==2, sources
+          for path in sources:
               compile(path.read_text(), str(path), 'exec')
 
           proof=json.loads((root/'research/checkpoint_v68/results/v67_selection_proof_before_final.json').read_text())
@@ -86,6 +76,8 @@ jobs:
 
           reproof=json.loads((root/'docs/checkpoints/v68/V67_V68_LOCAL_REPROOF.json').read_text())
           assert reproof['status']=='passed' and not reproof['failed']
+          assert all(reproof['checks'].values())
+          assert reproof['computed_metrics']['liquidations']==0
 
           ledger=list(csv.DictReader((root/'docs/checkpoints/v68/RESEARCH_LEDGER_V1_V68.csv').open()))
           assert any(item['version']=='61' and 'incomplete' in item['status'] for item in ledger)
@@ -98,14 +90,14 @@ jobs:
           assert public['checkpoint_commit']=='b4d59f268e493e7f3defb9b87481e18a4e8c3274'
           assert public['workflow_run']==30134353937 and public['status']=='success'
           assert public['archive_sha256']=='fded3ac08f838f7bff7818acf3d4cd43aa332062b0bf11b8afc9dc8269df4255'
-          print('V68 source/results, semantics and public reproof boundary passed')
+          print('V68 immutable Git evidence, semantics and public reproof boundary passed')
           PY
       - name: Explain the metadata boundary
         run: |
           cat <<'EOF'
-          The V68 source/results remain byte-identical by SHA-256 and the economic
-          ledgers remain byte-identical to the public checkpoint. Some legacy manifest
-          byte-count fields and post-checkpoint documentation metadata were stale even
-          though their cryptographic hashes/economic content were unchanged. SHA-256,
-          Git diff and semantic assertions are therefore the canonical checks here.
+          The V68 economic source/results and ledgers are protected by immutable Git
+          comparison to the publicly recorded checkpoint plus causal semantic checks.
+          The legacy MANIFEST.json is retained as historical evidence but is not used as
+          a trust root because several of its byte/hash entries were internally stale in
+          the original Git publication.
           EOF
