@@ -1,0 +1,134 @@
+        high_water = max(high_water, equity)
+        net_return = equity / previous_equity - 1.0
+        close_weights = holdings / equity
+        close_gross = float(np.abs(close_weights).sum())
+        records.append(
+            {
+                "net_return": net_return,
+                "equity": equity,
+                "leverage": desired_leverage,
+                "close_gross": close_gross,
+                "core_weight_close": float(close_weights[0]),
+                "stabilizer_weight_close": float(close_weights[1]),
+                "cash_weight_close": float(cash / equity),
+                "meta_turnover": meta_turnover,
+                "transfer_cost": transfer_cost,
+                "financing_cost": financing_cost,
+                "extra_underlying_cost": extra_underlying_cost,
+                "risk_reduction": risk_event,
+                "scheduled_rebalance": scheduled_event,
+                "previous_drawdown": previous_drawdown,
+                "state_score": float(state_score_series.loc[timestamp]),
+                "state_label": str(row.get("state_label", "unknown")),
+                "state_duration_days": int(row.get("state_duration_days", 0)),
+                "novelty_flag": bool(row.get("novelty_flag", False)),
+            }
+        )
+    return pd.DataFrame(records, index=frame.index)
+
+
+def cut(frame: pd.DataFrame, period: str) -> pd.DataFrame:
+    start, end = PERIODS[period]
+    return frame.loc[(frame.index >= start) & (frame.index < end)]
+
+
+def metrics_for_account(account: pd.DataFrame, period: str) -> dict[str, Any]:
+    part = cut(account, period)
+    return returns_metrics(part["net_return"], part)
+
+
+def development_checks(
+    base_metrics: dict[str, Any],
+    severe_metrics: dict[str, Any],
+    annual: pd.DataFrame,
+    policy: Policy,
+) -> dict[str, bool]:
+    annual_map = annual.set_index("year")["return"].to_dict()
+    return {
+        "promotable": policy.promotable,
+        "cagr_ge_45pct": float(base_metrics["cagr"]) >= 0.45,
+        "sharpe_ge_1_35": float(base_metrics["sharpe"]) >= 1.35,
+        "max_dd_ge_minus25pct": float(base_metrics["max_drawdown"]) >= -0.25,
+        "worst_rolling_365_ge_minus15pct": float(base_metrics["worst_rolling_365"]) >= -0.15,
+        "2021_positive": float(annual_map.get(2021, -1.0)) > 0.0,
+        "2022_ge_minus3pct": float(annual_map.get(2022, -1.0)) >= -0.03,
+        "2023_positive": float(annual_map.get(2023, -1.0)) > 0.0,
+        "meta_turnover_le_5x": float(base_metrics["annual_meta_turnover"]) <= 5.0,
+        "average_leverage_le_1_65": float(base_metrics["average_leverage"]) <= 1.65,
+        "max_leverage_le_1_95": float(base_metrics["max_leverage"]) <= 1.9500001,
+        "severe_cagr_ge_30pct": float(severe_metrics["cagr"]) >= 0.30,
+        "severe_dd_ge_minus32pct": float(severe_metrics["max_drawdown"]) >= -0.32,
+    }
+
+
+def score_candidate(metrics: dict[str, Any], annual: pd.DataFrame) -> float:
+    annual_min = float(annual["return"].min()) if len(annual) else -1.0
+    return float(
+        metrics["cagr"]
+        + 0.10 * metrics["sharpe"]
+        - 0.40 * max(0.0, abs(metrics["max_drawdown"]) - 0.22)
+        + 0.10 * annual_min
+        - 0.004 * metrics["annual_meta_turnover"]
+        - 0.03 * max(0.0, metrics["average_leverage"] - 1.50)
+    )
+
+
+def post_oos_checks(audits: dict[str, pd.DataFrame]) -> dict[str, bool]:
+    base = audits["base"]
+    severe = audits["severe"]
+    extreme = audits["extreme"]
+    delay = audits["delay_1d"]
+    base_full = metrics_for_account(base, "full")
+    annual = yearly_returns(base["net_return"])
+    annual_map = annual.set_index("year")["return"].to_dict()
+    return {
+        "validation_2024_positive": metrics_for_account(base, "validation_2024")["total_return"] > 0.0,
+        "holdout_2025_positive": metrics_for_account(base, "holdout_2025")["total_return"] > 0.0,
+        "final_2026h1_positive": metrics_for_account(base, "final_2026h1")["total_return"] > 0.0,
+        "full_cagr_ge_45pct": base_full["cagr"] >= 0.45,
+        "full_cagr_ge_50pct_target": base_full["cagr"] >= 0.50,
+        "full_sharpe_ge_1_35": base_full["sharpe"] >= 1.35,
+        "full_dd_ge_minus27pct": base_full["max_drawdown"] >= -0.27,
+        "severe_full_cagr_ge_30pct": metrics_for_account(severe, "full")["cagr"] >= 0.30,
+        "extreme_full_cagr_ge_15pct": metrics_for_account(extreme, "full")["cagr"] >= 0.15,
+        "delay_full_cagr_ge_40pct": metrics_for_account(delay, "full")["cagr"] >= 0.40,
+        "worst_calendar_year_ge_minus10pct": min(annual_map.values()) >= -0.10,
+        "max_leverage_le_1_95": base_full["max_leverage"] <= 1.9500001,
+    }
+
+
+def write_manifest(root: Path) -> None:
+    files: dict[str, dict[str, Any]] = {}
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or path.name == "MANIFEST.json" or "__pycache__" in path.parts:
+            continue
+        files[str(path.relative_to(root))] = {
+            "bytes": path.stat().st_size,
+            "sha256": sha256_file(path),
+        }
+    write_json(root / "MANIFEST.json", {"program": PROGRAM, "files": files})
+
+
+def self_test() -> None:
+    index = pd.date_range("2021-01-01", periods=500, freq="1D", tz="UTC")
+    rng = np.random.default_rng(501)
+    v75 = pd.Series(rng.normal(0.0007, 0.018, len(index)), index=index)
+    stabilizer = pd.Series(rng.normal(0.0003, 0.007, len(index)), index=index)
+    state = pd.DataFrame(
+        {
+            "v75_return": v75,
+            "stabilizer_return": stabilizer,
+            "trend": rng.normal(size=len(index)),
+            "breadth": rng.normal(size=len(index)),
+            "stress": rng.normal(size=len(index)),
+            "rotation": rng.normal(size=len(index)),
+            "liquidity": rng.normal(size=len(index)),
+            "leverage": rng.normal(size=len(index)),
+            "assignment_confidence": rng.uniform(0.2, 0.9, len(index)),
+            "novelty_ratio": rng.uniform(0.5, 1.5, len(index)),
+            "novelty_flag": rng.random(len(index)) < 0.1,
+            "state_duration_days": rng.integers(1, 30, len(index)),
+            "state_label": "synthetic",
+        },
+        index=index,
+    )
