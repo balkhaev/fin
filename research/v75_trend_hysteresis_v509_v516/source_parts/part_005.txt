@@ -1,0 +1,83 @@
+        if target_met and robustness
+        else "rejected_after_frozen_oos"
+    )
+
+    def pm(audit: str, period: str) -> dict[str, Any]:
+        start, end = PERIODS[period]
+        part = audits[audit].loc[(audits[audit].index >= start) & (audits[audit].index < end)]
+        return metrics(part["net_return"], part)
+
+    decision = {
+        "program": PROGRAM,
+        "status": status,
+        "eligible_policy_count": int(len(eligible)),
+        "selected_policy": selected_name,
+        "oos_opened": True,
+        "historical_50pct_target_met": target_met,
+        "robustness_passed": robustness,
+        "post_oos_checks": checks,
+        "integration_permitted": False,
+        "capital_change_authorized": False,
+        "live_ready": False,
+        "real_leverage_authorized": False,
+        "profitability_proven": False,
+    }
+    summary = {
+        **decision,
+        "selected_policy_spec": asdict(selected),
+        "selection": proof,
+        "base_full": pm("base", "full"),
+        "base_validation_2024": pm("base", "validation_2024"),
+        "base_holdout_2025": pm("base", "holdout_2025"),
+        "base_final_2026h1": pm("base", "final_2026h1"),
+        "severe_full": pm("severe", "full"),
+        "extreme_full": pm("extreme", "full"),
+        "delay_full": pm("delay_1d", "full"),
+        "annual_returns": annual.to_dict(orient="records"),
+    }
+    write_json(output / "FROZEN_DECISION.json", decision)
+    write_json(output / "summary.json", summary)
+    report = [
+        "# V509–V516 — V75 trend-hysteresis accelerator",
+        "",
+        f"Selected: `{selected_name}`.",
+        "",
+        f"- Full CAGR: {100*summary['base_full']['cagr']:.2f}%",
+        f"- Full Sharpe: {summary['base_full']['sharpe']:.3f}",
+        f"- Full Max DD: {100*summary['base_full']['max_drawdown']:.2f}%",
+        f"- Average leverage: {summary['base_full']['average_leverage']:.3f}x",
+        f"- Maximum leverage: {summary['base_full']['max_leverage']:.3f}x",
+        f"- 2024 return: {100*summary['base_validation_2024']['total_return']:.2f}%",
+        f"- 2025 return: {100*summary['base_holdout_2025']['total_return']:.2f}%",
+        f"- 2026 H1 return: {100*summary['base_final_2026h1']['total_return']:.2f}%",
+        f"- Severe CAGR: {100*summary['severe_full']['cagr']:.2f}%",
+        f"- Extreme CAGR: {100*summary['extreme_full']['cagr']:.2f}%",
+        f"- Delay CAGR: {100*summary['delay_full']['cagr']:.2f}%",
+        "",
+        f"Status: `{status}`.",
+        "",
+        "Non-pristine account-level research. No real leverage or capital change is authorized.",
+    ]
+    (output / "REPORT_RU.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+    write_manifest(output)
+    print(json.dumps(clean(summary), ensure_ascii=False, indent=2))
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--v75", type=Path)
+    parser.add_argument("--design", type=Path)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
+    if None in (args.v75, args.design, args.output):
+        raise SystemExit("--v75, --design and --output are required")
+    return run(args.v75, args.design, args.output)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
