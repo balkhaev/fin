@@ -1,0 +1,60 @@
+{
+  "program": "V461_V468_SLOW_MARKET_RISK_BUDGET",
+  "date_frozen": "2026-07-28",
+  "purpose": "Keep the development-selected 40/60 V285/V365 mix fixed and test only slow causal modulation of total risky capital.",
+  "limitations": {
+    "pristine_holdout": false,
+    "reason": "V285/V365 OOS outcomes were known before this program; V461 is exploratory mechanism evidence only.",
+    "capital_authority": false
+  },
+  "parent_cycle": {
+    "program": "V453_V460_CAUSAL_META_ENSEMBLE",
+    "result": "rejected_before_oos",
+    "development_selected_base_mix": {"v285": 0.40, "v365": 0.60},
+    "reason_for_refinement": "dynamic sleeve selection underperformed and overtraded; stable component weights dominated development"
+  },
+  "policies": [
+    {"name": "static_40_60_control", "budget_floor": 1.0, "budget_ceiling": 1.0, "rebalance_days": 28, "smoothing_halflife_days": 14, "promotable": false},
+    {"name": "slow_budget_65_105_r28_s14", "budget_floor": 0.65, "budget_ceiling": 1.05, "rebalance_days": 28, "smoothing_halflife_days": 14, "max_leverage": 1.05},
+    {"name": "slow_budget_75_110_r28_s14", "budget_floor": 0.75, "budget_ceiling": 1.10, "rebalance_days": 28, "smoothing_halflife_days": 14, "max_leverage": 1.10},
+    {"name": "slow_budget_80_115_r28_s14", "budget_floor": 0.80, "budget_ceiling": 1.15, "rebalance_days": 28, "smoothing_halflife_days": 14, "max_leverage": 1.15},
+    {"name": "persistent_budget_65_110_r28_s14", "budget_floor": 0.65, "budget_ceiling": 1.10, "rebalance_days": 28, "smoothing_halflife_days": 14, "persistence_activation": true, "max_leverage": 1.10},
+    {"name": "persistent_budget_75_115_r28_s14", "budget_floor": 0.75, "budget_ceiling": 1.15, "rebalance_days": 28, "smoothing_halflife_days": 14, "persistence_activation": true, "max_leverage": 1.15},
+    {"name": "persistent_budget_75_115_r56_s28", "budget_floor": 0.75, "budget_ceiling": 1.15, "rebalance_days": 56, "smoothing_halflife_days": 28, "persistence_activation": true, "max_leverage": 1.15},
+    {"name": "persistent_budget_75_120_vol18", "budget_floor": 0.75, "budget_ceiling": 1.20, "rebalance_days": 28, "smoothing_halflife_days": 14, "persistence_activation": true, "target_vol": 0.18, "max_leverage": 1.20},
+    {"name": "persistent_budget_75_125_vol22", "budget_floor": 0.75, "budget_ceiling": 1.25, "rebalance_days": 28, "smoothing_halflife_days": 14, "persistence_activation": true, "target_vol": 0.22, "max_leverage": 1.25},
+    {"name": "inverted_persistent_budget_control", "budget_floor": 0.65, "budget_ceiling": 1.10, "rebalance_days": 28, "smoothing_halflife_days": 14, "persistence_activation": true, "max_leverage": 1.10, "inverted_budget_control": true, "promotable": false}
+  ],
+  "selection": {
+    "period": ["2021-01-01", "2024-01-01"],
+    "walk_forward_folds": ["2022", "2023"],
+    "control_policy": "static_40_60_control",
+    "selected_policy_count": 2,
+    "development_cagr_uplift_min": 0.005,
+    "development_sharpe_loss_max": 0.10,
+    "development_max_drawdown_min": -0.08,
+    "annual_meta_turnover_max": 4.0,
+    "max_leverage": 1.25
+  },
+  "post_oos": {
+    "full_cagr_uplift_min": 0.01,
+    "full_sharpe_uplift_min": 0.05,
+    "full_max_drawdown_min": -0.10,
+    "worst_calendar_year_min": -0.08,
+    "max_leverage": 1.25,
+    "all_validation_holdout_final_periods_positive": true
+  },
+  "audits": {
+    "inherits_parent": true,
+    "base": "5 bps meta allocation cost and 8% financing above 1x",
+    "severe": "20 bps meta cost, 30 bps extra underlying cost, 10% financing",
+    "extreme": "40 bps meta cost, 70 bps extra underlying cost, 12% financing",
+    "delay": "one-day allocation delay"
+  },
+  "safety": {
+    "integration_permitted": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
