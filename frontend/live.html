@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b10">
+  <meta name="description" content="FIN live paper/shadow control plane: runtime health, incidents, V517 context and forward telemetry.">
+  <title>FIN Runtime Control Plane</title>
+  <link rel="stylesheet" href="./live.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./index.html"><span class="mark">F</span><span><strong>FIN</strong><small>RUNTIME CONTROL PLANE</small></span></a>
+    <nav aria-label="Разделы"><a href="#runtime">Runtime</a><a href="#strategies">Стратегии</a><a href="#incidents">Инциденты</a><a href="#context">Контекст</a></nav>
+    <div class="top-actions"><button id="refresh" class="button" type="button">Обновить</button><button id="pause" class="button button-muted" type="button">Пауза</button><span id="service-status" class="pill pill-idle">CONNECTING</span></div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span> Paper/shadow observability</div>
+        <h1>Видеть систему.<br><span>Не скрывать сбои.</span></h1>
+        <p>Read-only control plane поверх immutable paper-cycle artifacts, telemetry и hash-chain journal. Любое нарушение источников, reconciliation или freshness повышает статус, а не маскируется.</p>
+      </div>
+      <aside class="terminal card">
+        <div class="terminal-head"><span>CONTROL PLANE</span><span id="generated-at">—</span></div>
+        <strong id="runtime-status">CONNECTING</strong>
+        <div class="terminal-grid"><div><span>Strategies</span><b id="strategy-count">—</b></div><div><span>Observations</span><b id="observation-count">—</b></div><div><span>Cycles</span><b id="cycle-count">—</b></div><div><span>Incidents</span><b id="incident-count">—</b></div></div>
+        <div class="terminal-foot"><span class="tag ok">READ ONLY</span><span class="tag blocked">NO ORDER API</span><span id="connection-mode" class="tag">POLLING</span></div>
+      </aside>
+    </section>
+
+    <section class="safety-banner" role="note"><strong>Exchange submission недоступен.</strong><span>Эта страница только читает локальные runtime artifacts. API keys, capital mutation и order routes отсутствуют.</span></section>
+
+    <section id="runtime" class="section">
+      <div class="section-head"><div><span class="kicker">System pulse</span><h2>Состояние runtime</h2></div><p id="runtime-root">—</p></div>
+      <div id="aggregate-grid" class="metric-grid"></div>
+    </section>
+
+    <section id="strategies" class="section">
+      <div class="section-head"><div><span class="kicker">Execution stack</span><h2>Стратегии</h2></div><p>Последнее reconciled состояние каждой paper/shadow линии.</p></div>
+      <div class="card table-wrap"><table><thead><tr><th>Strategy</th><th>Health</th><th>Equity</th><th>Return</th><th>Gross</th><th>Turnover</th><th>Slippage</th><th>Latest</th></tr></thead><tbody id="strategy-rows"></tbody></table><div id="strategy-empty" class="empty" hidden>Runtime strategies ещё не обнаружены.</div></div>
+    </section>
+
+    <section id="incidents" class="section">
+      <div class="section-head"><div><span class="kicker">Fail-closed timeline</span><h2>Инциденты</h2></div><div class="legend"><span><i class="dot halt"></i>halt</span><span><i class="dot warn"></i>warn</span></div></div>
+      <div id="incident-list" class="timeline"></div>
+      <div id="incident-empty" class="card empty" hidden>Зафиксированных incidents нет.</div>
+    </section>
+
+    <section id="context" class="section">
+      <div class="section-head"><div><span class="kicker">Decision context</span><h2>V517 и рынок</h2></div><p>Runtime context показывается только при наличии локальных sealed JSON artifacts.</p></div>
+      <div class="context-grid">
+        <article class="card context-card"><span class="kicker">V517 STATE</span><h3 id="v517-state">Нет runtime state</h3><div id="v517-details" class="detail-list"></div><small id="v517-source">—</small></article>
+        <article class="card context-card"><span class="kicker">MARKET STATE</span><h3 id="market-state">Архивный fallback</h3><div id="market-details" class="detail-list"></div><small id="market-source">—</small></article>
+      </div>
+    </section>
+
+    <section class="section api-section">
+      <div class="section-head"><div><span class="kicker">Local API</span><h2>Контракт наблюдения</h2></div></div>
+      <div class="api-grid"><code>GET /api/v1/dashboard</code><code>GET /api/v1/runtime</code><code>GET /api/v1/incidents</code><code>GET /api/v1/health</code><code>GET /api/v1/events</code><code class="blocked">POST * → 405</code></div>
+    </section>
+  </main>
+
+  <footer class="footer shell"><div><strong>FIN Runtime Control Plane</strong><span id="last-refresh">Ожидание snapshot</span></div><a href="./index.html">Открыть research dashboard →</a></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./live.js" defer></script>
+</body>
+</html>
