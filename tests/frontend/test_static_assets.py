@@ -12,6 +12,7 @@ class StaticAssetTests(unittest.TestCase):
         for relative in (
             "frontend/index.html",
             "frontend/styles.css",
+            "frontend/mobile.css",
             "frontend/app.js",
             "frontend/data/dashboard.json",
         ):
@@ -24,6 +25,7 @@ class StaticAssetTests(unittest.TestCase):
         self.assertIn("<main>", html)
         self.assertIn("aria-label", html)
         self.assertIn("telemetry-file", html)
+        self.assertIn("./mobile.css", html)
         self.assertNotIn("http://cdn", html)
         self.assertNotIn("https://cdn", html)
 
