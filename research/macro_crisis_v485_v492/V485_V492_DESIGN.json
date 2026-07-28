@@ -1,0 +1,49 @@
+{
+  "program": "V485_V492_INDEPENDENT_MACRO_CRISIS_REPLAY",
+  "source_engine": "research/active_v95_v102",
+  "objective": "find an independent positive-CAGR return sleeve rather than another allocator over the same crypto factors",
+  "selection_period": ["2008-01-01", "2021-01-01"],
+  "selection_uses_post_2020": false,
+  "evaluation_periods": {
+    "bridge_2021_2023": ["2021-01-01", "2024-01-01"],
+    "holdout_2024_2025": ["2024-01-01", "2026-01-01"],
+    "final_2026h1": ["2026-01-01", "2026-07-01"],
+    "full": ["2008-01-01", "2026-07-01"]
+  },
+  "cost_scenarios_bps_per_rebalance_side": {
+    "stress": 10.0,
+    "severe": 25.0,
+    "extreme": 50.0
+  },
+  "frozen_post_selection_gates": {
+    "legacy_standalone_checks_all": true,
+    "holdout_2024_2025_return_positive": true,
+    "final_2026h1_return_positive": true,
+    "full_stress_cagr_min": 0.05,
+    "full_stress_sharpe_min": 0.55,
+    "full_stress_max_drawdown_min": -0.20,
+    "extreme_full_cagr_positive": true
+  },
+  "data_gate": {
+    "core_etf_start_no_later_than": "2008-01-10",
+    "core_symbols": ["SPY", "TLT", "GLD"],
+    "minimum_etf_symbols": 12,
+    "minimum_fx_symbols": 5,
+    "minimum_last_observation": "2026-06-29",
+    "maximum_core_missing_fraction": 0.03
+  },
+  "legacy_atlas_interface": {
+    "input": "flat 10000 equity account",
+    "standalone_results_only": true,
+    "legacy_blend_results_authorized": false
+  },
+  "evidence_limits": {
+    "vendor_adjusted_prices_execution_grade": false,
+    "program_level_holdout_pristine": false,
+    "integration_permitted": false,
+    "capital_change_authorized": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
