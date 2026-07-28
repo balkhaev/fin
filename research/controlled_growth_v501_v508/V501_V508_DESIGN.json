@@ -1,0 +1,92 @@
+{
+  "program": "V501_V508_CONTROLLED_GROWTH_ENGINE",
+  "objective": {
+    "full_cagr_min": 0.50,
+    "full_max_drawdown_min": -0.25,
+    "full_sharpe_min": 1.30,
+    "severe_full_cagr_min": 0.35,
+    "extreme_full_cagr_min": 0.15,
+    "liquidations_max": 0,
+    "minimum_margin_buffer": 0.10
+  },
+  "chronology": {
+    "development": ["2021-01-01", "2024-01-01"],
+    "validation": ["2024-01-01", "2025-01-01"],
+    "holdout": ["2025-01-01", "2026-01-01"],
+    "final": ["2026-01-01", "2026-07-01"]
+  },
+  "fixed_universe": [
+    "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "LTCUSDT",
+    "BCHUSDT", "EOSUSDT", "DOGEUSDT", "LINKUSDT", "DOTUSDT", "TRXUSDT", "SOLUSDT"
+  ],
+  "factor_mixes": {
+    "quality": {
+      "downside_beta": 0.30,
+      "idiosyncratic_skewness": 0.25,
+      "downside_volatility_ratio": 0.25,
+      "residual_resilience": 0.20
+    },
+    "growth_quality": {
+      "momentum": 0.35,
+      "downside_beta": 0.20,
+      "idiosyncratic_skewness": 0.15,
+      "downside_volatility_ratio": 0.15,
+      "market_correlation": 0.05,
+      "residual_resilience": 0.10
+    },
+    "diversified_growth": {
+      "momentum": 0.30,
+      "market_correlation": 0.20,
+      "downside_volatility_ratio": 0.20,
+      "idiosyncratic_skewness": 0.15,
+      "residual_resilience": 0.15
+    }
+  },
+  "long_basket_sizes": [3, 4],
+  "risk_profiles": ["balanced", "growth", "convex"],
+  "promotable_policy_count": 18,
+  "controls": ["growth_quality_k3_constant_100", "growth_quality_k3_constant_150"],
+  "execution": {
+    "signal_delay_days": 1,
+    "base_cost_bps_per_side": 30,
+    "severe_cost_bps_per_side": 60,
+    "extreme_cost_bps_per_side": 100,
+    "maximum_gross": 1.70,
+    "forced_exit_penalty_bps": 100,
+    "state_label_trade_rules": false,
+    "survivor_replacement": false
+  },
+  "development_gates": {
+    "cagr_min": 0.50,
+    "sharpe_min": 1.40,
+    "max_drawdown_min": -0.25,
+    "severe_cagr_min": 0.35,
+    "extreme_cagr_min": 0.15,
+    "all_years_positive": true,
+    "annual_turnover_max": 18.0,
+    "top_positive_asset_pnl_share_max": 0.45,
+    "liquidations_max": 0,
+    "minimum_margin_buffer": 0.10
+  },
+  "post_oos_gates": {
+    "validation_positive": true,
+    "holdout_positive": true,
+    "final_positive": true,
+    "full_cagr_min": 0.50,
+    "full_sharpe_min": 1.30,
+    "full_max_drawdown_min": -0.25,
+    "severe_full_cagr_min": 0.35,
+    "extreme_full_cagr_min": 0.15,
+    "worst_calendar_year_min": -0.10,
+    "liquidations_max": 0,
+    "minimum_margin_buffer": 0.10
+  },
+  "evidence_limits": {
+    "program_level_holdout_pristine": false,
+    "public_daily_archives_execution_grade": false,
+    "integration_permitted": false,
+    "capital_change_authorized": false,
+    "live_ready": false,
+    "real_leverage_authorized": false
+  }
+}
