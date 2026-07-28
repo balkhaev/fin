@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import csv
+import hashlib
+import json
 import math
 from datetime import datetime, timezone
 from pathlib import Path
@@ -104,17 +106,19 @@ def telemetry_incidents(rows: list[dict[str, object]], strategy_id: str) -> list
     incidents: list[dict[str, object]] = []
 
     def add(row: Mapping[str, object], severity: str, category: str, title: str, detail: str) -> None:
-        incidents.append(
-            {
-                "timestamp": iso_utc(parse_timestamp(row["timestamp"])),
-                "strategy_id": strategy_id,
-                "severity": severity,
-                "category": category,
-                "title": title,
-                "detail": detail,
-                "cycle_id": None,
-            }
-        )
+        item: dict[str, object] = {
+            "timestamp": iso_utc(parse_timestamp(row["timestamp"])),
+            "strategy_id": strategy_id,
+            "severity": severity,
+            "category": category,
+            "title": title,
+            "detail": detail,
+            "cycle_id": None,
+            "resolved": False,
+        }
+        payload = json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        item["incident_id"] = "sha256:" + hashlib.sha256(payload).hexdigest()
+        incidents.append(item)
 
     for row in rows:
         if not bool(row["reconciliation_ok"]):
