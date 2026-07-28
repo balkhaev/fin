@@ -1,0 +1,47 @@
+{
+  "contract": "V517_TRISTATE_GUARD_SHADOW_RUNTIME",
+  "strategy_id": "v517_tristate_guard_shadow",
+  "strategy_version": "runtime-v1",
+  "source_checkpoint": "V524",
+  "source_primary_strategy": "v75_atlas_nx",
+  "signal": {
+    "momentum20": "completed_equity[t-1] / completed_equity[t-21] - 1",
+    "momentum60": "completed_equity[t-1] / completed_equity[t-61] - 1",
+    "high_entry_fast": 0.05,
+    "high_entry_medium_floor": -0.04,
+    "high_exit_fast": -0.01,
+    "high_exit_medium": 0.0,
+    "low_entry_fast": -0.05,
+    "low_entry_medium": -0.10,
+    "low_confirmation_days": 3,
+    "low_exit_fast": 0.01,
+    "minimum_state_hold_days": 14
+  },
+  "risk_budget": {
+    "high": 2.075,
+    "base": 0.97,
+    "low": 0.60,
+    "rebalance_days": 10,
+    "no_trade_band": 0.04
+  },
+  "drawdown_guard": {
+    "enter": -0.245,
+    "exit": -0.18,
+    "cap": 1.0,
+    "minimum_hold_days": 7
+  },
+  "runtime": {
+    "mode": "shadow",
+    "default_outer_leverage_cap": 1.10,
+    "maximum_research_cap": 2.10,
+    "downstream_risk_planner_required": true,
+    "exchange_submission_surface": false
+  },
+  "evidence": {
+    "historical_target_non_pristine": true,
+    "position_level_margin_replay_complete": false,
+    "forward_validation_complete": false,
+    "live_ready": false,
+    "real_leverage_authorized": false
+  }
+}
