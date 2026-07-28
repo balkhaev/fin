@@ -1,0 +1,84 @@
+{
+  "program": "V509_V516_V75_TREND_HYSTERESIS_ACCELERATOR",
+  "objective": {
+    "development_cagr_min": 0.50,
+    "full_cagr_target": 0.50,
+    "development_sharpe_min": 1.50,
+    "full_sharpe_min": 1.45,
+    "development_max_drawdown_min": -0.25,
+    "full_max_drawdown_min": -0.25,
+    "description": "Reach approximately 50% historical CAGR by changing account risk only after persistent completed-equity trends, while preserving a V75-like drawdown envelope."
+  },
+  "source": {
+    "v75_path": "research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv",
+    "v75_sha256": "f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01",
+    "economic_reference": "docs/checkpoints/v138/CHECKPOINT_V138.json"
+  },
+  "chronology": {
+    "development": ["2021-01-01", "2024-01-01"],
+    "validation": ["2024-01-01", "2025-01-01"],
+    "holdout": ["2025-01-01", "2026-01-01"],
+    "final": ["2026-01-01", "2026-07-01"]
+  },
+  "signal": {
+    "input": "completed V75 account equity only",
+    "momentum_lookback_days": 20,
+    "formation_delay_days": 1,
+    "entry_thresholds": [0.06, 0.08],
+    "exit_threshold": -0.02,
+    "minimum_state_hold_days": [14, 21],
+    "high_leverage": [1.85, 1.95],
+    "low_leverage": [0.60, 0.80, 1.00],
+    "rebalance_days": [7, 14],
+    "no_trade_band": 0.04,
+    "description": "Hysteresis switches only after a persistent completed-equity trend; today’s return cannot affect today’s leverage."
+  },
+  "controls": [
+    "constant 1.75x leverage",
+    "naive daily 20-day momentum",
+    "inverted hysteresis"
+  ],
+  "development_gates": {
+    "cagr_min": 0.50,
+    "sharpe_min": 1.50,
+    "max_drawdown_min": -0.25,
+    "worst_rolling_365_min": -0.22,
+    "all_development_years_positive": true,
+    "annual_meta_turnover_max": 6.0,
+    "average_leverage_max": 1.35,
+    "maximum_leverage_max": 1.95,
+    "severe_cagr_min": 0.40,
+    "severe_max_drawdown_min": -0.28,
+    "extreme_cagr_min": 0.30,
+    "extreme_max_drawdown_min": -0.35,
+    "delay_cagr_min": 0.50,
+    "delay_max_drawdown_min": -0.25
+  },
+  "post_oos_gates": {
+    "validation_positive": true,
+    "holdout_positive": true,
+    "final_positive": true,
+    "full_cagr_min": 0.50,
+    "full_sharpe_min": 1.45,
+    "full_max_drawdown_min": -0.25,
+    "full_worst_rolling_365_min": -0.22,
+    "severe_full_cagr_min": 0.40,
+    "extreme_full_cagr_min": 0.25,
+    "delay_full_cagr_min": 0.45,
+    "worst_calendar_year_min": -0.10
+  },
+  "audits": {
+    "base": {"transfer_cost_bps": 10, "financing_rate": 0.08, "extra_underlying_cost_bps": 0, "signal_delay_days": 0},
+    "severe": {"transfer_cost_bps": 25, "financing_rate": 0.14, "extra_underlying_cost_bps": 40, "signal_delay_days": 1},
+    "extreme": {"transfer_cost_bps": 50, "financing_rate": 0.22, "extra_underlying_cost_bps": 80, "signal_delay_days": 2},
+    "delay_1d": {"transfer_cost_bps": 10, "financing_rate": 0.08, "extra_underlying_cost_bps": 0, "signal_delay_days": 1}
+  },
+  "evidence_limits": {
+    "program_level_holdout_pristine": false,
+    "account_level_overlay_not_position_level_margin_model": true,
+    "integration_permitted": false,
+    "capital_change_authorized": false,
+    "live_ready": false,
+    "real_leverage_authorized": false
+  }
+}
