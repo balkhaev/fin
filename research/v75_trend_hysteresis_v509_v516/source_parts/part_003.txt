@@ -112,7 +112,12 @@ def self_test() -> None:
         assert float(gaps.min()) >= policy.minimum_hold_days
     account = simulate(returns, equity, policy, AUDITS[0])
     assert len(account) == len(index)
-    assert np.isfinite(account.select_dtypes(include=[np.number]).to_numpy()).all()
+    numeric = account.select_dtypes(include=[np.number]).drop(columns=["momentum20"])
+    assert np.isfinite(numeric.to_numpy()).all()
+    assert account["momentum20"].iloc[:21].isna().all()
+    assert np.isfinite(account["momentum20"].iloc[21:].to_numpy()).all()
+    assert float(account["desired_leverage"].min()) >= policy.low_leverage
+    assert float(account["desired_leverage"].max()) <= policy.high_leverage
     changed = equity.copy()
     changed.iloc[-1] *= 10.0
     changed_account = simulate(returns, changed, policy, AUDITS[0])
