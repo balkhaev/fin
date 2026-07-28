@@ -1,0 +1,53 @@
+@media (max-width: 760px) {
+  .readiness-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .readiness-card,
+  .preflight-card {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .readiness-item {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+  }
+
+  .readiness-copy {
+    min-width: 0;
+  }
+
+  .preflight-card pre {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  #archive-pill {
+    display: none;
+  }
+
+  .topbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
+  .topbar-actions {
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .topbar .status-pill {
+    padding: 5px 7px;
+    font-size: 8px;
+    letter-spacing: .04em;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .brand small {
+    letter-spacing: .11em;
+  }
+}

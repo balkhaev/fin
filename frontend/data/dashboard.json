@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-07-28T17:17:05+00:00",
+  "source_commit": "425f54249852d432f2dd0137289e9405aecea31b",
+  "environment": {
+    "mode": "shadow",
+    "shadow_ready": true,
+    "live_ready": false,
+    "exchange_submission_available": false,
+    "real_leverage_authorized": false,
+    "paper_observation_count": 0,
+    "forward_status": "forward_instrumentation_ready_no_live_observations"
+  },
+  "hero": {
+    "strategy": "V517 Tri-state Guard",
+    "cagr": 0.5054770638530515,
+    "sharpe": 1.4597904254441398,
+    "max_drawdown": -0.23679792568887836,
+    "average_leverage": 1.244735924265072,
+    "maximum_leverage": 2.075,
+    "status": "historical_target_met_non_pristine_no_capital_authority",
+    "non_pristine": true
+  },
+  "strategies": [
+    {
+      "id": "v75",
+      "name": "V75 ATLAS-NX",
+      "role": "Primary benchmark",
+      "status": "paper / shadow",
+      "tone": "neutral",
+      "metrics": {"cagr": 0.30682098978536976, "sharpe": 1.3294516915576933, "max_drawdown": -0.21591803526892406, "total_return": 3.355413143881263, "average_leverage": 0.0, "maximum_leverage": 0.0, "maximum_close_gross": 0.0, "turnover": 0.0, "worst_rolling_365": 0.0},
+      "evidence": "Frozen historical benchmark"
+    },
+    {
+      "id": "v136",
+      "name": "V136 Execution Plateau",
+      "role": "Execution shadow",
+      "status": "shadow only",
+      "tone": "info",
+      "metrics": {"cagr": 0.30771296359748646, "sharpe": 1.3353794862480461, "max_drawdown": -0.21823965731285888, "total_return": 3.3717845751233613, "average_leverage": 0.0, "maximum_leverage": 1.0431405191032543, "maximum_close_gross": 0.0, "turnover": 9.946932617894685, "worst_rolling_365": 0.0},
+      "evidence": "Lower modeled turnover; historical promotion gate missed"
+    },
+    {
+      "id": "v509",
+      "name": "V509 Trend Hysteresis",
+      "role": "OOS near-miss",
+      "status": "rejected after OOS",
+      "tone": "warning",
+      "metrics": {"cagr": 0.4522, "sharpe": 1.402, "max_drawdown": -0.2648, "total_return": 0.0, "average_leverage": 0.959, "maximum_leverage": 1.95, "maximum_close_gross": 0.0, "turnover": 0.0, "worst_rolling_365": 0.0},
+      "evidence": "Strong development; frozen full-period gates failed"
+    },
+    {
+      "id": "v517",
+      "name": "V517 Tri-state Guard",
+      "role": "Modeled return target",
+      "status": "research shadow",
+      "tone": "accent",
+      "metrics": {"cagr": 0.5054770638530515, "sharpe": 1.4597904254441398, "max_drawdown": -0.23679792568887836, "total_return": 8.483407210943097, "average_leverage": 1.244735924265072, "maximum_leverage": 2.075, "maximum_close_gross": 2.1529717115544655, "turnover": 5.119466224899777, "worst_rolling_365": -0.20245657086746538},
+      "evidence": "50% historical engineering target; non-pristine"
+    }
+  ],
+  "stress_scenarios": [
+    {"id": "base", "name": "Base", "cagr": 0.5054770638530515, "sharpe": 1.4597904254441398, "max_drawdown": -0.23679792568887836, "total_return": 8.483407210943097, "average_leverage": 1.244735924265072, "maximum_leverage": 2.075, "maximum_close_gross": 2.1529717115544655, "turnover": 5.119466224899777, "worst_rolling_365": -0.20245657086746538},
+    {"id": "severe", "name": "Severe", "cagr": 0.4024272799015174, "sharpe": 1.2389616427323742, "max_drawdown": -0.2915826292615754, "total_return": 0.0, "average_leverage": 0.0, "maximum_leverage": 0.0, "maximum_close_gross": 0.0, "turnover": 0.0, "worst_rolling_365": 0.0},
+    {"id": "extreme", "name": "Extreme", "cagr": 0.2964196219347963, "sharpe": 0.984563118725719, "max_drawdown": -0.33647008092978925, "total_return": 0.0, "average_leverage": 0.0, "maximum_leverage": 0.0, "maximum_close_gross": 0.0, "turnover": 0.0, "worst_rolling_365": 0.0},
+    {"id": "delay", "name": "+1 day delay", "cagr": 0.5012808687988206, "sharpe": 1.44714545854028, "max_drawdown": -0.2482846633718191, "total_return": 0.0, "average_leverage": 0.0, "maximum_leverage": 0.0, "maximum_close_gross": 0.0, "turnover": 0.0, "worst_rolling_365": 0.0}
+  ],
+  "annual_returns": [
+    {"year": 2021, "return": 1.5037196837604418},
+    {"year": 2022, "return": 0.0913891403082916},
+    {"year": 2023, "return": 0.31409935582976867},
+    {"year": 2024, "return": 0.9988513206232994},
+    {"year": 2025, "return": 0.2817749914344949},
+    {"year": 2026, "return": 0.030809897301597555}
+  ],
+  "equity_curve": [
+    {"date": "2021-01-01", "equity": 10000.0, "drawdown": 0.0, "leverage": 0.97, "close_gross": 0.97, "state": "base", "guard": false},
+    {"date": "2021-12-31", "equity": 25037.196837604417, "drawdown": 0.0, "leverage": 0.97, "close_gross": 0.97, "state": "base", "guard": false},
+    {"date": "2022-12-31", "equity": 27325.324732322562, "drawdown": 0.0, "leverage": 0.97, "close_gross": 0.97, "state": "base", "guard": false},
+    {"date": "2023-12-31", "equity": 35908.191628584325, "drawdown": 0.0, "leverage": 0.97, "close_gross": 0.97, "state": "base", "guard": false},
+    {"date": "2024-12-31", "equity": 71775.13625799028, "drawdown": 0.0, "leverage": 0.97, "close_gross": 0.97, "state": "base", "guard": false},
+    {"date": "2025-12-31", "equity": 91999.5746622952, "drawdown": 0.0, "leverage": 0.97, "close_gross": 0.97, "state": "base", "guard": false},
+    {"date": "2026-12-31", "equity": 94834.07210943117, "drawdown": 0.0, "leverage": 0.97, "close_gross": 0.97, "state": "base", "guard": false}
+  ],
+  "market": {
+    "as_of": "2026-06-30",
+    "state": "transition",
+    "duration_days": 12,
+    "confidence": 0.5206229962360047,
+    "novelty_ratio": 0.4839489732533799,
+    "novelty": false,
+    "transition_surprise": 0.17676212621380524,
+    "axes": [
+      {"name": "Trend", "value": -0.8797666900730305},
+      {"name": "Breadth", "value": -0.5714285714285715},
+      {"name": "Stress", "value": -0.1098542085145394},
+      {"name": "Rotation", "value": -0.5336667326224068},
+      {"name": "Liquidity", "value": -1.2194456623966021},
+      {"name": "Leverage", "value": -0.6679295370641978}
+    ],
+    "history": [],
+    "archived": true
+  },
+  "readiness": [
+    {"id": "shadow", "label": "Shadow runtime", "status": "pass", "detail": "V75 snapshot input, V136 execution filter, V517 adapter and journal"},
+    {"id": "producer", "label": "Exact V75 target producer", "status": "block", "detail": "Frozen engine must be supplied with the expected SHA-256"},
+    {"id": "margin", "label": "Position-level margin replay", "status": "block", "detail": "Required through 2.075x with zero liquidations and margin buffer"},
+    {"id": "forward", "label": "Frozen forward acceptance", "status": "block", "detail": "0 observations; minimum evidence window is 180 calendar days"},
+    {"id": "adapter", "label": "Exchange adapter", "status": "block", "detail": "Testnet, idempotent orders, reduce-only, kill switch and fail-closed reconciliation required"}
+  ],
+  "policy": {"high_leverage": 2.075, "base_leverage": 0.97, "low_leverage": 0.6, "rebalance_days": 10, "guard_enter_drawdown": -0.245, "guard_exit_drawdown": -0.18, "guard_cap": 1.0},
+  "governance": {"historical_target_met": true, "modeled_gates_passed": true, "parameters_informed_by_history": true, "pristine_holdout": false, "promotion_permitted": false, "capital_change_authorized": false},
+  "sources": ["embedded V517 fallback", "embedded V509 fallback", "V138 metrics via V517 equivalence", "embedded archived fallback", "annual-return fallback", "embedded forward decision fallback"]
+}
