@@ -1,0 +1,35 @@
+{
+  "program": "V493_V500_FIXED_UNIVERSE_GLOBAL_ROTATION_REPLAY",
+  "source_engine": "research/active_v103_v110",
+  "selection_period": ["2007-01-01", "2021-01-01"],
+  "selection_uses_post_2020": false,
+  "evaluation_periods": {
+    "bridge_2021_2023": ["2021-01-01", "2024-01-01"],
+    "holdout_2024_2025": ["2024-01-01", "2026-01-01"],
+    "final_2026h1": ["2026-01-01", "2026-07-01"],
+    "full": ["2007-01-01", "2026-07-01"]
+  },
+  "frozen_post_selection_gates": {
+    "legacy_checks_all": true,
+    "holdout_2024_2025_return_positive": true,
+    "final_2026h1_return_positive": true,
+    "full_stress_cagr_min": 0.07,
+    "full_stress_sharpe_min": 0.70,
+    "full_stress_max_drawdown_min": -0.23,
+    "extreme_full_cagr_positive": true
+  },
+  "legacy_atlas_interface": {
+    "input": "flat 10000 equity account",
+    "standalone_results_only": true,
+    "legacy_blend_results_authorized": false
+  },
+  "evidence_limits": {
+    "vendor_adjusted_prices_execution_grade": false,
+    "program_level_holdout_pristine": false,
+    "integration_permitted": false,
+    "capital_change_authorized": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  }
+}
