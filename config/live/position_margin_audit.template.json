@@ -1,0 +1,10 @@
+{
+  "template_only": true,
+  "strategy_id": "v517_tristate_guard_shadow",
+  "position_level_margin_replay_complete": false,
+  "source_target_hash_match": false,
+  "maximum_tested_leverage": 0.0,
+  "liquidations": -1,
+  "minimum_margin_buffer": -1.0,
+  "passed": false
+}

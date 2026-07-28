@@ -1,0 +1,18 @@
+{
+  "template_only": true,
+  "calendar_days": 0,
+  "checks": {
+    "all_strategies_present": false,
+    "earliest_start_respected": false,
+    "minimum_calendar_days": false,
+    "minimum_v136_target_changes": false,
+    "zero_reconciliation_breaks": false,
+    "source_hash_match_rate": false,
+    "no_stale_or_incomplete_data": false,
+    "v136_turnover_reduction": false,
+    "v136_net_return_delta": false,
+    "v136_max_drawdown_worsening": false,
+    "paper_slippage_to_model_ratio": false
+  },
+  "passed": false
+}
