@@ -1,0 +1,70 @@
+                "high_state_share": float((account["market_state"] == 1).mean()),
+                "base_state_share": float((account["market_state"] == 0).mean()),
+                "low_state_share": float((account["market_state"] == -1).mean()),
+            }
+        )
+    return output
+
+
+def load_v75(path: Path) -> tuple[pd.Series, pd.Series, dict[str, Any]]:
+    actual_sha = sha256_file(path)
+    if actual_sha != EXPECTED_V75_SHA256:
+        raise RuntimeError(f"unexpected V75 stream SHA-256: {actual_sha}")
+    frame = pd.read_csv(path, index_col=0, parse_dates=True)
+    frame.index = pd.to_datetime(frame.index, utc=True)
+    frame = frame.sort_index()
+    equity = pd.to_numeric(frame["equity"], errors="coerce")
+    if len(frame) != EXPECTED_V75["rows"] or frame.index.duplicated().any():
+        raise RuntimeError("unexpected V75 index")
+    if not np.isfinite(equity).all() or (equity <= 0.0).any():
+        raise ValueError("invalid V75 equity")
+    returns = equity.pct_change(fill_method=None)
+    returns.iloc[0] = equity.iloc[0] / INITIAL_EQUITY - 1.0
+    observed = metrics(returns)
+    annual = yearly_returns(returns).set_index("year")["return"].to_dict()
+    checks = {
+        "sha256": actual_sha == EXPECTED_V75_SHA256,
+        "rows": len(frame) == EXPECTED_V75["rows"],
+        "total_return": abs(observed["total_return"] - EXPECTED_V75["total_return"]) <= 1e-10,
+        "cagr": abs(observed["cagr"] - EXPECTED_V75["cagr"]) <= 5e-4,
+        "max_drawdown": abs(observed["max_drawdown"] - EXPECTED_V75["max_drawdown"]) <= 1e-10,
+        "sharpe": abs(observed["sharpe"] - EXPECTED_V75["sharpe"]) <= 5e-4,
+        "annual_returns": all(
+            abs(float(annual.get(year, np.nan)) - expected) <= 1e-10
+            for year, expected in EXPECTED_V75["annual_returns"].items()
+        ),
+    }
+    if not all(checks.values()):
+        raise RuntimeError(f"V75 equivalence failure: {checks}")
+    return returns.rename("v75_return"), equity.rename("v75_equity"), {
+        "file_sha256": actual_sha,
+        "checks": checks,
+        "metrics": observed,
+        "annual_returns": annual,
+        "economic_equivalence_passed": True,
+    }
+
+
+def lagged_momentum(equity: pd.Series, lookback: int) -> pd.Series:
+    return (equity.shift(1) / equity.shift(lookback + 1) - 1.0).rename(f"momentum_{lookback}")
+
+
+def market_state(equity: pd.Series) -> pd.DataFrame:
+    fast = lagged_momentum(equity, 20)
+    medium = lagged_momentum(equity, 60)
+    state = 0
+    age = 14
+    high_count = 0
+    low_count = 0
+    rows: list[dict[str, Any]] = []
+    for timestamp, fast_value, medium_value in zip(equity.index, fast, medium, strict=True):
+        high_raw = (
+            np.isfinite(fast_value)
+            and np.isfinite(medium_value)
+            and fast_value > 0.05
+            and medium_value > -0.04
+        )
+        low_raw = (
+            np.isfinite(fast_value)
+            and np.isfinite(medium_value)
+            and fast_value < -0.05
