@@ -1,0 +1,32 @@
+            full = period_metrics(account, "full")
+            row.update({f"{audit.name}_{key}": value for key, value in full.items()})
+        checks = acceptance_checks(audit_accounts)
+        row.update({f"gate_{key}": value for key, value in checks.items()})
+        row["all_gates_passed"] = bool(all(checks.values()))
+        accounts_by_policy[policy.name] = audit_accounts
+        policy_rows.append(row)
+        print(
+            f"{policy.name} CAGR={row['base_cagr']:.4f} "
+            f"DD={row['base_max_drawdown']:.4f} "
+            f"severe={row['severe_cagr']:.4f} pass={row['all_gates_passed']}",
+            flush=True,
+        )
+
+    table = pd.DataFrame(policy_rows)
+    table.to_csv(output / "policy_audit_metrics.csv", index=False)
+    primary_accounts = accounts_by_policy[PRIMARY.name]
+    for audit_name, account in primary_accounts.items():
+        account.to_csv(output / f"equity_primary_{audit_name}.csv", index_label="open_time")
+
+    period_rows: list[dict[str, Any]] = []
+    for audit_name, account in primary_accounts.items():
+        for period in PERIODS:
+            period_rows.append(
+                {"audit": audit_name, "period": period, **period_metrics(account, period)}
+            )
+    pd.DataFrame(period_rows).to_csv(output / "primary_period_metrics.csv", index=False)
+    annual = yearly_returns(primary_accounts["base"]["net_return"])
+    annual.to_csv(output / "ANNUAL_RETURNS.csv", index=False)
+
+    primary_checks = acceptance_checks(primary_accounts)
+    all_passed = bool(all(primary_checks.values()))
