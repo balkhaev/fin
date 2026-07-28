@@ -1,0 +1,120 @@
+                "desired_leverage": target,
+                "close_gross": abs(holdings) / equity,
+                "cash_weight_close": cash / equity,
+                "meta_turnover": meta_turnover,
+                "transfer_cost": transfer_cost,
+                "financing_cost": financing_cost,
+                "extra_underlying_cost": extra_underlying_cost,
+                "risk_reduction": int(risk_reduction and rebalance),
+                "scheduled_rebalance": int(scheduled and rebalance and not risk_reduction),
+                "momentum20": score[i],
+                "high_state": bool(high_state[i]),
+                "signal_switched": int(switched[i]),
+                "state_age_days": int(state_age[i]),
+            }
+        )
+    return pd.DataFrame(records, index=index)
+
+
+def development_checks(
+    base: dict[str, Any],
+    severe: dict[str, Any],
+    extreme: dict[str, Any],
+    delay: dict[str, Any],
+    annual: pd.DataFrame,
+    policy: Policy,
+) -> dict[str, bool]:
+    yearly = annual.set_index("year")["return"].to_dict()
+    return {
+        "promotable": policy.promotable,
+        "cagr_ge_50pct": base["cagr"] >= 0.50,
+        "sharpe_ge_1_50": base["sharpe"] >= 1.50,
+        "max_dd_ge_minus25pct": base["max_drawdown"] >= -0.25,
+        "worst_rolling_365_ge_minus22pct": base["worst_rolling_365"] >= -0.22,
+        "2021_positive": yearly.get(2021, -1.0) > 0.0,
+        "2022_positive": yearly.get(2022, -1.0) > 0.0,
+        "2023_positive": yearly.get(2023, -1.0) > 0.0,
+        "meta_turnover_le_6x": base["annual_meta_turnover"] <= 6.0,
+        "average_leverage_le_1_35": base["average_leverage"] <= 1.35,
+        "max_leverage_le_1_95": base["max_leverage"] <= 1.9500001,
+        "severe_cagr_ge_40pct": severe["cagr"] >= 0.40,
+        "severe_dd_ge_minus28pct": severe["max_drawdown"] >= -0.28,
+        "extreme_cagr_ge_30pct": extreme["cagr"] >= 0.30,
+        "extreme_dd_ge_minus35pct": extreme["max_drawdown"] >= -0.35,
+        "delay_cagr_ge_50pct": delay["cagr"] >= 0.50,
+        "delay_dd_ge_minus25pct": delay["max_drawdown"] >= -0.25,
+    }
+
+
+def score_candidate(base: dict[str, Any], severe: dict[str, Any], annual: pd.DataFrame) -> float:
+    minimum_year = float(annual["return"].min())
+    return float(
+        base["cagr"]
+        + 0.12 * base["sharpe"]
+        - 0.35 * max(0.0, abs(base["max_drawdown"]) - 0.20)
+        + 0.08 * minimum_year
+        + 0.05 * severe["cagr"]
+        - 0.004 * base["annual_meta_turnover"]
+    )
+
+
+def post_oos_checks(audits: dict[str, pd.DataFrame]) -> dict[str, bool]:
+    def m(audit: str, period: str) -> dict[str, Any]:
+        frame = audits[audit]
+        start, end = PERIODS[period]
+        part = frame.loc[(frame.index >= start) & (frame.index < end)]
+        return metrics(part["net_return"], part)
+
+    base_full = m("base", "full")
+    annual = yearly_returns(audits["base"]["net_return"])
+    annual_map = annual.set_index("year")["return"].to_dict()
+    return {
+        "validation_2024_positive": m("base", "validation_2024")["total_return"] > 0.0,
+        "holdout_2025_positive": m("base", "holdout_2025")["total_return"] > 0.0,
+        "final_2026h1_positive": m("base", "final_2026h1")["total_return"] > 0.0,
+        "full_cagr_ge_50pct": base_full["cagr"] >= 0.50,
+        "full_sharpe_ge_1_45": base_full["sharpe"] >= 1.45,
+        "full_dd_ge_minus25pct": base_full["max_drawdown"] >= -0.25,
+        "full_worst_rolling_365_ge_minus22pct": base_full["worst_rolling_365"] >= -0.22,
+        "average_leverage_le_1_40": base_full["average_leverage"] <= 1.40,
+        "max_leverage_le_1_95": base_full["max_leverage"] <= 1.9500001,
+        "severe_full_cagr_ge_40pct": m("severe", "full")["cagr"] >= 0.40,
+        "severe_full_dd_ge_minus30pct": m("severe", "full")["max_drawdown"] >= -0.30,
+        "extreme_full_cagr_ge_25pct": m("extreme", "full")["cagr"] >= 0.25,
+        "extreme_full_dd_ge_minus40pct": m("extreme", "full")["max_drawdown"] >= -0.40,
+        "delay_full_cagr_ge_45pct": m("delay_1d", "full")["cagr"] >= 0.45,
+        "worst_calendar_year_ge_minus10pct": min(annual_map.values()) >= -0.10,
+    }
+
+
+def write_manifest(root: Path) -> None:
+    files: dict[str, dict[str, Any]] = {}
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or path.name == "MANIFEST.json" or "__pycache__" in path.parts:
+            continue
+        files[str(path.relative_to(root))] = {
+            "bytes": path.stat().st_size,
+            "sha256": sha256_file(path),
+        }
+    write_json(root / "MANIFEST.json", {"program": PROGRAM, "files": files})
+
+
+def self_test() -> None:
+    index = pd.date_range("2021-01-01", periods=600, freq="1D", tz="UTC")
+    rng = np.random.default_rng(509)
+    returns = pd.Series(rng.normal(0.0007, 0.018, len(index)), index=index)
+    equity = INITIAL_EQUITY * (1.0 + returns).cumprod()
+    policy = policy_book()[0]
+    state = hysteresis_state(momentum20(equity), policy)
+    switch_dates = state.index[state["signal_switched"].astype(bool)]
+    if len(switch_dates) > 1:
+        gaps = np.diff(switch_dates.asi8) / (24 * 3600 * 1e9)
+        assert float(gaps.min()) >= policy.minimum_hold_days
+    account = simulate(returns, equity, policy, AUDITS[0])
+    assert len(account) == len(index)
+    assert np.isfinite(account.select_dtypes(include=[np.number]).to_numpy()).all()
+    changed = equity.copy()
+    changed.iloc[-1] *= 10.0
+    changed_account = simulate(returns, changed, policy, AUDITS[0])
+    pd.testing.assert_series_equal(
+        account["desired_leverage"].iloc[:-1],
