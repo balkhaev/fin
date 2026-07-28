@@ -1,0 +1,36 @@
+        "## Calendar returns",
+        "",
+    ]
+    for item in annual.to_dict(orient="records"):
+        report.append(f"- {int(item['year'])}: {100 * float(item['return']):+.2f}%")
+    report += [
+        "",
+        "## Evidence boundary",
+        "",
+        "The 50% historical target is non-pristine: parameters were informed by already known history.",
+        "The model is an account-level overlay and does not replay position-level margin or liquidation.",
+        "No capital, live execution or real leverage is authorized.",
+    ]
+    (output / "REPORT_RU.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+    write_manifest(output)
+    print(json.dumps(clean(summary), ensure_ascii=False, indent=2))
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--v75", type=Path)
+    parser.add_argument("--design", type=Path)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
+    if None in (args.v75, args.design, args.output):
+        raise SystemExit("--v75, --design and --output are required")
+    return run(args.v75, args.design, args.output)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
