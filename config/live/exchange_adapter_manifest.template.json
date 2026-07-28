@@ -1,0 +1,12 @@
+{
+  "template_only": true,
+  "exchange": "unset",
+  "exchange_submission_surface": false,
+  "testnet_validated": false,
+  "idempotent_client_order_ids": false,
+  "reduce_only_supported": false,
+  "kill_switch": false,
+  "secrets_from_environment": false,
+  "reconciliation_fail_closed": false,
+  "passed": false
+}
