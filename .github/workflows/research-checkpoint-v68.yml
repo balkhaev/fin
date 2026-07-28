@@ -31,21 +31,34 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Ensure immutable V68 evidence has not changed
+      - name: Ensure economic V68 evidence has not changed
         run: |
           set -euxo pipefail
-          checkpoint=f99747b9ee547848c2ecf4ad49ea29e1380ab9ec
+          checkpoint=b4d59f268e493e7f3defb9b87481e18a4e8c3274
           git cat-file -e "$checkpoint^{commit}"
           git diff --exit-code "$checkpoint" -- \
-            docs/checkpoints/v68 \
-            research/checkpoint_v68 \
-            verify_checkpoint_v68.py \
-            MANIFEST.json
-      - name: Reproof exact checkpoint bytes in an isolated tree
+            research/checkpoint_v68/source \
+            research/checkpoint_v68/results \
+            docs/checkpoints/v68/ANNUAL_RETURNS.csv \
+            docs/checkpoints/v68/ARTIFACT_SHA256.txt \
+            docs/checkpoints/v68/LOCAL_VERIFIER_RESULTS.txt \
+            docs/checkpoints/v68/RESEARCH_CHECKPOINT_V68_FULL_RU.md \
+            docs/checkpoints/v68/RESEARCH_LEDGER_V1_V68.csv \
+            docs/checkpoints/v68/VERIFICATION_LEDGER.json
+      - name: Reproof exact publicly verified checkpoint bytes
         run: |
           set -euxo pipefail
-          checkpoint=f99747b9ee547848c2ecf4ad49ea29e1380ab9ec
+          checkpoint=b4d59f268e493e7f3defb9b87481e18a4e8c3274
           rm -rf /tmp/fin-v68
           mkdir -p /tmp/fin-v68
           git archive "$checkpoint" | tar -x -C /tmp/fin-v68
           python /tmp/fin-v68/verify_checkpoint_v68.py
+      - name: Record the post-checkpoint metadata boundary
+        run: |
+          cat <<'EOF'
+          Commit b4d59f268e493e7f3defb9b87481e18a4e8c3274 is the exact V68
+          checkpoint named by the later public reproof registry. Subsequent commits
+          added public-run metadata to CHECKPOINT_V68.json, PUBLIC_COMPUTE_REGISTRY.json
+          and V67_V68_LOCAL_REPROOF.json. Those metadata additions are retained, but
+          they are outside the exact-byte manifest that was publicly reproofed.
+          EOF
