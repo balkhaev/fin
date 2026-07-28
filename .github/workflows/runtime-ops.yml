@@ -1,0 +1,100 @@
+name: Runtime atomic paper operations
+
+on:
+  push:
+    branches: [agent/runtime-ops]
+    paths:
+      - 'src/finruntime/operations/**'
+      - 'src/finruntime/io.py'
+      - 'src/finruntime/cli.py'
+      - 'tests/runtime/test_operations.py'
+      - 'docs/checkpoints/runtime-v1/OPERATIONS_*'
+      - '.github/workflows/runtime-ops.yml'
+  pull_request:
+    branches: [agent/runtime-paper-ledger]
+    paths:
+      - 'src/finruntime/operations/**'
+      - 'src/finruntime/io.py'
+      - 'src/finruntime/cli.py'
+      - 'tests/runtime/test_operations.py'
+      - 'docs/checkpoints/runtime-v1/OPERATIONS_*'
+      - '.github/workflows/runtime-ops.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  operations:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Compile runtime
+        run: python -m compileall -q src/finruntime tests/runtime
+
+      - name: Run complete runtime suite
+        run: python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+
+      - name: Runtime self-test and provenance
+        run: |
+          python -m finruntime self-test
+          python scripts/verify_runtime.py --full
+
+      - name: Verify operations contract and CLI surface
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          contract = json.loads(
+              Path('docs/checkpoints/runtime-v1/OPERATIONS_CONTRACT.json').read_text()
+          )
+          assert contract['status'] == 'atomic_idempotent_paper_cycle_ready'
+          assert contract['paper_cycle']['same_cycle_is_idempotent'] is True
+          assert contract['paper_cycle']['committed_cycle_restores_missing_state'] is True
+          assert contract['paper_cycle']['committed_cycle_restores_missing_telemetry'] is True
+          assert contract['paper_cycle']['conflicting_telemetry_primary_key_fails_closed'] is True
+          assert contract['live_execution_available'] is False
+          assert contract['live_ready'] is False
+          assert contract['real_leverage_authorized'] is False
+          PY
+          python -m finruntime --help | grep -F 'paper-cycle'
+          python -m finruntime --help | grep -F 'init-account'
+          python -m finruntime --help | grep -F 'status'
+          find src/finruntime tests/runtime -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find src/finruntime tests/runtime -type f -name '*.pyc' -delete || true
+          bad=$(find src/finruntime/operations src/finruntime/io.py src/finruntime/cli.py tests/runtime \
+            -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.xz' \
+            -o -name '*.b64' -o -name '*.pyfrag' -o -name '*.pyc' \) -print || true)
+          test -z "$bad" || { printf '%s\n' "$bad"; exit 1; }
+          ! grep -R --line-number --fixed-strings 'submit_order' src/finruntime
+          ! grep -R --line-number --fixed-strings 'mode="live"' src/finruntime
+
+      - name: Upload exact runtime source snapshot
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-ops-source-snapshot
+          path: |
+            src/finruntime
+            tests/runtime
+            scripts/verify_runtime.py
+            docs/checkpoints/runtime-v1
+            config/strategies
+            schemas/runtime
+            pyproject.toml
+            .github/workflows/runtime-ops.yml
+          if-no-files-found: error
+          retention-days: 7

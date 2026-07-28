@@ -1,0 +1,57 @@
+{
+  "checkpoint": "runtime-v1-operations",
+  "status": "atomic_idempotent_paper_cycle_ready",
+  "commands": [
+    "finruntime init-account",
+    "finruntime paper-cycle",
+    "finruntime status",
+    "finruntime verify-journal"
+  ],
+  "paper_cycle": {
+    "cycle_id_inputs": [
+      "strategy id and state sequence",
+      "market snapshot id",
+      "strategy target hash",
+      "quotes and reference prices",
+      "critical/on-chain source names",
+      "risk/planner/broker policies",
+      "modelled cost and slippage",
+      "source integrity flags"
+    ],
+    "artifacts": [
+      "request_identity.json",
+      "risk_decision.json",
+      "execution_plan.json",
+      "fill_events.json",
+      "fill_outcomes.json",
+      "account_state.json",
+      "reconciliation.json",
+      "forward_telemetry.json",
+      "COMMITTED.json"
+    ],
+    "committed_marker_written_before_global_state": true,
+    "committed_cycle_restores_missing_state": true,
+    "committed_cycle_restores_missing_telemetry": true,
+    "same_cycle_is_idempotent": true,
+    "conflicting_telemetry_primary_key_fails_closed": true
+  },
+  "journal_event_order": [
+    "SNAPSHOT_ACCEPTED",
+    "TARGET_COMPUTED",
+    "PLAN_CREATED",
+    "FILL_RECORDED",
+    "STATE_COMMITTED",
+    "RECONCILIATION_COMPLETED",
+    "HALT_RAISED when required"
+  ],
+  "telemetry_primary_key": [
+    "timestamp",
+    "strategy_id"
+  ],
+  "halt_exit_code": 2,
+  "live_execution_available": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "capital_change_authorized": false
+}
