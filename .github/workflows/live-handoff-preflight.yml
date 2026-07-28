@@ -1,0 +1,84 @@
+name: Live handoff preflight
+
+on:
+  push:
+    branches: [agent/live-handoff-preflight]
+    paths:
+      - 'scripts/live_preflight.py'
+      - 'tests/runtime/test_live_preflight.py'
+      - 'config/live/**'
+      - 'docs/LIVE_HANDOFF_RU.md'
+      - '.github/workflows/live-handoff-preflight.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/live_preflight.py'
+      - 'tests/runtime/test_live_preflight.py'
+      - 'config/live/**'
+      - 'docs/LIVE_HANDOFF_RU.md'
+      - '.github/workflows/live-handoff-preflight.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install and compile
+        run: |
+          set -euxo pipefail
+          python -m pip install --disable-pip-version-check -e .
+          python -m compileall -q src scripts tests
+
+      - name: Run complete runtime suite
+        run: |
+          set -euxo pipefail
+          python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+          python scripts/verify_runtime.py --full
+
+      - name: Shadow preflight must pass
+        run: |
+          set -euxo pipefail
+          python scripts/live_preflight.py \
+            --mode shadow \
+            --output /tmp/shadow_preflight.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          value=json.loads(Path('/tmp/shadow_preflight.json').read_text())
+          assert value['shadow_ready'] is True
+          assert value['live_ready'] is False
+          assert value['blockers']==[]
+          assert value['exchange_submission_attempted'] is False
+          PY
+
+      - name: Live preflight must fail closed without evidence
+        run: |
+          set -euxo pipefail
+          if python scripts/live_preflight.py \
+            --mode live \
+            --output /tmp/live_preflight.json; then
+            echo 'live preflight unexpectedly passed' >&2
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          value=json.loads(Path('/tmp/live_preflight.json').read_text())
+          assert value['shadow_ready'] is True
+          assert value['live_ready'] is False
+          assert len(value['blockers'])>=4
+          assert value['exchange_submission_attempted'] is False
+          PY
