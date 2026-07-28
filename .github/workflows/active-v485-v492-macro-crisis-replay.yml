@@ -1,0 +1,121 @@
+name: Active V485-V492 independent macro crisis replay
+
+on:
+  push:
+    branches: [agent/active-v485-v492-macro-crisis-replay]
+    paths:
+      - 'research/macro_crisis_v485_v492/**'
+      - '.github/workflows/active-v485-v492-macro-crisis-replay.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/macro_crisis_v485_v492/**'
+      - '.github/workflows/active-v485-v492-macro-crisis-replay.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: active-v485-v492-macro-crisis-replay-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v485-v492-macro-crisis-replay
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install, compile and self-test frozen source
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r research/macro_crisis_v485_v492/requirements.txt
+          python -m compileall -q research/macro_crisis_v485_v492 research/active_v95_v102
+          (cd research/active_v95_v102 && python run_research.py --self-test)
+
+      - name: Materialize ETF and FX proxy data
+        run: |
+          set -euxo pipefail
+          rm -rf research/macro_crisis_v485_v492/data
+          mkdir -p research/macro_crisis_v485_v492/data
+          python research/macro_crisis_v485_v492/prepare_data.py \
+            --output research/macro_crisis_v485_v492/data || true
+          test -s research/macro_crisis_v485_v492/data/DATA_MANIFEST.json
+
+      - name: Run exact standalone V95 engine when data gate passes
+        run: |
+          set -euxo pipefail
+          rm -rf research/macro_crisis_v485_v492/raw_results
+          mkdir -p research/macro_crisis_v485_v492/raw_results
+          passed=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          value=json.loads(Path('research/macro_crisis_v485_v492/data/DATA_MANIFEST.json').read_text())
+          print('true' if value['data_gate_passed'] else 'false')
+          PY
+          )
+          if [ "$passed" = true ]; then
+            cd research/active_v95_v102
+            python run_research.py \
+              --etf ../macro_crisis_v485_v492/data/etf_adjusted_close.csv \
+              --fx ../macro_crisis_v485_v492/data/fx_reference_prices.csv \
+              --atlas ../macro_crisis_v485_v492/data/flat_atlas_interface.csv \
+              --output ../macro_crisis_v485_v492/raw_results \
+              2>&1 | tee ../macro_crisis_v485_v492/raw_results/run.log
+          fi
+
+      - name: Build frozen decision
+        run: |
+          set -euxo pipefail
+          rm -rf research/macro_crisis_v485_v492/results
+          python research/macro_crisis_v485_v492/finalize.py \
+            --root research/macro_crisis_v485_v492 \
+            --legacy-results research/macro_crisis_v485_v492/raw_results \
+            --data research/macro_crisis_v485_v492/data
+          test -s research/macro_crisis_v485_v492/results/summary.json
+          test -s research/macro_crisis_v485_v492/results/REPORT_RU.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary=json.loads(Path('research/macro_crisis_v485_v492/results/summary.json').read_text())
+          assert summary['integration_permitted'] is False
+          assert summary['live_ready'] is False
+          assert summary['real_leverage_authorized'] is False
+          assert summary['profitability_proven'] is False
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Commit readable data and results
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          find research/macro_crisis_v485_v492 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/macro_crisis_v485_v492 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/macro_crisis_v485_v492/data research/macro_crisis_v485_v492/results
+          git diff --cached --check
+          git commit -m 'Add V485-V492 macro crisis replay results [skip ci]'
+          git push origin HEAD:agent/active-v485-v492-macro-crisis-replay
+
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v485-v492-macro-crisis-replay
+          path: |
+            research/macro_crisis_v485_v492/data
+            research/macro_crisis_v485_v492/raw_results
+            research/macro_crisis_v485_v492/results
+          if-no-files-found: warn
+          retention-days: 30

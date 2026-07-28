@@ -1,0 +1,126 @@
+candidate 100 / 702
+candidate 200 / 702
+candidate 300 / 702
+candidate 400 / 702
+candidate 500 / 702
+candidate 600 / 702
+candidate 700 / 702
+{
+  "research": "ACTIVE_V95_V102_GLOBAL_CRISIS_ALPHA",
+  "selection_proof_sha256": "c2d4502ae4f939a07de42b746ced96958bd91343c165012b55311c5203126db1",
+  "selected_processes": [
+    "tsmom+relative__vol08__cap075__r20__b10",
+    "tsmom+crisis__vol08__cap100__r20__b05"
+  ],
+  "standalone_status": "rejected_or_needs_iteration",
+  "standalone_checks": {
+    "bridge_positive": true,
+    "holdout_positive": true,
+    "prefinal_cagr_min": false,
+    "prefinal_sharpe_min": false,
+    "prefinal_max_drawdown_min": true,
+    "post_2020_cagr_min": false,
+    "best_positive_year_log_share_max": true,
+    "worst_rolling_252_min": true,
+    "severe_full_positive": true,
+    "extreme_full_positive": false
+  },
+  "standalone_concentration": {
+    "best_positive_year_log_share": 0.1653986249683051,
+    "worst_rolling_252": -0.08297541853422408,
+    "post_2020_cagr": 0.02026396519485507,
+    "positive_year_fraction": 0.7777777777777778
+  },
+  "stress_prefinal": {
+    "annualized_return": 0.02078237566676533,
+    "total_return": 0.46689114764566275,
+    "max_drawdown": -0.11393051185104486,
+    "sharpe": 0.3856814629642822,
+    "annual_turnover": 9.07369067260435,
+    "average_gross": 0.7807595657522081,
+    "max_gross": 0.8750000000000004
+  },
+  "stress_final_2026h1": {
+    "annualized_return": -0.024803616506734683,
+    "total_return": -0.012676508759793204,
+    "max_drawdown": -0.05857249567221545,
+    "sharpe": -0.43483579801560346,
+    "annual_turnover": 10.867619568308907,
+    "average_gross": 0.8220126913673893,
+    "max_gross": 0.8750000000000003
+  },
+  "strict_costs": {
+    "stress": {
+      "full_cagr": 0.019704896700898145,
+      "full_return": 0.45264327276646577,
+      "full_dd": -0.11393051185104486
+    },
+    "severe": {
+      "full_cagr": 0.00584098847722303,
+      "full_return": 0.11788857144905118,
+      "full_dd": -0.15700534806911115
+    },
+    "extreme": {
+      "full_cagr": -0.016863148381991877,
+      "full_return": -0.2777808412899503,
+      "full_dd": -0.36792623877395436
+    }
+  },
+  "atlas_daily_correlation": NaN,
+  "blend_selected_weight": null,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "data_manifest": {
+    "etf_path": "../macro_crisis_v485_v492/data/etf_adjusted_close.csv",
+    "fx_path": "../macro_crisis_v485_v492/data/fx_reference_prices.csv",
+    "start": "2007-01-01 00:00:00+00:00",
+    "end": "2026-07-01 00:00:00+00:00",
+    "symbols": [
+      "SPY",
+      "QQQ",
+      "IWM",
+      "EFA",
+      "EEM",
+      "VNQ",
+      "TLT",
+      "IEF",
+      "HYG",
+      "GLD",
+      "DBC",
+      "UUP",
+      "FXE",
+      "FXY",
+      "FX_EURUSD",
+      "FX_GBPUSD",
+      "FX_AUDUSD",
+      "FX_NZDUSD",
+      "FX_USDJPY",
+      "FX_USDCAD",
+      "FX_USDCHF"
+    ],
+    "rows": 5084,
+    "missing_fraction": {
+      "SPY": 0.0003933910306845004,
+      "QQQ": 0.0003933910306845004,
+      "IWM": 0.0003933910306845004,
+      "EFA": 0.0003933910306845004,
+      "EEM": 0.0003933910306845004,
+      "VNQ": 0.0003933910306845004,
+      "TLT": 0.0003933910306845004,
+      "IEF": 0.0003933910306845004,
+      "HYG": 0.014162077104642014,
+      "GLD": 0.0003933910306845004,
+      "DBC": 0.0003933910306845004,
+      "UUP": 0.008457907159716758,
+      "FXE": 0.0003933910306845004,
+      "FXY": 0.006097560975609756,
+      "FX_EURUSD": 0.0011801730920535012,
+      "FX_GBPUSD": 0.0,
+      "FX_AUDUSD": 0.0,
+      "FX_NZDUSD": 0.0,
+      "FX_USDJPY": 0.0011801730920535012,
+      "FX_USDCAD": 0.0,
+      "FX_USDCHF": 0.0
+    }
+  }
+}
