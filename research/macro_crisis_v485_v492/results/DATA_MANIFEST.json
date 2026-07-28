@@ -1,0 +1,196 @@
+{
+  "program": "V485_V492_INDEPENDENT_MACRO_CRISIS_REPLAY",
+  "download_window": [
+    "2007-01-01",
+    "2026-07-02"
+  ],
+  "etf": {
+    "rows": 4904,
+    "columns": [
+      "SPY",
+      "QQQ",
+      "IWM",
+      "EFA",
+      "EEM",
+      "VNQ",
+      "TLT",
+      "IEF",
+      "HYG",
+      "GLD",
+      "DBC",
+      "UUP",
+      "FXE",
+      "FXY"
+    ],
+    "start": "2007-01-03T00:00:00+00:00",
+    "end": "2026-07-01T00:00:00+00:00",
+    "valid_rows": {
+      "SPY": 4904,
+      "QQQ": 4904,
+      "IWM": 4904,
+      "EFA": 4904,
+      "EEM": 4904,
+      "VNQ": 4904,
+      "TLT": 4904,
+      "IEF": 4904,
+      "HYG": 4837,
+      "GLD": 4904,
+      "DBC": 4904,
+      "UUP": 4865,
+      "FXE": 4904,
+      "FXY": 4876
+    },
+    "first_valid": {
+      "SPY": "2007-01-03T00:00:00+00:00",
+      "QQQ": "2007-01-03T00:00:00+00:00",
+      "IWM": "2007-01-03T00:00:00+00:00",
+      "EFA": "2007-01-03T00:00:00+00:00",
+      "EEM": "2007-01-03T00:00:00+00:00",
+      "VNQ": "2007-01-03T00:00:00+00:00",
+      "TLT": "2007-01-03T00:00:00+00:00",
+      "IEF": "2007-01-03T00:00:00+00:00",
+      "HYG": "2007-04-11T00:00:00+00:00",
+      "GLD": "2007-01-03T00:00:00+00:00",
+      "DBC": "2007-01-03T00:00:00+00:00",
+      "UUP": "2007-03-01T00:00:00+00:00",
+      "FXE": "2007-01-03T00:00:00+00:00",
+      "FXY": "2007-02-13T00:00:00+00:00"
+    },
+    "last_valid": {
+      "SPY": "2026-07-01T00:00:00+00:00",
+      "QQQ": "2026-07-01T00:00:00+00:00",
+      "IWM": "2026-07-01T00:00:00+00:00",
+      "EFA": "2026-07-01T00:00:00+00:00",
+      "EEM": "2026-07-01T00:00:00+00:00",
+      "VNQ": "2026-07-01T00:00:00+00:00",
+      "TLT": "2026-07-01T00:00:00+00:00",
+      "IEF": "2026-07-01T00:00:00+00:00",
+      "HYG": "2026-07-01T00:00:00+00:00",
+      "GLD": "2026-07-01T00:00:00+00:00",
+      "DBC": "2026-07-01T00:00:00+00:00",
+      "UUP": "2026-07-01T00:00:00+00:00",
+      "FXE": "2026-07-01T00:00:00+00:00",
+      "FXY": "2026-07-01T00:00:00+00:00"
+    },
+    "missing_fraction_on_union": {
+      "SPY": 0.0,
+      "QQQ": 0.0,
+      "IWM": 0.0,
+      "EFA": 0.0,
+      "EEM": 0.0,
+      "VNQ": 0.0,
+      "TLT": 0.0,
+      "IEF": 0.0,
+      "HYG": 0.01366231647634584,
+      "GLD": 0.0,
+      "DBC": 0.0,
+      "UUP": 0.007952691680261012,
+      "FXE": 0.0,
+      "FXY": 0.005709624796084829
+    },
+    "sources": {
+      "SPY": "yahoo_auto_adjusted",
+      "QQQ": "yahoo_auto_adjusted",
+      "IWM": "yahoo_auto_adjusted",
+      "EFA": "yahoo_auto_adjusted",
+      "EEM": "yahoo_auto_adjusted",
+      "VNQ": "yahoo_auto_adjusted",
+      "TLT": "yahoo_auto_adjusted",
+      "IEF": "yahoo_auto_adjusted",
+      "HYG": "yahoo_auto_adjusted",
+      "GLD": "yahoo_auto_adjusted",
+      "DBC": "yahoo_auto_adjusted",
+      "UUP": "yahoo_auto_adjusted",
+      "FXE": "yahoo_auto_adjusted",
+      "FXY": "yahoo_auto_adjusted"
+    }
+  },
+  "fx": {
+    "rows": 5073,
+    "columns": [
+      "EURUSD",
+      "GBPUSD",
+      "AUDUSD",
+      "NZDUSD",
+      "USDJPY",
+      "USDCAD",
+      "USDCHF"
+    ],
+    "start": "2007-01-01T00:00:00+00:00",
+    "end": "2026-07-01T00:00:00+00:00",
+    "valid_rows": {
+      "EURUSD": 5056,
+      "GBPUSD": 5068,
+      "AUDUSD": 5071,
+      "NZDUSD": 5072,
+      "USDJPY": 5056,
+      "USDCAD": 5071,
+      "USDCHF": 5069
+    },
+    "first_valid": {
+      "EURUSD": "2007-01-01T00:00:00+00:00",
+      "GBPUSD": "2007-01-01T00:00:00+00:00",
+      "AUDUSD": "2007-01-01T00:00:00+00:00",
+      "NZDUSD": "2007-01-01T00:00:00+00:00",
+      "USDJPY": "2007-01-01T00:00:00+00:00",
+      "USDCAD": "2007-01-01T00:00:00+00:00",
+      "USDCHF": "2007-01-01T00:00:00+00:00"
+    },
+    "last_valid": {
+      "EURUSD": "2026-07-01T00:00:00+00:00",
+      "GBPUSD": "2026-07-01T00:00:00+00:00",
+      "AUDUSD": "2026-07-01T00:00:00+00:00",
+      "NZDUSD": "2026-07-01T00:00:00+00:00",
+      "USDJPY": "2026-07-01T00:00:00+00:00",
+      "USDCAD": "2026-07-01T00:00:00+00:00",
+      "USDCHF": "2026-07-01T00:00:00+00:00"
+    },
+    "missing_fraction_on_union": {
+      "EURUSD": 0.0033510743150009857,
+      "GBPUSD": 0.0009856100926473486,
+      "AUDUSD": 0.0003942440370589395,
+      "NZDUSD": 0.00019712201852946975,
+      "USDJPY": 0.0033510743150009857,
+      "USDCAD": 0.0003942440370589395,
+      "USDCHF": 0.000788488074117879
+    },
+    "sources": {
+      "EURUSD": "yahoo_auto_adjusted",
+      "GBPUSD": "yahoo_auto_adjusted",
+      "AUDUSD": "yahoo_auto_adjusted",
+      "NZDUSD": "yahoo_auto_adjusted",
+      "USDJPY": "yahoo_auto_adjusted",
+      "USDCAD": "yahoo_auto_adjusted",
+      "USDCHF": "yahoo_auto_adjusted"
+    }
+  },
+  "failures": {},
+  "core_missing_fraction": {
+    "SPY": 0.0,
+    "TLT": 0.0,
+    "GLD": 0.0
+  },
+  "gate_checks": {
+    "minimum_etf_symbols": true,
+    "minimum_fx_symbols": true,
+    "core_start": true,
+    "core_latest": true,
+    "core_missing_fraction": true
+  },
+  "data_gate_passed": true,
+  "files": {
+    "etf_adjusted_close.csv": {
+      "bytes": 1373562,
+      "sha256": "46fa7045238c0776849c5bcb3945920eb49916407321b4d2c38167bc4fdf3db6"
+    },
+    "fx_reference_prices.csv": {
+      "bytes": 796367,
+      "sha256": "10c1fad1cf4326fc373ab82699576e72ffa7a9d338ac1dd17e551b81a2a93302"
+    },
+    "flat_atlas_interface.csv": {
+      "bytes": 202551,
+      "sha256": "3440923ecb943d60096e6a3947dbf2274150a3871b2101fd17f0b4e811164c8e"
+    }
+  },
+  "execution_grade": false
+}

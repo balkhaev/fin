@@ -1,0 +1,207 @@
+{
+  "program": "V485_V492_INDEPENDENT_MACRO_CRISIS_REPLAY",
+  "status": "rejected_after_frozen_oos",
+  "data_gate_passed": true,
+  "selection_end": "2020-12-31",
+  "selection_uses_post_2020": false,
+  "selected_processes": [
+    "tsmom+relative__vol08__cap075__r20__b10",
+    "tsmom+crisis__vol08__cap100__r20__b05"
+  ],
+  "legacy_standalone_status": "rejected_or_needs_iteration",
+  "legacy_standalone_checks": {
+    "bridge_positive": true,
+    "holdout_positive": true,
+    "prefinal_cagr_min": false,
+    "prefinal_sharpe_min": false,
+    "prefinal_max_drawdown_min": true,
+    "post_2020_cagr_min": false,
+    "best_positive_year_log_share_max": true,
+    "worst_rolling_252_min": true,
+    "severe_full_positive": true,
+    "extreme_full_positive": false
+  },
+  "frozen_post_selection_gates": {
+    "legacy_standalone_checks_all": false,
+    "holdout_2024_2025_return_positive": true,
+    "final_2026h1_return_positive": false,
+    "full_stress_cagr_min": false,
+    "full_stress_sharpe_min": false,
+    "full_stress_max_drawdown_min": true,
+    "extreme_full_cagr_positive": false
+  },
+  "standalone_candidate": false,
+  "metrics": {
+    "bridge_2021_2023": {
+      "candidate": "V95",
+      "scenario": "stress",
+      "period": "bridge",
+      "total_return": 0.0097906724098255,
+      "annualized_return": 0.0031486722855103,
+      "annualized_volatility": 0.0511036385969946,
+      "sharpe": 0.0616134657326626,
+      "sortino": 0.0952070121001398,
+      "max_drawdown": -0.1014914429283314,
+      "calmar": 0.0310240173423659,
+      "annual_turnover": 9.850641826908255,
+      "average_gross": 0.7734528230787588,
+      "max_gross": 0.8750000000000003,
+      "final_equity": 13356.680210741852
+    },
+    "holdout_2024_2025": {
+      "candidate": "V95",
+      "scenario": "stress",
+      "period": "holdout",
+      "total_return": 0.0983325203786253,
+      "annualized_return": 0.0465024438760157,
+      "annualized_volatility": 0.0428187289680666,
+      "sharpe": 1.0860304590240497,
+      "sortino": 1.74157328331534,
+      "max_drawdown": -0.0398503725336764,
+      "calmar": 1.1669262021758489,
+      "annual_turnover": 8.996781456042028,
+      "average_gross": 0.8415334694216361,
+      "max_gross": 0.8750000000000003,
+      "final_equity": 14669.7545660693
+    },
+    "final_2026h1": {
+      "candidate": "V95",
+      "scenario": "stress",
+      "period": "final_2026h1",
+      "total_return": -0.0126765039857946,
+      "annualized_return": -0.024803607223369,
+      "annualized_volatility": 0.0570413313002439,
+      "sharpe": -0.4348356999736254,
+      "sortino": -0.6169904537283758,
+      "max_drawdown": -0.0585724767601177,
+      "calmar": -0.4234686425324243,
+      "annual_turnover": 10.867623491029663,
+      "average_gross": 0.8220126184592818,
+      "max_gross": 0.8750000000000004,
+      "final_equity": 14527.267665759811
+    },
+    "full_stress": {
+      "candidate": "V95",
+      "scenario": "stress",
+      "period": "full",
+      "total_return": 0.4527267665759813,
+      "annualized_return": 0.0197079595902687,
+      "annualized_volatility": 0.0539768858998467,
+      "sharpe": 0.3651184995525033,
+      "sortino": 0.5744709318376284,
+      "max_drawdown": -0.1139305942684004,
+      "calmar": 0.172982153887833,
+      "annual_turnover": 9.121160142562369,
+      "average_gross": 0.7818555496799706,
+      "max_gross": 0.8750000000000006,
+      "final_equity": 14527.267665759811
+    },
+    "full_severe": {
+      "candidate": "V95",
+      "scenario": "severe",
+      "period": "full",
+      "total_return": 0.1179582125570748,
+      "annualized_return": 0.0058442630677406,
+      "annualized_volatility": 0.0541223636490095,
+      "sharpe": 0.1079824064159773,
+      "sortino": 0.1688265159759849,
+      "max_drawdown": -0.1570050265570043,
+      "calmar": 0.0372234137715251,
+      "annual_turnover": 9.121160142562369,
+      "average_gross": 0.7818555496799706,
+      "max_gross": 0.8750000000000006,
+      "final_equity": 11179.582125570749
+    },
+    "full_extreme": {
+      "candidate": "V95",
+      "scenario": "extreme",
+      "period": "full",
+      "total_return": -0.2777300414253001,
+      "annualized_return": -0.01685953456309,
+      "annualized_volatility": 0.0546171540187371,
+      "sharpe": -0.3086857026147168,
+      "sortino": -0.4768916441009057,
+      "max_drawdown": -0.3679260837308756,
+      "calmar": -0.0458231566300752,
+      "annual_turnover": 9.121160142562369,
+      "average_gross": 0.7818555496799706,
+      "max_gross": 0.8750000000000006,
+      "final_equity": 7222.699585746999
+    }
+  },
+  "atlas_daily_correlation_is_flat_interface_artifact": true,
+  "data_manifest_sha256": "9e8c61d79f2194053dc35bf389314c2c611782585c11960b621be5c5cd92fb50",
+  "design_sha256": "b2970017007f35ad9f229f760bc2f0bda20cb08a879f94ce22273421fc88973c",
+  "files": {
+    "legacy_run.log": {
+      "bytes": 3636,
+      "sha256": "6885b5392413f1915eee32df5984faa572e84ddce708daa7a16febda4fcdbd78"
+    },
+    "legacy_selection_proof_before_post2020.json": {
+      "bytes": 34201,
+      "sha256": "a17d7beb8b9afff7f48186dbdc8e181fc9398983ce596cac8a022584fdb2ce22"
+    },
+    "legacy_selection_ranking.csv": {
+      "bytes": 134836,
+      "sha256": "ee9af1c7732da6d119815a0c2e2f3afb5ac6b651734f0c3dcd660e78adc8ce65"
+    },
+    "legacy_summary.json": {
+      "bytes": 3495,
+      "sha256": "64b201f377e6cbad7dfe350870935005d9317d4100e4c99a4c7a00a524c0323d"
+    },
+    "legacy_v95_extreme_equity.csv": {
+      "bytes": 596647,
+      "sha256": "c311450ecc2c892bb73691d657a668f02096ebc1ce29f2bd9ca80411a345bd3f"
+    },
+    "legacy_v95_metrics.csv": {
+      "bytes": 5894,
+      "sha256": "bad623d1bc19d11aab014a91bec62260de31694327268fce2fca52318bec7c18"
+    },
+    "legacy_v95_severe_equity.csv": {
+      "bytes": 600504,
+      "sha256": "1e1a65b76bd6671402553595d30d0f22b302be2d3094a600ac2f5175ec8c6777"
+    },
+    "legacy_v95_stress_equity.csv": {
+      "bytes": 601077,
+      "sha256": "a1f48ecca5526204c9930e5b73cf86c65e0fbb8972f1da72663b2f7bf45783df"
+    },
+    "legacy_v95_target_weights.csv": {
+      "bytes": 2286514,
+      "sha256": "d7a6902462742379923db43b6af157c5c23f4969a70f59e3c35cf0bbc499c207"
+    },
+    "legacy_v95_yearly.csv": {
+      "bytes": 916,
+      "sha256": "948e048329ffbc43aab6d7b657274aed59553450ecfd1e5f58b1cb708b58cbcb"
+    },
+    "DATA_MANIFEST.json": {
+      "bytes": 5340,
+      "sha256": "9e8c61d79f2194053dc35bf389314c2c611782585c11960b621be5c5cd92fb50"
+    },
+    "etf_adjusted_close.csv": {
+      "bytes": 1373562,
+      "sha256": "46fa7045238c0776849c5bcb3945920eb49916407321b4d2c38167bc4fdf3db6"
+    },
+    "flat_atlas_interface.csv": {
+      "bytes": 202551,
+      "sha256": "3440923ecb943d60096e6a3947dbf2274150a3871b2101fd17f0b4e811164c8e"
+    },
+    "fx_reference_prices.csv": {
+      "bytes": 796367,
+      "sha256": "10c1fad1cf4326fc373ab82699576e72ffa7a9d338ac1dd17e551b81a2a93302"
+    }
+  },
+  "evidence_limits": {
+    "vendor_adjusted_prices_execution_grade": false,
+    "program_level_holdout_pristine": false,
+    "integration_permitted": false,
+    "capital_change_authorized": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "profitability_proven": false
+  },
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
