@@ -63,7 +63,6 @@ jobs:
               path=root/relative
               assert path.is_file(), relative
               payload=path.read_bytes()
-              assert len(payload)==expected['bytes'], relative
               assert hashlib.sha256(payload).hexdigest()==expected['sha256'], relative
               checked += 1
           assert checked >= 7, checked
@@ -104,9 +103,9 @@ jobs:
       - name: Explain the metadata boundary
         run: |
           cat <<'EOF'
-          The V68 source/results remain byte-identical to their manifest and the
-          economic ledgers remain byte-identical to the public checkpoint. Several
-          post-checkpoint documentation files contain public-run metadata added after
-          the archive and therefore are checked semantically rather than represented
-          as members of the original exact-byte package.
+          The V68 source/results remain byte-identical by SHA-256 and the economic
+          ledgers remain byte-identical to the public checkpoint. Some legacy manifest
+          byte-count fields and post-checkpoint documentation metadata were stale even
+          though their cryptographic hashes/economic content were unchanged. SHA-256,
+          Git diff and semantic assertions are therefore the canonical checks here.
           EOF
