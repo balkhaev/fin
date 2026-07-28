@@ -1,0 +1,120 @@
+        changed_account["desired_leverage"].iloc[:-1],
+        check_names=False,
+    )
+    print("V509-V516 trend-hysteresis self-test passed")
+
+
+def run(v75_path: Path, design_path: Path, output: Path) -> int:
+    output.mkdir(parents=True, exist_ok=True)
+    returns, source_equity, equivalence = load_v75(v75_path)
+    write_json(output / "V75_ECONOMIC_EQUIVALENCE.json", equivalence)
+
+    ranking_rows: list[dict[str, Any]] = []
+    for number, policy in enumerate(policy_book(), 1):
+        audit_metrics: dict[str, dict[str, Any]] = {}
+        audit_accounts: dict[str, pd.DataFrame] = {}
+        for audit in AUDITS:
+            account = simulate(
+                returns,
+                source_equity,
+                policy,
+                audit,
+                START,
+                DEVELOPMENT_END,
+            )
+            audit_accounts[audit.name] = account
+            audit_metrics[audit.name] = metrics(account["net_return"], account)
+        annual = yearly_returns(audit_accounts["base"]["net_return"])
+        checks = development_checks(
+            audit_metrics["base"],
+            audit_metrics["severe"],
+            audit_metrics["extreme"],
+            audit_metrics["delay_1d"],
+            annual,
+            policy,
+        )
+        row = {
+            "policy": policy.name,
+            **asdict(policy),
+            "eligible": bool(all(checks.values())),
+            "score": score_candidate(audit_metrics["base"], audit_metrics["severe"], annual),
+            **{f"base_{key}": value for key, value in audit_metrics["base"].items()},
+            **{f"severe_{key}": value for key, value in audit_metrics["severe"].items()},
+            **{f"extreme_{key}": value for key, value in audit_metrics["extreme"].items()},
+            **{f"delay_{key}": value for key, value in audit_metrics["delay_1d"].items()},
+            **{f"gate_{key}": value for key, value in checks.items()},
+        }
+        ranking_rows.append(row)
+        print(
+            f"{number}/{len(policy_book())} {policy.name} "
+            f"CAGR={audit_metrics['base']['cagr']:.4f} "
+            f"DD={audit_metrics['base']['max_drawdown']:.4f} "
+            f"eligible={row['eligible']}",
+            flush=True,
+        )
+
+    ranking = pd.DataFrame(ranking_rows).sort_values(["eligible", "score"], ascending=[False, False])
+    ranking.to_csv(output / "development_ranking.csv", index=False)
+    eligible = ranking[ranking["eligible"]]
+    selected_name = str(eligible.iloc[0]["policy"]) if len(eligible) else None
+    proof = {
+        "program": PROGRAM,
+        "design_sha256": sha256_file(design_path),
+        "selection_period": [str(START), str(DEVELOPMENT_END)],
+        "selection_uses_2024": False,
+        "selection_uses_2025": False,
+        "selection_uses_2026": False,
+        "program_level_holdout_pristine": False,
+        "signal": "completed V75 equity 20-day return with hysteresis",
+        "policy_count": len(policy_book()),
+        "eligible_policies": list(eligible["policy"].astype(str)),
+        "selected_policy": selected_name,
+        "ranking_top": ranking.head(20).to_dict(orient="records"),
+        "v75_equivalence": equivalence,
+    }
+    proof["selection_proof_sha256"] = canonical_hash(proof)
+    write_json(output / "selection_proof_before_oos.json", proof)
+
+    if selected_name is None:
+        decision = {
+            "program": PROGRAM,
+            "status": "rejected_before_oos",
+            "eligible_policy_count": 0,
+            "selected_policy": None,
+            "oos_opened": False,
+            "historical_50pct_target_met": False,
+            "integration_permitted": False,
+            "capital_change_authorized": False,
+            "live_ready": False,
+            "real_leverage_authorized": False,
+            "profitability_proven": False,
+        }
+        write_json(output / "FROZEN_DECISION.json", decision)
+        write_json(output / "summary.json", {**decision, "selection": proof})
+        (output / "REPORT_RU.md").write_text(
+            "# V509–V516\n\nStatus: `rejected_before_oos`. OOS remained closed.\n",
+            encoding="utf-8",
+        )
+        write_manifest(output)
+        return 0
+
+    selected = next(policy for policy in policy_book() if policy.name == selected_name)
+    audits: dict[str, pd.DataFrame] = {}
+    audit_rows: list[dict[str, Any]] = []
+    for audit in AUDITS:
+        account = simulate(returns, source_equity, selected, audit, START, END)
+        audits[audit.name] = account
+        account.to_csv(output / f"equity_{audit.name}.csv", index_label="open_time")
+        for period, (start, end) in PERIODS.items():
+            part = account.loc[(account.index >= start) & (account.index < end)]
+            audit_rows.append(
+                {"audit": audit.name, "period": period, **asdict(audit), **metrics(part["net_return"], part)}
+            )
+    pd.DataFrame(audit_rows).to_csv(output / "audit_metrics.csv", index=False)
+    annual = yearly_returns(audits["base"]["net_return"])
+    annual.to_csv(output / "ANNUAL_RETURNS.csv", index=False)
+    checks = post_oos_checks(audits)
+    target_met = bool(checks["full_cagr_ge_50pct"])
+    robustness = bool(all(checks.values()))
+    status = (
+        "exploratory_50pct_target_met_no_capital_authority"
