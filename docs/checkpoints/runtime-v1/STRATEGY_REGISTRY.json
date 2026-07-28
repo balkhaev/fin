@@ -19,6 +19,12 @@
       "allowed_modes": ["shadow"],
       "live_ready": false,
       "real_leverage_authorized": false
+    },
+    "v517_tristate_guard_shadow": {
+      "role": "shadow",
+      "allowed_modes": ["shadow"],
+      "live_ready": false,
+      "real_leverage_authorized": false
     }
   }
 }
