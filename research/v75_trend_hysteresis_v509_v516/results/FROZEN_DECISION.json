@@ -1,0 +1,31 @@
+{
+  "program": "V509_V516_V75_TREND_HYSTERESIS_ACCELERATOR",
+  "status": "rejected_after_frozen_oos",
+  "eligible_policy_count": 2,
+  "selected_policy": "h14_e06_xm02_hi195_lo06_r7",
+  "oos_opened": true,
+  "historical_50pct_target_met": false,
+  "robustness_passed": false,
+  "post_oos_checks": {
+    "validation_2024_positive": true,
+    "holdout_2025_positive": true,
+    "final_2026h1_positive": false,
+    "full_cagr_ge_50pct": false,
+    "full_sharpe_ge_1_45": false,
+    "full_dd_ge_minus25pct": false,
+    "full_worst_rolling_365_ge_minus22pct": true,
+    "average_leverage_le_1_40": true,
+    "max_leverage_le_1_95": true,
+    "severe_full_cagr_ge_40pct": false,
+    "severe_full_dd_ge_minus30pct": true,
+    "extreme_full_cagr_ge_25pct": false,
+    "extreme_full_dd_ge_minus40pct": true,
+    "delay_full_cagr_ge_45pct": false,
+    "worst_calendar_year_ge_minus10pct": true
+  },
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

@@ -1,0 +1,30 @@
+{
+  "file_sha256": "f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01",
+  "checks": {
+    "rows": true,
+    "total_return": true,
+    "cagr": true,
+    "max_drawdown": true,
+    "sharpe": true,
+    "annual_returns": true
+  },
+  "metrics": {
+    "total_return": 3.355413143881263,
+    "cagr": 0.30682098978536976,
+    "sharpe": 1.3294516915576933,
+    "sortino": 2.341298212534796,
+    "max_drawdown": -0.21591803526892406,
+    "calmar": 1.421006769551357,
+    "worst_rolling_365": -0.19408804262302992,
+    "final_equity": 43554.13143881263
+  },
+  "annual_returns": {
+    "2021": 1.044015828086435,
+    "2022": 0.01081155462862804,
+    "2023": 0.1485191407183737,
+    "2024": 0.4195522030251728,
+    "2025": 0.23816495433729012,
+    "2026": 0.04425555083890087
+  },
+  "economic_equivalence_passed": true
+}
