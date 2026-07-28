@@ -1,0 +1,221 @@
+tristate_h2075_b097_guard245 CAGR=0.5055 DD=-0.2368 severe=0.4024 pass=True
+neighbor_h2050 CAGR=0.5009 DD=-0.2362 severe=0.3990 pass=False
+neighbor_h2100 CAGR=0.5100 DD=-0.2374 severe=0.4067 pass=True
+neighbor_base096 CAGR=0.5045 DD=-0.2351 severe=0.4017 pass=True
+neighbor_base098 CAGR=0.5065 DD=-0.2385 severe=0.3673 pass=False
+neighbor_rebalance9 CAGR=0.5147 DD=-0.2379 severe=0.3637 pass=False
+neighbor_rebalance11 CAGR=0.4714 DD=-0.2528 severe=0.3738 pass=False
+neighbor_guard240 CAGR=0.5055 DD=-0.2368 severe=0.3664 pass=False
+neighbor_guard250 CAGR=0.5055 DD=-0.2368 severe=0.3980 pass=False
+neighbor_recovery170 CAGR=0.5055 DD=-0.2368 severe=0.3707 pass=False
+neighbor_recovery190 CAGR=0.5055 DD=-0.2368 severe=0.4024 pass=True
+no_guard_control CAGR=0.5055 DD=-0.2368 severe=0.4011 pass=False
+constant_175_control CAGR=0.4034 DD=-0.2993 severe=0.3003 pass=False
+{
+  "program": "V517_V524_V75_TRISTATE_DRAWDOWN_GUARD",
+  "status": "historical_target_met_non_pristine_no_capital_authority",
+  "selection_performed": false,
+  "parameters_informed_by_known_history": true,
+  "program_level_holdout_pristine": false,
+  "historical_50pct_target_met": true,
+  "modeled_robustness_gates_passed": true,
+  "primary_policy": "tristate_h2075_b097_guard245",
+  "neighbor_policy_count": 10,
+  "neighbor_all_gate_pass_count": 3,
+  "promotion_permitted": false,
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "primary_policy_spec": {
+    "name": "tristate_h2075_b097_guard245",
+    "high_leverage": 2.075,
+    "base_leverage": 0.97,
+    "low_leverage": 0.6,
+    "rebalance_days": 10,
+    "no_trade_band": 0.04,
+    "guard_enter_drawdown": -0.245,
+    "guard_exit_drawdown": -0.18,
+    "guard_cap": 1.0,
+    "guard_minimum_hold_days": 7,
+    "guard_enabled": true,
+    "primary": true
+  },
+  "design_sha256": "dbee325f2092f344c6c7460ddfdf934932449af8cbef1a86bf039d2faad1e85b",
+  "v75_equivalence": {
+    "file_sha256": "f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01",
+    "checks": {
+      "sha256": true,
+      "rows": true,
+      "total_return": true,
+      "cagr": true,
+      "max_drawdown": true,
+      "sharpe": true,
+      "annual_returns": true
+    },
+    "metrics": {
+      "total_return": 3.355413143881263,
+      "cagr": 0.30682098978536976,
+      "sharpe": 1.3294516915576933,
+      "sortino": 2.341298212534796,
+      "max_drawdown": -0.21591803526892406,
+      "calmar": 1.421006769551357,
+      "worst_rolling_365": -0.19408804262302992,
+      "final_equity": 43554.13143881263
+    },
+    "annual_returns": {
+      "2021": 1.044015828086435,
+      "2022": 0.01081155462862804,
+      "2023": 0.1485191407183737,
+      "2024": 0.4195522030251728,
+      "2025": 0.23816495433729012,
+      "2026": 0.04425555083890087
+    },
+    "economic_equivalence_passed": true
+  },
+  "acceptance_checks": {
+    "full_cagr_ge_50pct": true,
+    "full_sharpe_ge_1_45": true,
+    "full_max_dd_ge_minus25pct": true,
+    "full_worst_rolling_365_ge_minus22pct": true,
+    "all_calendar_years_positive": true,
+    "average_target_leverage_le_1_35": true,
+    "maximum_target_leverage_le_2_10": true,
+    "annual_meta_turnover_le_6x": true,
+    "severe_full_cagr_ge_40pct": true,
+    "severe_full_dd_ge_minus30pct": true,
+    "extreme_full_cagr_ge_25pct": true,
+    "extreme_full_dd_ge_minus40pct": true,
+    "delay_full_cagr_ge_45pct": true,
+    "delay_full_dd_ge_minus25pct": true
+  },
+  "base_full": {
+    "total_return": 8.483407210943097,
+    "cagr": 0.5054770638530515,
+    "sharpe": 1.4597904254441398,
+    "sortino": 2.596532917847271,
+    "max_drawdown": -0.23679792568887836,
+    "calmar": 2.134634677996219,
+    "worst_rolling_365": -0.20245657086746538,
+    "final_equity": 94834.07210943097,
+    "annual_meta_turnover": 5.119466224899777,
+    "average_target_leverage": 1.244735924265072,
+    "maximum_target_leverage": 2.075,
+    "average_close_gross": 1.1710069025308936,
+    "maximum_close_gross": 2.1529717115544655,
+    "transfer_cost": 1334.1167918036076,
+    "financing_cost": 3913.8929243956,
+    "extra_underlying_cost": 0.0,
+    "risk_reductions": 16,
+    "scheduled_rebalances": 14,
+    "guard_day_share": 0.0,
+    "high_state_share": 0.24862979571499752,
+    "base_state_share": 0.7513702042850025,
+    "low_state_share": 0.0
+  },
+  "severe_full": {
+    "total_return": 5.421562660755656,
+    "cagr": 0.4024272799015174,
+    "sharpe": 1.2389616427323742,
+    "sortino": 2.186193354814122,
+    "max_drawdown": -0.2915826292615754,
+    "calmar": 1.3801483336666964,
+    "worst_rolling_365": -0.2622062410650261,
+    "final_equity": 64215.626607556565,
+    "annual_meta_turnover": 4.348455031238335,
+    "average_target_leverage": 1.211527154957648,
+    "maximum_target_leverage": 2.075,
+    "average_close_gross": 1.1654575957162554,
+    "maximum_close_gross": 2.166660343846815,
+    "transfer_cost": 2080.2015794923636,
+    "financing_cost": 4936.573541126115,
+    "extra_underlying_cost": 9581.240238590284,
+    "risk_reductions": 16,
+    "scheduled_rebalances": 12,
+    "guard_day_share": 0.16741405082212257,
+    "high_state_share": 0.24862979571499752,
+    "base_state_share": 0.7513702042850025,
+    "low_state_share": 0.0
+  },
+  "extreme_full": {
+    "total_return": 3.168178701777734,
+    "cagr": 0.2964196219347963,
+    "sharpe": 0.984563118725719,
+    "sortino": 1.738096724029511,
+    "max_drawdown": -0.33647008092978925,
+    "calmar": 0.8809687361077724,
+    "worst_rolling_365": -0.2900955804346066,
+    "final_equity": 41681.78701777734,
+    "annual_meta_turnover": 4.439647570499553,
+    "average_target_leverage": 1.200279023418037,
+    "maximum_target_leverage": 2.075,
+    "average_close_gross": 1.1663878638298546,
+    "maximum_close_gross": 2.176121838728878,
+    "transfer_cost": 3521.703758478832,
+    "financing_cost": 6180.337953177392,
+    "extra_underlying_cost": 14771.454653401972,
+    "risk_reductions": 24,
+    "scheduled_rebalances": 12,
+    "guard_day_share": 0.14798206278026907,
+    "high_state_share": 0.24862979571499752,
+    "base_state_share": 0.7513702042850025,
+    "low_state_share": 0.0
+  },
+  "delay_full": {
+    "total_return": 8.338970380754155,
+    "cagr": 0.5012808687988206,
+    "sharpe": 1.44714545854028,
+    "sortino": 2.5719923481200095,
+    "max_drawdown": -0.2482846633718191,
+    "calmar": 2.0189763716823967,
+    "worst_rolling_365": -0.21613504850515275,
+    "final_equity": 93389.70380754155,
+    "annual_meta_turnover": 5.122802393722038,
+    "average_target_leverage": 1.244200298953662,
+    "maximum_target_leverage": 2.075,
+    "average_close_gross": 1.1773305454692207,
+    "maximum_close_gross": 2.1529717115544673,
+    "transfer_cost": 1309.3937604982455,
+    "financing_cost": 3978.7474826305274,
+    "extra_underlying_cost": 0.0,
+    "risk_reductions": 17,
+    "scheduled_rebalances": 14,
+    "guard_day_share": 0.03388141504733433,
+    "high_state_share": 0.24862979571499752,
+    "base_state_share": 0.7513702042850025,
+    "low_state_share": 0.0
+  },
+  "annual_returns": [
+    {
+      "year": 2021,
+      "return": 1.5037196837604418
+    },
+    {
+      "year": 2022,
+      "return": 0.0913891403082916
+    },
+    {
+      "year": 2023,
+      "return": 0.31409935582976867
+    },
+    {
+      "year": 2024,
+      "return": 0.9988513206232994
+    },
+    {
+      "year": 2025,
+      "return": 0.2817749914344949
+    },
+    {
+      "year": 2026,
+      "return": 0.030809897301597555
+    }
+  ],
+  "evidence_boundary": {
+    "account_level_only": true,
+    "position_level_margin_replay_complete": false,
+    "forward_period_complete": false,
+    "parameters_informed_by_known_history": true
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "program": "V517_V524_V75_TRISTATE_DRAWDOWN_GUARD",
+  "status": "historical_target_met_non_pristine_no_capital_authority",
+  "selection_performed": false,
+  "parameters_informed_by_known_history": true,
+  "program_level_holdout_pristine": false,
+  "historical_50pct_target_met": true,
+  "modeled_robustness_gates_passed": true,
+  "primary_policy": "tristate_h2075_b097_guard245",
+  "neighbor_policy_count": 10,
+  "neighbor_all_gate_pass_count": 3,
+  "promotion_permitted": false,
+  "integration_permitted": false,
+  "capital_change_authorized": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
