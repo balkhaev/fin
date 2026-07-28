@@ -1,0 +1,109 @@
+name: Active V509-V516 V75 trend hysteresis
+
+on:
+  push:
+    branches: [agent/active-v509-v516-v75-trend-hysteresis]
+    paths:
+      - 'research/v75_trend_hysteresis_v509_v516/**'
+      - '.github/workflows/active-v509-v516-v75-trend-hysteresis.yml'
+  pull_request:
+    paths:
+      - 'research/v75_trend_hysteresis_v509_v516/**'
+      - '.github/workflows/active-v509-v516-v75-trend-hysteresis.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: active-v509-v516-v75-trend-hysteresis-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  research:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v509-v516-v75-trend-hysteresis
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Reconstruct readable source and run causal self-test
+        run: |
+          set -euxo pipefail
+          if compgen -G 'research/v75_trend_hysteresis_v509_v516/source_parts/part_*.txt' > /dev/null; then
+            cat research/v75_trend_hysteresis_v509_v516/source_parts/part_*.txt \
+              > research/v75_trend_hysteresis_v509_v516/run_research.py
+          fi
+          test -s research/v75_trend_hysteresis_v509_v516/run_research.py
+          echo '4da506ac204e4b74a5de57dd17e4e6c6085bd8f53322f03c609048a9e325ded8  research/v75_trend_hysteresis_v509_v516/run_research.py' \
+            | sha256sum -c -
+          python -m pip install --disable-pip-version-check \
+            -r research/v75_trend_hysteresis_v509_v516/requirements.txt
+          python -m compileall -q research/v75_trend_hysteresis_v509_v516
+          python research/v75_trend_hysteresis_v509_v516/run_research.py --self-test
+
+      - name: Run frozen development proof and one-time OOS
+        run: |
+          set -euxo pipefail
+          test -s research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv
+          echo 'f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01  research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv' \
+            | sha256sum -c -
+          rm -rf research/v75_trend_hysteresis_v509_v516/results
+          python research/v75_trend_hysteresis_v509_v516/run_research.py \
+            --v75 research/v75_risk_budget_v501_v508/inputs/v75_stress_equity.csv \
+            --design research/v75_trend_hysteresis_v509_v516/V509_V516_DESIGN.json \
+            --output research/v75_trend_hysteresis_v509_v516/results \
+            2>&1 | tee research/v75_trend_hysteresis_v509_v516/run.log
+
+      - name: Verify frozen decision and safety flags
+        run: |
+          set -euxo pipefail
+          test -s research/v75_trend_hysteresis_v509_v516/results/summary.json
+          test -s research/v75_trend_hysteresis_v509_v516/results/selection_proof_before_oos.json
+          test -s research/v75_trend_hysteresis_v509_v516/results/V75_ECONOMIC_EQUIVALENCE.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('research/v75_trend_hysteresis_v509_v516/results')
+          s=json.loads((root/'summary.json').read_text())
+          e=json.loads((root/'V75_ECONOMIC_EQUIVALENCE.json').read_text())
+          assert e['economic_equivalence_passed'] is True
+          assert s['integration_permitted'] is False
+          assert s['capital_change_authorized'] is False
+          assert s['live_ready'] is False
+          assert s['real_leverage_authorized'] is False
+          assert s['profitability_proven'] is False
+          print(json.dumps(s, indent=2))
+          PY
+
+      - name: Commit readable source and results
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euxo pipefail
+          rm -rf research/v75_trend_hysteresis_v509_v516/source_parts
+          find research/v75_trend_hysteresis_v509_v516 -type d -name '__pycache__' -prune -exec rm -rf {} + || true
+          find research/v75_trend_hysteresis_v509_v516 -type f -name '*.pyc' -delete || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A research/v75_trend_hysteresis_v509_v516
+          git diff --cached --check
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add V509-V516 trend-hysteresis results [skip ci]'
+            git push origin HEAD:agent/active-v509-v516-v75-trend-hysteresis
+          fi
+
+      - name: Upload full research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v509-v516-v75-trend-hysteresis
+          path: research/v75_trend_hysteresis_v509_v516
+          if-no-files-found: error
+          retention-days: 30
