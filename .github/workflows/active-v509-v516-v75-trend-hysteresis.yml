@@ -42,7 +42,7 @@ jobs:
               > research/v75_trend_hysteresis_v509_v516/run_research.py
           fi
           test -s research/v75_trend_hysteresis_v509_v516/run_research.py
-          echo '4da506ac204e4b74a5de57dd17e4e6c6085bd8f53322f03c609048a9e325ded8  research/v75_trend_hysteresis_v509_v516/run_research.py' \
+          echo 'a9ce1a8b156cd7a6f4c07662d30483868428c12efeb199b62fedc8d59a393c28  research/v75_trend_hysteresis_v509_v516/run_research.py' \
             | sha256sum -c -
           python -m pip install --disable-pip-version-check \
             -r research/v75_trend_hysteresis_v509_v516/requirements.txt
