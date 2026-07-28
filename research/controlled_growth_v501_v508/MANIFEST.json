@@ -1,6 +1,10 @@
 {
   "program": "V501_V508_CONTROLLED_GROWTH_ENGINE",
   "files": {
+    "EVIDENCE.md": {
+      "bytes": 433,
+      "sha256": "4fa685eec69034a9adb78416c09599cc15edbfad494957e04973f6dd4abce834"
+    },
     "README.md": {
       "bytes": 1610,
       "sha256": "9a472de20764c0cbb51f2758e2806f6d5aba91cc936640f8e60e3708471e5671"
@@ -35,7 +39,7 @@
     },
     "results/data_manifest.csv": {
       "bytes": 427935,
-      "sha256": "ebb8a17b785db5df4e8b0fabbcfc1285d64a3593f46a37d341f4ea822771f044"
+      "sha256": "14a64cd2f1ffbf119743e40c0f2fb1f6067752b21dc36900b3e79b24bc4479e5"
     },
     "results/data_quality.csv": {
       "bytes": 990,
