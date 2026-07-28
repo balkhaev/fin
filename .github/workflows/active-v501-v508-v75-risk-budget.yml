@@ -35,11 +35,14 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Reconstruct readable source and run causal self-test
+      - name: Verify readable source and run causal self-test
         run: |
           set -euxo pipefail
-          cat research/v75_risk_budget_v501_v508/source_parts/part_*.txt \
-            > research/v75_risk_budget_v501_v508/run_research.py
+          if compgen -G 'research/v75_risk_budget_v501_v508/source_parts/part_*.txt' > /dev/null; then
+            cat research/v75_risk_budget_v501_v508/source_parts/part_*.txt \
+              > research/v75_risk_budget_v501_v508/run_research.py
+          fi
+          test -s research/v75_risk_budget_v501_v508/run_research.py
           echo '56fde1232114a04f68dcd2240b236bb8f0d8a96bbe3da10a97e087056338c2c5  research/v75_risk_budget_v501_v508/run_research.py' \
             | sha256sum -c -
           python -m pip install --disable-pip-version-check \
