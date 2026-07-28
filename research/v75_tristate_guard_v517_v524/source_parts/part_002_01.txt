@@ -1,0 +1,64 @@
+        "extreme_full_dd_ge_minus40pct": extreme["max_drawdown"] >= -0.40,
+        "delay_full_cagr_ge_45pct": delay["cagr"] >= 0.45,
+        "delay_full_dd_ge_minus25pct": delay["max_drawdown"] >= -0.25,
+    }
+
+
+def self_test() -> None:
+    index = pd.date_range("2021-01-01", periods=700, freq="1D", tz="UTC")
+    rng = np.random.default_rng(517)
+    returns = pd.Series(rng.normal(0.0008, 0.018, len(index)), index=index)
+    equity = INITIAL_EQUITY * (1.0 + returns).cumprod()
+    state = market_state(equity)
+    assert state["momentum20"].iloc[:21].isna().all()
+    assert state["momentum60"].iloc[:61].isna().all()
+    assert np.isfinite(state["momentum20"].iloc[21:]).all()
+    assert np.isfinite(state["momentum60"].iloc[61:]).all()
+    account = simulate(returns, equity, PRIMARY, AUDITS[0])
+    numeric = account.select_dtypes(include=[np.number]).drop(columns=["momentum20", "momentum60"])
+    assert np.isfinite(numeric.to_numpy()).all()
+    assert float(account["desired_leverage"].max()) <= PRIMARY.high_leverage
+    changed = equity.copy()
+    changed.iloc[-1] *= 10.0
+    changed_state = market_state(changed)
+    pd.testing.assert_frame_equal(state.iloc[:-1], changed_state.iloc[:-1])
+    changed_account = simulate(returns, changed, PRIMARY, AUDITS[0])
+    pd.testing.assert_series_equal(
+        account["desired_leverage"].iloc[:-1],
+        changed_account["desired_leverage"].iloc[:-1],
+        check_names=False,
+    )
+    stressed = returns.copy()
+    stressed.iloc[300:305] = -0.12
+    stressed_equity = INITIAL_EQUITY * (1.0 + stressed).cumprod()
+    guarded = simulate(stressed, stressed_equity, PRIMARY, AUDITS[0])
+    assert guarded["guard_active"].any()
+    assert float(guarded.loc[guarded["guard_active"], "desired_leverage"].max()) <= PRIMARY.guard_cap
+    print("V517-V524 tri-state guard self-test passed")
+
+
+def write_manifest(root: Path) -> None:
+    files: dict[str, dict[str, Any]] = {}
+    for path in sorted(root.rglob("*")):
+        if not path.is_file() or path.name == "MANIFEST.json" or "__pycache__" in path.parts:
+            continue
+        files[str(path.relative_to(root))] = {
+            "bytes": path.stat().st_size,
+            "sha256": sha256_file(path),
+        }
+    write_json(root / "MANIFEST.json", {"program": PROGRAM, "files": files})
+
+
+def run(v75_path: Path, design_path: Path, output: Path) -> int:
+    output.mkdir(parents=True, exist_ok=True)
+    returns, source_equity, equivalence = load_v75(v75_path)
+    write_json(output / "V75_ECONOMIC_EQUIVALENCE.json", equivalence)
+
+    policy_rows: list[dict[str, Any]] = []
+    accounts_by_policy: dict[str, dict[str, pd.DataFrame]] = {}
+    for policy in policy_book():
+        audit_accounts: dict[str, pd.DataFrame] = {}
+        row: dict[str, Any] = {"policy": policy.name, **asdict(policy)}
+        for audit in AUDITS:
+            account = simulate(returns, source_equity, policy, audit)
+            audit_accounts[audit.name] = account
