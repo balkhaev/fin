@@ -298,10 +298,18 @@ async def run_router(
                 _write_snapshot(settings.service.snapshot_path, snapshot)
                 print(
                     json.dumps(
-                        {"scan": result.to_dict(), "paper": paper_summary},
-                        indent=2,
-                        sort_keys=True,
-                    )
+                        {
+                            "event": "paper_cycle",
+                            "mode": "paper",
+                            "observed_at_ms": result.observed_at_ms,
+                            "candidate_count": len(result.candidates),
+                            "error_count": len(result.errors),
+                            "equity_usdt": paper_summary["equity_usdt"],
+                            "open_position": paper_summary["open_position"] is not None,
+                        },
+                        separators=(",", ":"),
+                    ),
+                    flush=True,
                 )
             else:
                 assert executor is not None

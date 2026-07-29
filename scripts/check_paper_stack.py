@@ -56,6 +56,12 @@ def main() -> int:
         or consensus_age_seconds > MAX_CONSENSUS_AGE_SECONDS
     ):
         raise RuntimeError(f"WIF/DOT paper snapshot is stale: {consensus_age_seconds}")
+    strategies = health.get("strategies")
+    if not isinstance(strategies, dict):
+        raise TypeError("strategy health is unavailable")
+    dyn = strategies.get("dyn-iv113")
+    if not isinstance(dyn, dict) or dyn.get("status") != "running":
+        raise RuntimeError(f"DYN paper worker is not healthy: {dyn}")
     return 0
 
 

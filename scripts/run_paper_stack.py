@@ -65,6 +65,7 @@ def main() -> int:
     initialize_account()
     funding_snapshot = RUNTIME_ROOT / "funding_router_snapshot.json"
     consensus_snapshot = RUNTIME_ROOT / "consensus_paper_snapshot.json"
+    dyn_snapshot = RUNTIME_ROOT / "dyn_paper_snapshot.json"
     funding_environment = dict(os.environ)
     funding_environment.update(
         {
@@ -97,6 +98,20 @@ def main() -> int:
         ),
         (
             [
+                sys.executable,
+                "-m",
+                "finruntime.strategies.dyn_paper",
+                "--snapshot",
+                str(dyn_snapshot),
+                "--poll-seconds",
+                "60",
+                "--starting-cash",
+                "10000",
+            ],
+            None,
+        ),
+        (
+            [
                 "fin-paper-scheduler",
                 "daemon",
                 "--runtime-root",
@@ -122,6 +137,8 @@ def main() -> int:
                 str(funding_snapshot),
                 "--consensus-snapshot",
                 str(consensus_snapshot),
+                "--dyn-snapshot",
+                str(dyn_snapshot),
             ],
             None,
         ),

@@ -56,6 +56,13 @@
       second: "2-digit",
     });
   };
+  const formatFreshness = (timestamp) => {
+    if (!Number.isFinite(Number(timestamp))) return "нет отметки";
+    const seconds = Math.max(0, Math.round((Date.now() - Number(timestamp)) / 1000));
+    if (seconds < 60) return `${seconds} сек назад`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)} мин назад`;
+    return `${Math.floor(seconds / 3600)} ч назад`;
+  };
   const tone = (value) =>
     asNumber(value) > 0 ? "positive" : asNumber(value) < 0 ? "negative" : "neutral";
   const create = (tag, className, text) => {
@@ -313,10 +320,10 @@
         class: "chart-axis",
         "text-anchor": index === 0 ? "start" : index === candles.length - 1 ? "end" : "middle",
       });
-      label.textContent = new Date(candles[index].timestamp_ms).toLocaleTimeString("ru-RU", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      const labelDate = new Date(candles[index].timestamp_ms);
+      label.textContent = selected.timeframe === "1d"
+        ? labelDate.toLocaleDateString("ru-RU", { day: "2-digit", month: "short" })
+        : labelDate.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
       chart.append(label);
     }
 
@@ -442,6 +449,43 @@
     return parts.join(" · ");
   };
 
+  const renderEquityHistory = (strategy) => {
+    const container = $("#strategy-history");
+    container.replaceChildren();
+    const points = (strategy.equity_history || [])
+      .map((point) => ({
+        value: asNumber(point.equity_usdt ?? point.navUsd ?? point.equity, Number.NaN),
+        timestamp: point.timestamp_ms ?? point.date,
+      }))
+      .filter((point) => Number.isFinite(point.value))
+      .slice(-120);
+    if (points.length < 2) {
+      container.append(create("span", "strategy-history-empty", "История накопится после следующих циклов"));
+      return;
+    }
+    const width = 300;
+    const height = 62;
+    const minimum = Math.min(...points.map((point) => point.value));
+    const maximum = Math.max(...points.map((point) => point.value));
+    const range = maximum - minimum || Math.max(1, maximum * 0.001);
+    const coordinates = points.map((point, index) => {
+      const x = (index / (points.length - 1)) * width;
+      const y = 5 + ((maximum - point.value) / range) * (height - 10);
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    });
+    const chart = svg("svg", { viewBox: `0 0 ${width} ${height}`, "aria-hidden": "true" });
+    chart.append(
+      svg("line", { x1: 0, y1: height - 5, x2: width, y2: height - 5, class: "equity-baseline" }),
+      svg("polyline", { points: coordinates.join(" "), class: "equity-sparkline" })
+    );
+    const meta = create("div", "strategy-history-meta");
+    meta.append(
+      create("span", "", `${points.length} точек`),
+      create("span", "", `${formatNumber(minimum, 2)} → ${formatNumber(points.at(-1).value, 2)}`)
+    );
+    container.append(chart, meta);
+  };
+
   const renderSelected = () => {
     const strategy = selectedStrategy();
     if (!strategy) return;
@@ -460,12 +504,14 @@
           ? "waiting"
           : "degraded";
     status.className = `position-status ${statusTone}`;
+    renderEquityHistory(strategy);
 
     const facts = $("#strategy-facts");
     facts.replaceChildren();
     for (const [label, value] of [
       ["Рынок", strategy.market],
       ["Частота", strategy.timeframe],
+      ["Данные", formatFreshness(strategy.updated_at_ms)],
       ["Открыто", String(asNumber(strategy.open_positions))],
       ["Сделок / циклов", String(asNumber(strategy.closed_positions))],
     ]) {
@@ -590,8 +636,8 @@
     const updated = state.hub?.generated_at_ms || state.funding?.updated_at_ms;
     $("#updated-at").textContent = `обновлено ${formatTime(updated)}`;
     const errors = [...(state.funding?.scan?.errors || [])];
-    const unavailable = (state.hub?.strategies || []).filter(
-      (item) => item.status === "degraded"
+    const unavailable = (state.hub?.strategies || []).filter((item) =>
+      ["degraded", "blocked"].includes(item.status)
     );
     if (!(state.funding?.candles || []).length) {
       errors.push(...(state.funding?.candle_errors || []));

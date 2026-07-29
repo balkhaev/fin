@@ -46,6 +46,7 @@ class ControlRoomConfig:
     runtime_root: Path
     paper_snapshot_path: Path | None = None
     consensus_snapshot_path: Path | None = None
+    dyn_snapshot_path: Path | None = None
     stale_after_seconds: int = 172_800
     incident_limit: int = 100
     poll_seconds: float = 2.0
@@ -154,7 +155,7 @@ class ControlRoomHTTPServer(ThreadingHTTPServer):
     def __init__(self, address: tuple[str, int], config: ControlRoomConfig):
         config.validate()
         self.config = config
-        self.strategy_hub = StrategyHub()
+        self.strategy_hub = StrategyHub(dyn_snapshot_path=config.dyn_snapshot_path)
         self.started_monotonic = time.monotonic()
         super().__init__(address, ControlRoomHandler)
 
@@ -285,9 +286,32 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
             if isinstance(consensus_updated_at_ms, (int, float))
             else None
         )
+        strategy_snapshot = self.server.strategy_hub.snapshot(
+            funding=paper,
+            runtime=runtime,
+            consensus=consensus,
+        )
+        strategy_health = {
+            item["id"]: {
+                "status": item["status"],
+                "status_label": item["status_label"],
+                "updated_at_ms": item.get("updated_at_ms"),
+                "error": item.get("detail", {}).get("upstream_error"),
+            }
+            for item in strategy_snapshot["strategies"]
+        }
+        aggregate_status = (
+            "healthy"
+            if runtime["status"] == "healthy"
+            and all(
+                item["status"] in {"running", "healthy"}
+                for item in strategy_snapshot["strategies"]
+            )
+            else "degraded"
+        )
         return {
             "service": "fin-control-room",
-            "status": runtime["status"],
+            "status": aggregate_status,
             "uptime_seconds": round(
                 time.monotonic() - self.server.started_monotonic, 3
             ),
@@ -305,6 +329,7 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                 "age_seconds": consensus_age_seconds,
                 "open_positions": len(consensus.get("paper", {}).get("positions", [])),
             },
+            "strategies": strategy_health,
             "realtime": {
                 "transport": "websocket",
                 "path": "/api/v1/ws",
@@ -583,6 +608,7 @@ def create_server(
     runtime_root: str | Path,
     paper_snapshot_path: str | Path | None = None,
     consensus_snapshot_path: str | Path | None = None,
+    dyn_snapshot_path: str | Path | None = None,
     stale_after_seconds: int = 172_800,
     incident_limit: int = 100,
     poll_seconds: float = 2.0,
@@ -599,6 +625,11 @@ def create_server(
         consensus_snapshot_path=(
             Path(consensus_snapshot_path).expanduser().resolve()
             if consensus_snapshot_path is not None
+            else None
+        ),
+        dyn_snapshot_path=(
+            Path(dyn_snapshot_path).expanduser().resolve()
+            if dyn_snapshot_path is not None
             else None
         ),
         stale_after_seconds=stale_after_seconds,
@@ -631,6 +662,10 @@ def main(argv: list[str] | None = None) -> int:
         "--paper-snapshot",
         default=os.environ.get("FIN_FUNDING_SNAPSHOT"),
     )
+    parser.add_argument(
+        "--dyn-snapshot",
+        default=os.environ.get("FIN_DYN_SNAPSHOT"),
+    )
     parser.add_argument("--stale-after-seconds", type=int, default=172_800)
     parser.add_argument("--incident-limit", type=int, default=100)
     parser.add_argument("--poll-seconds", type=float, default=2.0)
@@ -656,6 +691,11 @@ def main(argv: list[str] | None = None) -> int:
         consensus_snapshot_path=(
             Path(args.consensus_snapshot).expanduser().resolve()
             if args.consensus_snapshot
+            else None
+        ),
+        dyn_snapshot_path=(
+            Path(args.dyn_snapshot).expanduser().resolve()
+            if args.dyn_snapshot
             else None
         ),
         stale_after_seconds=args.stale_after_seconds,

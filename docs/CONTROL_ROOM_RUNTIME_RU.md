@@ -79,7 +79,7 @@ Optional strategy/market context:
 | `GET /api/v1/runtime` | account/cycle/telemetry summary |
 | `GET /api/v1/incidents` | latest integrity/execution incidents |
 | `GET /api/v1/scheduler` | queue, heartbeat и last result scheduler |
-| `GET /api/v1/health` | health и uptime server |
+| `GET /api/v1/health` | aggregate и per-strategy health, freshness и uptime server |
 | `GET /api/v1/events` | Server-Sent Events при изменении snapshot |
 | `WS /api/v1/ws` | realtime paper/strategy snapshots и heartbeat без polling |
 
@@ -92,9 +92,15 @@ healthy   latest row clean, journal valid
 warn      incomplete execution, stale feed, slippage >1.5x model
 halt      reconciliation/hash/stale-row failure, corrupt journal/artifact
 idle      runtime root exists, но observations отсутствуют
+blocked   канонический producer отсутствует; подмена алгоритма запрещена
 ```
 
 Historical incidents сохраняются в timeline. Текущий status определяется latest evidence и целостностью источников.
+
+В Docker paper-stack три исполняемых worker (`Funding Neutral`, `Consensus
+WIF + DOT`, `DYN-IV113`) обязаны иметь свежие снимки. `Atlas NX` отдельно
+показывается как `blocked`, пока в main отсутствует exact V75 producer с
+зарегистрированным SHA-256. Это не маскируется как CASH или idle.
 
 ## Fail-closed rules
 

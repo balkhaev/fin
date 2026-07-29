@@ -2,10 +2,14 @@ from __future__ import annotations
 
 import unittest
 from datetime import UTC, datetime
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from finruntime.observability.strategy_hub import (
     StrategyHub,
     UpstreamSnapshotCache,
+    _dyn_strategy,
+    read_dyn_snapshot,
 )
 from finruntime.strategies.consensus_paper import (
     _empty_state,
@@ -88,6 +92,34 @@ class ConsensusPaperTests(unittest.TestCase):
 
 
 class StrategyHubTests(unittest.TestCase):
+    def test_dyn_unavailable_is_not_reported_as_a_cash_decision(self) -> None:
+        strategy = _dyn_strategy(None, "snapshot is not available", True)
+
+        self.assertEqual(strategy["status"], "degraded")
+        self.assertEqual(strategy["status_label"], "Нет данных")
+        self.assertIn("недоступны", strategy["context"]["why_now"])
+        self.assertNotIn("Стратегия в кэше", strategy["context"]["why_now"])
+
+    def test_reads_fresh_local_dyn_snapshot_and_rejects_stale_file(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "dyn.json"
+            path.write_text(
+                '{"schema_version":1,"strategyId":"DYN-IV113",'
+                f'"generatedAt":"{datetime.now(UTC).isoformat()}",'
+                '"status":"ready"}',
+                encoding="utf-8",
+            )
+
+            snapshot, error, stale = read_dyn_snapshot(path, stale_after_seconds=60)
+            self.assertEqual(snapshot["strategyId"], "DYN-IV113")
+            self.assertIsNone(error)
+            self.assertFalse(stale)
+
+            snapshot, error, stale = read_dyn_snapshot(path, stale_after_seconds=-1)
+            self.assertIsNotNone(snapshot)
+            self.assertIn("stale", error or "")
+            self.assertTrue(stale)
+
     def test_normalizes_all_repository_strategies(self) -> None:
         dyn = {
             "status": "ready",
@@ -205,7 +237,7 @@ class StrategyHubTests(unittest.TestCase):
         self.assertIn("1.25 bps", funding["context"]["why_now"])
         self.assertIn("8.00 bps", funding["context"]["waiting_for"])
 
-    def test_atlas_waits_for_real_observations(self) -> None:
+    def test_atlas_is_blocked_without_canonical_target_producer(self) -> None:
         dyn = {
             "status": "ready",
             "paper": {
@@ -242,7 +274,8 @@ class StrategyHubTests(unittest.TestCase):
         atlas = next(
             item for item in snapshot["strategies"] if item["id"] == "atlas-nx"
         )
-        self.assertEqual(atlas["status"], "waiting")
+        self.assertEqual(atlas["status"], "blocked")
+        self.assertIn("3303cd91511b", atlas["context"]["waiting_for"])
         self.assertEqual(snapshot["summary"]["running_count"], 3)
 
 

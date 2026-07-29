@@ -7,6 +7,7 @@ import os
 import threading
 import time
 from collections.abc import Callable
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from urllib.request import Request, urlopen
@@ -14,6 +15,7 @@ from urllib.request import Request, urlopen
 DEFAULT_FIN2_FORWARD_URL = "https://fin2.balkhaev.com/api/strategy/forward"
 UPSTREAM_CACHE_SECONDS = 10.0
 UPSTREAM_TIMEOUT_SECONDS = 4.0
+DYN_STALE_AFTER_SECONDS = 300.0
 
 
 def _number(value: object, default: float = 0.0) -> float:
@@ -139,6 +141,42 @@ def read_consensus_snapshot(path: Path) -> dict[str, Any]:
     return value
 
 
+def _parse_timestamp(value: object) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    return (
+        parsed.astimezone(UTC)
+        if parsed.tzinfo is not None
+        else parsed.replace(tzinfo=UTC)
+    )
+
+
+def read_dyn_snapshot(
+    path: Path, *, stale_after_seconds: float = DYN_STALE_AFTER_SECONDS
+) -> tuple[dict[str, Any] | None, str | None, bool]:
+    if not path.is_file():
+        return None, "local DYN snapshot is not available", True
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return None, f"{type(error).__name__}: {error}", True
+    if not isinstance(value, dict) or value.get("schema_version") != 1:
+        return None, "unsupported local DYN snapshot schema", True
+    if value.get("strategyId") != "DYN-IV113":
+        return None, "unexpected local DYN strategy identity", True
+    generated_at = _parse_timestamp(value.get("generatedAt"))
+    if generated_at is None:
+        return value, "local DYN snapshot has no valid generatedAt", True
+    age_seconds = max(0.0, (datetime.now(UTC) - generated_at).total_seconds())
+    if age_seconds > stale_after_seconds:
+        return value, f"local DYN snapshot is stale ({age_seconds:.1f}s)", True
+    return value, None, False
+
+
 def _funding_strategy(paper_snapshot: dict[str, Any]) -> dict[str, Any]:
     account = paper_snapshot.get("paper")
     account = account if isinstance(account, dict) else {}
@@ -155,7 +193,7 @@ def _funding_strategy(paper_snapshot: dict[str, Any]) -> dict[str, Any]:
     current_threshold = _number(risk.get("min_current_spread_bps_8h"), 8.0)
     predicted_threshold = _number(risk.get("min_predicted_spread_bps_8h"), 5.0)
     net_threshold = _number(risk.get("min_expected_net_bps"), 10.0)
-    starting = _number(account.get("starting_balance_usdt"))
+    starting = _number(account.get("starting_balance_usdt"), 10_000.0)
     equity = _number(account.get("equity_usdt"), starting)
     pnl = equity - starting
     open_count = 1 if isinstance(position, dict) else 0
@@ -209,6 +247,7 @@ def _funding_strategy(paper_snapshot: dict[str, Any]) -> dict[str, Any]:
         "timeframe": "5 sec · 1m candles",
         "updated_at_ms": paper_snapshot.get("updated_at_ms"),
         "positions": [position] if isinstance(position, dict) else [],
+        "equity_history": account.get("equity_history") or [],
         "signals": candidates,
         "detail": {
             "markets": len(paper_snapshot.get("markets") or []),
@@ -249,7 +288,7 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
     committed_cycles = int(_number(source.get("committed_cycles")))
     scheduler_state = runtime.get("scheduler", {}).get("state")
     source_health = str(source.get("health", "starting"))
-    status = "waiting" if observations == 0 else source_health
+    status = "blocked" if observations == 0 else source_health
     if status == "healthy":
         status = "running"
     return {
@@ -259,7 +298,7 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
         "description": "Портфельный FIN runtime с проверяемым paper-ledger.",
         "mode": "paper",
         "status": status,
-        "status_label": "Наблюдает" if observations else "Ждёт первый цикл",
+        "status_label": "Наблюдает" if observations else "Нет V75 producer",
         "equity_usdt": equity,
         "starting_balance_usdt": starting,
         "pnl_usdt": pnl,
@@ -271,6 +310,7 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
         "timeframe": "scheduler",
         "updated_at_ms": None,
         "positions": [],
+        "equity_history": [],
         "signals": [],
         "detail": {
             "observations": observations,
@@ -283,14 +323,15 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
                 "через отдельный paper-счёт с комиссиями, funding и сверкой."
             ),
             "why_now": (
-                "Циклов ещё не было: ledger не получил ни одного валидного "
-                "снимка стратегии."
+                "Циклов ещё не было: канонический V75 target producer отсутствует "
+                "в main и реестр runtime запрещает заменять его другим алгоритмом."
                 if observations == 0
                 else f"Обработано наблюдений: {observations}; завершено циклов: {committed_cycles}."
             ),
             "waiting_for": (
-                "Ждём первый закрытый дневной снимок V75, затем план, "
-                "paper-исполнение и зафиксированный результат цикла."
+                "Нужен исходник V75 с SHA-256 "
+                "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc; "
+                "после его материализации scheduler сможет выполнять paper-циклы."
                 if observations == 0
                 else "Ждём следующие закрытые дневные веса и плановый цикл scheduler."
             ),
@@ -376,6 +417,7 @@ def _consensus_strategy(snapshot: dict[str, Any]) -> dict[str, Any]:
         "timeframe": "60 sec · 15m signals",
         "updated_at_ms": snapshot.get("market_data_at_ms"),
         "positions": positions,
+        "equity_history": account.get("equity_history") or [],
         "signals": signals,
         "candles": snapshot.get("candles") or [],
         "detail": {
@@ -433,7 +475,16 @@ def _dyn_strategy(
     status = "degraded" if error or stale else str(source.get("status", "starting"))
     if status == "ready":
         status = "running"
-    if positions:
+    unavailable = snapshot is None or bool(error) or stale
+    if unavailable:
+        why_now = (
+            "Рыночные данные DYN сейчас недоступны, поэтому CASH не считается "
+            "решением стратегии. Последний известный снимок показан только как справочный."
+        )
+        waiting_for = (
+            "Ждём свежий локальный расчёт по 17 закрытым дневным свечным рядам Binance."
+        )
+    elif positions:
         why_now = (
             f"В портфеле {len(positions)} paper-позиций; целевая gross-экспозиция "
             f"{target_gross:.2f}×."
@@ -458,6 +509,8 @@ def _dyn_strategy(
             "BTC-фильтр разрешает риск, но итоговый вес FLOW/momentum пока равен нулю."
         )
         waiting_for = "Ждём положительный FLOW или absolute momentum на ребалансировке."
+    updated_at = source.get("marketDataAt") or source.get("generatedAt")
+    updated_at_datetime = _parse_timestamp(updated_at)
     return {
         "id": "dyn-iv113",
         "repository": "fin2",
@@ -465,7 +518,9 @@ def _dyn_strategy(
         "description": "Dynamic FLOW + Absolute Momentum на закрытых свечах Binance.",
         "mode": "paper",
         "status": status,
-        "status_label": "В рынке" if positions else "Режим CASH",
+        "status_label": (
+            "Нет данных" if unavailable else "В рынке" if positions else "Режим CASH"
+        ),
         "equity_usdt": equity,
         "starting_balance_usdt": starting,
         "pnl_usdt": pnl,
@@ -474,9 +529,15 @@ def _dyn_strategy(
         "closed_positions": int(_number(paper.get("totalExecutions"))),
         "market": "Binance spot · 17 assets",
         "timeframe": "daily close · live marks",
-        "updated_at_ms": None,
-        "updated_at": source.get("marketDataAt") or source.get("generatedAt"),
+        "updated_at_ms": (
+            int(updated_at_datetime.timestamp() * 1000)
+            if updated_at_datetime is not None
+            else None
+        ),
+        "updated_at": updated_at,
         "positions": positions,
+        "candles": source.get("candles") or [],
+        "equity_history": paper.get("daily") or [],
         "signals": [],
         "detail": {
             "target_gross": target_gross,
@@ -512,11 +573,15 @@ class StrategyHub:
         self,
         *,
         fin2_url: str | None = None,
+        dyn_snapshot_path: Path | None = None,
+        dyn_stale_after_seconds: float = DYN_STALE_AFTER_SECONDS,
         cache: UpstreamSnapshotCache | None = None,
     ) -> None:
         self.fin2_url = fin2_url or os.environ.get(
             "FIN2_FORWARD_URL", DEFAULT_FIN2_FORWARD_URL
         )
+        self.dyn_snapshot_path = dyn_snapshot_path
+        self.dyn_stale_after_seconds = dyn_stale_after_seconds
         self.cache = cache or UpstreamSnapshotCache()
 
     def snapshot(
@@ -526,7 +591,13 @@ class StrategyHub:
         runtime: dict[str, Any],
         consensus: dict[str, Any],
     ) -> dict[str, Any]:
-        dyn, dyn_error, dyn_stale = self.cache.get(self.fin2_url)
+        if self.dyn_snapshot_path is None:
+            dyn, dyn_error, dyn_stale = self.cache.get(self.fin2_url)
+        else:
+            dyn, dyn_error, dyn_stale = read_dyn_snapshot(
+                self.dyn_snapshot_path,
+                stale_after_seconds=self.dyn_stale_after_seconds,
+            )
         strategies = [
             _funding_strategy(funding),
             _consensus_strategy(consensus),
