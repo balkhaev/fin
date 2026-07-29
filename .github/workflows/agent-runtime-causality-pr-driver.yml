@@ -101,30 +101,21 @@ jobs:
 
           journal = Path('src/finruntime/journal/atomic.py')
           text = journal.read_text(encoding='utf-8')
-          old = '''            previous_time = last_time.get(strategy_id)
-              if previous_time is not None and event_time < previous_time:
-                  raise JournalCorruptionError(
-                      f"journal event time moved backward on line {line_number}"
-                  )
-              last_sequence[strategy_id] = sequence
-              last_time[strategy_id] = event_time
-
-              cycle_key = (strategy_id, sequence)
-          '''
-          new = '''            last_sequence[strategy_id] = sequence
-              if event_type in _RUNTIME_EVENT_PHASES or event_type == "HALT_CLEARED":
-                  previous_time = last_time.get(strategy_id)
-                  if previous_time is not None and event_time < previous_time:
-                      raise JournalCorruptionError(
-                          f"journal event time moved backward on line {line_number}"
-                      )
-                  last_time[strategy_id] = event_time
-
-              cycle_key = (strategy_id, sequence)
-          '''
-          if text.count(old) != 1:
-              raise SystemExit('journal chronology marker changed')
-          journal.write_text(text.replace(old, new, 1), encoding='utf-8')
+          start_marker = '            previous_time = last_time.get(strategy_id)\n'
+          end_marker = '            cycle_key = (strategy_id, sequence)\n'
+          start = text.index(start_marker)
+          end = text.index(end_marker, start)
+          replacement = (
+              '            last_sequence[strategy_id] = sequence\n'
+              '            if event_type in _RUNTIME_EVENT_PHASES or event_type == "HALT_CLEARED":\n'
+              '                previous_time = last_time.get(strategy_id)\n'
+              '                if previous_time is not None and event_time < previous_time:\n'
+              '                    raise JournalCorruptionError(\n'
+              '                        f"journal event time moved backward on line {line_number}"\n'
+              '                    )\n'
+              '                last_time[strategy_id] = event_time\n\n'
+          )
+          journal.write_text(text[:start] + replacement + text[end:], encoding='utf-8')
           PY
           test -z "$(git ls-files -u)"
           git diff --check
