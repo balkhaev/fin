@@ -28,6 +28,14 @@ MAX_POSITIONS = 2
 MAX_HISTORY_POINTS = 720
 MAX_EVENTS = 30
 FIFTEEN_MINUTES_MS = 15 * 60 * 1000
+BASE_WIF_RISK_PERCENT = 3.0
+BASE_DOT_RISK_PERCENT = 5.0
+BOOST_WIF_RISK_PERCENT = 7.5
+BOOST_DOT_RISK_PERCENT = 10.0
+BOOST_TRIGGER_PROFIT_PERCENT = 15.0
+DERISK_DRAWDOWN_PERCENT = 8.0
+HARD_STOP_DRAWDOWN_PERCENT = 15.0
+EPSILON = 1e-9
 
 
 def _now_ms() -> int:
@@ -302,7 +310,6 @@ def evaluate_signals(market: dict[str, Any]) -> list[dict[str, Any]]:
                         "stop_atr": 1.25,
                         "target_r": 5.0,
                         "max_hold_minutes": 60,
-                        "risk_percent": 3.0,
                         "strength": min(100, round(raw_strength / 8 * 100)),
                         "reason": (
                             f"45m {float(wif['move_45m_atr']):.2f} ATR; "
@@ -335,7 +342,6 @@ def evaluate_signals(market: dict[str, Any]) -> list[dict[str, Any]]:
                     "stop_atr": 6.0,
                     "target_r": 2.0,
                     "max_hold_minutes": 480,
-                    "risk_percent": 5.0,
                     "strength": min(100, round(raw_strength * 2 / 8 * 100)),
                     "reason": (
                         f"funding {float(dot['funding_rate_bps']):.2f} bps; "
@@ -344,6 +350,71 @@ def evaluate_signals(market: dict[str, Any]) -> list[dict[str, Any]]:
                 }
             )
     return signals
+
+
+def create_initial_risk_state(
+    initial_equity: float = INITIAL_EQUITY_USDT,
+) -> dict[str, float | str]:
+    if not math.isfinite(initial_equity) or initial_equity <= 0:
+        raise ValueError("initial equity must be positive and finite")
+    return {
+        "mode": "base",
+        "initial_equity_usdt": initial_equity,
+        "equity_usdt": initial_equity,
+        "high_water_equity_usdt": initial_equity,
+        "last_derisk_high_water_equity_usdt": initial_equity,
+    }
+
+
+def transition_risk_state(
+    state: dict[str, Any], equity: float
+) -> dict[str, float | str]:
+    initial = float(state.get("initial_equity_usdt", INITIAL_EQUITY_USDT))
+    if not math.isfinite(initial) or initial <= 0:
+        raise ValueError("risk state initial equity must be positive and finite")
+    if not math.isfinite(equity) or equity <= 0:
+        raise ValueError("paper equity must be positive and finite")
+
+    mode = str(state.get("mode", "base"))
+    if mode not in {"base", "boost", "stopped"}:
+        raise ValueError(f"unsupported risk mode: {mode}")
+    prior_high_water = float(state.get("high_water_equity_usdt", initial))
+    last_derisk = float(state.get("last_derisk_high_water_equity_usdt", initial))
+    high_water = max(prior_high_water, equity)
+    drawdown_percent = (1 - equity / high_water) * 100
+    profit_percent = (equity / initial - 1) * 100
+
+    if mode == "stopped" or drawdown_percent + EPSILON >= HARD_STOP_DRAWDOWN_PERCENT:
+        mode = "stopped"
+    elif mode == "boost" and (drawdown_percent + EPSILON >= DERISK_DRAWDOWN_PERCENT):
+        mode = "base"
+        last_derisk = high_water
+    else:
+        at_high_water = abs(equity - high_water) <= EPSILON
+        recovered_after_derisk = equity + EPSILON >= last_derisk
+        if (
+            mode == "base"
+            and profit_percent + EPSILON >= BOOST_TRIGGER_PROFIT_PERCENT
+            and at_high_water
+            and recovered_after_derisk
+        ):
+            mode = "boost"
+
+    return {
+        "mode": mode,
+        "initial_equity_usdt": initial,
+        "equity_usdt": equity,
+        "high_water_equity_usdt": high_water,
+        "last_derisk_high_water_equity_usdt": last_derisk,
+    }
+
+
+def _risk_percent(module: str, mode: str) -> float:
+    if mode == "stopped":
+        return 0.0
+    if module == "wif_oi_flush":
+        return BOOST_WIF_RISK_PERCENT if mode == "boost" else BASE_WIF_RISK_PERCENT
+    return BOOST_DOT_RISK_PERCENT if mode == "boost" else BASE_DOT_RISK_PERCENT
 
 
 def _empty_state() -> dict[str, Any]:
@@ -364,6 +435,7 @@ def _empty_state() -> dict[str, Any]:
             "positions": [],
             "equity_history": [],
         },
+        "risk_state": create_initial_risk_state(),
         "signals": [],
         "seen_signal_keys": [],
         "candles": [],
@@ -380,6 +452,15 @@ def _load_state(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict) or value.get("schema_version") != 1:
         raise ValueError("unsupported consensus paper snapshot")
+    if not isinstance(value.get("risk_state"), dict):
+        paper = value.get("paper")
+        paper = paper if isinstance(paper, dict) else {}
+        equity = float(paper.get("equity_usdt", INITIAL_EQUITY_USDT))
+        value["risk_state"] = {
+            **create_initial_risk_state(),
+            "equity_usdt": equity,
+            "high_water_equity_usdt": max(INITIAL_EQUITY_USDT, equity),
+        }
     return value
 
 
@@ -448,7 +529,20 @@ def update_paper_state(state: dict[str, Any], market: dict[str, Any]) -> dict[st
     equity = INITIAL_EQUITY_USDT + realized + unrealized
     gross = sum(float(item["notional_usdt"]) for item in positions)
     seen = {str(item) for item in state.get("seen_signal_keys") or []}
-    signals = evaluate_signals(market)
+    prior_risk_state = state.get("risk_state")
+    prior_risk_state = (
+        prior_risk_state
+        if isinstance(prior_risk_state, dict)
+        else create_initial_risk_state()
+    )
+    risk_state = transition_risk_state(prior_risk_state, equity)
+    if risk_state["mode"] != prior_risk_state.get("mode"):
+        _event(
+            state,
+            "risk_mode_changed",
+            {"from": prior_risk_state.get("mode"), "to": risk_state["mode"]},
+        )
+    signals = evaluate_signals(market) if risk_state["mode"] != "stopped" else []
     for candidate in signals:
         if (
             candidate["key"] in seen
@@ -459,9 +553,8 @@ def update_paper_state(state: dict[str, Any], market: dict[str, Any]) -> dict[st
         stop_distance = float(candidate["atr"]) * float(candidate["stop_atr"])
         entry = float(candidate["entry_price"])
         risk_distance = stop_distance / entry + ROUND_TURN_COST_RATE
-        requested_notional = (
-            equity * float(candidate["risk_percent"]) / 100 / risk_distance
-        )
+        risk_percent = _risk_percent(str(candidate["module"]), str(risk_state["mode"]))
+        requested_notional = equity * risk_percent / 100 / risk_distance
         remaining_gross = max(0.0, equity * MAX_GROSS_LEVERAGE - gross)
         notional = min(requested_notional, remaining_gross)
         if notional <= 0:
@@ -477,6 +570,8 @@ def update_paper_state(state: dict[str, Any], market: dict[str, Any]) -> dict[st
             "mark_price": entry,
             "quantity": quantity,
             "notional_usdt": notional,
+            "risk_mode": risk_state["mode"],
+            "risk_percent": risk_percent,
             "stop_price": entry - stop_distance,
             "take_profit_price": entry + stop_distance * float(candidate["target_r"]),
             "opened_at_ms": now_ms,
@@ -519,6 +614,7 @@ def update_paper_state(state: dict[str, Any], market: dict[str, Any]) -> dict[st
                 "positions": positions,
                 "equity_history": history[-MAX_HISTORY_POINTS:],
             },
+            "risk_state": risk_state,
             "signals": signals,
             "seen_signal_keys": sorted(seen)[-500:],
             "candles": market["candles"],

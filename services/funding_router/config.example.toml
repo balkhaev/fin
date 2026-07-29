@@ -10,7 +10,7 @@ candle_timeframe = "1m"
 candle_limit = 120
 
 [risk]
-capital_usdt = 3000.0
+capital_usdt = 10000.0
 notional_usdt = 1000.0
 max_deployed_fraction = 0.80
 min_free_reserve_fraction = 0.20
@@ -40,7 +40,7 @@ maker_timeout_seconds = 8.0
 order_poll_seconds = 0.5
 maker_offset_bps = 0.0
 close_retry_delay_seconds = 0.75
-paper_start_balance_usdt = 3000.0
+paper_start_balance_usdt = 10000.0
 paper_entry_extra_bps = 0.0
 paper_exit_extra_bps = 0.0
 

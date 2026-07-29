@@ -165,6 +165,7 @@ button { font: inherit; }
 .strategy-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
 .strategy-dot.running,
 .strategy-dot.healthy { background: var(--green); box-shadow: 0 0 0 5px rgba(66, 214, 155, 0.08); }
+.strategy-dot.waiting { background: var(--muted); }
 .strategy-dot.degraded { background: var(--amber); }
 .strategy-card h3 { margin: 13px 0 4px; font-size: 15px; letter-spacing: -0.015em; }
 .strategy-card p { min-height: 34px; margin: 0; color: var(--muted); font-size: 10px; }

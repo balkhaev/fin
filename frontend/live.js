@@ -313,9 +313,13 @@
     selectedPnl.className = tone(strategy.pnl_usdt);
     const status = $("#position-status");
     status.textContent = strategy.status_label;
-    status.className = `position-status ${
-      strategy.status === "running" || strategy.status === "healthy" ? "open" : "degraded"
-    }`;
+    const statusTone =
+      strategy.status === "running" || strategy.status === "healthy"
+        ? "open"
+        : strategy.status === "waiting"
+          ? "waiting"
+          : "degraded";
+    status.className = `position-status ${statusTone}`;
 
     const facts = $("#strategy-facts");
     facts.replaceChildren();

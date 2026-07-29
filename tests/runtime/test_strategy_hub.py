@@ -9,7 +9,9 @@ from finruntime.observability.strategy_hub import (
 )
 from finruntime.strategies.consensus_paper import (
     _empty_state,
+    create_initial_risk_state,
     evaluate_signals,
+    transition_risk_state,
     update_paper_state,
 )
 
@@ -61,6 +63,27 @@ class ConsensusPaperTests(unittest.TestCase):
         self.assertLess(state["paper"]["equity_usdt"], 10_000.0)
         self.assertFalse(state["exchange_submission_available"])
 
+    def test_trader_risk_accelerator_matches_source_transitions(self) -> None:
+        initial = create_initial_risk_state(10_000)
+        boosted = transition_risk_state(initial, 11_500)
+        self.assertEqual(boosted["mode"], "boost")
+        derisked = transition_risk_state(boosted, 10_500)
+        self.assertEqual(derisked["mode"], "base")
+        stopped = transition_risk_state(derisked, 9_700)
+        self.assertEqual(stopped["mode"], "stopped")
+        self.assertEqual(transition_risk_state(stopped, 12_000)["mode"], "stopped")
+
+    def test_boost_mode_uses_source_risk_percentages(self) -> None:
+        state = _empty_state()
+        state["paper"]["realized_pnl_usdt"] = 1_500
+        updated = update_paper_state(state, self.market())
+        self.assertEqual(updated["risk_state"]["mode"], "boost")
+        risk_by_symbol = {
+            item["symbol"]: item["risk_percent"]
+            for item in updated["paper"]["positions"]
+        }
+        self.assertEqual(risk_by_symbol, {"WIFUSDT": 7.5, "DOTUSDT": 10.0})
+
 
 class StrategyHubTests(unittest.TestCase):
     def test_normalizes_all_repository_strategies(self) -> None:
@@ -68,8 +91,8 @@ class StrategyHubTests(unittest.TestCase):
             "status": "ready",
             "marketDataAt": "2026-07-29T12:00:00Z",
             "paper": {
-                "account": {"initialNavUsd": 100_000},
-                "navUsd": 100_100,
+                "account": {"initialNavUsd": 10_000},
+                "navUsd": 10_100,
                 "totalExecutions": 2,
             },
             "positions": [],
@@ -83,8 +106,8 @@ class StrategyHubTests(unittest.TestCase):
                 "health": "healthy",
                 "updated_at_ms": 1,
                 "paper": {
-                    "starting_balance_usdt": 3_000,
-                    "equity_usdt": 3_010,
+                    "starting_balance_usdt": 10_000,
+                    "equity_usdt": 10_010,
                     "closed_positions": 1,
                     "open_position": None,
                 },
@@ -117,8 +140,55 @@ class StrategyHubTests(unittest.TestCase):
             {item["repository"] for item in snapshot["strategies"]},
             {"fin", "trader", "fin2"},
         )
-        self.assertEqual(snapshot["summary"]["paper_equity_usdt"], 123_130)
+        self.assertEqual(snapshot["summary"]["paper_equity_usdt"], 40_130)
+        self.assertEqual(snapshot["summary"]["paper_starting_balance_usdt"], 40_000)
+        self.assertTrue(
+            all(
+                item["starting_balance_usdt"] == 10_000
+                for item in snapshot["strategies"]
+            )
+        )
         self.assertFalse(snapshot["exchange_submission_available"])
+
+    def test_atlas_waits_for_real_observations(self) -> None:
+        dyn = {
+            "status": "ready",
+            "paper": {
+                "account": {"initialNavUsd": 10_000},
+                "navUsd": 10_000,
+            },
+            "positions": [],
+        }
+        hub = StrategyHub(
+            fin2_url="https://example.test/forward",
+            cache=UpstreamSnapshotCache(lambda _url, _timeout: dyn),
+        )
+        snapshot = hub.snapshot(
+            funding={
+                "health": "healthy",
+                "paper": {
+                    "starting_balance_usdt": 10_000,
+                    "equity_usdt": 10_000,
+                },
+            },
+            consensus={**_empty_state(), "health": "healthy"},
+            runtime={
+                "scheduler": {"state": "idle"},
+                "strategies": [
+                    {
+                        "strategy_id": "v75_atlas_nx",
+                        "health": "healthy",
+                        "observation_count": 0,
+                        "account": {"equity": 10_000},
+                    }
+                ],
+            },
+        )
+        atlas = next(
+            item for item in snapshot["strategies"] if item["id"] == "atlas-nx"
+        )
+        self.assertEqual(atlas["status"], "waiting")
+        self.assertEqual(snapshot["summary"]["running_count"], 3)
 
 
 if __name__ == "__main__":

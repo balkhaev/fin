@@ -80,6 +80,13 @@ def read_consensus_snapshot(path: Path) -> dict[str, Any]:
                 "positions": [],
                 "equity_history": [],
             },
+            "risk_state": {
+                "mode": "base",
+                "initial_equity_usdt": 10_000.0,
+                "equity_usdt": 10_000.0,
+                "high_water_equity_usdt": 10_000.0,
+                "last_derisk_high_water_equity_usdt": 10_000.0,
+            },
             "candles": [],
             "signals": [],
             "errors": ["WIF/DOT paper worker is starting"],
@@ -141,13 +148,17 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
     equity = _number(account.get("equity"), starting)
     pnl = equity - starting
     observations = int(_number(source.get("observation_count")))
+    source_health = str(source.get("health", "starting"))
+    status = "waiting" if observations == 0 else source_health
+    if status == "healthy":
+        status = "running"
     return {
         "id": "atlas-nx",
         "repository": "fin",
         "name": "Atlas NX",
         "description": "Портфельный FIN runtime с проверяемым paper-ledger.",
         "mode": "paper",
-        "status": source.get("health", "starting"),
+        "status": status,
         "status_label": "Наблюдает" if observations else "Ждёт первый цикл",
         "equity_usdt": equity,
         "starting_balance_usdt": starting,
@@ -179,6 +190,8 @@ def _consensus_strategy(snapshot: dict[str, Any]) -> dict[str, Any]:
     positions = positions if isinstance(positions, list) else []
     signals = snapshot.get("signals")
     signals = signals if isinstance(signals, list) else []
+    risk_state = snapshot.get("risk_state")
+    risk_state = risk_state if isinstance(risk_state, dict) else {}
     return {
         "id": "consensus-wif-dot",
         "repository": "trader",
@@ -202,7 +215,8 @@ def _consensus_strategy(snapshot: dict[str, Any]) -> dict[str, Any]:
         "signals": signals,
         "candles": snapshot.get("candles") or [],
         "detail": {
-            "risk_mode": "base",
+            "risk_mode": risk_state.get("mode", "base"),
+            "high_water_equity_usdt": risk_state.get("high_water_equity_usdt"),
             "max_gross": MAX_GROSS_LEVERAGE,
             "errors": snapshot.get("errors") or [],
             **(snapshot.get("diagnostics") or {}),
@@ -218,7 +232,7 @@ def _dyn_strategy(
     paper = paper if isinstance(paper, dict) else {}
     account = paper.get("account")
     account = account if isinstance(account, dict) else {}
-    starting = _number(account.get("initialNavUsd"), 100_000.0)
+    starting = _number(account.get("initialNavUsd"), 10_000.0)
     equity = _number(paper.get("navUsd"), starting)
     pnl = equity - starting
     positions = source.get("positions")
@@ -299,7 +313,7 @@ class StrategyHub:
             "summary": {
                 "strategy_count": len(strategies),
                 "running_count": sum(
-                    item["status"] in {"running", "healthy"} for item in strategies
+                    item["status"] == "running" for item in strategies
                 ),
                 "paper_equity_usdt": equity,
                 "paper_starting_balance_usdt": starting,

@@ -48,7 +48,7 @@ class ServiceSettings:
 
 @dataclass(frozen=True, slots=True)
 class RiskSettings:
-    capital_usdt: float = 3_000.0
+    capital_usdt: float = 10_000.0
     notional_usdt: float = 1_000.0
     max_deployed_fraction: float = 0.80
     min_free_reserve_fraction: float = 0.20
@@ -80,7 +80,7 @@ class ExecutionSettings:
     order_poll_seconds: float = 0.5
     maker_offset_bps: float = 0.0
     close_retry_delay_seconds: float = 0.75
-    paper_start_balance_usdt: float = 3_000.0
+    paper_start_balance_usdt: float = 10_000.0
     paper_entry_extra_bps: float = 0.0
     paper_exit_extra_bps: float = 0.0
 
@@ -264,7 +264,7 @@ def load_settings(path: str | Path) -> Settings:
         candle_limit=_integer(service_raw, "candle_limit", 120),
     )
     risk = RiskSettings(
-        capital_usdt=_number(risk_raw, "capital_usdt", 3_000.0),
+        capital_usdt=_number(risk_raw, "capital_usdt", 10_000.0),
         notional_usdt=_number(risk_raw, "notional_usdt", 1_000.0),
         max_deployed_fraction=_number(risk_raw, "max_deployed_fraction", 0.80),
         min_free_reserve_fraction=_number(risk_raw, "min_free_reserve_fraction", 0.20),
@@ -305,7 +305,7 @@ def load_settings(path: str | Path) -> Settings:
             execution_raw, "close_retry_delay_seconds", 0.75
         ),
         paper_start_balance_usdt=_number(
-            execution_raw, "paper_start_balance_usdt", 3_000.0
+            execution_raw, "paper_start_balance_usdt", 10_000.0
         ),
         paper_entry_extra_bps=_number(execution_raw, "paper_entry_extra_bps", 0.0),
         paper_exit_extra_bps=_number(execution_raw, "paper_exit_extra_bps", 0.0),
