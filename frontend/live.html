@@ -66,8 +66,24 @@
           <div id="asset-tabs" class="tabs" aria-label="Актив"></div>
           <div id="venue-tabs" class="tabs tabs-subtle" aria-label="Биржа"></div>
         </div>
+        <div class="chart-tools">
+          <div class="chart-window-control">
+            <span>Свечи</span>
+            <div id="chart-window-tabs" class="tabs tabs-compact" aria-label="Количество свечей"></div>
+          </div>
+          <span class="chart-hint">Наведите на свечу или используйте ← →</span>
+        </div>
         <div class="chart-wrap">
-          <svg id="candle-chart" viewBox="0 0 960 360" role="img" aria-label="Свечной график реальных цен"></svg>
+          <div id="chart-inspector" class="chart-inspector">
+            <time id="chart-candle-time">—</time>
+            <dl class="chart-ohlc">
+              <div><dt>Откр</dt><dd id="chart-open">—</dd></div>
+              <div><dt>Макс</dt><dd id="chart-candle-high">—</dd></div>
+              <div><dt>Мин</dt><dd id="chart-candle-low">—</dd></div>
+              <div><dt>Закр</dt><dd id="chart-close">—</dd></div>
+            </dl>
+          </div>
+          <svg id="candle-chart" viewBox="0 0 960 360" role="img" tabindex="0" aria-label="Свечной график реальных цен"></svg>
           <div id="chart-empty" class="empty-state" hidden>Для стратегии пока нет свечей.</div>
         </div>
         <footer class="chart-footer">

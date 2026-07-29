@@ -7,6 +7,10 @@
     selectedStrategyId: "funding-neutral",
     selectedAsset: null,
     selectedVenue: null,
+    chartCandleCount: 60,
+    chartKeyboardIndex: null,
+    chartInteractionController: null,
+    resizeFrame: null,
     socket: null,
     reconnectTimer: null,
     reconnectAttempts: 0,
@@ -154,6 +158,26 @@
     return source.filter((item) => Array.isArray(item.items) && item.items.length > 1);
   };
 
+  const renderChartInspector = (candle) => {
+    const values = {
+      "#chart-open": candle?.open,
+      "#chart-candle-high": candle?.high,
+      "#chart-candle-low": candle?.low,
+      "#chart-close": candle?.close,
+    };
+    for (const [selector, value] of Object.entries(values)) {
+      $(selector).textContent = candle ? formatPrice(value) : "—";
+    }
+    $("#chart-candle-time").textContent = candle
+      ? new Date(candle.timestamp_ms).toLocaleString("ru-RU", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "—";
+  };
+
   const renderChart = () => {
     const series = chartSeries();
     const assets = [...new Set(series.map((item) => String(item.asset)))];
@@ -170,28 +194,52 @@
       state.selectedVenue = venue;
       renderChart();
     });
+    renderTabs(
+      $("#chart-window-tabs"),
+      ["30", "60", "120"],
+      String(state.chartCandleCount),
+      (value) => {
+        state.chartCandleCount = asNumber(value, 60);
+        state.chartKeyboardIndex = null;
+        renderChart();
+      }
+    );
 
     const selected = assetSeries.find((item) => item.exchange_id === state.selectedVenue);
     const chart = $("#candle-chart");
+    state.chartInteractionController?.abort();
+    state.chartInteractionController = null;
     chart.replaceChildren();
     if (!selected) {
       $("#chart-empty").hidden = false;
       $("#chart-title").textContent = "Рынок";
       $("#chart-last").textContent = "—";
       $("#chart-change").textContent = "—";
+      $("#chart-change").className = "neutral";
+      $("#chart-change").title = "";
+      $("#chart-low").textContent = "—";
+      $("#chart-high").textContent = "—";
+      $("#chart-range").textContent = "—";
+      chart.setAttribute("aria-label", "Для выбранной стратегии пока нет свечей");
+      renderChartInspector(null);
       return;
     }
     $("#chart-empty").hidden = true;
-    const candles = selected.items.slice(-120);
+    const candles = selected.items.slice(-state.chartCandleCount);
     const rawMin = Math.min(...candles.map((item) => asNumber(item.low)));
     const rawMax = Math.max(...candles.map((item) => asNumber(item.high)));
     const padding = Math.max((rawMax - rawMin) * 0.08, rawMax * 0.0005);
     const minimum = rawMin - padding;
     const maximum = rawMax + padding;
-    const width = 960;
     const height = 360;
+    const chartBounds = chart.getBoundingClientRect();
+    const width = Math.max(
+      440,
+      Math.round(height * ((chartBounds.width || 960) / (chartBounds.height || height)))
+    );
+    chart.setAttribute("viewBox", `0 0 ${width} ${height}`);
     const left = 10;
-    const right = 82;
+    const right = 78;
     const top = 14;
     const bottom = 30;
     const plotWidth = width - left - right;
@@ -215,6 +263,20 @@
       const label = svg("text", { x: width - right + 10, y: gridY + 4, class: "chart-axis" });
       label.textContent = formatPrice(price);
       chart.append(label);
+    }
+
+    const timeIndexes = [...new Set([0, Math.floor((candles.length - 1) / 2), candles.length - 1])];
+    for (const index of timeIndexes) {
+      const center = left + xStep * index + xStep / 2;
+      chart.append(
+        svg("line", {
+          x1: center,
+          y1: top,
+          x2: center,
+          y2: height - bottom,
+          class: "chart-grid chart-grid-vertical",
+        })
+      );
     }
 
     for (const [index, candle] of candles.entries()) {
@@ -244,7 +306,6 @@
       );
     }
 
-    const timeIndexes = [0, Math.floor((candles.length - 1) / 2), candles.length - 1];
     for (const index of timeIndexes) {
       const label = svg("text", {
         x: left + xStep * index + xStep / 2,
@@ -275,13 +336,91 @@
     const lastLabel = svg("text", { x: width - right + 10, y: lastY - 6, class: "last-label" });
     lastLabel.textContent = formatPrice(last);
     chart.append(lastLabel);
+
+    const verticalCrosshair = svg("line", {
+      y1: top,
+      y2: height - bottom,
+      class: "chart-crosshair",
+      visibility: "hidden",
+    });
+    const horizontalCrosshair = svg("line", {
+      x1: left,
+      x2: width - right,
+      class: "chart-crosshair",
+      visibility: "hidden",
+    });
+    const crosshairPoint = svg("circle", {
+      r: 4,
+      class: "chart-crosshair-point",
+      visibility: "hidden",
+    });
+    chart.append(verticalCrosshair, horizontalCrosshair, crosshairPoint);
+
+    const inspectCandle = (index) => {
+      const safeIndex = Math.max(0, Math.min(candles.length - 1, index));
+      const candle = candles[safeIndex];
+      const center = left + xStep * safeIndex + xStep / 2;
+      const closeY = y(asNumber(candle.close));
+      verticalCrosshair.setAttribute("x1", String(center));
+      verticalCrosshair.setAttribute("x2", String(center));
+      horizontalCrosshair.setAttribute("y1", String(closeY));
+      horizontalCrosshair.setAttribute("y2", String(closeY));
+      crosshairPoint.setAttribute("cx", String(center));
+      crosshairPoint.setAttribute("cy", String(closeY));
+      verticalCrosshair.setAttribute("visibility", "visible");
+      horizontalCrosshair.setAttribute("visibility", "visible");
+      crosshairPoint.setAttribute("visibility", "visible");
+      renderChartInspector(candle);
+      state.chartKeyboardIndex = safeIndex;
+    };
+    const resetInspection = () => {
+      verticalCrosshair.setAttribute("visibility", "hidden");
+      horizontalCrosshair.setAttribute("visibility", "hidden");
+      crosshairPoint.setAttribute("visibility", "hidden");
+      renderChartInspector(candles.at(-1));
+      state.chartKeyboardIndex = null;
+    };
+    const inspectPointer = (event) => {
+      const bounds = chart.getBoundingClientRect();
+      const viewX = ((event.clientX - bounds.left) / bounds.width) * width;
+      inspectCandle(Math.floor((viewX - left) / xStep));
+    };
+    const interactionController = new AbortController();
+    const interactionOptions = { signal: interactionController.signal };
+    state.chartInteractionController = interactionController;
+    chart.addEventListener("pointermove", inspectPointer, interactionOptions);
+    chart.addEventListener("pointerdown", inspectPointer, interactionOptions);
+    chart.addEventListener("pointerleave", resetInspection, interactionOptions);
+    chart.addEventListener(
+      "focus",
+      () => inspectCandle(candles.length - 1),
+      interactionOptions
+    );
+    chart.addEventListener("blur", resetInspection, interactionOptions);
+    chart.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const current = state.chartKeyboardIndex ?? candles.length - 1;
+        inspectCandle(current + (event.key === "ArrowLeft" ? -1 : 1));
+      },
+      interactionOptions
+    );
+
+    renderChartInspector(candles.at(-1));
     $("#chart-title").textContent = `${selected.asset} / USDT · ${selected.exchange_id}`;
+    chart.setAttribute(
+      "aria-label",
+      `${selected.asset} / USDT, ${selected.exchange_id}, ${candles.length} свечей, последняя цена ${formatPrice(last)}`
+    );
     $("#chart-last").textContent = formatPrice(last);
     $("#chart-change").textContent = `${change > 0 ? "+" : ""}${formatNumber(change, 2)}%`;
     $("#chart-change").className = tone(change);
+    $("#chart-change").title = `Изменение за последние ${candles.length} свечей`;
     $("#chart-low").textContent = formatPrice(rawMin);
     $("#chart-high").textContent = formatPrice(rawMax);
-    $("#chart-range").textContent = `${selected.timeframe} · ${candles.length} реальных свечей`;
+    $("#chart-range").textContent = `${selected.timeframe} · последние ${candles.length} из ${selected.items.length} свечей`;
   };
 
   const positionTitle = (position) => {
@@ -534,8 +673,17 @@
   };
 
   $("#refresh").addEventListener("click", reconnectNow);
+  window.addEventListener("resize", () => {
+    if (state.resizeFrame) cancelAnimationFrame(state.resizeFrame);
+    state.resizeFrame = requestAnimationFrame(() => {
+      state.resizeFrame = null;
+      if (state.hub) renderChart();
+    });
+  });
   window.addEventListener("beforeunload", () => {
     state.unloading = true;
+    state.chartInteractionController?.abort();
+    if (state.resizeFrame) cancelAnimationFrame(state.resizeFrame);
     clearTimeout(state.reconnectTimer);
     state.socket?.close(1000, "page unload");
   });
