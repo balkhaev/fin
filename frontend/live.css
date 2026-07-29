@@ -145,7 +145,8 @@ button { font: inherit; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 12px; }
 .section-heading h2 { margin: 3px 0 0; font-size: 18px; letter-spacing: -0.02em; }
 .strategy-section { margin-bottom: 14px; }
-.strategy-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+.strategy-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; scrollbar-width: none; }
+.strategy-tabs::-webkit-scrollbar { display: none; }
 .strategy-card {
   min-width: 0;
   padding: 16px;
@@ -155,6 +156,7 @@ button { font: inherit; }
   background: var(--panel-soft);
   text-align: left;
   cursor: pointer;
+  scroll-snap-align: start;
 }
 .strategy-card:hover { border-color: var(--border-bright); }
 .strategy-card.active { border-color: rgba(66, 214, 155, 0.46); background: linear-gradient(145deg, rgba(66, 214, 155, 0.1), var(--panel-soft) 58%); box-shadow: inset 0 0 0 1px rgba(66, 214, 155, 0.06); }
@@ -302,7 +304,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.018); }
   .account-primary p { font-size: 12px; }
   .account-metrics div { padding: 13px; }
   .account-metrics dd { font-size: 13px; }
-  .strategy-tabs { display: flex; overflow-x: auto; padding-bottom: 4px; }
+  .strategy-tabs { display: flex; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x proximity; }
   .strategy-card { min-width: 250px; }
   .panel-head { padding-inline: 15px; }
   .market-switcher { padding-inline: 14px; overflow-x: auto; }
