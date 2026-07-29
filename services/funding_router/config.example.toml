@@ -1,10 +1,13 @@
 [service]
-poll_seconds = 15.0
+poll_seconds = 5.0
 database_path = "data/funding_router.sqlite3"
+snapshot_path = "data/funding_router_snapshot.json"
 log_level = "INFO"
 order_book_limit = 50
 funding_history_limit = 3
 history_cache_seconds = 300.0
+candle_timeframe = "1m"
+candle_limit = 120
 
 [risk]
 capital_usdt = 3000.0

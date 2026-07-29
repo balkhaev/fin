@@ -9,5 +9,10 @@ archive
 deploy
 docs
 runtime
-services
+services/funding_router/tests
+services/funding_router/deploy
+services/funding_router/compose.yaml
+services/funding_router/MANIFEST.json
+services/funding_router/STATUS.json
+services/funding_router/verify.py
 tests

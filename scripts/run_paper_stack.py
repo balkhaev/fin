@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the persistent paper scheduler and read-only Control Room together."""
+"""Run real-market paper trading, the scheduler and Control Room together."""
 
 from __future__ import annotations
 
@@ -63,27 +63,54 @@ def _terminate(processes: list[subprocess.Popen[bytes]]) -> None:
 
 def main() -> int:
     initialize_account()
-    commands = [
-        [
-            "fin-paper-scheduler",
-            "daemon",
-            "--runtime-root",
-            str(RUNTIME_ROOT),
-            "--poll-seconds",
-            "5",
-            "--max-items-per-pass",
-            "10",
-        ],
-        [
-            "fin-control-room",
-            "--host",
-            "0.0.0.0",
-            "--port",
-            "8000",
-            "--allow-remote",
-            "--runtime-root",
-            str(RUNTIME_ROOT),
-        ],
+    funding_snapshot = RUNTIME_ROOT / "funding_router_snapshot.json"
+    funding_environment = dict(os.environ)
+    funding_environment.update(
+        {
+            "FUNDING_ROUTER_DATABASE_PATH": str(
+                RUNTIME_ROOT / "funding_router.sqlite3"
+            ),
+            "FUNDING_ROUTER_SNAPSHOT_PATH": str(funding_snapshot),
+        }
+    )
+    process_specs: list[tuple[list[str], dict[str, str] | None]] = [
+        (
+            [
+                "funding-router",
+                "--config",
+                "services/funding_router/config.example.toml",
+                "paper",
+            ],
+            funding_environment,
+        ),
+        (
+            [
+                "fin-paper-scheduler",
+                "daemon",
+                "--runtime-root",
+                str(RUNTIME_ROOT),
+                "--poll-seconds",
+                "5",
+                "--max-items-per-pass",
+                "10",
+            ],
+            None,
+        ),
+        (
+            [
+                "fin-control-room",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8000",
+                "--allow-remote",
+                "--runtime-root",
+                str(RUNTIME_ROOT),
+                "--paper-snapshot",
+                str(funding_snapshot),
+            ],
+            None,
+        ),
     ]
     processes: list[subprocess.Popen[bytes]] = []
     stop_requested = False
@@ -97,15 +124,18 @@ def main() -> int:
         for signum in (signal.SIGINT, signal.SIGTERM)
     }
     try:
-        for command in commands:
+        for command, environment in process_specs:
             print(f"Starting: {' '.join(command)}", flush=True)
-            processes.append(subprocess.Popen(command))
+            processes.append(subprocess.Popen(command, env=environment))
         while not stop_requested:
-            for process, command in zip(processes, commands, strict=True):
+            for process, (command, _environment) in zip(
+                processes, process_specs, strict=True
+            ):
                 return_code = process.poll()
                 if return_code is not None:
                     print(
-                        f"Paper stack child exited ({return_code}): {' '.join(command)}",
+                        "Paper stack child exited "
+                        f"({return_code}): {' '.join(command)}",
                         file=sys.stderr,
                         flush=True,
                     )

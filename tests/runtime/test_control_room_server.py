@@ -4,6 +4,7 @@ import csv
 import json
 import tempfile
 import threading
+import time
 import unittest
 import urllib.error
 import urllib.request
@@ -41,16 +42,64 @@ class ControlRoomServerTests(unittest.TestCase):
         root = Path(self.temporary.name)
         frontend = root / "frontend"
         frontend.mkdir()
-        (frontend / "index.html").write_text("<!doctype html><title>FIN</title>", encoding="utf-8")
+        (frontend / "index.html").write_text(
+            "<!doctype html><title>FIN</title>", encoding="utf-8"
+        )
+        (frontend / "live.html").write_text(
+            "<!doctype html><title>FIN Paper</title>", encoding="utf-8"
+        )
         dashboard = frontend / "dashboard.json"
-        dashboard.write_text(json.dumps({"schema_version": 1, "environment": {"live_ready": False}, "hero": {}, "strategies": [], "stress_scenarios": [], "annual_returns": [], "equity_curve": [], "market": {}, "readiness": [], "policy": {}, "governance": {}, "sources": []}), encoding="utf-8")
+        dashboard.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "environment": {"live_ready": False},
+                    "hero": {},
+                    "strategies": [],
+                    "stress_scenarios": [],
+                    "annual_returns": [],
+                    "equity_curve": [],
+                    "market": {},
+                    "readiness": [],
+                    "policy": {},
+                    "governance": {},
+                    "sources": [],
+                }
+            ),
+            encoding="utf-8",
+        )
         runtime = root / "runtime" / "v75_atlas_nx"
         runtime.mkdir(parents=True)
-        with (runtime / "forward_telemetry.csv").open("w", encoding="utf-8", newline="") as handle:
+        with (runtime / "forward_telemetry.csv").open(
+            "w", encoding="utf-8", newline=""
+        ) as handle:
             writer = csv.DictWriter(handle, fieldnames=TELEMETRY_FIELDS)
             writer.writeheader()
             writer.writerow(telemetry_row())
-        self.server = create_server(host="127.0.0.1", port=0, frontend_root=frontend, dashboard_path=dashboard, runtime_root=root / "runtime", stale_after_seconds=10**9, poll_seconds=0.2)
+        (root / "runtime" / "funding_router_snapshot.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "mode": "paper",
+                    "updated_at_ms": int(time.time() * 1000),
+                    "paper": {"equity_usdt": 3000.0, "open_position": None},
+                    "scan": {"errors": [], "candidates": [], "rejections": []},
+                    "markets": [{"asset": "BTC", "exchange_id": "binance"}],
+                    "candles": [{"asset": "BTC", "items": [{"close": 100.0}]}],
+                    "events": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+        self.server = create_server(
+            host="127.0.0.1",
+            port=0,
+            frontend_root=frontend,
+            dashboard_path=dashboard,
+            runtime_root=root / "runtime",
+            stale_after_seconds=10**9,
+            poll_seconds=0.2,
+        )
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
         self.base = f"http://127.0.0.1:{self.server.server_address[1]}"
@@ -76,9 +125,15 @@ class ControlRoomServerTests(unittest.TestCase):
         scheduler = self.json_get("/api/v1/scheduler")
         self.assertFalse(scheduler["exchange_submission_available"])
         self.assertIn("scheduler", scheduler)
+        paper = self.json_get("/api/v1/paper")
+        self.assertEqual(paper["mode"], "paper")
+        self.assertEqual(paper["health"], "healthy")
+        self.assertTrue(health["paper"]["available"])
 
     def test_post_is_rejected(self) -> None:
-        request = urllib.request.Request(self.base + "/api/v1/orders", data=b"{}", method="POST")
+        request = urllib.request.Request(
+            self.base + "/api/v1/orders", data=b"{}", method="POST"
+        )
         with self.assertRaises(urllib.error.HTTPError) as captured:
             urllib.request.urlopen(request, timeout=5)
         self.assertEqual(captured.exception.code, 405)
@@ -86,7 +141,9 @@ class ControlRoomServerTests(unittest.TestCase):
         self.assertFalse(body["exchange_submission_available"])
 
     def test_sse_once_and_path_traversal(self) -> None:
-        with urllib.request.urlopen(self.base + "/api/v1/events?once=1", timeout=5) as response:
+        with urllib.request.urlopen(
+            self.base + "/api/v1/events?once=1", timeout=5
+        ) as response:
             text = response.read().decode("utf-8")
         self.assertIn("event: snapshot", text)
         with self.assertRaises(urllib.error.HTTPError) as captured:

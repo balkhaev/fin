@@ -23,6 +23,7 @@ class ControlRoomConfig:
     frontend_root: Path
     dashboard_path: Path
     runtime_root: Path
+    paper_snapshot_path: Path | None = None
     stale_after_seconds: int = 172_800
     incident_limit: int = 100
     poll_seconds: float = 2.0
@@ -47,6 +48,52 @@ def _read_dashboard(path: Path) -> dict[str, Any]:
     return value
 
 
+def _read_paper_snapshot(path: Path) -> dict[str, Any]:
+    if not path.is_file():
+        return {
+            "schema_version": 1,
+            "mode": "paper",
+            "health": "starting",
+            "available": False,
+            "age_seconds": None,
+            "markets": [],
+            "candles": [],
+            "events": [],
+            "scan": {"errors": ["paper snapshot is not available yet"]},
+        }
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict) or value.get("schema_version") != 1:
+        raise ValueError("unsupported paper snapshot schema")
+    if value.get("mode") != "paper":
+        raise ValueError("paper snapshot has an unexpected mode")
+    updated_at_ms = value.get("updated_at_ms")
+    age_seconds = (
+        max(0.0, time.time() - float(updated_at_ms) / 1000.0)
+        if isinstance(updated_at_ms, (int, float))
+        else None
+    )
+    scan = value.get("scan") if isinstance(value.get("scan"), dict) else {}
+    markets = value.get("markets") if isinstance(value.get("markets"), list) else []
+    candles = value.get("candles") if isinstance(value.get("candles"), list) else []
+    errors = scan.get("errors") if isinstance(scan.get("errors"), list) else []
+    healthy = (
+        age_seconds is not None
+        and age_seconds <= 20.0
+        and bool(markets)
+        and bool(candles)
+        and not errors
+    )
+    result = dict(value)
+    result.update(
+        {
+            "available": True,
+            "health": "healthy" if healthy else "degraded",
+            "age_seconds": age_seconds,
+        }
+    )
+    return result
+
+
 def build_dashboard_payload(config: ControlRoomConfig) -> dict[str, Any]:
     historical = _read_dashboard(config.dashboard_path)
     runtime = build_runtime_snapshot(
@@ -56,6 +103,10 @@ def build_dashboard_payload(config: ControlRoomConfig) -> dict[str, Any]:
     )
     result = dict(historical)
     result["runtime"] = runtime
+    paper_path = config.paper_snapshot_path or (
+        config.runtime_root / "funding_router_snapshot.json"
+    )
+    result["paper"] = _read_paper_snapshot(paper_path)
     result["environment"] = dict(historical.get("environment") or {})
     result["environment"].update(
         {
@@ -63,7 +114,8 @@ def build_dashboard_payload(config: ControlRoomConfig) -> dict[str, Any]:
             "runtime_status": runtime["status"],
             "runtime_strategy_count": runtime["aggregate"]["strategy_count"],
             "runtime_observation_count": runtime["aggregate"]["observation_count"],
-            "runtime_incident_count": runtime["aggregate"]["critical_incidents"] + runtime["aggregate"]["warning_incidents"],
+            "runtime_incident_count": runtime["aggregate"]["critical_incidents"]
+            + runtime["aggregate"]["warning_incidents"],
             "live_ready": False,
             "exchange_submission_available": False,
             "real_leverage_authorized": False,
@@ -89,13 +141,18 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def log_message(self, format: str, *args: object) -> None:
-        print(f"[{self.log_date_time_string()}] {self.client_address[0]} {format % args}")
+        print(
+            f"[{self.log_date_time_string()}] {self.client_address[0]} {format % args}"
+        )
 
     def _security_headers(self) -> None:
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
         self.send_header("Referrer-Policy", "no-referrer")
-        self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'")
+        self.send_header(
+            "Content-Security-Policy",
+            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'",
+        )
 
     def _send_bytes(
         self,
@@ -125,8 +182,16 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
         status: HTTPStatus = HTTPStatus.OK,
         head_only: bool = False,
     ) -> None:
-        payload = json.dumps(value, ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode("utf-8")
-        self._send_bytes(payload, content_type="application/json; charset=utf-8", status=status, etag=hashlib.sha256(payload).hexdigest(), head_only=head_only)
+        payload = json.dumps(
+            value, ensure_ascii=False, allow_nan=False, separators=(",", ":")
+        ).encode("utf-8")
+        self._send_bytes(
+            payload,
+            content_type="application/json; charset=utf-8",
+            status=status,
+            etag=hashlib.sha256(payload).hexdigest(),
+            head_only=head_only,
+        )
 
     def _runtime(self) -> dict[str, object]:
         return build_runtime_snapshot(
@@ -138,15 +203,29 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
     def _dashboard(self) -> dict[str, Any]:
         return build_dashboard_payload(self.server.config)
 
+    def _paper(self) -> dict[str, Any]:
+        path = self.server.config.paper_snapshot_path or (
+            self.server.config.runtime_root / "funding_router_snapshot.json"
+        )
+        return _read_paper_snapshot(path)
+
     def _health(self) -> dict[str, object]:
         runtime = self._runtime()
+        paper = self._paper()
         return {
             "service": "fin-control-room",
             "status": runtime["status"],
-            "uptime_seconds": round(time.monotonic() - self.server.started_monotonic, 3),
+            "uptime_seconds": round(
+                time.monotonic() - self.server.started_monotonic, 3
+            ),
             "runtime_root_exists": runtime["runtime_root_exists"],
             "aggregate": runtime["aggregate"],
             "read_only": True,
+            "paper": {
+                "health": paper.get("health"),
+                "available": paper.get("available"),
+                "age_seconds": paper.get("age_seconds"),
+            },
             "exchange_submission_available": False,
             "live_ready": False,
         }
@@ -159,19 +238,47 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
             if path == "/api/v1/runtime":
                 self._send_json(self._runtime(), head_only=head_only)
                 return True
+            if path == "/api/v1/paper":
+                self._send_json(self._paper(), head_only=head_only)
+                return True
             if path == "/api/v1/incidents":
                 runtime = self._runtime()
-                self._send_json({"schema_version": 1, "generated_at_utc": runtime["generated_at_utc"], "status": runtime["status"], "incidents": runtime["incidents"]}, head_only=head_only)
+                self._send_json(
+                    {
+                        "schema_version": 1,
+                        "generated_at_utc": runtime["generated_at_utc"],
+                        "status": runtime["status"],
+                        "incidents": runtime["incidents"],
+                    },
+                    head_only=head_only,
+                )
                 return True
             if path == "/api/v1/scheduler":
                 runtime = self._runtime()
-                self._send_json({"schema_version": 1, "generated_at_utc": runtime["generated_at_utc"], "scheduler": runtime.get("scheduler", {}), "exchange_submission_available": False}, head_only=head_only)
+                self._send_json(
+                    {
+                        "schema_version": 1,
+                        "generated_at_utc": runtime["generated_at_utc"],
+                        "scheduler": runtime.get("scheduler", {}),
+                        "exchange_submission_available": False,
+                    },
+                    head_only=head_only,
+                )
                 return True
             if path == "/api/v1/health":
                 self._send_json(self._health(), head_only=head_only)
                 return True
         except (OSError, ValueError, json.JSONDecodeError) as error:
-            self._send_json({"error": "control_room_snapshot_failed", "detail": str(error), "live_ready": False, "exchange_submission_available": False}, status=HTTPStatus.INTERNAL_SERVER_ERROR, head_only=head_only)
+            self._send_json(
+                {
+                    "error": "control_room_snapshot_failed",
+                    "detail": str(error),
+                    "live_ready": False,
+                    "exchange_submission_available": False,
+                },
+                status=HTTPStatus.INTERNAL_SERVER_ERROR,
+                head_only=head_only,
+            )
             return True
         return False
 
@@ -192,8 +299,18 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                 payload = self._dashboard()
                 digest = snapshot_digest(payload)
                 if digest != last_digest:
-                    data = json.dumps({"digest": digest, "generated_at_utc": payload.get("generated_at_utc"), "runtime_status": payload.get("runtime", {}).get("status")}, ensure_ascii=False, separators=(",", ":"))
-                    self.wfile.write(f"event: snapshot\ndata: {data}\n\n".encode("utf-8"))
+                    data = json.dumps(
+                        {
+                            "digest": digest,
+                            "generated_at_utc": payload.get("generated_at_utc"),
+                            "runtime_status": payload.get("runtime", {}).get("status"),
+                        },
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                    )
+                    self.wfile.write(
+                        f"event: snapshot\ndata: {data}\n\n".encode("utf-8")
+                    )
                     self.wfile.flush()
                     last_digest = digest
                     if once:
@@ -211,7 +328,7 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                 self.close_connection = True
 
     def _static_path(self, request_path: str) -> Path | None:
-        relative = unquote(request_path).lstrip("/") or "index.html"
+        relative = unquote(request_path).lstrip("/") or "live.html"
         candidate = (self.server.config.frontend_root / relative).resolve()
         try:
             candidate.relative_to(self.server.config.frontend_root.resolve())
@@ -224,19 +341,38 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
     def _serve_static(self, path: str, *, head_only: bool = False) -> None:
         file_path = self._static_path(path)
         if file_path is None:
-            self._send_json({"error": "not_found", "path": path}, status=HTTPStatus.NOT_FOUND, head_only=head_only)
+            self._send_json(
+                {"error": "not_found", "path": path},
+                status=HTTPStatus.NOT_FOUND,
+                head_only=head_only,
+            )
             return
         payload = file_path.read_bytes()
-        content_type = mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
-        if content_type.startswith("text/") or content_type in {"application/javascript", "application/json"}:
+        content_type = (
+            mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
+        )
+        if content_type.startswith("text/") or content_type in {
+            "application/javascript",
+            "application/json",
+        }:
             content_type += "; charset=utf-8"
-        self._send_bytes(payload, content_type=content_type, cache_control="no-cache", etag=hashlib.sha256(payload).hexdigest(), head_only=head_only)
+        self._send_bytes(
+            payload,
+            content_type=content_type,
+            cache_control="no-cache",
+            etag=hashlib.sha256(payload).hexdigest(),
+            head_only=head_only,
+        )
 
     def _dispatch_get(self, *, head_only: bool = False) -> None:
         parsed = urlparse(self.path)
         if parsed.path == "/api/v1/events":
             if head_only:
-                self._send_json({"error": "head_not_supported"}, status=HTTPStatus.METHOD_NOT_ALLOWED, head_only=True)
+                self._send_json(
+                    {"error": "head_not_supported"},
+                    status=HTTPStatus.METHOD_NOT_ALLOWED,
+                    head_only=True,
+                )
             else:
                 try:
                     self._serve_events(parse_qs(parsed.query))
@@ -254,7 +390,14 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
         self._dispatch_get(head_only=True)
 
     def do_POST(self) -> None:  # noqa: N802
-        self._send_json({"error": "method_not_allowed", "detail": "FIN Control Room is read-only and exposes no order or mutation endpoints.", "exchange_submission_available": False}, status=HTTPStatus.METHOD_NOT_ALLOWED)
+        self._send_json(
+            {
+                "error": "method_not_allowed",
+                "detail": "FIN Control Room is read-only and exposes no order or mutation endpoints.",
+                "exchange_submission_available": False,
+            },
+            status=HTTPStatus.METHOD_NOT_ALLOWED,
+        )
 
 
 def create_server(
@@ -264,6 +407,7 @@ def create_server(
     frontend_root: str | Path,
     dashboard_path: str | Path,
     runtime_root: str | Path,
+    paper_snapshot_path: str | Path | None = None,
     stale_after_seconds: int = 172_800,
     incident_limit: int = 100,
     poll_seconds: float = 2.0,
@@ -272,6 +416,11 @@ def create_server(
         frontend_root=Path(frontend_root).expanduser().resolve(),
         dashboard_path=Path(dashboard_path).expanduser().resolve(),
         runtime_root=Path(runtime_root).expanduser().resolve(),
+        paper_snapshot_path=(
+            Path(paper_snapshot_path).expanduser().resolve()
+            if paper_snapshot_path is not None
+            else None
+        ),
         stale_after_seconds=stale_after_seconds,
         incident_limit=incident_limit,
         poll_seconds=poll_seconds,
@@ -284,12 +433,20 @@ def _is_loopback(host: str) -> bool:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Serve the read-only FIN paper/shadow control room.")
+    parser = argparse.ArgumentParser(
+        description="Serve the read-only FIN paper/shadow control room."
+    )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--frontend-root", default="frontend")
     parser.add_argument("--dashboard", default="frontend/data/dashboard.json")
-    parser.add_argument("--runtime-root", default=os.environ.get("FIN_RUNTIME_ROOT", "runtime"))
+    parser.add_argument(
+        "--runtime-root", default=os.environ.get("FIN_RUNTIME_ROOT", "runtime")
+    )
+    parser.add_argument(
+        "--paper-snapshot",
+        default=os.environ.get("FIN_FUNDING_SNAPSHOT"),
+    )
     parser.add_argument("--stale-after-seconds", type=int, default=172_800)
     parser.add_argument("--incident-limit", type=int, default=100)
     parser.add_argument("--poll-seconds", type=float, default=2.0)
@@ -299,19 +456,33 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if not _is_loopback(args.host) and not args.allow_remote:
-        parser.error("non-loopback binding requires --allow-remote; the server has no authentication layer")
+        parser.error(
+            "non-loopback binding requires --allow-remote; the server has no authentication layer"
+        )
 
     config = ControlRoomConfig(
         frontend_root=Path(args.frontend_root).expanduser().resolve(),
         dashboard_path=Path(args.dashboard).expanduser().resolve(),
         runtime_root=Path(args.runtime_root).expanduser().resolve(),
+        paper_snapshot_path=(
+            Path(args.paper_snapshot).expanduser().resolve()
+            if args.paper_snapshot
+            else None
+        ),
         stale_after_seconds=args.stale_after_seconds,
         incident_limit=args.incident_limit,
         poll_seconds=args.poll_seconds,
     )
     config.validate()
     if args.snapshot:
-        print(json.dumps(build_dashboard_payload(config), ensure_ascii=False, indent=2, allow_nan=False))
+        print(
+            json.dumps(
+                build_dashboard_payload(config),
+                ensure_ascii=False,
+                indent=2,
+                allow_nan=False,
+            )
+        )
         return 0
 
     server = ControlRoomHTTPServer((args.host, args.port), config)

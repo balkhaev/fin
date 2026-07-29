@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass
-from typing import Mapping
 
 from .config import Settings
 from .models import Candidate, MarketSnapshot, now_ms
@@ -20,6 +20,7 @@ class PaperPosition:
     long_interval_ms: int
     short_interval_ms: int
     funding_pnl_usdt: float
+    mark_pnl_usdt: float
     charged_costs_usdt: float
     funding_events: int
 
@@ -27,7 +28,7 @@ class PaperPosition:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, payload: dict) -> "PaperPosition":
+    def from_dict(cls, payload: dict) -> PaperPosition:
         return cls(
             position_id=str(payload["position_id"]),
             candidate=dict(payload["candidate"]),
@@ -39,13 +40,14 @@ class PaperPosition:
             long_interval_ms=int(payload["long_interval_ms"]),
             short_interval_ms=int(payload["short_interval_ms"]),
             funding_pnl_usdt=float(payload["funding_pnl_usdt"]),
+            mark_pnl_usdt=float(payload.get("mark_pnl_usdt", 0.0)),
             charged_costs_usdt=float(payload["charged_costs_usdt"]),
             funding_events=int(payload["funding_events"]),
         )
 
     @property
     def net_pnl_usdt(self) -> float:
-        return self.funding_pnl_usdt - self.charged_costs_usdt
+        return self.funding_pnl_usdt + self.mark_pnl_usdt - self.charged_costs_usdt
 
 
 class PaperTrader:
@@ -58,8 +60,12 @@ class PaperTrader:
         raw = store.get_state(self.POSITION_KEY)
         self.position = PaperPosition.from_dict(raw) if raw else None
         account = store.get_state(self.ACCOUNT_KEY)
-        self.realized_pnl_usdt = float(account.get("realized_pnl_usdt", 0.0)) if account else 0.0
-        self.closed_positions = int(account.get("closed_positions", 0)) if account else 0
+        self.realized_pnl_usdt = (
+            float(account.get("realized_pnl_usdt", 0.0)) if account else 0.0
+        )
+        self.closed_positions = (
+            int(account.get("closed_positions", 0)) if account else 0
+        )
 
     def _persist(self) -> None:
         if self.position is None:
@@ -71,7 +77,9 @@ class PaperTrader:
             {
                 "realized_pnl_usdt": self.realized_pnl_usdt,
                 "closed_positions": self.closed_positions,
-                "starting_balance_usdt": self.settings.execution.paper_start_balance_usdt,
+                "starting_balance_usdt": (
+                    self.settings.execution.paper_start_balance_usdt
+                ),
                 "equity_usdt": self.settings.execution.paper_start_balance_usdt
                 + self.realized_pnl_usdt
                 + (self.position.net_pnl_usdt if self.position else 0.0),
@@ -79,12 +87,16 @@ class PaperTrader:
         )
 
     @staticmethod
-    def _next_timestamp(candidate_timestamp: int | None, interval_ms: int, now: int) -> int:
+    def _next_timestamp(
+        candidate_timestamp: int | None, interval_ms: int, now: int
+    ) -> int:
         if candidate_timestamp and candidate_timestamp > now:
             return candidate_timestamp
         return now + interval_ms
 
-    def open(self, candidate: Candidate, timestamp_ms: int | None = None) -> PaperPosition:
+    def open(
+        self, candidate: Candidate, timestamp_ms: int | None = None
+    ) -> PaperPosition:
         if self.position is not None:
             raise RuntimeError("paper position already open")
         timestamp = timestamp_ms or now_ms()
@@ -114,6 +126,7 @@ class PaperTrader:
             long_interval_ms=long_interval,
             short_interval_ms=short_interval,
             funding_pnl_usdt=0.0,
+            mark_pnl_usdt=0.0,
             charged_costs_usdt=charged_costs,
             funding_events=0,
         )
@@ -152,12 +165,23 @@ class PaperTrader:
         short = self._snapshot(
             snapshots, str(candidate["short_exchange"]), str(candidate["short_symbol"])
         )
+        if long is not None and short is not None:
+            long_entry = float(candidate["long_entry_price"])
+            short_entry = float(candidate["short_entry_price"])
+            long_pnl = self.position.base_amount * (long.quote.mark_price - long_entry)
+            short_pnl = self.position.base_amount * (
+                short_entry - short.quote.mark_price
+            )
+            self.position.mark_pnl_usdt = long_pnl + short_pnl
         delta = 0.0
         # Cap catch-up to avoid inventing months of funding from one stale quote.
         max_catch_up_events = 4
         if long is not None:
             count = 0
-            while timestamp >= self.position.long_next_funding_ms and count < max_catch_up_events:
+            while (
+                timestamp >= self.position.long_next_funding_ms
+                and count < max_catch_up_events
+            ):
                 notional = self.position.base_amount * long.quote.mark_price
                 payment = -long.quote.funding_rate * notional
                 delta += payment
@@ -167,7 +191,10 @@ class PaperTrader:
                 count += 1
         if short is not None:
             count = 0
-            while timestamp >= self.position.short_next_funding_ms and count < max_catch_up_events:
+            while (
+                timestamp >= self.position.short_next_funding_ms
+                and count < max_catch_up_events
+            ):
                 notional = self.position.base_amount * short.quote.mark_price
                 payment = short.quote.funding_rate * notional
                 delta += payment
@@ -182,6 +209,7 @@ class PaperTrader:
                 {
                     "delta_usdt": delta,
                     "funding_pnl_usdt": self.position.funding_pnl_usdt,
+                    "mark_pnl_usdt": self.position.mark_pnl_usdt,
                     "net_pnl_usdt": self.position.net_pnl_usdt,
                 },
                 self.position.position_id,
@@ -211,11 +239,15 @@ class PaperTrader:
         if long is None or short is None:
             return False, "market_data_incomplete"
         current_spread_bps_8h = (
-            short.quote.current_rate_per_hour - long.quote.current_rate_per_hour
-        ) * 8.0 * 10_000.0
+            (short.quote.current_rate_per_hour - long.quote.current_rate_per_hour)
+            * 8.0
+            * 10_000.0
+        )
         predicted_spread_bps_8h = (
-            short.quote.predicted_rate_per_hour - long.quote.predicted_rate_per_hour
-        ) * 8.0 * 10_000.0
+            (short.quote.predicted_rate_per_hour - long.quote.predicted_rate_per_hour)
+            * 8.0
+            * 10_000.0
+        )
         if current_spread_bps_8h <= self.settings.risk.exit_expected_net_bps:
             return True, "current_funding_spread_collapsed"
         if predicted_spread_bps_8h <= 0:
@@ -236,6 +268,7 @@ class PaperTrader:
                 "reason": reason,
                 "net_pnl_usdt": pnl,
                 "funding_pnl_usdt": self.position.funding_pnl_usdt,
+                "mark_pnl_usdt": self.position.mark_pnl_usdt,
                 "charged_costs_usdt": self.position.charged_costs_usdt,
             },
             position_id,

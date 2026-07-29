@@ -19,6 +19,7 @@ def _get_json(path: str) -> dict[str, object]:
 def main() -> int:
     health = _get_json("/api/v1/health")
     scheduler_payload = _get_json("/api/v1/scheduler")
+    paper = _get_json("/api/v1/paper")
     scheduler = scheduler_payload.get("scheduler")
     if health.get("service") != "fin-control-room":
         raise RuntimeError("unexpected Control Room health response")
@@ -30,8 +31,19 @@ def main() -> int:
     ):
         raise RuntimeError(f"paper scheduler is not healthy: {scheduler}")
     age_seconds = scheduler.get("age_seconds")
-    if not isinstance(age_seconds, (int, float)) or age_seconds > MAX_SCHEDULER_AGE_SECONDS:
+    if (
+        not isinstance(age_seconds, (int, float))
+        or age_seconds > MAX_SCHEDULER_AGE_SECONDS
+    ):
         raise RuntimeError(f"paper scheduler heartbeat is stale: {age_seconds}")
+    if paper.get("mode") != "paper" or paper.get("health") != "healthy":
+        raise RuntimeError(f"funding paper worker is not healthy: {paper}")
+    paper_age_seconds = paper.get("age_seconds")
+    if (
+        not isinstance(paper_age_seconds, (int, float))
+        or paper_age_seconds > MAX_SCHEDULER_AGE_SECONDS
+    ):
+        raise RuntimeError(f"funding paper snapshot is stale: {paper_age_seconds}")
     return 0
 
 

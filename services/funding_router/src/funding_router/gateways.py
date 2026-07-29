@@ -28,6 +28,10 @@ class ExchangeGateway(Protocol):
 
     async def fetch_snapshot(self, symbol: str) -> MarketSnapshot: ...
 
+    async def fetch_candles(
+        self, symbol: str, timeframe: str, limit: int
+    ) -> list[dict[str, float | int]]: ...
+
     async def prepare_market(self, symbol: str) -> None: ...
 
     async def fetch_free_collateral_usdt(self) -> float | None: ...
@@ -58,7 +62,13 @@ def parse_interval_hours(value: Any, default: float) -> float:
         return numeric
     if isinstance(value, str):
         text = value.strip().lower().replace("hours", "h").replace("hour", "h")
-        units = (("ms", 1 / 3_600_000), ("s", 1 / 3_600), ("m", 1 / 60), ("h", 1), ("d", 24))
+        units = (
+            ("ms", 1 / 3_600_000),
+            ("s", 1 / 3_600),
+            ("m", 1 / 60),
+            ("h", 1),
+            ("d", 24),
+        )
         for suffix, multiplier in units:
             if text.endswith(suffix):
                 try:
@@ -142,9 +152,13 @@ class CCXTGateway:
                 raise UnsupportedMarketError(f"{self.id}: market not found: {symbol}")
             market = self._exchange.market(symbol)
             if not market.get("contract"):
-                raise UnsupportedMarketError(f"{self.id}: not a derivative contract: {symbol}")
+                raise UnsupportedMarketError(
+                    f"{self.id}: not a derivative contract: {symbol}"
+                )
             if market.get("inverse") is True:
-                raise UnsupportedMarketError(f"{self.id}: inverse contracts are not supported: {symbol}")
+                raise UnsupportedMarketError(
+                    f"{self.id}: inverse contracts are not supported: {symbol}"
+                )
         self._initialized = True
 
     async def close(self) -> None:
@@ -155,11 +169,19 @@ class CCXTGateway:
         has = getattr(self._exchange, "has", {}) or {}
         if has.get("setLeverage"):
             leverage: int | float
-            leverage = int(self.config.leverage) if self.config.leverage.is_integer() else self.config.leverage
+            leverage = (
+                int(self.config.leverage)
+                if self.config.leverage.is_integer()
+                else self.config.leverage
+            )
             try:
-                await self._exchange.set_leverage(leverage, symbol, dict(self.config.params))
+                await self._exchange.set_leverage(
+                    leverage, symbol, dict(self.config.params)
+                )
             except Exception as exc:
-                raise GatewayError(f"{self.id}: failed to set leverage for {symbol}: {exc}") from exc
+                raise GatewayError(
+                    f"{self.id}: failed to set leverage for {symbol}: {exc}"
+                ) from exc
 
     async def fetch_free_collateral_usdt(self) -> float | None:
         await self.initialize()
@@ -177,7 +199,11 @@ class CCXTGateway:
             value = None
             if isinstance(free, dict):
                 value = _finite_float(free.get(code))
-            if value is None and isinstance(raw, dict) and isinstance(raw.get(code), dict):
+            if (
+                value is None
+                and isinstance(raw, dict)
+                and isinstance(raw.get(code), dict)
+            ):
                 value = _finite_float(raw[code].get("free"))
             if value is not None:
                 total += max(0.0, value)
@@ -207,7 +233,9 @@ class CCXTGateway:
             precise = self._exchange.amount_to_precision(symbol, contracts)
             result = float(precise)
         except Exception as exc:
-            raise GatewayError(f"{self.id}: cannot quantize amount for {symbol}: {exc}") from exc
+            raise GatewayError(
+                f"{self.id}: cannot quantize amount for {symbol}: {exc}"
+            ) from exc
         if result <= 0:
             raise GatewayError(f"{self.id}: amount rounds to zero for {symbol}")
         return result
@@ -216,7 +244,9 @@ class CCXTGateway:
         parsed = _finite_float(amount) or 0.0
         return parsed * self._contract_size(symbol)
 
-    async def _history_prediction(self, symbol: str, current_rate: float) -> tuple[float, str]:
+    async def _history_prediction(
+        self, symbol: str, current_rate: float
+    ) -> tuple[float, str]:
         cached = self._history_cache.get(symbol)
         monotonic = time.monotonic()
         if cached and cached.expires_at > monotonic:
@@ -236,7 +266,9 @@ class CCXTGateway:
                 ]
                 if values:
                     # Median suppresses a single liquidation-driven outlier.
-                    rate = float(statistics.median(values[-self.service.funding_history_limit :]))
+                    rate = float(
+                        statistics.median(values[-self.service.funding_history_limit :])
+                    )
                     source = "history_median"
             except Exception:
                 rate, source = current_rate, "current"
@@ -266,7 +298,9 @@ class CCXTGateway:
         except Exception as exc:
             if oi_task:
                 oi_task.cancel()
-            raise GatewayError(f"{self.id} {symbol}: public data fetch failed: {exc}") from exc
+            raise GatewayError(
+                f"{self.id} {symbol}: public data fetch failed: {exc}"
+            ) from exc
 
         open_interest_raw: dict[str, Any] | None = None
         if oi_task:
@@ -301,22 +335,32 @@ class CCXTGateway:
             )
             prediction_source = "exchange_info"
         if predicted is None:
-            predicted, prediction_source = await self._history_prediction(symbol, current_rate)
+            predicted, prediction_source = await self._history_prediction(
+                symbol, current_rate
+            )
 
         interval_value = funding.get("interval")
         if interval_value is None:
-            interval_value = _recursive_number(info, {"fundingintervalhours", "fundinginterval"})
+            interval_value = _recursive_number(
+                info, {"fundingintervalhours", "fundinginterval"}
+            )
         interval_hours = parse_interval_hours(
             interval_value, self.config.default_funding_interval_hours
         )
         mark_price = _finite_float(funding.get("markPrice")) or order_book.mid
         index_price = _finite_float(funding.get("indexPrice"))
-        funding_timestamp = funding.get("fundingTimestamp") or funding.get("nextFundingTimestamp")
-        funding_timestamp_ms = int(funding_timestamp) if _finite_float(funding_timestamp) else None
+        funding_timestamp = funding.get("fundingTimestamp") or funding.get(
+            "nextFundingTimestamp"
+        )
+        funding_timestamp_ms = (
+            int(funding_timestamp) if _finite_float(funding_timestamp) else None
+        )
 
         open_interest_usdt: float | None = None
         if open_interest_raw:
-            open_interest_usdt = _finite_float(open_interest_raw.get("openInterestValue"))
+            open_interest_usdt = _finite_float(
+                open_interest_raw.get("openInterestValue")
+            )
             if open_interest_usdt is None:
                 amount = _finite_float(open_interest_raw.get("openInterestAmount"))
                 if amount is not None:
@@ -339,6 +383,56 @@ class CCXTGateway:
         )
         return MarketSnapshot(quote=quote, order_book=order_book)
 
+    async def fetch_candles(
+        self, symbol: str, timeframe: str, limit: int
+    ) -> list[dict[str, float | int]]:
+        """Fetch closed and in-progress exchange OHLCV candles via CCXT."""
+        await self.initialize()
+        has = getattr(self._exchange, "has", {}) or {}
+        if not has.get("fetchOHLCV"):
+            raise GatewayError(f"{self.id}: fetchOHLCV is unsupported")
+        try:
+            rows = await self._exchange.fetch_ohlcv(
+                symbol,
+                timeframe=timeframe,
+                limit=limit,
+            )
+        except Exception as exc:
+            raise GatewayError(
+                f"{self.id} {symbol}: candle fetch failed: {exc}"
+            ) from exc
+
+        candles: list[dict[str, float | int]] = []
+        for row in rows or []:
+            if not isinstance(row, (list, tuple)) or len(row) < 6:
+                continue
+            timestamp = _finite_float(row[0])
+            open_price = _finite_float(row[1])
+            high_price = _finite_float(row[2])
+            low_price = _finite_float(row[3])
+            close_price = _finite_float(row[4])
+            volume = _finite_float(row[5])
+            if (
+                timestamp is None
+                or open_price is None
+                or high_price is None
+                or low_price is None
+                or close_price is None
+                or min(open_price, high_price, low_price, close_price) <= 0
+            ):
+                continue
+            candles.append(
+                {
+                    "timestamp_ms": int(timestamp),
+                    "open": open_price,
+                    "high": high_price,
+                    "low": low_price,
+                    "close": close_price,
+                    "volume": max(0.0, volume or 0.0),
+                }
+            )
+        return candles
+
     def _order_state(self, symbol: str, raw: dict[str, Any]) -> OrderState:
         side_raw = str(raw.get("side") or "buy").lower()
         side = Side.BUY if side_raw == "buy" else Side.SELL
@@ -357,7 +451,8 @@ class CCXTGateway:
             requested_base=requested,
             filled_base=filled,
             remaining_base=remaining,
-            average_price=_finite_float(raw.get("average")) or _finite_float(raw.get("price")),
+            average_price=_finite_float(raw.get("average"))
+            or _finite_float(raw.get("price")),
             raw=raw,
         )
 
@@ -406,7 +501,10 @@ class CCXTGateway:
         except Exception as exc:
             # An already-filled/already-cancelled order is reconciled by a final fetch.
             text = str(exc).lower()
-            if not any(token in text for token in ("not found", "already", "closed", "filled", "cancel")):
+            if not any(
+                token in text
+                for token in ("not found", "already", "closed", "filled", "cancel")
+            ):
                 raise GatewayError(f"{self.id}: cancel order failed: {exc}") from exc
 
     async def fetch_position_base(self, symbol: str) -> float:

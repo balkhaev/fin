@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-import os
 from dataclasses import replace
 from pathlib import Path
 
 import pytest
-
 from funding_router.analytics import evaluate_pair
 from funding_router.config import (
     ConfigError,
@@ -90,6 +88,7 @@ def make_settings(tmp_path: Path, **risk_changes: object) -> Settings:
         service=ServiceSettings(
             poll_seconds=0.01,
             database_path=tmp_path / "router.sqlite3",
+            snapshot_path=tmp_path / "router_snapshot.json",
             order_book_limit=10,
             funding_history_limit=3,
             history_cache_seconds=1,
@@ -245,7 +244,9 @@ class FakeGateway:
         self._maker_side = side
         self._maker_applied = 0.0
         if not self._maker_states:
-            state = OrderState("maker", symbol, side, "closed", base_amount, base_amount, 0.0, price)
+            state = OrderState(
+                "maker", symbol, side, "closed", base_amount, base_amount, 0.0, price
+            )
             self._maker_states = [state]
         state = self._maker_states[0]
         self._maker_index = 0
@@ -269,7 +270,11 @@ class FakeGateway:
     ) -> OrderState:
         if self.fail_non_reduce_market and not reduce_only:
             raise GatewayError("simulated hedge failure")
-        ratio = self.reduce_fill_ratios.pop(0) if reduce_only and self.reduce_fill_ratios else 1.0
+        ratio = (
+            self.reduce_fill_ratios.pop(0)
+            if reduce_only and self.reduce_fill_ratios
+            else 1.0
+        )
         filled = base_amount * ratio
         current = self.positions[symbol]
         if reduce_only:
@@ -350,9 +355,7 @@ def test_parse_interval_hours(raw: object, expected: float) -> None:
 
 
 def test_order_book_exact_vwap_and_depth() -> None:
-    book = OrderBook.from_iterables(
-        bids=[[99, 1], [98, 2]], asks=[[101, 1], [102, 2]]
-    )
+    book = OrderBook.from_iterables(bids=[[99, 1], [98, 2]], asks=[[101, 1], [102, 2]])
     vwap, quote, slippage = book.vwap(Side.BUY, 2)
     assert vwap == pytest.approx(101.5)
     assert quote == pytest.approx(203)
@@ -394,7 +397,9 @@ def test_evaluate_pair_uses_actual_funding_schedule(tmp_path: Path) -> None:
     assert result.candidate.metadata["long_funding_events"] == 0
     assert result.candidate.metadata["short_funding_events"] == 3
     assert result.candidate.metadata["current_gross_funding_bps"] == pytest.approx(6.0)
-    assert result.candidate.metadata["predicted_gross_funding_bps"] == pytest.approx(4.5)
+    assert result.candidate.metadata["predicted_gross_funding_bps"] == pytest.approx(
+        4.5
+    )
     assert result.candidate.gross_funding_bps == pytest.approx(4.5)
 
 
@@ -421,15 +426,21 @@ def test_scanner_keeps_other_venues_when_one_public_call_fails(tmp_path: Path) -
     settings = make_settings(tmp_path)
     long_gw = FakeGateway("long", snapshot("long", rate=-0.001, predicted=-0.001))
     short_gw = FakeGateway("short", snapshot("short", rate=0.001, predicted=0.001))
-    result = asyncio.run(FundingScanner(settings, {"long": long_gw, "short": short_gw}).scan_once())
+    result = asyncio.run(
+        FundingScanner(settings, {"long": long_gw, "short": short_gw}).scan_once()
+    )
     assert len(result.candidates) == 1
     short_gw.fail_public = True
-    result = asyncio.run(FundingScanner(settings, {"long": long_gw, "short": short_gw}).scan_once())
+    result = asyncio.run(
+        FundingScanner(settings, {"long": long_gw, "short": short_gw}).scan_once()
+    )
     assert not result.candidates
     assert result.errors
 
 
-def test_live_authorization_is_triple_guarded(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_live_authorization_is_triple_guarded(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     settings = make_settings(tmp_path)
     monkeypatch.delenv("TEST_LIVE_CONFIRM", raising=False)
     with pytest.raises(LiveAuthorizationError):
@@ -478,6 +489,18 @@ def test_paper_trader_accrues_discrete_funding_and_recovers(tmp_path: Path) -> N
     )
     assert delta == pytest.approx(0.3)
     assert position.funding_events == 2
+    trader.accrue(
+        {
+            ("long", "BTC/USDT:USDT"): snapshot(
+                "long", rate=-0.001, predicted=-0.001, mark=102
+            ),
+            ("short", "BTC/USDT:USDT"): snapshot(
+                "short", rate=0.002, predicted=0.002, mark=99
+            ),
+        },
+        2_002,
+    )
+    assert position.mark_pnl_usdt == pytest.approx(3.0)
     recovered = PaperTrader(settings, store)
     assert recovered.position is not None
     assert recovered.position.funding_pnl_usdt == pytest.approx(0.3)
@@ -498,7 +521,9 @@ def test_partial_maker_fills_are_hedged_incrementally(tmp_path: Path) -> None:
         position = asyncio.run(executor.open_candidate(candidate()))
         assert position.long_leg.base_amount == pytest.approx(0.6)
         assert position.short_leg.base_amount == pytest.approx(0.6)
-        hedge_sizes = [size for _, size, reduce_only in short_gw.market_orders if not reduce_only]
+        hedge_sizes = [
+            size for _, size, reduce_only in short_gw.market_orders if not reduce_only
+        ]
         assert hedge_sizes == pytest.approx([0.2, 0.4])
         assert long_gw.positions["BTC/USDT:USDT"] == pytest.approx(0.6)
         assert short_gw.positions["BTC/USDT:USDT"] == pytest.approx(-0.6)
@@ -508,9 +533,7 @@ def test_market_fill_is_confirmed_from_position_when_order_response_is_sparse(
     tmp_path: Path,
 ) -> None:
     settings = make_settings(tmp_path)
-    states = [
-        OrderState("maker", "BTC/USDT:USDT", Side.BUY, "closed", 1, 1, 0, 99.9)
-    ]
+    states = [OrderState("maker", "BTC/USDT:USDT", Side.BUY, "closed", 1, 1, 0, 99.9)]
     long_gw = FakeGateway("long", maker_states=states)
     short_gw = FakeGateway("short", report_market_fills=False)
     with SQLiteStore(settings.service.database_path) as store:
@@ -557,7 +580,9 @@ def test_balance_check_blocks_entry(tmp_path: Path) -> None:
     short_gw = FakeGateway("short", balance=1.0)
     with SQLiteStore(settings.service.database_path) as store:
         executor = LiveExecutor(settings, {"long": long_gw, "short": short_gw}, store)
-        with pytest.raises(ExecutionError, match="insufficient verified free collateral"):
+        with pytest.raises(
+            ExecutionError, match="insufficient verified free collateral"
+        ):
             asyncio.run(executor.open_candidate(candidate()))
 
 
@@ -626,7 +651,9 @@ def test_ccxt_contract_conversion_uses_contract_size() -> None:
     assert state.filled_base == pytest.approx(0.005)
 
 
-def test_service_scan_once_runs_end_to_end(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_service_scan_once_runs_end_to_end(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     from funding_router.service import run_router
 
     settings = make_settings(tmp_path)
@@ -646,7 +673,9 @@ def test_service_scan_once_runs_end_to_end(tmp_path: Path, capsys: pytest.Captur
     assert long_gw.closed and short_gw.closed
 
 
-def test_service_paper_once_persists_position(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_service_paper_once_persists_position(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     from funding_router.service import run_router
 
     settings = make_settings(tmp_path)
@@ -667,7 +696,9 @@ def test_service_paper_once_persists_position(tmp_path: Path, capsys: pytest.Cap
         assert trader.position is not None
 
 
-def test_ccxt_snapshot_parses_history_interval_and_open_interest(tmp_path: Path) -> None:
+def test_ccxt_snapshot_parses_history_interval_and_open_interest(
+    tmp_path: Path,
+) -> None:
     class FakeExchange:
         has = {
             "fetchFundingRate": True,
@@ -700,7 +731,9 @@ def test_ccxt_snapshot_parses_history_interval_and_open_interest(tmp_path: Path)
         async def fetch_open_interest(self, symbol: str) -> dict:
             return {"openInterestAmount": 2000}
 
-        async def fetch_funding_rate_history(self, symbol: str, since: object, limit: int) -> list[dict]:
+        async def fetch_funding_rate_history(
+            self, symbol: str, since: object, limit: int
+        ) -> list[dict]:
             return [
                 {"fundingRate": -0.001},
                 {"fundingRate": 0.003},
@@ -729,6 +762,27 @@ def test_ccxt_snapshot_parses_history_interval_and_open_interest(tmp_path: Path)
     assert snap.quote.open_interest_usdt == pytest.approx(200_000)
 
 
+def test_ccxt_candles_are_normalized() -> None:
+    class FakeExchange:
+        has = {"fetchOHLCV": True}
+
+        async def fetch_ohlcv(
+            self, symbol: str, timeframe: str, limit: int
+        ) -> list[list[float]]:
+            assert symbol == "BTC/USDT:USDT"
+            assert timeframe == "1m"
+            assert limit == 2
+            return [[1_000, 100, 102, 99, 101, 12], [2_000, 101, 103, 100, 102, 15]]
+
+    gateway = object.__new__(CCXTGateway)
+    gateway.id = "fake"
+    gateway._initialized = True
+    gateway._exchange = FakeExchange()
+    candles = asyncio.run(gateway.fetch_candles("BTC/USDT:USDT", "1m", 2))
+    assert candles[-1]["close"] == pytest.approx(102)
+    assert candles[-1]["volume"] == pytest.approx(15)
+
+
 def test_ccxt_balance_and_leverage_prepare() -> None:
     class FakeExchange:
         has = {"fetchBalance": True, "setLeverage": True}
@@ -739,7 +793,9 @@ def test_ccxt_balance_and_leverage_prepare() -> None:
         async def fetch_balance(self, params: dict) -> dict:
             return {"free": {"USDT": 100, "USDC": 50}}
 
-        async def set_leverage(self, leverage: float, symbol: str, params: dict) -> None:
+        async def set_leverage(
+            self, leverage: float, symbol: str, params: dict
+        ) -> None:
             self.leverage_calls.append((leverage, symbol, params))
 
     gateway = object.__new__(CCXTGateway)

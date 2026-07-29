@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN python -m pip install --no-cache-dir . \
+RUN python -m pip install --no-cache-dir . ./services/funding_router \
     && python scripts/build_frontend_data.py \
     && mkdir -p /data/runtime \
     && chown -R 10001:10001 /data

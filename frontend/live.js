@@ -1,208 +1,398 @@
 (() => {
-  'use strict';
+  "use strict";
 
-  const state = { paused: false, eventSource: null, pollTimer: null, data: null };
+  const state = {
+    data: null,
+    selectedAsset: null,
+    selectedVenue: null,
+    eventSource: null,
+    fetching: false,
+    fallbackTimer: null,
+  };
+  const svgNamespace = "http://www.w3.org/2000/svg";
   const $ = (selector) => document.querySelector(selector);
-  const number = (value, fallback = 0) => { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : fallback; };
-  const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }[char]));
-  const num = (value, digits = 2) => Number.isFinite(Number(value)) ? number(value).toLocaleString('ru-RU', { minimumFractionDigits: digits, maximumFractionDigits: digits }) : '—';
-  const pct = (value, digits = 2, signed = false) => { if (!Number.isFinite(Number(value))) return '—'; const result = number(value) * 100; return `${signed && result > 0 ? '+' : ''}${result.toLocaleString('ru-RU', { minimumFractionDigits: digits, maximumFractionDigits: digits })}%`; };
-  const money = (value) => Number.isFinite(Number(value)) ? `$${number(value).toLocaleString('en-US', { maximumFractionDigits: 0 })}` : '—';
-  const multiple = (value, digits = 2) => Number.isFinite(Number(value)) ? `${num(value, digits)}×` : '—';
-  const timestamp = (value) => { if (!value) return '—'; const date = new Date(value); return Number.isNaN(date.valueOf()) ? String(value) : date.toLocaleString('ru-RU', { timeZone: 'UTC', dateStyle: 'short', timeStyle: 'short' }) + ' UTC'; };
-
-  function toast(message, error = false) {
-    const node = $('#toast');
-    node.textContent = message;
-    node.classList.toggle('error', error);
-    node.classList.add('visible');
-    clearTimeout(toast.timer);
-    toast.timer = setTimeout(() => node.classList.remove('visible'), 2800);
-  }
-
-  function setText(selector, value) { const node = $(selector); if (node) node.textContent = value; }
-
-  function statusClass(value) {
-    if (value === 'healthy') return 'pill-healthy';
-    if (value === 'warn') return 'pill-warn';
-    if (value === 'halt') return 'pill-halt';
-    return 'pill-idle';
-  }
-
-  function renderStatus(runtime) {
-    const status = String(runtime.status || 'idle');
-    setText('#runtime-status', status.toUpperCase());
-    const pill = $('#service-status');
-    pill.textContent = status.toUpperCase();
-    pill.className = `pill ${statusClass(status)}`;
-    setText('#generated-at', timestamp(runtime.generated_at_utc));
-    setText('#runtime-root', runtime.runtime_root || 'runtime root not configured');
-    setText('#last-refresh', `Последнее обновление: ${timestamp(runtime.generated_at_utc)}`);
-  }
-
-  function renderAggregate(runtime) {
-    const aggregate = runtime.aggregate || {};
-    setText('#strategy-count', aggregate.strategy_count ?? 0);
-    setText('#observation-count', aggregate.observation_count ?? 0);
-    setText('#cycle-count', aggregate.committed_cycles ?? 0);
-    setText('#incident-count', number(aggregate.critical_incidents) + number(aggregate.warning_incidents));
-    const metrics = [
-      ['Strategies', aggregate.strategy_count ?? 0, 'auto-discovered roots'],
-      ['Observations', aggregate.observation_count ?? 0, 'strict telemetry rows'],
-      ['Committed cycles', aggregate.committed_cycles ?? 0, 'immutable evidence'],
-      ['Critical incidents', aggregate.critical_incidents ?? 0, 'HALT conditions'],
-      ['Warnings', aggregate.warning_incidents ?? 0, 'execution/freshness'],
-      ['Latest evidence', aggregate.latest_timestamp ? timestamp(aggregate.latest_timestamp) : '—', 'UTC'],
-    ];
-    $('#aggregate-grid').innerHTML = metrics.map(([label, value, note]) => `<article class="card metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`).join('');
-  }
-
-  function renderScheduler(runtime) {
-    const scheduler = runtime.scheduler || {};
-    const health = String(scheduler.health || 'idle');
-    const serviceState = String(scheduler.state || 'idle');
-    setText('#scheduler-state', serviceState.toUpperCase());
-    const pill = $('#scheduler-health');
-    pill.textContent = health.toUpperCase();
-    pill.className = `pill ${statusClass(health)}`;
-    const metrics = [
-      ['Queued', scheduler.queued ?? 0],
-      ['Processing', scheduler.processing ?? 0],
-      ['Completed', scheduler.completed ?? 0],
-      ['Rejected', scheduler.rejected ?? 0],
-      ['Heartbeat', scheduler.heartbeat_sequence ?? 0],
-      ['Events', scheduler.event_count ?? 0],
-    ];
-    $('#scheduler-metrics').innerHTML = metrics.map(([label, value]) => `<div class="scheduler-metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
-    setText('#scheduler-source', scheduler.status_source || 'Scheduler status has not been materialized');
-    const last = scheduler.last_result || {};
-    const request = scheduler.last_request_id || '—';
-    setText('#scheduler-last-title', scheduler.available ? `Request ${String(request).slice(0, 20)}` : 'Scheduler ещё не запускался');
-    $('#scheduler-last').innerHTML = [
-      detail('Status', last.status ?? scheduler.state ?? '—'),
-      detail('Processed', last.processed ?? '—'),
-      detail('Completed', last.completed ?? '—'),
-      detail('Halted', last.halted ?? '—'),
-    ].join('');
-    const error = $('#scheduler-error');
-    error.hidden = !scheduler.last_error;
-    error.textContent = scheduler.last_error || '';
-  }
-
-  function renderStrategies(runtime) {
-    const strategies = runtime.strategies || [];
-    $('#strategy-empty').hidden = strategies.length > 0;
-    $('#strategy-rows').innerHTML = strategies.map((item) => {
-      const slippage = item.slippage_ratio == null ? '—' : `${num(item.slippage_ratio, 2)}×`;
-      return `<tr><td>${escapeHtml(item.strategy_id)}</td><td><span class="health ${escapeHtml(item.health)}">${escapeHtml(item.health)}</span></td><td>${escapeHtml(money(item.latest_equity))}</td><td>${escapeHtml(pct(item.cumulative_return, 2, true))}</td><td>${escapeHtml(multiple(item.latest_gross_realized, 2))}</td><td>${escapeHtml(multiple(item.total_turnover, 2))}</td><td>${escapeHtml(slippage)}</td><td>${escapeHtml(timestamp(item.latest_timestamp))}</td></tr>`;
-    }).join('');
-  }
-
-  function renderIncidents(runtime) {
-    const incidents = runtime.incidents || [];
-    $('#incident-empty').hidden = incidents.length > 0;
-    $('#incident-list').innerHTML = incidents.map((item) => `<article class="card incident ${escapeHtml(item.severity)}"><span class="incident-bar"></span><div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.strategy_id)} · ${escapeHtml(item.category)}${item.cycle_id ? ` · ${escapeHtml(item.cycle_id)}` : ''}<br>${escapeHtml(item.detail)}</p></div><time>${escapeHtml(timestamp(item.timestamp))}</time></article>`).join('');
-  }
-
-  function detail(label, value) { return `<div class="detail"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value ?? '—')}</strong></div>`; }
-
-  function renderContext(runtime, historical) {
-    const v517 = runtime.v517 || {};
-    const vState = v517.state;
-    const decision = v517.decision;
-    if (vState || decision) {
-      const stateName = vState?.market_state ?? vState?.state ?? decision?.market_state ?? decision?.state ?? 'available';
-      setText('#v517-state', String(stateName).replaceAll('_', ' '));
-      $('#v517-details').innerHTML = [
-        detail('Target leverage', multiple(decision?.target_leverage ?? decision?.selected_leverage ?? vState?.target_leverage, 3)),
-        detail('State age', `${vState?.state_age_days ?? decision?.state_age_days ?? '—'} d`),
-        detail('Guard', String(vState?.guard_active ?? decision?.guard_active ?? false)),
-        detail('Decision hash', decision?.decision_hash ?? decision?.target_hash ?? '—'),
-      ].join('');
-      setText('#v517-source', v517.state_source || v517.decision_source || 'runtime artifact');
-    } else {
-      setText('#v517-state', 'Нет runtime state');
-      $('#v517-details').innerHTML = detail('Expected files', 'v517_state.json / v517_decision.json') + detail('Historical policy', 'available in research dashboard');
-      setText('#v517-source', 'Fail-closed: no state inferred');
-    }
-
-    const market = runtime.market_state;
-    if (market) {
-      const latest = market.latest && typeof market.latest === 'object' ? market.latest : market;
-      const label = latest.state_label ?? latest.state ?? 'runtime market context';
-      setText('#market-state', String(label).replaceAll('_', ' '));
-      $('#market-details').innerHTML = [
-        detail('Confidence', pct(latest.assignment_confidence ?? latest.confidence, 1)),
-        detail('Duration', `${latest.state_duration_days ?? latest.duration_days ?? '—'} d`),
-        detail('Novelty', num(latest.novelty_ratio, 3)),
-        detail('As of', latest.open_time ?? latest.as_of_utc ?? '—'),
-      ].join('');
-      setText('#market-source', runtime.market_state_source || 'runtime market artifact');
-    } else {
-      const archived = historical.market || {};
-      setText('#market-state', archived.state ? `archive: ${String(archived.state).replaceAll('_', ' ')}` : 'Архивный fallback');
-      $('#market-details').innerHTML = [detail('As of', archived.as_of || '—'), detail('Confidence', pct(archived.confidence, 1)), detail('Duration', `${archived.duration_days ?? '—'} d`), detail('Novelty', num(archived.novelty_ratio, 3))].join('');
-      setText('#market-source', 'No runtime market_state.json; displaying committed archive context');
-    }
-  }
-
-  function render(data) {
-    state.data = data;
-    const runtime = data.runtime || { status: 'idle', aggregate: {}, strategies: [], incidents: [], v517: {} };
-    renderStatus(runtime);
-    renderAggregate(runtime);
-    renderScheduler(runtime);
-    renderStrategies(runtime);
-    renderIncidents(runtime);
-    renderContext(runtime, data);
-  }
-
-  async function refresh({ quiet = false } = {}) {
-    if (state.paused) return;
-    try {
-      const response = await fetch('./api/v1/dashboard', { cache: 'no-store' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      render(data);
-      if (!quiet) toast('Runtime snapshot обновлён');
-    } catch (error) {
-      const pill = $('#service-status');
-      pill.textContent = 'OFFLINE';
-      pill.className = 'pill pill-halt';
-      setText('#runtime-status', 'OFFLINE');
-      if (!quiet) toast(`API недоступен: ${error.message}`, true);
-    }
-  }
-
-  function startPolling() {
-    clearInterval(state.pollTimer);
-    setText('#connection-mode', 'POLLING');
-    state.pollTimer = setInterval(() => refresh({ quiet: true }), 5000);
-  }
-
-  function connectEvents() {
-    if (!window.EventSource) { startPolling(); return; }
-    state.eventSource?.close();
-    const source = new EventSource('./api/v1/events');
-    state.eventSource = source;
-    source.addEventListener('open', () => setText('#connection-mode', 'SSE'));
-    source.addEventListener('snapshot', () => refresh({ quiet: true }));
-    source.addEventListener('error', () => { source.close(); state.eventSource = null; startPolling(); });
-  }
-
-  function wire() {
-    $('#refresh').addEventListener('click', () => refresh());
-    $('#pause').addEventListener('click', () => {
-      state.paused = !state.paused;
-      $('#pause').textContent = state.paused ? 'Продолжить' : 'Пауза';
-      setText('#connection-mode', state.paused ? 'PAUSED' : state.eventSource ? 'SSE' : 'POLLING');
-      if (!state.paused) refresh({ quiet: true });
+  const asNumber = (value, fallback = 0) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+  const formatNumber = (value, digits = 2) =>
+    Number.isFinite(Number(value))
+      ? asNumber(value).toLocaleString("ru-RU", {
+          minimumFractionDigits: digits,
+          maximumFractionDigits: digits,
+        })
+      : "—";
+  const formatUsd = (value, signed = false) => {
+    if (!Number.isFinite(Number(value))) return "—";
+    const numeric = asNumber(value);
+    const prefix = signed && numeric > 0 ? "+" : "";
+    return `${prefix}${formatNumber(numeric, 2)} USDT`;
+  };
+  const formatCompact = (value) => {
+    const numeric = asNumber(value, Number.NaN);
+    if (!Number.isFinite(numeric)) return "—";
+    return new Intl.NumberFormat("ru-RU", {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    }).format(numeric);
+  };
+  const formatPrice = (value) => {
+    const numeric = asNumber(value, Number.NaN);
+    if (!Number.isFinite(numeric)) return "—";
+    const digits = numeric >= 1000 ? 2 : numeric >= 1 ? 3 : 5;
+    return `$${formatNumber(numeric, digits)}`;
+  };
+  const formatTime = (timestamp) => {
+    if (!Number.isFinite(Number(timestamp))) return "—";
+    return new Date(Number(timestamp)).toLocaleTimeString("ru-RU", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
     });
-  }
+  };
+  const formatDuration = (milliseconds) => {
+    const seconds = Math.max(0, Math.floor(asNumber(milliseconds) / 1000));
+    if (seconds < 60) return `${seconds} сек`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} мин`;
+    return `${formatNumber(minutes / 60, 1)} ч`;
+  };
+  const tone = (value) => (asNumber(value) > 0 ? "positive" : asNumber(value) < 0 ? "negative" : "neutral");
+  const create = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
+    return element;
+  };
+  const svg = (tag, attributes = {}) => {
+    const element = document.createElementNS(svgNamespace, tag);
+    for (const [key, value] of Object.entries(attributes)) {
+      element.setAttribute(key, String(value));
+    }
+    return element;
+  };
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    wire();
-    await refresh({ quiet: true });
-    connectEvents();
+  const setConnection = (status, label) => {
+    const pill = $("#connection-pill");
+    pill.className = `connection ${status}`;
+    pill.lastChild.textContent = label;
+  };
+
+  const renderAccount = (data) => {
+    const paper = data.paper || {};
+    const equity = asNumber(paper.equity_usdt);
+    const starting = asNumber(paper.starting_balance_usdt);
+    const realized = asNumber(paper.realized_pnl_usdt);
+    const unrealized = asNumber(paper.unrealized_pnl_usdt);
+    const total = equity - starting;
+    const percent = starting ? (total / starting) * 100 : 0;
+    $("#equity").textContent = formatNumber(equity, 2);
+    $("#total-pnl").textContent = formatUsd(total, true);
+    $("#unrealized-pnl").textContent = formatUsd(unrealized, true);
+    $("#realized-pnl").textContent = formatUsd(realized, true);
+    $("#closed-trades").textContent = String(asNumber(paper.closed_positions));
+    for (const [selector, value] of [
+      ["#total-pnl", total],
+      ["#unrealized-pnl", unrealized],
+      ["#realized-pnl", realized],
+    ]) {
+      const element = $(selector);
+      element.className = tone(value);
+    }
+    const chip = $("#pnl-chip");
+    chip.textContent = `${percent > 0 ? "+" : ""}${formatNumber(percent, 2)}%`;
+    chip.className = `pnl-chip ${tone(percent)}`;
+  };
+
+  const renderTabs = (container, values, selected, onSelect) => {
+    container.replaceChildren();
+    for (const value of values) {
+      const button = create("button", value === selected ? "active" : "", value.toUpperCase());
+      button.type = "button";
+      button.addEventListener("click", () => onSelect(value));
+      container.append(button);
+    }
+  };
+
+  const renderChart = (data) => {
+    const series = (data.candles || []).filter((item) => Array.isArray(item.items) && item.items.length > 1);
+    const assets = [...new Set(series.map((item) => String(item.asset)))];
+    if (!assets.includes(state.selectedAsset)) state.selectedAsset = assets[0] || null;
+    const assetSeries = series.filter((item) => item.asset === state.selectedAsset);
+    const venues = assetSeries.map((item) => String(item.exchange_id));
+    if (!venues.includes(state.selectedVenue)) state.selectedVenue = venues[0] || null;
+
+    renderTabs($("#asset-tabs"), assets, state.selectedAsset, (asset) => {
+      state.selectedAsset = asset;
+      state.selectedVenue = null;
+      renderChart(state.data);
+    });
+    renderTabs($("#venue-tabs"), venues, state.selectedVenue, (venue) => {
+      state.selectedVenue = venue;
+      renderChart(state.data);
+    });
+
+    const selected = assetSeries.find((item) => item.exchange_id === state.selectedVenue);
+    const chart = $("#candle-chart");
+    chart.replaceChildren();
+    if (!selected) {
+      $("#chart-empty").hidden = false;
+      $("#chart-title").textContent = "Рынок";
+      return;
+    }
+    $("#chart-empty").hidden = true;
+    const candles = selected.items.slice(-120);
+    const lows = candles.map((item) => asNumber(item.low));
+    const highs = candles.map((item) => asNumber(item.high));
+    const rawMin = Math.min(...lows);
+    const rawMax = Math.max(...highs);
+    const padding = Math.max((rawMax - rawMin) * 0.08, rawMax * 0.0005);
+    const minimum = rawMin - padding;
+    const maximum = rawMax + padding;
+    const width = 960;
+    const height = 360;
+    const left = 10;
+    const right = 82;
+    const top = 14;
+    const bottom = 30;
+    const plotWidth = width - left - right;
+    const plotHeight = height - top - bottom;
+    const xStep = plotWidth / candles.length;
+    const bodyWidth = Math.max(1.5, Math.min(7, xStep * 0.62));
+    const y = (price) => top + ((maximum - price) / (maximum - minimum)) * plotHeight;
+
+    for (let index = 0; index <= 4; index += 1) {
+      const gridY = top + (plotHeight / 4) * index;
+      const price = maximum - ((maximum - minimum) / 4) * index;
+      chart.append(svg("line", { x1: left, y1: gridY, x2: width - right, y2: gridY, class: "chart-grid" }));
+      const label = svg("text", { x: width - right + 10, y: gridY + 4, class: "chart-axis" });
+      label.textContent = formatPrice(price);
+      chart.append(label);
+    }
+
+    for (const [index, candle] of candles.entries()) {
+      const center = left + xStep * index + xStep / 2;
+      const candleClass = asNumber(candle.close) >= asNumber(candle.open) ? "candle-up" : "candle-down";
+      chart.append(svg("line", {
+        x1: center,
+        y1: y(asNumber(candle.high)),
+        x2: center,
+        y2: y(asNumber(candle.low)),
+        class: candleClass,
+      }));
+      const openY = y(asNumber(candle.open));
+      const closeY = y(asNumber(candle.close));
+      chart.append(svg("rect", {
+        x: center - bodyWidth / 2,
+        y: Math.min(openY, closeY),
+        width: bodyWidth,
+        height: Math.max(1, Math.abs(closeY - openY)),
+        rx: 0.7,
+        class: candleClass,
+      }));
+    }
+
+    const timeIndexes = [0, Math.floor((candles.length - 1) / 2), candles.length - 1];
+    for (const index of timeIndexes) {
+      const label = svg("text", {
+        x: left + xStep * index + xStep / 2,
+        y: height - 7,
+        class: "chart-axis",
+        "text-anchor": index === 0 ? "start" : index === candles.length - 1 ? "end" : "middle",
+      });
+      label.textContent = new Date(candles[index].timestamp_ms).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+      chart.append(label);
+    }
+
+    const first = asNumber(candles[0].open);
+    const last = asNumber(candles.at(-1).close);
+    const change = first ? ((last / first) - 1) * 100 : 0;
+    const lastY = y(last);
+    chart.append(svg("line", { x1: left, y1: lastY, x2: width - right, y2: lastY, class: "last-line" }));
+    const lastLabel = svg("text", { x: width - right + 10, y: lastY - 6, class: "last-label" });
+    lastLabel.textContent = formatPrice(last);
+    chart.append(lastLabel);
+
+    $("#chart-title").textContent = `${selected.asset} / USDT · ${selected.exchange_id}`;
+    $("#chart-last").textContent = formatPrice(last);
+    $("#chart-change").textContent = `${change > 0 ? "+" : ""}${formatNumber(change, 2)}%`;
+    $("#chart-change").className = tone(change);
+    $("#chart-low").textContent = formatPrice(rawMin);
+    $("#chart-high").textContent = formatPrice(rawMax);
+    $("#chart-range").textContent = `${selected.timeframe} · ${candles.length} реальных свечей`;
+  };
+
+  const renderPosition = (data) => {
+    const container = $("#position-body");
+    const status = $("#position-status");
+    container.replaceChildren();
+    const position = data.paper?.open_position;
+    if (!position) {
+      status.textContent = "Ожидание";
+      status.className = "position-status waiting";
+      const card = create("div", "waiting-card");
+      const inner = create("div");
+      inner.append(create("span", "waiting-icon", "⌁"));
+      inner.append(create("strong", "", "Нет открытой позиции"));
+      inner.append(create("p", "", "Стратегия наблюдает за funding-спредами и войдёт только при прохождении всех risk-фильтров."));
+      inner.append(create("div", "threshold", `Порог входа: ${formatNumber(data.risk?.min_current_spread_bps_8h, 2)} bps / 8ч`));
+      card.append(inner);
+      container.append(card);
+      return;
+    }
+    status.textContent = "Открыта";
+    status.className = "position-status open";
+    const candidate = position.candidate || {};
+    const pair = create("div", "position-pair");
+    const long = create("div", "leg long");
+    long.append(create("span", "", "Long"), create("strong", "", `${candidate.long_exchange} · ${candidate.asset}`));
+    const short = create("div", "leg short");
+    short.append(create("span", "", "Short"), create("strong", "", `${candidate.short_exchange} · ${candidate.asset}`));
+    pair.append(long, create("span", "pair-arrow", "↔"), short);
+    container.append(pair);
+    const kpis = create("div", "position-kpis");
+    const values = [
+      ["Paper PnL", formatUsd(position.funding_pnl_usdt + position.mark_pnl_usdt - position.charged_costs_usdt, true)],
+      ["Mark PnL", formatUsd(position.mark_pnl_usdt, true)],
+      ["Funding PnL", formatUsd(position.funding_pnl_usdt, true)],
+      ["Издержки", formatUsd(position.charged_costs_usdt)],
+      ["Номинал", formatUsd(candidate.matched_notional_usdt)],
+      ["В позиции", formatDuration(Date.now() - asNumber(position.opened_at_ms))],
+    ];
+    for (const [label, value] of values) {
+      const item = create("div");
+      item.append(create("span", "", label), create("strong", "", value));
+      kpis.append(item);
+    }
+    container.append(kpis);
+  };
+
+  const renderMarkets = (data) => {
+    const body = $("#market-rows");
+    body.replaceChildren();
+    for (const market of data.markets || []) {
+      const row = document.createElement("tr");
+      const nameCell = document.createElement("td");
+      const name = create("div", "market-name");
+      name.append(create("span", "asset-icon", String(market.asset).slice(0, 3)));
+      const labels = create("span");
+      labels.append(create("strong", "", `${market.asset} / USDT`), create("small", "", market.exchange_id));
+      name.append(labels);
+      nameCell.append(name);
+      row.append(nameCell);
+      const cells = [
+        formatPrice(market.mark_price),
+        `${formatNumber(market.funding_bps_8h, 3)} bps`,
+        `${formatNumber(market.predicted_funding_bps_8h, 3)} bps`,
+        `${formatNumber(market.book_spread_bps, 3)} bps`,
+        `$${formatCompact(market.open_interest_usdt)}`,
+      ];
+      for (const value of cells) row.append(create("td", "", value));
+      const freshness = document.createElement("td");
+      freshness.append(create("span", "fresh", "live"));
+      row.append(freshness);
+      body.append(row);
+    }
+    const scan = data.scan || {};
+    $("#scan-meta").textContent = `${(data.markets || []).length} рынков · ${asNumber(scan.candidates?.length)} сигналов`;
+  };
+
+  const rejectionText = (item) => {
+    const spread = item.details?.current_spread_bps_8h;
+    const translations = {
+      current_spread_below_threshold: "Funding-спред пока ниже порога входа",
+      predicted_spread_below_threshold: "Прогноз funding не подтверждает вход",
+      entry_basis_too_wide: "Basis между биржами слишком широкий",
+      expected_net_below_threshold: "Ожидаемый результат не покрывает издержки",
+      insufficient_order_book_depth: "Недостаточная глубина книги ордеров",
+      mark_divergence_too_wide: "Расхождение mark price выше лимита",
+    };
+    const base = translations[item.reason] || String(item.reason || "Сигнал отклонён risk-фильтром");
+    return Number.isFinite(Number(spread)) ? `${base}: ${formatNumber(spread, 3)} bps / 8ч.` : `${base}.`;
+  };
+
+  const renderDecisions = (data) => {
+    const container = $("#decision-list");
+    container.replaceChildren();
+    const scan = data.scan || {};
+    const now = data.updated_at_ms;
+    const entries = [];
+    if (data.paper?.open_position) {
+      const candidate = data.paper.open_position.candidate || {};
+      entries.push({ title: `${candidate.asset} · позиция открыта`, text: `${candidate.long_exchange} long / ${candidate.short_exchange} short`, time: now });
+    }
+    for (const candidate of scan.candidates || []) {
+      entries.push({ title: `${candidate.asset} · найден вход`, text: `Ожидаемый net: ${formatNumber(candidate.expected_net_bps, 2)} bps`, time: scan.observed_at_ms });
+    }
+    const seen = new Set();
+    for (const rejection of scan.rejections || []) {
+      if (seen.has(rejection.asset)) continue;
+      seen.add(rejection.asset);
+      entries.push({ title: `${rejection.asset} · ждём`, text: rejectionText(rejection), time: scan.observed_at_ms });
+    }
+    for (const entry of entries.slice(0, 3)) {
+      const card = create("article", "decision");
+      const top = create("div", "decision-top");
+      top.append(create("strong", "", entry.title), create("time", "", formatTime(entry.time)));
+      card.append(top, create("p", "", entry.text));
+      container.append(card);
+    }
+    if (!container.childElementCount) {
+      container.append(create("article", "decision", "Ждём первый market scan…"));
+    }
+  };
+
+  const render = (data) => {
+    state.data = data;
+    renderAccount(data);
+    renderChart(data);
+    renderPosition(data);
+    renderMarkets(data);
+    renderDecisions(data);
+    $("#updated-at").textContent = `обновлено ${formatTime(data.updated_at_ms)}`;
+    const errors = [...(data.scan?.errors || [])];
+    if (!(data.candles || []).length) errors.push(...(data.candle_errors || []));
+    const banner = $("#error-banner");
+    banner.hidden = errors.length === 0;
+    banner.textContent = errors.length ? `Market data: ${errors.join(" · ")}` : "";
+    setConnection(data.health === "healthy" ? "live" : "error", data.health === "healthy" ? "Realtime" : "Данные устарели");
+  };
+
+  const fetchPaper = async () => {
+    if (state.fetching) return;
+    state.fetching = true;
+    try {
+      const response = await fetch("/api/v1/paper", { cache: "no-store" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      render(await response.json());
+    } catch (error) {
+      setConnection("error", "Нет связи");
+      const banner = $("#error-banner");
+      banner.hidden = false;
+      banner.textContent = `Не удалось получить paper-данные: ${error.message}`;
+    } finally {
+      state.fetching = false;
+    }
+  };
+
+  const connect = () => {
+    state.eventSource?.close();
+    const source = new EventSource("/api/v1/events?seconds=300");
+    state.eventSource = source;
+    source.addEventListener("snapshot", fetchPaper);
+    source.onopen = () => setConnection("live", "Realtime");
+    source.onerror = () => {
+      if (!state.data) setConnection("error", "Переподключение");
+    };
+    clearInterval(state.fallbackTimer);
+    state.fallbackTimer = setInterval(fetchPaper, 10_000);
+  };
+
+  $("#refresh").addEventListener("click", fetchPaper);
+  window.addEventListener("beforeunload", () => {
+    state.eventSource?.close();
+    clearInterval(state.fallbackTimer);
   });
+  fetchPaper();
+  connect();
 })();

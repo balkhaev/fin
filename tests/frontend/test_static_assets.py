@@ -35,21 +35,22 @@ class StaticAssetTests(unittest.TestCase):
         self.assertNotIn("http://cdn", html)
         self.assertNotIn("https://cdn", html)
 
-    def test_live_page_uses_read_only_api(self) -> None:
+    def test_live_page_uses_realtime_paper_api(self) -> None:
         html = (ROOT / "frontend/live.html").read_text(encoding="utf-8")
         script = (ROOT / "frontend/live.js").read_text(encoding="utf-8")
-        self.assertIn('id="strategy-rows"', html)
-        self.assertIn('id="incident-list"', html)
-        self.assertIn('id="scheduler-state"', html)
-        self.assertIn("/api/v1/scheduler", html)
-        self.assertIn("./api/v1/dashboard", script)
-        self.assertIn("renderScheduler", script)
+        self.assertIn('id="candle-chart"', html)
+        self.assertIn('id="position-body"', html)
+        self.assertIn('id="market-rows"', html)
+        self.assertIn("/api/v1/paper", script)
+        self.assertIn("renderChart", script)
         self.assertIn("EventSource", script)
         self.assertNotIn("submit_order", script)
         self.assertNotIn("/api/v1/orders", script)
 
     def test_committed_dashboard_does_not_authorize_live(self) -> None:
-        value = json.loads((ROOT / "frontend/data/dashboard.json").read_text(encoding="utf-8"))
+        value = json.loads(
+            (ROOT / "frontend/data/dashboard.json").read_text(encoding="utf-8")
+        )
         self.assertFalse(value["environment"]["live_ready"])
         self.assertFalse(value["environment"]["real_leverage_authorized"])
         self.assertFalse(value["environment"]["exchange_submission_available"])
