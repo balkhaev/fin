@@ -78,15 +78,12 @@ def _validate_hash_manifest(
         raise ContractError(f"{field} must be an object mapping paths to SHA-256")
     if required and not value:
         raise ContractError(f"{field} must contain at least one entry")
-    previous: str | None = None
     for path, digest in value.items():
         _require_repository_path(path, field=f"{field} path")
         normalized = require_sha256(digest, field=f"{field}.{path}")
         if normalized != digest:
             raise ContractError(f"{field}.{path} must use the sha256: prefix")
-        if previous is not None and path <= previous:
-            raise ContractError(f"{field} paths must be strictly sorted")
-        previous = path
+
 
 
 def _normalize_string_sequence(
