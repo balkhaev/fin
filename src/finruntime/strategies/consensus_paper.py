@@ -269,55 +269,50 @@ def scan_market(*, timeout: float = 8.0, now_ms: int | None = None) -> dict[str,
     }
 
 
-def evaluate_signals(market: dict[str, Any]) -> list[dict[str, Any]]:
-    signals: list[dict[str, Any]] = []
+def build_signal_context(market: dict[str, Any]) -> dict[str, Any]:
+    context: dict[str, Any] = {"wif": None, "dot": None}
     wif = market.get("wif")
     if isinstance(wif, dict):
         weekday = datetime.fromtimestamp(
             int(wif["signal_closed_at_ms"]) / 1000, UTC
         ).weekday()
         candle_range = float(wif["high"]) - float(wif["low"])
+        lower_wick_ratio = 0.0
+        close_location = 0.0
         if candle_range > 0:
             lower_wick = min(float(wif["open"]), float(wif["close"])) - float(
                 wif["low"]
             )
             lower_wick_ratio = lower_wick / candle_range
             close_location = (float(wif["close"]) - float(wif["low"])) / candle_range
-            raw_strength = (
-                abs(float(wif["move_45m_atr"]))
-                + max(-float(wif["oi_z"]), 0) / 2
-                + max(-float(wif["premium_z"]), 0) / 2
-            )
-            passes = (
-                weekday in {1, 4, 6}
-                and float(wif["move_45m_atr"]) <= -2
-                and float(wif["volume_z"]) >= 1
-                and lower_wick_ratio >= 0.5
-                and close_location >= 0.6
-                and float(wif["taker_imbalance"]) >= -0.10
-                and float(wif["oi_z"]) <= -1
-                and raw_strength >= 3.5
-            )
-            if passes:
-                signals.append(
-                    {
-                        "key": f"wif_oi_flush:{wif['signal_closed_at_ms']}",
-                        "module": "wif_oi_flush",
-                        "symbol": "WIFUSDT",
-                        "asset": "WIF",
-                        "entry_price": float(wif["entry_price"]),
-                        "atr": float(wif["atr"]),
-                        "stop_atr": 1.25,
-                        "target_r": 5.0,
-                        "max_hold_minutes": 60,
-                        "strength": min(100, round(raw_strength / 8 * 100)),
-                        "reason": (
-                            f"45m {float(wif['move_45m_atr']):.2f} ATR; "
-                            f"OI z {float(wif['oi_z']):.2f}; "
-                            f"volume z {float(wif['volume_z']):.2f}"
-                        ),
-                    }
-                )
+        raw_strength = (
+            abs(float(wif["move_45m_atr"]))
+            + max(-float(wif["oi_z"]), 0) / 2
+            + max(-float(wif["premium_z"]), 0) / 2
+        )
+        checks = {
+            "weekday": weekday in {1, 4, 6},
+            "move_45m_atr": float(wif["move_45m_atr"]) <= -2,
+            "volume_z": float(wif["volume_z"]) >= 1,
+            "lower_wick": candle_range > 0 and lower_wick_ratio >= 0.5,
+            "close_location": candle_range > 0 and close_location >= 0.6,
+            "taker_imbalance": float(wif["taker_imbalance"]) >= -0.10,
+            "oi_z": float(wif["oi_z"]) <= -1,
+            "strength": raw_strength >= 3.5,
+        }
+        context["wif"] = {
+            "passes": all(checks.values()),
+            "failed": [key for key, passed in checks.items() if not passed],
+            "weekday": weekday,
+            "move_45m_atr": float(wif["move_45m_atr"]),
+            "volume_z": float(wif["volume_z"]),
+            "lower_wick_ratio": lower_wick_ratio,
+            "close_location": close_location,
+            "taker_imbalance": float(wif["taker_imbalance"]),
+            "oi_z": float(wif["oi_z"]),
+            "premium_z": float(wif["premium_z"]),
+            "strength": raw_strength,
+        }
 
     dot = market.get("dot")
     if isinstance(dot, dict):
@@ -325,30 +320,82 @@ def evaluate_signals(market: dict[str, Any]) -> list[dict[str, Any]]:
         weekday = datetime.fromtimestamp(funding_time_ms / 1000, UTC).weekday()
         threshold = {0: -2.25, 1: -2.25, 4: -2.5, 5: -2.5, 6: -2.5}.get(weekday)
         delay_minutes = (int(dot["evaluated_at_ms"]) - funding_time_ms) / 60_000
-        if (
-            threshold is not None
-            and 15 <= delay_minutes <= 30
-            and float(dot["funding_rate_bps"]) <= threshold
-        ):
-            raw_strength = abs(float(dot["funding_rate_bps"]))
-            signals.append(
-                {
-                    "key": f"dot_negative_funding:{funding_time_ms}",
-                    "module": "dot_negative_funding",
-                    "symbol": "DOTUSDT",
-                    "asset": "DOT",
-                    "entry_price": float(dot["entry_price"]),
-                    "atr": float(dot["atr"]),
-                    "stop_atr": 6.0,
-                    "target_r": 2.0,
-                    "max_hold_minutes": 480,
-                    "strength": min(100, round(raw_strength * 2 / 8 * 100)),
-                    "reason": (
-                        f"funding {float(dot['funding_rate_bps']):.2f} bps; "
-                        f"threshold {threshold:.2f} bps; delay {delay_minutes:.0f}m"
-                    ),
-                }
-            )
+        funding_rate_bps = float(dot["funding_rate_bps"])
+        checks = {
+            "weekday": threshold is not None,
+            "window": 15 <= delay_minutes <= 30,
+            "funding": threshold is not None and funding_rate_bps <= threshold,
+        }
+        context["dot"] = {
+            "passes": all(checks.values()),
+            "failed": [key for key, passed in checks.items() if not passed],
+            "weekday": weekday,
+            "funding_rate_bps": funding_rate_bps,
+            "threshold_bps": threshold,
+            "delay_minutes": delay_minutes,
+        }
+    return context
+
+
+def evaluate_signals(market: dict[str, Any]) -> list[dict[str, Any]]:
+    signals: list[dict[str, Any]] = []
+    context = build_signal_context(market)
+    wif = market.get("wif")
+    wif_context = context.get("wif")
+    if (
+        isinstance(wif, dict)
+        and isinstance(wif_context, dict)
+        and wif_context["passes"]
+    ):
+        raw_strength = float(wif_context["strength"])
+        signals.append(
+            {
+                "key": f"wif_oi_flush:{wif['signal_closed_at_ms']}",
+                "module": "wif_oi_flush",
+                "symbol": "WIFUSDT",
+                "asset": "WIF",
+                "entry_price": float(wif["entry_price"]),
+                "atr": float(wif["atr"]),
+                "stop_atr": 1.25,
+                "target_r": 5.0,
+                "max_hold_minutes": 60,
+                "strength": min(100, round(raw_strength / 8 * 100)),
+                "reason": (
+                    f"45m {float(wif['move_45m_atr']):.2f} ATR; "
+                    f"OI z {float(wif['oi_z']):.2f}; "
+                    f"volume z {float(wif['volume_z']):.2f}"
+                ),
+            }
+        )
+
+    dot = market.get("dot")
+    dot_context = context.get("dot")
+    if (
+        isinstance(dot, dict)
+        and isinstance(dot_context, dict)
+        and dot_context["passes"]
+    ):
+        funding_time_ms = int(dot["funding_time_ms"])
+        raw_strength = abs(float(dot["funding_rate_bps"]))
+        signals.append(
+            {
+                "key": f"dot_negative_funding:{funding_time_ms}",
+                "module": "dot_negative_funding",
+                "symbol": "DOTUSDT",
+                "asset": "DOT",
+                "entry_price": float(dot["entry_price"]),
+                "atr": float(dot["atr"]),
+                "stop_atr": 6.0,
+                "target_r": 2.0,
+                "max_hold_minutes": 480,
+                "strength": min(100, round(raw_strength * 2 / 8 * 100)),
+                "reason": (
+                    f"funding {float(dot['funding_rate_bps']):.2f} bps; "
+                    f"threshold {float(dot_context['threshold_bps']):.2f} bps; "
+                    f"delay {float(dot_context['delay_minutes']):.0f}m"
+                ),
+            }
+        )
     return signals
 
 
@@ -440,6 +487,7 @@ def _empty_state() -> dict[str, Any]:
         "seen_signal_keys": [],
         "candles": [],
         "diagnostics": {},
+        "signal_context": {"wif": None, "dot": None},
         "events": [],
         "errors": [],
         "exchange_submission_available": False,
@@ -619,6 +667,7 @@ def update_paper_state(state: dict[str, Any], market: dict[str, Any]) -> dict[st
             "seen_signal_keys": sorted(seen)[-500:],
             "candles": market["candles"],
             "diagnostics": market["diagnostics"],
+            "signal_context": build_signal_context(market),
             "errors": [],
             "exchange_submission_available": False,
         }

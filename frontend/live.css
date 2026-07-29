@@ -258,6 +258,49 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.018); }
 .fresh { display: inline-flex; align-items: center; gap: 6px; color: var(--green); font: 600 10px inherit; }
 .fresh::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
+.strategy-context-section { margin-top: 30px; }
+.context-note { color: var(--muted); font: 10px var(--mono); }
+.strategy-contexts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.strategy-context-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+}
+.strategy-context-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.strategy-context-head h3 { margin: 4px 0 0; font-size: 17px; letter-spacing: -0.02em; }
+.context-state {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font: 700 9px var(--mono);
+}
+.context-state.running,
+.context-state.healthy { color: var(--green); border-color: rgba(66, 214, 155, 0.24); background: var(--green-soft); }
+.context-state.degraded { color: var(--amber); border-color: rgba(234, 184, 95, 0.28); background: rgba(234, 184, 95, 0.08); }
+.strategy-context-copy { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+.context-copy-row { min-width: 0; padding: 17px 20px; border-right: 1px solid var(--border); }
+.context-copy-row:last-child { border-right: 0; }
+.context-copy-row > span { color: var(--muted); font-size: 9px; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
+.context-copy-row p { margin: 7px 0 0; color: #b9c2c8; font-size: 11px; line-height: 1.55; }
+.context-copy-row.context-current { background: linear-gradient(145deg, rgba(66, 214, 155, 0.07), transparent); }
+.context-copy-row.context-current p { color: var(--text); }
+.context-metrics { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; border-top: 1px solid var(--border); }
+.context-metrics div { min-width: 0; padding: 12px 20px; border-right: 1px solid var(--border); }
+.context-metrics div:last-child { border-right: 0; }
+.context-metrics dt { color: var(--muted); font-size: 9px; }
+.context-metrics dd { overflow: hidden; margin: 4px 0 0; font: 650 11px var(--mono); text-overflow: ellipsis; white-space: nowrap; }
+
 .decision-list { display: grid; grid-template-columns: repeat(3, 1fr); }
 .decision { min-width: 0; padding: 17px 20px; border-right: 1px solid var(--border); }
 .decision:last-child { border-right: 0; }
@@ -273,6 +316,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.018); }
   .account-overview { grid-template-columns: 1fr; gap: 20px; }
   .strategy-tabs { grid-template-columns: 1fr 1fr; }
   .trading-grid { grid-template-columns: 1fr; }
+  .strategy-contexts { grid-template-columns: 1fr; }
   .waiting-card { min-height: 200px; }
 }
 
@@ -293,6 +337,9 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.018); }
   .chart-wrap { min-height: 300px; padding-inline: 8px; }
   #candle-chart { height: 290px; }
   .chart-footer { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .strategy-context-copy { grid-template-columns: 1fr; }
+  .context-copy-row { border-right: 0; border-bottom: 1px solid var(--border); }
+  .context-copy-row:last-child { border-bottom: 0; }
   .decision-list { grid-template-columns: 1fr; }
   .decision { border-right: 0; border-bottom: 1px solid var(--border); }
   .decision:last-child { border-bottom: 0; }
@@ -311,6 +358,13 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.018); }
   .market-switcher { padding-inline: 14px; overflow-x: auto; }
   .tabs { width: max-content; }
   .chart-price strong { font-size: 18px; }
+  .strategy-context-head { align-items: flex-start; padding-inline: 15px; }
+  .strategy-context-copy { grid-template-columns: 1fr; }
+  .context-copy-row { padding-inline: 15px; }
+  .context-metrics { grid-template-columns: 1fr 1fr; }
+  .context-metrics div { padding-inline: 15px; }
+  .context-metrics div:nth-child(2) { border-right: 0; }
+  .context-metrics div:nth-child(-n + 2) { border-bottom: 1px solid var(--border); }
   th,
   td { padding-inline: 14px; }
 }

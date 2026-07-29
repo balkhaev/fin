@@ -61,6 +61,8 @@ class ConsensusPaperTests(unittest.TestCase):
         self.assertEqual(state["health"], "healthy")
         self.assertEqual(len(state["paper"]["positions"]), 2)
         self.assertLess(state["paper"]["equity_usdt"], 10_000.0)
+        self.assertTrue(state["signal_context"]["wif"]["passes"])
+        self.assertTrue(state["signal_context"]["dot"]["passes"])
         self.assertFalse(state["exchange_submission_available"])
 
     def test_trader_risk_accelerator_matches_source_transitions(self) -> None:
@@ -148,7 +150,60 @@ class StrategyHubTests(unittest.TestCase):
                 for item in snapshot["strategies"]
             )
         )
+        self.assertTrue(
+            all(
+                {
+                    "how_it_works",
+                    "why_now",
+                    "waiting_for",
+                    "metrics",
+                }
+                <= item["context"].keys()
+                for item in snapshot["strategies"]
+            )
+        )
         self.assertFalse(snapshot["exchange_submission_available"])
+
+    def test_funding_context_explains_current_spread_gap(self) -> None:
+        dyn = {
+            "status": "ready",
+            "paper": {"account": {"initialNavUsd": 10_000}, "navUsd": 10_000},
+            "positions": [],
+        }
+        hub = StrategyHub(
+            fin2_url="https://example.test/forward",
+            cache=UpstreamSnapshotCache(lambda _url, _timeout: dyn),
+        )
+        snapshot = hub.snapshot(
+            funding={
+                "health": "healthy",
+                "paper": {
+                    "starting_balance_usdt": 10_000,
+                    "equity_usdt": 10_000,
+                },
+                "risk": {
+                    "min_current_spread_bps_8h": 8.0,
+                    "min_predicted_spread_bps_8h": 5.0,
+                    "min_expected_net_bps": 10.0,
+                },
+                "scan": {
+                    "candidates": [],
+                    "rejections": [
+                        {
+                            "reason": "current_spread_below_threshold",
+                            "details": {"current_spread_bps_8h": 1.25},
+                        }
+                    ],
+                },
+            },
+            consensus={**_empty_state(), "health": "healthy"},
+            runtime={"scheduler": {"state": "idle"}, "strategies": []},
+        )
+        funding = next(
+            item for item in snapshot["strategies"] if item["id"] == "funding-neutral"
+        )
+        self.assertIn("1.25 bps", funding["context"]["why_now"])
+        self.assertIn("8.00 bps", funding["context"]["waiting_for"])
 
     def test_atlas_waits_for_real_observations(self) -> None:
         dyn = {

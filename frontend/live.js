@@ -361,6 +361,50 @@
     }
   };
 
+  const renderStrategyContexts = () => {
+    const container = $("#strategy-contexts");
+    container.replaceChildren();
+    for (const strategy of state.hub?.strategies || []) {
+      const context = strategy.context || {};
+      const card = create("article", "strategy-context-card");
+      card.setAttribute("aria-label", `Контекст стратегии ${strategy.name}`);
+
+      const head = create("header", "strategy-context-head");
+      const title = create("div");
+      title.append(
+        create("span", "strategy-card-repo", `${strategy.repository} · paper`),
+        create("h3", "", strategy.name)
+      );
+      head.append(
+        title,
+        create("span", `context-state ${strategy.status}`, strategy.status_label)
+      );
+
+      const copy = create("div", "strategy-context-copy");
+      for (const [label, value, className] of [
+        ["Как работает", context.how_it_works || strategy.description, ""],
+        ["Почему сейчас", context.why_now || strategy.status_label, "context-current"],
+        ["Чего ждём", context.waiting_for || "Следующего подтверждённого сигнала.", ""],
+      ]) {
+        const row = create("div", `context-copy-row ${className}`.trim());
+        row.append(create("span", "", label), create("p", "", value));
+        copy.append(row);
+      }
+
+      const metrics = create("dl", "context-metrics");
+      for (const metric of context.metrics || []) {
+        const item = create("div");
+        item.append(
+          create("dt", "", String(metric.label || "Показатель")),
+          create("dd", "", String(metric.value ?? "—"))
+        );
+        metrics.append(item);
+      }
+      card.append(head, copy, metrics);
+      container.append(card);
+    }
+  };
+
   const renderMarkets = () => {
     const data = state.funding || {};
     const body = $("#market-rows");
@@ -403,6 +447,7 @@
     renderChart();
     renderSelected();
     renderMarkets();
+    renderStrategyContexts();
     const updated = state.hub?.generated_at_ms || state.funding?.updated_at_ms;
     $("#updated-at").textContent = `обновлено ${formatTime(updated)}`;
     const errors = [...(state.funding?.scan?.errors || [])];

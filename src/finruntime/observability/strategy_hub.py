@@ -26,6 +26,47 @@ def _percent(pnl: float, starting_balance: float) -> float:
     return pnl / starting_balance * 100 if starting_balance > 0 else 0.0
 
 
+def _metric(label: str, value: str) -> dict[str, str]:
+    return {"label": label, "value": value}
+
+
+def _number_text(value: object, digits: int = 2) -> str:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return "—"
+    return f"{float(value):.{digits}f}"
+
+
+def _best_funding_spread(scan: dict[str, Any]) -> float | None:
+    values: list[float] = []
+    for candidate in scan.get("candidates") or []:
+        if isinstance(candidate, dict):
+            value = candidate.get("current_spread_bps_8h")
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                values.append(float(value))
+    for rejection in scan.get("rejections") or []:
+        if not isinstance(rejection, dict):
+            continue
+        details = rejection.get("details")
+        if not isinstance(details, dict):
+            continue
+        value = details.get("current_spread_bps_8h")
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            values.append(float(value))
+    return max(values) if values else None
+
+
+def _failed_summary(
+    context: dict[str, Any], labels: dict[str, str], *, fallback: str
+) -> str:
+    failed = context.get("failed")
+    if not isinstance(failed, list) or not failed:
+        return fallback
+    descriptions = [labels.get(str(item), str(item)) for item in failed]
+    visible = descriptions[:2]
+    suffix = f" и ещё {len(descriptions) - 2}" if len(descriptions) > 2 else ""
+    return f"{', '.join(visible)}{suffix}"
+
+
 def _fetch_json(url: str, timeout: float) -> dict[str, Any]:
     request = Request(url, headers={"User-Agent": "FIN-Strategy-Hub/1.0"})
     with urlopen(request, timeout=timeout) as response:
@@ -89,6 +130,7 @@ def read_consensus_snapshot(path: Path) -> dict[str, Any]:
             },
             "candles": [],
             "signals": [],
+            "signal_context": {"wif": None, "dot": None},
             "errors": ["WIF/DOT paper worker is starting"],
         }
     value = json.loads(path.read_text(encoding="utf-8"))
@@ -101,10 +143,52 @@ def _funding_strategy(paper_snapshot: dict[str, Any]) -> dict[str, Any]:
     account = paper_snapshot.get("paper")
     account = account if isinstance(account, dict) else {}
     position = account.get("open_position")
+    scan = paper_snapshot.get("scan")
+    scan = scan if isinstance(scan, dict) else {}
+    risk = paper_snapshot.get("risk")
+    risk = risk if isinstance(risk, dict) else {}
+    candidates = scan.get("candidates")
+    candidates = candidates if isinstance(candidates, list) else []
+    rejections = scan.get("rejections")
+    rejections = rejections if isinstance(rejections, list) else []
+    best_spread = _best_funding_spread(scan)
+    current_threshold = _number(risk.get("min_current_spread_bps_8h"), 8.0)
+    predicted_threshold = _number(risk.get("min_predicted_spread_bps_8h"), 5.0)
+    net_threshold = _number(risk.get("min_expected_net_bps"), 10.0)
     starting = _number(account.get("starting_balance_usdt"))
     equity = _number(account.get("equity_usdt"), starting)
     pnl = equity - starting
     open_count = 1 if isinstance(position, dict) else 0
+    if open_count:
+        why_now = (
+            "Paper-пара уже открыта: одна биржа куплена, другая продана, "
+            "поэтому движение цены в основном взаимно компенсируется."
+        )
+        waiting_for = (
+            "Ждём, пока чистая доходность по funding исчезнет, либо сработает "
+            "лимит удержания; затем обе paper-ноги закроются вместе."
+        )
+    elif candidates:
+        why_now = (
+            f"Найдено подходящих пар: {len(candidates)}. Paper-вход должен "
+            "появиться в ближайшем цикле сканера."
+        )
+        waiting_for = "Ждём одновременного открытия лонга и шорта в paper-паре."
+    else:
+        spread_text = (
+            f"{best_spread:.2f} bps за 8ч"
+            if best_spread is not None
+            else "не рассчитан"
+        )
+        why_now = (
+            f"Сделки нет: лучший текущий спред — {spread_text}, "
+            f"а для входа нужно минимум {current_threshold:.2f} bps."
+        )
+        waiting_for = (
+            f"Текущий спред ≥ {current_threshold:.2f} bps, прогноз ≥ "
+            f"{predicted_threshold:.2f} bps и ожидаемый доход после расходов ≥ "
+            f"{net_threshold:.2f} bps при достаточной ликвидности."
+        )
     return {
         "id": "funding-neutral",
         "repository": "fin",
@@ -125,13 +209,27 @@ def _funding_strategy(paper_snapshot: dict[str, Any]) -> dict[str, Any]:
         "timeframe": "5 sec · 1m candles",
         "updated_at_ms": paper_snapshot.get("updated_at_ms"),
         "positions": [position] if isinstance(position, dict) else [],
-        "signals": paper_snapshot.get("scan", {}).get("candidates", []),
+        "signals": candidates,
         "detail": {
             "markets": len(paper_snapshot.get("markets") or []),
-            "entry_threshold_bps": paper_snapshot.get("risk", {}).get(
-                "min_current_spread_bps_8h"
+            "entry_threshold_bps": risk.get("min_current_spread_bps_8h"),
+            "rejections": len(rejections),
+        },
+        "context": {
+            "how_it_works": (
+                "Покупает бессрочный фьючерс там, где funding ниже, и одновременно "
+                "шортит тот же актив там, где funding выше."
             ),
-            "rejections": len(paper_snapshot.get("scan", {}).get("rejections", [])),
+            "why_now": why_now,
+            "waiting_for": waiting_for,
+            "metrics": [
+                _metric(
+                    "Лучший спред",
+                    f"{best_spread:.2f} bps / 8ч" if best_spread is not None else "—",
+                ),
+                _metric("Порог входа", f"{current_threshold:.2f} bps / 8ч"),
+                _metric("Кандидаты", str(len(candidates))),
+            ],
         },
     }
 
@@ -148,6 +246,8 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
     equity = _number(account.get("equity"), starting)
     pnl = equity - starting
     observations = int(_number(source.get("observation_count")))
+    committed_cycles = int(_number(source.get("committed_cycles")))
+    scheduler_state = runtime.get("scheduler", {}).get("state")
     source_health = str(source.get("health", "starting"))
     status = "waiting" if observations == 0 else source_health
     if status == "healthy":
@@ -174,8 +274,31 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
         "signals": [],
         "detail": {
             "observations": observations,
-            "committed_cycles": int(_number(source.get("committed_cycles"))),
-            "scheduler": runtime.get("scheduler", {}).get("state"),
+            "committed_cycles": committed_cycles,
+            "scheduler": scheduler_state,
+        },
+        "context": {
+            "how_it_works": (
+                "Получает дневные веса портфеля V75 ATLAS-NX и проводит их "
+                "через отдельный paper-счёт с комиссиями, funding и сверкой."
+            ),
+            "why_now": (
+                "Циклов ещё не было: ledger не получил ни одного валидного "
+                "снимка стратегии."
+                if observations == 0
+                else f"Обработано наблюдений: {observations}; завершено циклов: {committed_cycles}."
+            ),
+            "waiting_for": (
+                "Ждём первый закрытый дневной снимок V75, затем план, "
+                "paper-исполнение и зафиксированный результат цикла."
+                if observations == 0
+                else "Ждём следующие закрытые дневные веса и плановый цикл scheduler."
+            ),
+            "metrics": [
+                _metric("Наблюдения", str(observations)),
+                _metric("Циклы", str(committed_cycles)),
+                _metric("Scheduler", str(scheduler_state or "—")),
+            ],
         },
     }
 
@@ -192,6 +315,47 @@ def _consensus_strategy(snapshot: dict[str, Any]) -> dict[str, Any]:
     signals = signals if isinstance(signals, list) else []
     risk_state = snapshot.get("risk_state")
     risk_state = risk_state if isinstance(risk_state, dict) else {}
+    signal_context = snapshot.get("signal_context")
+    signal_context = signal_context if isinstance(signal_context, dict) else {}
+    wif_context = signal_context.get("wif")
+    wif_context = wif_context if isinstance(wif_context, dict) else {}
+    dot_context = signal_context.get("dot")
+    dot_context = dot_context if isinstance(dot_context, dict) else {}
+    wif_reason = _failed_summary(
+        wif_context,
+        {
+            "weekday": "сегодня не сигнальный день UTC",
+            "move_45m_atr": "падение слабее 2 ATR",
+            "volume_z": "нет всплеска объёма",
+            "lower_wick": "нижняя тень короче 50%",
+            "close_location": "закрытие недостаточно высоко",
+            "taker_imbalance": "продавцы слишком агрессивны",
+            "oi_z": "открытый интерес ещё не сброшен",
+            "strength": "общая сила ниже 3.5",
+        },
+        fallback="полный WIF-сигнал не сформирован",
+    )
+    dot_reason = _failed_summary(
+        dot_context,
+        {
+            "weekday": "сегодня DOT-модуль выключен",
+            "window": "сейчас не окно 15–30 минут после funding",
+            "funding": "funding недостаточно отрицательный",
+        },
+        fallback="полный DOT-сигнал не сформирован",
+    )
+    if positions:
+        assets = ", ".join(
+            str(item.get("asset") or item.get("symbol")) for item in positions
+        )
+        why_now = f"Открыты paper-позиции: {assets}. Риск-контроль продолжает следить за стопом и временем удержания."
+    elif signals:
+        assets = ", ".join(
+            str(item.get("asset") or item.get("symbol")) for item in signals
+        )
+        why_now = f"Сигнал подтверждён для {assets}; paper-счёт обрабатывает вход."
+    else:
+        why_now = f"Сделки нет. WIF: {wif_reason}. DOT: {dot_reason}."
     return {
         "id": "consensus-wif-dot",
         "repository": "trader",
@@ -221,6 +385,28 @@ def _consensus_strategy(snapshot: dict[str, Any]) -> dict[str, Any]:
             "errors": snapshot.get("errors") or [],
             **(snapshot.get("diagnostics") or {}),
         },
+        "context": {
+            "how_it_works": (
+                "Покупает WIF после резкого сброса цены и открытого интереса либо "
+                "DOT после аномально отрицательного funding."
+            ),
+            "why_now": why_now,
+            "waiting_for": (
+                "WIF: падение ≥ 2 ATR со всплеском объёма, сбросом OI и сильным "
+                "отскоком свечи. DOT: funding ≤ −2.25/−2.50 bps в окне 15–30 минут."
+            ),
+            "metrics": [
+                _metric(
+                    "WIF 45м", f"{_number_text(wif_context.get('move_45m_atr'))} ATR"
+                ),
+                _metric("WIF OI z", _number_text(wif_context.get("oi_z"))),
+                _metric(
+                    "DOT funding",
+                    f"{_number_text(dot_context.get('funding_rate_bps'))} bps",
+                ),
+                _metric("Риск-режим", str(risk_state.get("mode", "base"))),
+            ],
+        },
     }
 
 
@@ -237,9 +423,41 @@ def _dyn_strategy(
     pnl = equity - starting
     positions = source.get("positions")
     positions = positions if isinstance(positions, list) else []
+    eligible_assets = source.get("eligibleAssets")
+    eligible_assets = eligible_assets if isinstance(eligible_assets, list) else []
+    btc_filters = source.get("btcFilters")
+    btc_filters = btc_filters if isinstance(btc_filters, list) else []
+    btc_score = int(_number(source.get("btcConsensusScore")))
+    target_gross = _number(source.get("targetGross"))
+    cash_weight = _number(source.get("cashWeight"), 1.0)
     status = "degraded" if error or stale else str(source.get("status", "starting"))
     if status == "ready":
         status = "running"
+    if positions:
+        why_now = (
+            f"В портфеле {len(positions)} paper-позиций; целевая gross-экспозиция "
+            f"{target_gross:.2f}×."
+        )
+        waiting_for = (
+            "Ждём следующей недельной ребалансировки либо отключения BTC-фильтра."
+        )
+    elif btc_score == 0:
+        why_now = (
+            "Стратегия в кэше: ни один из трёх трендовых BTC-фильтров сейчас "
+            "не разрешает рыночный риск."
+        )
+        waiting_for = (
+            "Ждём хотя бы один положительный BTC-фильтр: BTC выше EMA100 с "
+            "EMA20 выше EMA100, BTC выше SMA150 или EMA50 выше EMA200."
+        )
+    elif not eligible_assets:
+        why_now = "Стратегия в кэше: после фильтров ликвидности не осталось доступных активов."
+        waiting_for = "Ждём активы с историей ≥ 180 дней и достаточным объёмом."
+    else:
+        why_now = (
+            "BTC-фильтр разрешает риск, но итоговый вес FLOW/momentum пока равен нулю."
+        )
+        waiting_for = "Ждём положительный FLOW или absolute momentum на ребалансировке."
     return {
         "id": "dyn-iv113",
         "repository": "fin2",
@@ -261,12 +479,27 @@ def _dyn_strategy(
         "positions": positions,
         "signals": [],
         "detail": {
-            "target_gross": source.get("targetGross"),
-            "cash_weight": source.get("cashWeight"),
-            "btc_consensus_score": source.get("btcConsensusScore"),
-            "eligible_assets": source.get("eligibleAssets") or [],
+            "target_gross": target_gross,
+            "cash_weight": cash_weight,
+            "btc_consensus_score": btc_score,
+            "btc_filters": btc_filters,
+            "eligible_assets": eligible_assets,
             "upstream_error": error,
             "upstream_stale": stale,
+        },
+        "context": {
+            "how_it_works": (
+                "Ранжирует ликвидные монеты по FLOW и положительному momentum, "
+                "а трендовые BTC-фильтры решают, держать портфель или уйти в кэш."
+            ),
+            "why_now": why_now,
+            "waiting_for": waiting_for,
+            "metrics": [
+                _metric("BTC режим", f"{btc_score}/3"),
+                _metric("Доступно активов", str(len(eligible_assets))),
+                _metric("Target gross", f"{target_gross:.2f}×"),
+                _metric("Cash", f"{cash_weight * 100:.0f}%"),
+            ],
         },
     }
 
