@@ -23,17 +23,17 @@ def execute_paper_cycle(
     mark_prices: ReferencePriceBook,
     policy: PaperBrokerPolicy = DEFAULT_PAPER_BROKER_POLICY,
 ) -> PaperExecutionResult:
-    """Activate and execute one immutable paper plan exactly once.
+    """Activate or resume an immutable paper plan against sealed observations.
 
-    A partially or fully executed plan must be replanned from the resulting account state.
-    Reusing the same plan against later quotes could otherwise overfill its original intents.
+    Schema 1.1 account state carries cumulative per-intent fills, so later observations
+    can safely complete a partial plan without exceeding the original quantities.
     """
 
     plan.validate()
     account_state.validate()
-    if account_state.last_plan_id == plan.plan_id:
+    if account_state.last_plan_id == plan.plan_id and account_state.schema_version == "1.0":
         raise AccountingHalt(
-            "paper plan was already activated; build a new plan from current account state"
+            "legacy account state lacks resumable plan progress; build a new plan"
         )
 
     active = activate_paper_plan(

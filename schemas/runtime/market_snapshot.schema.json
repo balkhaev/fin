@@ -16,12 +16,27 @@
     "cash_rate",
     "quality_flags"
   ],
+  "$defs": {
+    "sourceObservation": {
+      "type": "object",
+      "$comment": "Runtime also enforces source_timestamp_utc <= available_at_utc <= decision_time_utc.",
+      "required": ["source", "source_timestamp_utc", "available_at_utc", "payload_sha256", "quality"],
+      "properties": {
+        "source": {"type": "string", "minLength": 1},
+        "source_timestamp_utc": {"type": "string", "pattern": "Z$"},
+        "available_at_utc": {"type": "string", "pattern": "Z$"},
+        "payload_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "quality": {"enum": ["ok", "stale", "missing", "future", "invalid"]}
+      },
+      "additionalProperties": false
+    }
+  },
   "properties": {
     "schema_version": {"const": "1.0"},
     "snapshot_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
     "as_of_utc": {"type": "string", "pattern": "Z$"},
     "decision_time_utc": {"type": "string", "pattern": "Z$"},
-    "sources": {"type": "object", "minProperties": 1},
+    "sources": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/sourceObservation"}},
     "spot": {"type": "object"},
     "perp": {"type": "object"},
     "funding_events": {"type": "array"},

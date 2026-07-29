@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, replace
+from dataclasses import asdict, dataclass, field, replace
 from decimal import Decimal, localcontext
 from typing import Any, Mapping, Sequence
 
@@ -45,6 +45,22 @@ def _decimal_mapping(
             raise ContractError(f"{field}.{instrument} cannot be negative")
         if number != 0:
             output[str(instrument)] = number
+    return output
+
+
+def _intent_fill_mapping(
+    value: Mapping[str, str] | None,
+) -> dict[str, Decimal]:
+    output: dict[str, Decimal] = {}
+    for intent_id, raw in (value or {}).items():
+        normalized_id = require_sha256(
+            str(intent_id), field="active_plan_intent_id"
+        )
+        output[normalized_id] = require_decimal_string(
+            raw,
+            field=f"active_plan_filled_quantities.{normalized_id}",
+            minimum=Decimal("0.000000000001"),
+        )
     return output
 
 
@@ -129,6 +145,8 @@ class PaperAccountState:
     last_plan_id: str | None
     applied_event_ids: Sequence[str]
     account_hash: str
+    active_plan_filled_quantities: Mapping[str, str] = field(default_factory=dict)
+    active_plan_fill_event_ids: Sequence[str] = field(default_factory=tuple)
 
     @classmethod
     def create(
@@ -148,9 +166,11 @@ class PaperAccountState:
         high_water: str,
         last_plan_id: str | None = None,
         applied_event_ids: Sequence[str] = (),
+        active_plan_filled_quantities: Mapping[str, str] | None = None,
+        active_plan_fill_event_ids: Sequence[str] = (),
     ) -> "PaperAccountState":
         provisional = cls(
-            schema_version="1.0",
+            schema_version="1.1",
             strategy_id=strategy_id,
             sequence=int(sequence),
             as_of_utc=format_utc(as_of_utc),
@@ -166,6 +186,10 @@ class PaperAccountState:
             last_plan_id=last_plan_id,
             applied_event_ids=tuple(applied_event_ids),
             account_hash="sha256:" + "0" * 64,
+            active_plan_filled_quantities=dict(
+                active_plan_filled_quantities or {}
+            ),
+            active_plan_fill_event_ids=tuple(active_plan_fill_event_ids),
         )
         result = replace(
             provisional,
@@ -197,7 +221,7 @@ class PaperAccountState:
         )
 
     def validate(self) -> None:
-        if self.schema_version != "1.0" or not self.strategy_id:
+        if self.schema_version not in {"1.0", "1.1"} or not self.strategy_id:
             raise ContractError("invalid PaperAccountState identity")
         if self.sequence < 0:
             raise ContractError("paper account sequence must be non-negative")
@@ -235,19 +259,46 @@ class PaperAccountState:
             raise ContractError("perpetual entry prices must be positive")
         if self.last_plan_id is not None:
             require_sha256(self.last_plan_id, field="last_plan_id")
+        plan_fills = _intent_fill_mapping(self.active_plan_filled_quantities)
         if len(set(self.applied_event_ids)) != len(self.applied_event_ids):
             raise ContractError("applied event ids must be unique")
         for event_id in self.applied_event_ids:
             require_sha256(event_id, field="applied_event_id")
+        if len(set(self.active_plan_fill_event_ids)) != len(
+            self.active_plan_fill_event_ids
+        ):
+            raise ContractError("active plan fill event ids must be unique")
+        for event_id in self.active_plan_fill_event_ids:
+            require_sha256(event_id, field="active_plan_fill_event_id")
+        if not set(self.active_plan_fill_event_ids).issubset(
+            set(self.applied_event_ids)
+        ):
+            raise ContractError("active plan fill events must be applied to the account")
+        if self.last_plan_id is None and (
+            plan_fills or self.active_plan_fill_event_ids
+        ):
+            raise ContractError("active plan progress requires last_plan_id")
+        if self.schema_version == "1.0" and (
+            plan_fills or self.active_plan_fill_event_ids
+        ):
+            raise ContractError("legacy account state cannot contain plan progress")
         require_sha256(self.account_hash, field="account_hash")
-        expected = sha256_id(_hash_payload(self, {"account_hash"}))
+        hash_payload = _hash_payload(self, {"account_hash"})
+        if self.schema_version == "1.0":
+            hash_payload.pop("active_plan_filled_quantities", None)
+            hash_payload.pop("active_plan_fill_event_ids", None)
+        expected = sha256_id(hash_payload)
         if self.account_hash != expected:
             raise ContractError("PaperAccountState hash mismatch")
         # Force validation of normalized mappings even when their return values are unused.
-        _ = spot, perp, entries
+        _ = spot, perp, entries, plan_fills
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        payload = asdict(self)
+        if self.schema_version == "1.0":
+            payload.pop("active_plan_filled_quantities", None)
+            payload.pop("active_plan_fill_event_ids", None)
+        return payload
 
     def to_portfolio_state(
         self,
@@ -319,16 +370,31 @@ def _rebuild(
     high_water: Decimal,
     last_plan_id: str | None,
     applied_event_ids: Sequence[str],
+    active_plan_filled_quantities: Mapping[str, Decimal] | None = None,
+    active_plan_fill_event_ids: Sequence[str] | None = None,
     sequence_increment: int = 1,
 ) -> PaperAccountState:
     if cash < 0:
         raise AccountingHalt("paper cash cannot become negative")
     if equity <= 0:
         raise AccountingHalt("paper equity cannot become non-positive")
+    normalized_as_of = format_utc(as_of_utc)
+    if parse_utc(normalized_as_of) < parse_utc(state.as_of_utc):
+        raise AccountingHalt("paper account time cannot move backward")
+    plan_fills = (
+        dict(active_plan_filled_quantities)
+        if active_plan_filled_quantities is not None
+        else _intent_fill_mapping(state.active_plan_filled_quantities)
+    )
+    plan_events = (
+        tuple(active_plan_fill_event_ids)
+        if active_plan_fill_event_ids is not None
+        else tuple(state.active_plan_fill_event_ids)
+    )
     return PaperAccountState.create(
         strategy_id=state.strategy_id,
         sequence=state.sequence + sequence_increment,
-        as_of_utc=as_of_utc,
+        as_of_utc=normalized_as_of,
         cash=decimal_text(cash),
         spot_positions=_text_mapping(spot),
         perp_positions=_text_mapping(perp),
@@ -340,6 +406,8 @@ def _rebuild(
         high_water=decimal_text(max(high_water, equity)),
         last_plan_id=last_plan_id,
         applied_event_ids=tuple(applied_event_ids),
+        active_plan_filled_quantities=_text_mapping(plan_fills),
+        active_plan_fill_event_ids=plan_events,
     )
 
 
@@ -394,6 +462,8 @@ def apply_fill_event(
 
     cash, spot, perp, entries, fees, realized, funding, equity, high_water = _state_values(state)
     applied = tuple(state.applied_event_ids) + (fill.event_id,)
+    plan_fills = _intent_fill_mapping(state.active_plan_filled_quantities)
+    plan_events = tuple(state.active_plan_fill_event_ids) + (fill.event_id,)
     if fill.status in {"rejected", "expired"}:
         return _rebuild(
             state,
@@ -409,6 +479,8 @@ def apply_fill_event(
             high_water=high_water,
             last_plan_id=fill.plan_id,
             applied_event_ids=applied,
+            active_plan_filled_quantities=plan_fills,
+            active_plan_fill_event_ids=plan_events,
         )
 
     quantity = require_decimal_string(
@@ -421,8 +493,14 @@ def apply_fill_event(
         field="intent.quantity",
         minimum=Decimal("0.000000000001"),
     )
-    if quantity > requested:
-        raise AccountingHalt("filled quantity exceeds intent quantity")
+    cumulative = plan_fills.get(intent.intent_id, _ZERO) + quantity
+    if cumulative > requested:
+        raise AccountingHalt("cumulative filled quantity exceeds intent quantity")
+    if fill.status == "filled" and cumulative != requested:
+        raise AccountingHalt("filled status requires cumulative intent completion")
+    if fill.status == "partial" and cumulative >= requested:
+        raise AccountingHalt("partial status cannot complete an intent")
+    plan_fills[intent.intent_id] = cumulative
     price = require_decimal_string(
         fill.price,
         field="fill.price",
@@ -492,6 +570,8 @@ def apply_fill_event(
         high_water=high_water,
         last_plan_id=fill.plan_id,
         applied_event_ids=applied,
+        active_plan_filled_quantities=plan_fills,
+        active_plan_fill_event_ids=plan_events,
     )
 
 

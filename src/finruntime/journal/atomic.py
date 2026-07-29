@@ -4,12 +4,13 @@ import json
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Iterable, Iterator, Mapping
+from typing import Any, Iterable, Iterator, Mapping, Sequence
 
 from finruntime.canonical import (
     ContractError,
     canonical_json_bytes,
     format_utc,
+    parse_utc,
     require_sha256,
     sha256_id,
 )
@@ -28,6 +29,25 @@ _SINGLETON_EVENT_TYPES = {
     "RECONCILIATION_COMPLETED",
     "HALT_RAISED",
     "HALT_CLEARED",
+}
+
+_RUNTIME_EVENT_PHASES = {
+    "SNAPSHOT_ACCEPTED": 10,
+    "TARGET_COMPUTED": 20,
+    "PLAN_CREATED": 30,
+    "FILL_RECORDED": 40,
+    "STATE_COMMITTED": 50,
+    "RECONCILIATION_COMPLETED": 60,
+    "HALT_RAISED": 70,
+}
+
+_RUNTIME_EVENT_PREDECESSORS = {
+    "TARGET_COMPUTED": {"SNAPSHOT_ACCEPTED"},
+    "PLAN_CREATED": {"TARGET_COMPUTED"},
+    "FILL_RECORDED": {"PLAN_CREATED"},
+    "STATE_COMMITTED": {"PLAN_CREATED"},
+    "RECONCILIATION_COMPLETED": {"STATE_COMMITTED"},
+    "HALT_RAISED": {"RECONCILIATION_COMPLETED"},
 }
 
 
@@ -123,6 +143,60 @@ class AppendOnlyJournal:
         return events
 
     @staticmethod
+    def _verify_semantics(events: Sequence[Mapping[str, Any]]) -> None:
+        last_sequence: dict[str, int] = {}
+        last_time: dict[str, Any] = {}
+        phase_by_cycle: dict[tuple[str, int], int] = {}
+        seen_by_cycle: dict[tuple[str, int], set[str]] = {}
+        halted: set[str] = set()
+        for line_number, event in enumerate(events, 1):
+            strategy_id = str(event["strategy_id"])
+            sequence = int(event["sequence"])
+            event_type = str(event["event_type"])
+            event_time = parse_utc(str(event["event_time_utc"]))
+            previous_sequence = last_sequence.get(strategy_id)
+            if previous_sequence is not None and sequence < previous_sequence:
+                raise JournalCorruptionError(
+                    f"journal sequence moved backward on line {line_number}"
+                )
+            last_sequence[strategy_id] = sequence
+            if event_type in _RUNTIME_EVENT_PHASES or event_type == "HALT_CLEARED":
+                previous_time = last_time.get(strategy_id)
+                if previous_time is not None and event_time < previous_time:
+                    raise JournalCorruptionError(
+                        f"journal event time moved backward on line {line_number}"
+                    )
+                last_time[strategy_id] = event_time
+
+            cycle_key = (strategy_id, sequence)
+            seen = seen_by_cycle.setdefault(cycle_key, set())
+            phase = _RUNTIME_EVENT_PHASES.get(event_type)
+            if phase is not None:
+                prior_phase = phase_by_cycle.get(cycle_key, -1)
+                if phase < prior_phase:
+                    raise JournalCorruptionError(
+                        f"runtime event phase moved backward on line {line_number}"
+                    )
+                required = _RUNTIME_EVENT_PREDECESSORS.get(event_type, set())
+                missing = required - seen
+                if missing:
+                    raise JournalCorruptionError(
+                        f"runtime event {event_type} lacks predecessors {sorted(missing)} "
+                        f"on line {line_number}"
+                    )
+                phase_by_cycle[cycle_key] = phase
+                seen.add(event_type)
+
+            if event_type == "HALT_RAISED":
+                halted.add(strategy_id)
+            elif event_type == "HALT_CLEARED":
+                if strategy_id not in halted:
+                    raise JournalCorruptionError(
+                        f"HALT_CLEARED without HALT_RAISED on line {line_number}"
+                    )
+                halted.remove(strategy_id)
+
+    @staticmethod
     def _verify_events(events: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
         previous: str | None = None
         normalized = [dict(event) for event in events]
@@ -189,6 +263,7 @@ class AppendOnlyJournal:
                 singleton_keys[key] = str(event["payload_hash"])
             seen.add(str(event["event_hash"]))
             previous = str(event["event_hash"])
+        AppendOnlyJournal._verify_semantics(normalized)
         return normalized
 
     def verify(self) -> list[dict[str, Any]]:
@@ -312,6 +387,7 @@ class AppendOnlyJournal:
                 selected.append(event)
 
             if new_events:
+                self._verify_events([*existing, *new_events])
                 payload = b"".join(
                     canonical_json_bytes(event) + b"\n" for event in new_events
                 )
