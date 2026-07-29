@@ -64,6 +64,8 @@ def _normalize_hash_manifest(
         path = _require_repository_path(str(raw_path), field=f"{field} path")
         if path in output:
             raise ContractError(f"duplicate path in {field}: {path}")
+        if not isinstance(raw_hash, str):
+            raise ContractError(f"{field}.{path} must be a SHA-256 string")
         output[path] = require_sha256(raw_hash, field=f"{field}.{path}")
     return dict(sorted(output.items()))
 
@@ -80,6 +82,8 @@ def _validate_hash_manifest(
         raise ContractError(f"{field} must contain at least one entry")
     for path, digest in value.items():
         _require_repository_path(path, field=f"{field} path")
+        if not isinstance(digest, str):
+            raise ContractError(f"{field}.{path} must be a SHA-256 string")
         normalized = require_sha256(digest, field=f"{field}.{path}")
         if normalized != digest:
             raise ContractError(f"{field}.{path} must use the sha256: prefix")
@@ -134,6 +138,14 @@ def _normalize_parameters(
         raise ContractError(f"{field} cannot contain an empty key")
     canonical_json_bytes(output)
     return dict(sorted(output.items()))
+
+
+def _validate_parameters(value: Mapping[str, Any], *, field: str) -> None:
+    if not isinstance(value, Mapping):
+        raise ContractError(f"{field} must be an object")
+    if any(not isinstance(key, str) or not key for key in value):
+        raise ContractError(f"{field} must contain non-empty string keys")
+    canonical_json_bytes(value)
 
 
 @dataclass(frozen=True, slots=True)
@@ -253,9 +265,15 @@ class StrategyMigrationRecord:
     def validate(self) -> None:
         if self.schema_version != "1.0":
             raise ContractError("unsupported StrategyMigrationRecord schema version")
+        if not isinstance(self.migration_id, str):
+            raise ContractError("migration_id must be a SHA-256 string")
         require_sha256(self.migration_id, field="migration_id")
+        if not isinstance(self.migration_kind, str):
+            raise ContractError("migration_kind must be a string")
         if self.migration_kind not in MIGRATION_KINDS:
             raise ContractError(f"unsupported migration kind: {self.migration_kind}")
+        if not isinstance(self.status, str):
+            raise ContractError("migration status must be a string")
         if self.status not in MIGRATION_STATUSES:
             raise ContractError(f"unsupported migration status: {self.status}")
         _require_strategy_id(
@@ -266,6 +284,8 @@ class StrategyMigrationRecord:
             self.successor_strategy_id,
             field="successor_strategy_id",
         )
+        if not isinstance(self.created_at_utc, str):
+            raise ContractError("created_at_utc must be a UTC string")
         format_utc(self.created_at_utc)
         if not isinstance(self.reason, str) or not self.reason:
             raise ContractError("migration reason is required")
@@ -289,8 +309,14 @@ class StrategyMigrationRecord:
             self.regression_fixture_hashes,
             field="regression_fixture_hashes",
         )
-        canonical_json_bytes(self.inherited_parameters)
-        canonical_json_bytes(self.changed_parameters)
+        _validate_parameters(
+            self.inherited_parameters,
+            field="inherited_parameters",
+        )
+        _validate_parameters(
+            self.changed_parameters,
+            field="changed_parameters",
+        )
         if set(self.inherited_parameters) & set(self.changed_parameters):
             raise ContractError(
                 "a parameter cannot be both inherited and changed"
@@ -311,6 +337,17 @@ class StrategyMigrationRecord:
             raise ContractError(
                 f"migration successor has unsupported modes: {sorted(unsupported_modes)}"
             )
+
+        for field_name in (
+            "forward_clock_reset",
+            "successor_provenance_complete",
+            "capital_authorization_carried_forward",
+            "live_ready",
+            "real_leverage_authorized",
+            "exchange_submission_available",
+        ):
+            if type(getattr(self, field_name)) is not bool:
+                raise ContractError(f"{field_name} must be a JSON boolean")
 
         if (
             self.capital_authorization_carried_forward
