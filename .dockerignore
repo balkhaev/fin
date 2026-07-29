@@ -1,0 +1,13 @@
+.git
+.github
+.bootstrap_v87
+.bootstrap_v87b
+.venv
+__pycache__
+*.py[cod]
+archive
+deploy
+docs
+runtime
+services
+tests
