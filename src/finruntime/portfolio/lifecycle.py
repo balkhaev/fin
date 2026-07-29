@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from finruntime.canonical import require_sha256
+from finruntime.canonical import parse_utc, require_sha256
 from finruntime.portfolio.accounting import PaperAccountState
 
 
@@ -16,10 +16,15 @@ def activate_paper_plan(
     plan_id = require_sha256(plan_id, field="plan_id")
     if state.last_plan_id == plan_id:
         return state
+    effective_as_of = (
+        state.as_of_utc
+        if parse_utc(as_of_utc) < parse_utc(state.as_of_utc)
+        else as_of_utc
+    )
     return PaperAccountState.create(
         strategy_id=state.strategy_id,
         sequence=state.sequence + 1,
-        as_of_utc=as_of_utc,
+        as_of_utc=effective_as_of,
         cash=state.cash,
         spot_positions=state.spot_positions,
         perp_positions=state.perp_positions,

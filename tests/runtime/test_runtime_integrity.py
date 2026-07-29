@@ -3,8 +3,8 @@ from __future__ import annotations
 import unittest
 from decimal import Decimal
 
-from finruntime.canonical import ContractError
-from finruntime.data.availability import evaluate_availability, seal_sources
+from finruntime.canonical import ContractError, sha256_id
+from finruntime.data.availability import seal_sources
 from finruntime.execution import (
     PaperBrokerPolicy,
     PaperQuote,
@@ -55,31 +55,17 @@ class AvailabilityIntegrityTests(unittest.TestCase):
             quality="ok",
         )
 
-    def test_future_source_timestamp_blocks_risk_increase(self) -> None:
+    def test_future_source_timestamp_is_rejected_by_snapshot_contract(self) -> None:
         observation = self.observation(
             source_time="2026-07-27T00:06:00Z",
             available_at="2026-07-27T00:04:00Z",
         )
-        snapshot = MarketSnapshot.create(
-            as_of_utc="2026-07-27T00:00:00Z",
-            decision_time_utc="2026-07-27T00:05:00Z",
-            sources={"spot_daily": observation},
-        )
-
-        decision = evaluate_availability(
-            snapshot,
-            critical_sources=("spot_daily",),
-        )
-
-        self.assertFalse(decision.risk_increase_permitted)
-        self.assertIn(
-            "source_timestamp_after_available_at:spot_daily",
-            decision.blocking_reasons,
-        )
-        self.assertIn(
-            "source_timestamp_after_decision_time:spot_daily",
-            decision.blocking_reasons,
-        )
+        with self.assertRaises(ContractError):
+            MarketSnapshot.create(
+                as_of_utc="2026-07-27T00:00:00Z",
+                decision_time_utc="2026-07-27T00:05:00Z",
+                sources={"spot_daily": observation},
+            )
 
     def test_same_payload_with_different_metadata_is_rejected(self) -> None:
         first = self.observation(
@@ -95,6 +81,30 @@ class AvailabilityIntegrityTests(unittest.TestCase):
             seal_sources((first, second))
 
 
+class PaperAccountCompatibilityTests(unittest.TestCase):
+    def test_legacy_schema_1_0_hash_and_serialization_remain_valid(self) -> None:
+        current = PaperAccountState.empty(
+            strategy_id="v75_atlas_nx",
+            as_of_utc="2026-07-27T00:05:00Z",
+            starting_cash="10000",
+        )
+        payload = current.to_dict()
+        payload["schema_version"] = "1.0"
+        payload.pop("active_plan_filled_quantities")
+        payload.pop("active_plan_fill_event_ids")
+        payload["account_hash"] = sha256_id(
+            {
+                key: value
+                for key, value in payload.items()
+                if key != "account_hash"
+            }
+        )
+
+        legacy = PaperAccountState(**payload)
+        legacy.validate()
+        self.assertEqual(legacy.to_dict(), payload)
+
+
 class PaperExecutionIntegrityTests(unittest.TestCase):
     @staticmethod
     def reference_prices() -> dict[str, dict[str, object]]:
@@ -103,7 +113,7 @@ class PaperExecutionIntegrityTests(unittest.TestCase):
             "perp": {},
         }
 
-    def test_partial_plan_cannot_be_executed_twice(self) -> None:
+    def test_partial_plan_resumes_without_overfill(self) -> None:
         source = SourceObservation(
             source="spot_daily",
             source_timestamp_utc="2026-07-27T00:00:00Z",
@@ -164,7 +174,6 @@ class PaperExecutionIntegrityTests(unittest.TestCase):
             mid="100",
             available_quantity="50",
         )
-
         first = execute_paper_cycle(
             plan=plan,
             account_state=account,
@@ -174,6 +183,29 @@ class PaperExecutionIntegrityTests(unittest.TestCase):
         )
         self.assertEqual(first.fill_events[0].status, "partial")
         self.assertEqual(first.fill_events[0].filled_quantity, "5")
+        intent_id = plan.intents[0].intent_id
+        self.assertEqual(
+            first.account_state.active_plan_filled_quantities[intent_id], "5"
+        )
+
+        old_quote = PaperQuote(
+            instrument="BTC/USDT",
+            market_type="spot",
+            observed_at_utc="2026-07-27T00:05:30Z",
+            source_observation_hash="sha256:" + "4" * 64,
+            bid="99.95",
+            ask="100.05",
+            mid="100",
+            available_quantity="1000",
+        )
+        with self.assertRaises(AccountingHalt):
+            execute_paper_cycle(
+                plan=plan,
+                account_state=first.account_state,
+                quotes=(old_quote,),
+                mark_prices=self.reference_prices(),
+                policy=policy,
+            )
 
         retry_quote = PaperQuote(
             instrument="BTC/USDT",
@@ -185,14 +217,30 @@ class PaperExecutionIntegrityTests(unittest.TestCase):
             mid="100",
             available_quantity="1000",
         )
-        with self.assertRaises(AccountingHalt):
-            execute_paper_cycle(
-                plan=plan,
-                account_state=first.account_state,
-                quotes=(retry_quote,),
-                mark_prices=self.reference_prices(),
-                policy=policy,
-            )
+        second = execute_paper_cycle(
+            plan=plan,
+            account_state=first.account_state,
+            quotes=(retry_quote,),
+            mark_prices=self.reference_prices(),
+            policy=policy,
+        )
+        self.assertEqual(second.fill_events[0].status, "filled")
+        self.assertEqual(second.fill_events[0].filled_quantity, "15")
+        self.assertEqual(second.account_state.spot_positions["BTC/USDT"], "20")
+        self.assertTrue(second.execution_complete)
+
+        repeated = execute_paper_cycle(
+            plan=plan,
+            account_state=second.account_state,
+            quotes=(retry_quote,),
+            mark_prices=self.reference_prices(),
+            policy=policy,
+        )
+        self.assertEqual(repeated.fill_events, ())
+        self.assertEqual(
+            repeated.account_state.account_hash,
+            second.account_state.account_hash,
+        )
 
 
 if __name__ == "__main__":

@@ -247,17 +247,62 @@ def _current_reduce_capacity(
     return abs(current)
 
 
+def _intent_quantity(intent: ExecutionIntent) -> Decimal:
+    return require_decimal_string(
+        intent.quantity,
+        field=f"intent.quantity.{intent.intent_id}",
+        minimum=Decimal("0.000000000001"),
+    )
+
+
+def _plan_progress(
+    plan: ExecutionPlan,
+    account: PaperAccountState,
+) -> tuple[dict[str, ExecutionIntent], dict[str, Decimal]]:
+    if account.last_plan_id != plan.plan_id:
+        raise AccountingHalt("paper account is not activated for this plan")
+    if account.schema_version == "1.0":
+        raise AccountingHalt("legacy account state has no active plan progress")
+    intents: dict[str, ExecutionIntent] = {}
+    for intent in plan.intents:
+        if intent.intent_id in intents:
+            raise AccountingHalt("execution plan contains duplicate intent ids")
+        intents[intent.intent_id] = intent
+    progress: dict[str, Decimal] = {}
+    for intent_id, raw in account.active_plan_filled_quantities.items():
+        intent = intents.get(intent_id)
+        if intent is None:
+            raise AccountingHalt("account progress references an intent outside the plan")
+        quantity = require_decimal_string(
+            raw,
+            field=f"active_plan_filled_quantities.{intent_id}",
+            minimum=Decimal("0.000000000001"),
+        )
+        if quantity > _intent_quantity(intent):
+            raise AccountingHalt("account progress exceeds an intent quantity")
+        progress[intent_id] = quantity
+    return intents, progress
+
+
+def _plan_complete(
+    intents: Mapping[str, ExecutionIntent],
+    progress: Mapping[str, Decimal],
+) -> bool:
+    return all(progress.get(intent_id, _ZERO) == _intent_quantity(intent) for intent_id, intent in intents.items())
+
+
 def _make_outcome(
     intent: ExecutionIntent,
     fill: FillEvent,
     reason: str,
+    requested_quantity: Decimal,
 ) -> PaperFillOutcome:
     return PaperFillOutcome(
         intent_id=intent.intent_id,
         event_id=fill.event_id,
         status=fill.status,
         reason=reason,
-        requested_quantity=intent.quantity,
+        requested_quantity=decimal_text(requested_quantity),
         filled_quantity=fill.filled_quantity,
     )
 
@@ -278,28 +323,49 @@ def execute_paper_plan(
     if plan.strategy_id != account_state.strategy_id:
         raise AccountingHalt("paper plan and account strategy_id mismatch")
 
+    intents_by_id, progress = _plan_progress(plan, account_state)
+    if _plan_complete(intents_by_id, progress):
+        return PaperExecutionResult(
+            account_state=account_state,
+            fill_events=(),
+            outcomes=(),
+            total_filled_notional="0",
+            total_fees="0",
+            weighted_slippage_bps="0",
+            execution_complete=True,
+        )
+
     quote_by_key = _quote_map(quotes)
     state = account_state
     fills: list[FillEvent] = []
     outcomes: list[PaperFillOutcome] = []
-    status_by_intent: dict[str, str] = {}
     total_notional = _ZERO
     total_fees = _ZERO
     slippage_notional = _ZERO
-    latest_time = parse_utc(plan.created_at_utc)
+    latest_time = max(parse_utc(plan.created_at_utc), parse_utc(state.as_of_utc))
 
     for intent in plan.intents:
         intent.validate()
+        total_requested = _intent_quantity(intent)
+        already_filled = progress.get(intent.intent_id, _ZERO)
+        requested = total_requested - already_filled
+        if requested == 0:
+            continue
         quote = quote_by_key.get(_quote_key(intent))
         source_hash = (
             quote.source_observation_hash if quote is not None else plan.market_snapshot_id
         )
-        event_time = quote.observed_at_utc if quote is not None else plan.created_at_utc
+        event_time = quote.observed_at_utc if quote is not None else state.as_of_utc
         latest_time = max(latest_time, parse_utc(event_time))
 
-        if intent.parent_intent_id is not None and status_by_intent.get(
-            intent.parent_intent_id
-        ) != "filled":
+        parent = (
+            intents_by_id.get(intent.parent_intent_id)
+            if intent.parent_intent_id is not None
+            else None
+        )
+        if intent.parent_intent_id is not None and parent is None:
+            raise AccountingHalt("execution intent parent is outside the plan")
+        if parent is not None and progress.get(parent.intent_id, _ZERO) != _intent_quantity(parent):
             fill = _rejection_fill(
                 plan=plan,
                 intent=intent,
@@ -347,11 +413,6 @@ def execute_paper_plan(
             )
             reason = f"quote_quality_{quote.quality}"
         else:
-            requested = require_decimal_string(
-                intent.quantity,
-                field="intent.quantity",
-                minimum=Decimal("0.000000000001"),
-            )
             available = require_decimal_string(
                 quote.available_quantity,
                 field="quote.available_quantity",
@@ -413,8 +474,11 @@ def execute_paper_plan(
 
         state = apply_fill_event(state, intent, fill)
         fills.append(fill)
-        outcomes.append(_make_outcome(intent, fill, reason))
-        status_by_intent[intent.intent_id] = fill.status
+        outcomes.append(_make_outcome(intent, fill, reason, requested))
+        if fill.status in {"partial", "filled"}:
+            progress[intent.intent_id] = already_filled + require_decimal_string(
+                fill.filled_quantity, field="fill.filled_quantity", minimum=_ZERO
+            )
 
     marked = mark_account(
         state,
@@ -424,6 +488,9 @@ def execute_paper_plan(
     weighted_slippage = (
         slippage_notional / total_notional if total_notional > 0 else _ZERO
     )
+    final_progress = {
+        key: require_decimal_string(value, field=f"active_plan_filled_quantities.{key}") for key, value in marked.active_plan_filled_quantities.items()
+    }
     return PaperExecutionResult(
         account_state=marked,
         fill_events=tuple(fills),
@@ -431,5 +498,5 @@ def execute_paper_plan(
         total_filled_notional=decimal_text(total_notional),
         total_fees=decimal_text(total_fees),
         weighted_slippage_bps=decimal_text(weighted_slippage),
-        execution_complete=all(fill.status == "filled" for fill in fills),
+        execution_complete=_plan_complete(intents_by_id, final_progress),
     )

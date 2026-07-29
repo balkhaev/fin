@@ -292,6 +292,27 @@ class PaperLedgerTests(unittest.TestCase):
         self.assertEqual(result.outcomes[1].reason, "parent_intent_not_fully_filled")
         self.assertEqual(result.account_state.perp_positions["BTC/USDT:USDT"], "1")
 
+        resumed = execute_paper_cycle(
+            plan=plan,
+            account_state=result.account_state,
+            quotes=[
+                self.quote(
+                    market_type="perpetual",
+                    available="100",
+                    time="2026-07-27T00:07:00Z",
+                )
+            ],
+            mark_prices=self.prices(),
+            policy=policy,
+        )
+        self.assertEqual(
+            [fill.status for fill in resumed.fill_events], ["filled", "filled"]
+        )
+        self.assertEqual(
+            resumed.account_state.perp_positions["BTC/USDT:USDT"], "-3"
+        )
+        self.assertTrue(resumed.execution_complete)
+
     def test_funding_long_pays_positive_rate_idempotently(self) -> None:
         state = self.account(perp_quantity="2")
         event = FundingEvent.create(

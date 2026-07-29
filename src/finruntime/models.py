@@ -60,12 +60,21 @@ class SourceObservation:
     def validate(self, *, decision_time_utc: str | None = None) -> None:
         if not self.source:
             raise ContractError("source cannot be empty")
-        parse_utc(self.source_timestamp_utc)
+        source_time = parse_utc(self.source_timestamp_utc)
         available = parse_utc(self.available_at_utc)
         require_sha256(self.payload_sha256, field="payload_sha256")
         if self.quality not in SOURCE_QUALITIES:
             raise ContractError(f"unsupported source quality: {self.quality}")
-        if decision_time_utc is not None and available > parse_utc(decision_time_utc):
+        if source_time > available:
+            raise ContractError(
+                f"source {self.source!r} timestamp is later than availability"
+            )
+        if decision_time_utc is None:
+            return
+        decision = parse_utc(decision_time_utc)
+        if source_time > decision:
+            raise ContractError(f"source {self.source!r} is dated after decision time")
+        if available > decision:
             raise ContractError(
                 f"source {self.source!r} was not available at decision time"
             )
