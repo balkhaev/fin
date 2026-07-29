@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/strategy_migration_record.schema.json",
+  "title": "StrategyMigrationRecord",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "migration_id",
+    "migration_kind",
+    "status",
+    "predecessor_strategy_id",
+    "successor_strategy_id",
+    "created_at_utc",
+    "reason",
+    "source_audits",
+    "predecessor_artifact_hashes",
+    "successor_source_hashes",
+    "regression_fixture_hashes",
+    "inherited_parameters",
+    "changed_parameters",
+    "changed_components",
+    "allowed_modes",
+    "forward_clock_reset",
+    "successor_provenance_complete",
+    "capital_authorization_carried_forward",
+    "live_ready",
+    "real_leverage_authorized",
+    "exchange_submission_available"
+  ],
+  "$defs": {
+    "strategyId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{1,127}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "hashManifest": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)[^\\\\]+$"
+      },
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    }
+  },
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "migration_id": {"$ref": "#/$defs/sha256"},
+    "migration_kind": {
+      "enum": ["byte_identical_materialization", "reconstruction"]
+    },
+    "status": {"enum": ["planned", "implemented", "validated"]},
+    "predecessor_strategy_id": {"$ref": "#/$defs/strategyId"},
+    "successor_strategy_id": {"$ref": "#/$defs/strategyId"},
+    "created_at_utc": {"type": "string", "pattern": "Z$"},
+    "reason": {"type": "string", "minLength": 1},
+    "source_audits": {
+      "allOf": [{"$ref": "#/$defs/hashManifest"}],
+      "minProperties": 1
+    },
+    "predecessor_artifact_hashes": {"$ref": "#/$defs/hashManifest"},
+    "successor_source_hashes": {"$ref": "#/$defs/hashManifest"},
+    "regression_fixture_hashes": {"$ref": "#/$defs/hashManifest"},
+    "inherited_parameters": {"type": "object"},
+    "changed_parameters": {"type": "object"},
+    "changed_components": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "allowed_modes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"enum": ["paper", "shadow"]},
+      "uniqueItems": true
+    },
+    "forward_clock_reset": {"type": "boolean"},
+    "successor_provenance_complete": {"type": "boolean"},
+    "capital_authorization_carried_forward": {"const": false},
+    "live_ready": {"const": false},
+    "real_leverage_authorized": {"const": false},
+    "exchange_submission_available": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "planned"}}},
+      "then": {
+        "properties": {
+          "successor_source_hashes": {"maxProperties": 0},
+          "regression_fixture_hashes": {"maxProperties": 0},
+          "successor_provenance_complete": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "implemented"}}},
+      "then": {
+        "properties": {
+          "successor_source_hashes": {"minProperties": 1},
+          "successor_provenance_complete": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "validated"}}},
+      "then": {
+        "properties": {
+          "successor_source_hashes": {"minProperties": 1},
+          "regression_fixture_hashes": {"minProperties": 1},
+          "successor_provenance_complete": {"const": true}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"migration_kind": {"const": "reconstruction"}}
+      },
+      "then": {
+        "properties": {
+          "forward_clock_reset": {"const": true},
+          "changed_components": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "migration_kind": {"const": "byte_identical_materialization"}
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {"const": "validated"},
+          "forward_clock_reset": {"const": false},
+          "changed_components": {"maxItems": 0},
+          "changed_parameters": {"maxProperties": 0},
+          "predecessor_artifact_hashes": {"minProperties": 1},
+          "successor_source_hashes": {"minProperties": 1},
+          "regression_fixture_hashes": {"minProperties": 1},
+          "successor_provenance_complete": {"const": true}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}
