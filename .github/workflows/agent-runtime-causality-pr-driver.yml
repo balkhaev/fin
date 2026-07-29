@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Extract and apply reviewed patch
+      - name: Apply and validate reviewed runtime changes
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
@@ -41,7 +41,14 @@ jobs:
               payload.append(line[indent:] if line.startswith(' ' * indent) else line)
           Path('/tmp/runtime-causality.patch').write_text('\n'.join(payload) + '\n', encoding='utf-8')
           PY
-          git apply --3way --recount /tmp/runtime-causality.patch
+          git apply --recount \
+            --include='src/finruntime/models.py' \
+            --include='src/finruntime/execution/paper_cycle.py' \
+            --include='src/finruntime/execution/paper_broker.py' \
+            --include='schemas/runtime/market_snapshot.schema.json' \
+            --include='tests/runtime/test_journal.py' \
+            /tmp/runtime-causality.patch
+          python .github/apply_runtime_causality.py
           test -z "$(git ls-files -u)"
           git diff --check
           PYTHONPATH=src python -m compileall -q src/finruntime tests/runtime
@@ -49,6 +56,7 @@ jobs:
           python scripts/verify_runtime.py --contracts-only
           rm .github/workflows/agent-runtime-causality-patch.yml
           rm .github/workflows/agent-runtime-causality-pr-driver.yml
+          rm .github/apply_runtime_causality.py
           git config user.name 'OpenAI Agent'
           git config user.email 'agent@openai.com'
           git add -A
