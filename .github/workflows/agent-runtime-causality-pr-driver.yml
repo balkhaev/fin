@@ -40,6 +40,14 @@ jobs:
           for line in lines[start + 1:end]:
               payload.append(line[indent:] if line.startswith(' ' * indent) else line)
           Path('/tmp/runtime-causality.patch').write_text('\n'.join(payload) + '\n', encoding='utf-8')
+
+          transform = Path('.github/apply_runtime_causality.py')
+          text = transform.read_text(encoding='utf-8')
+          old = "replace_once(\n    ACCOUNTING,\n    '''        as_of_utc=as_of_utc,\n''',\n    '''        as_of_utc=normalized_as_of,\n''',\n)"
+          new = "replace_once(\n    ACCOUNTING,\n    '''    return PaperAccountState.create(\n        strategy_id=state.strategy_id,\n        sequence=state.sequence + sequence_increment,\n        as_of_utc=as_of_utc,\n''',\n    '''    return PaperAccountState.create(\n        strategy_id=state.strategy_id,\n        sequence=state.sequence + sequence_increment,\n        as_of_utc=normalized_as_of,\n''',\n)"
+          if text.count(old) != 1:
+              raise SystemExit('account rebuild transformation marker changed')
+          transform.write_text(text.replace(old, new, 1), encoding='utf-8')
           PY
           git apply --recount \
             --include='src/finruntime/models.py' \
