@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "audited_at_utc": "2026-07-29T23:30:22Z",
+  "repository": "balkhaev/fin",
+  "base_main_commit": "bdd35e7810c10bcd53bfface73b2ac0f3657f159",
+  "program": "runtime-v1-v75-materialization-audit",
+  "expected_targets": {
+    "canonical_engine": {
+      "path": "research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py",
+      "sha256": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc",
+      "bytes": 17495
+    },
+    "full_regression_equity": {
+      "path": "research/active_v131_v138/results/v136/v75_original_stress_equity.csv",
+      "sha256": "0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b",
+      "bytes": 522305
+    },
+    "annual_returns_fixture": {
+      "path": "research/active_v131_v138/results/v136/v75_original_annual_returns.csv",
+      "sha256": "e3de37108b5d459ad9f8324388a3a34571f29c5c594a77d82477cb812c8e0d25",
+      "bytes": 167
+    }
+  },
+  "reachable_git_object_scan": {
+    "scope": "git rev-list --objects --all over all fetched repository refs",
+    "candidate_blob_count_by_expected_sizes": 0,
+    "exact_target_matches": [],
+    "found_target_names": [],
+    "missing_target_names": [
+      "v75_operational_feedback_engine.py",
+      "v75_original_annual_returns.csv",
+      "v75_original_stress_equity.csv"
+    ],
+    "all_expected_targets_found": false,
+    "historical_workflow_run_id": 30306490260
+  },
+  "v138_transport": {
+    "source_commit": "9e5b4c2d8324ece94a2b28cfe60137e6c0a79eb5",
+    "format": "base64(tar.xz)",
+    "archive_sha256": "5a0fbbfec2433be17e3dba0fc6ff6f22cc9d3f59c3943c71cc736e822d6232ef",
+    "archive_bytes": 25284,
+    "encoded_sha256": "15c4dbd086d08f224a680b43d39a4f64456b8d7a4124103db12b5a7a551948d7",
+    "extracted_regular_files": 152,
+    "skipped_members": 0,
+    "exact_target_matches": [],
+    "same_basename_candidates": [],
+    "contains_all_expected_targets": false,
+    "diagnostic_workflow_run_id": 30499737510
+  },
+  "v87_transport": {
+    "source_commit": "3faf7794c8fa740ce601b4c040da24d627d2501d",
+    "part_git_blob_shas": {
+      ".bootstrap_v87b/payload/part_000.txt": "9776599e324046f4b09cc6f7cfcd118bd0b90ad5",
+      ".bootstrap_v87b/payload/part_001.txt": "183af2edd00f1b553730e8b69fe0c582d3e6231b"
+    },
+    "legacy_prefix_decoded_bytes": 5600,
+    "part_000_decoded_bytes": 6375,
+    "part_001_decoded_bytes": 7984,
+    "combined_decoded_bytes": 14359,
+    "legacy_prefix_matches_part_000_prefix": true,
+    "common_prefix_bytes": 5600,
+    "suffix_prefix_overlap_bytes": 0,
+    "combined_stream_has_xz_footer_magic": false,
+    "xz_eof_reached": false,
+    "decompression_error": "LZMAError('Corrupt input data')",
+    "decompression_error_compressed_offset": 9216,
+    "decompressed_prefix_bytes": 30392,
+    "complete_tar_members_detected": 0,
+    "expected_hash_matches": [],
+    "successful_archive_candidates": [],
+    "transport_complete": false
+  },
+  "conclusion": "exact_v75_evidence_not_recoverable_from_current_repository_history",
+  "provenance_complete": false,
+  "authorized_next_paths": [
+    "obtain an externally retained artifact whose exact bytes match every pinned SHA-256 before marking V75 provenance complete",
+    "or create a new strategy identity and explicit migration record for any reconstructed implementation that is not byte-identical V75"
+  ],
+  "forbidden_inferences": [
+    "do not infer the missing engine from prose, metrics or later strategy code",
+    "do not substitute a same-name or approximately matching equity file",
+    "do not mark V75 provenance complete from a truncated transport prefix"
+  ],
+  "safety": {
+    "strategy_parameters_changed": false,
+    "live_execution_available": false,
+    "live_ready": false,
+    "real_leverage_authorized": false
+  }
+}
