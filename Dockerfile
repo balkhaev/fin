@@ -16,7 +16,7 @@ USER 10001:10001
 
 EXPOSE 8000
 
-HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=5 \
-  CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3)" || exit 1
+HEALTHCHECK --interval=15s --timeout=5s --start-period=15s --retries=5 \
+  CMD python scripts/check_paper_stack.py
 
-CMD ["fin-control-room", "--host", "0.0.0.0", "--port", "8000", "--allow-remote", "--runtime-root", "/data/runtime"]
+CMD ["python", "scripts/run_paper_stack.py"]

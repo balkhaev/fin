@@ -42,6 +42,22 @@ fin-control-room --runtime-root runtime --open-browser
 fin-paper-scheduler daemon --runtime-root runtime
 ```
 
+## Docker / Coolify paper mode
+
+The root container initializes a persistent `v75_atlas_nx` paper account, runs
+the sealed paper scheduler and serves Control Room on port `8000`:
+
+```bash
+docker build -t fin-paper .
+docker run --rm -p 8000:8000 -v fin-runtime:/data/runtime fin-paper
+```
+
+The scheduler intentionally does not invent market or target snapshots. Exact
+paper cycles still require sealed producer inputs. The repository's standalone
+public-market paper engine is `services/funding_router`; its Docker image starts
+in `paper` mode, uses no exchange credentials and persists its SQLite state in
+`/app/data`.
+
 Control Room автоматически читает:
 
 ```text

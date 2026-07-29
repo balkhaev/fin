@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+"""Fail the container healthcheck unless the paper scheduler is current."""
+
+from __future__ import annotations
+
+import json
+from urllib.request import urlopen
+
+BASE_URL = "http://127.0.0.1:8000"
+MAX_SCHEDULER_AGE_SECONDS = 20.0
+
+
+def _get_json(path: str) -> dict[str, object]:
+    with urlopen(f"{BASE_URL}{path}", timeout=3) as response:
+        return json.load(response)
+
+
+def main() -> int:
+    health = _get_json("/api/v1/health")
+    scheduler_payload = _get_json("/api/v1/scheduler")
+    scheduler = scheduler_payload.get("scheduler")
+    if health.get("service") != "fin-control-room":
+        raise RuntimeError("unexpected Control Room health response")
+    if not isinstance(scheduler, dict) or not scheduler.get("available"):
+        raise RuntimeError("paper scheduler status is unavailable")
+    if scheduler.get("state") != "running" or scheduler.get("health") != "healthy":
+        raise RuntimeError(f"paper scheduler is not healthy: {scheduler}")
+    age_seconds = scheduler.get("age_seconds")
+    if not isinstance(age_seconds, (int, float)) or age_seconds > MAX_SCHEDULER_AGE_SECONDS:
+        raise RuntimeError(f"paper scheduler heartbeat is stale: {age_seconds}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
