@@ -11,6 +11,10 @@ import urllib.request
 from pathlib import Path
 
 from finruntime.observability.server import create_server
+from finruntime.observability.strategy_hub import (
+    StrategyHub,
+    UpstreamSnapshotCache,
+)
 from finruntime.operations.cycle import TELEMETRY_FIELDS
 
 
@@ -91,6 +95,26 @@ class ControlRoomServerTests(unittest.TestCase):
             ),
             encoding="utf-8",
         )
+        (root / "runtime" / "consensus_paper_snapshot.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "mode": "paper",
+                    "strategy_id": "consensus-wif-dot-v1",
+                    "health": "healthy",
+                    "market_data_at_ms": int(time.time() * 1000),
+                    "paper": {
+                        "starting_balance_usdt": 10_000.0,
+                        "equity_usdt": 10_000.0,
+                        "closed_positions": 0,
+                        "positions": [],
+                    },
+                    "signals": [],
+                    "candles": [],
+                }
+            ),
+            encoding="utf-8",
+        )
         self.server = create_server(
             host="127.0.0.1",
             port=0,
@@ -99,6 +123,19 @@ class ControlRoomServerTests(unittest.TestCase):
             runtime_root=root / "runtime",
             stale_after_seconds=10**9,
             poll_seconds=0.2,
+        )
+        self.server.strategy_hub = StrategyHub(
+            fin2_url="https://example.test/forward",
+            cache=UpstreamSnapshotCache(
+                lambda _url, _timeout: {
+                    "status": "ready",
+                    "paper": {
+                        "account": {"initialNavUsd": 100_000.0},
+                        "navUsd": 100_000.0,
+                    },
+                    "positions": [],
+                }
+            ),
         )
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -129,6 +166,9 @@ class ControlRoomServerTests(unittest.TestCase):
         self.assertEqual(paper["mode"], "paper")
         self.assertEqual(paper["health"], "healthy")
         self.assertTrue(health["paper"]["available"])
+        strategies = self.json_get("/api/v1/strategies")
+        self.assertEqual(strategies["summary"]["strategy_count"], 4)
+        self.assertFalse(strategies["exchange_submission_available"])
 
     def test_post_is_rejected(self) -> None:
         request = urllib.request.Request(

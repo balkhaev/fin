@@ -12,7 +12,17 @@
 - V413/V421 market-state observatory, drift и state memory;
 - state-conditioned forward telemetry и mechanism validator;
 - sealed continuous paper scheduler;
-- FIN Control Room с автоматическим runtime monitoring.
+- FIN Strategy Hub с автоматическим runtime monitoring.
+
+Strategy Hub сводит в один интерфейс рабочие контуры трёх репозиториев:
+
+- `fin`: Funding Neutral и V75 Atlas NX;
+- `trader`: Consensus WIF + DOT, портированный в отдельный public-data paper-ledger;
+- `fin2`: DYN-IV113 из его текущего forward-paper API.
+
+У каждой стратегии отдельный капитал, позиции и PnL. Верхняя сумма — только
+операторская сводка; деньги между ledger не смешиваются. Все market data
+реальные, но exchange submission отсутствует.
 
 ## Текущий исторический engineering target
 
@@ -45,7 +55,8 @@ fin-paper-scheduler daemon --runtime-root runtime
 ## Docker / Coolify paper mode
 
 The root container initializes a persistent `v75_atlas_nx` paper account, runs
-the sealed paper scheduler and serves Control Room on port `8000`:
+the sealed paper scheduler, Funding Neutral, the WIF/DOT paper worker and
+serves Strategy Hub on port `8000`:
 
 ```bash
 docker build -t fin-paper .
@@ -74,6 +85,8 @@ GET /api/v1/dashboard
 GET /api/v1/runtime
 GET /api/v1/incidents
 GET /api/v1/scheduler
+GET /api/v1/paper
+GET /api/v1/strategies
 GET /api/v1/health
 GET /api/v1/events
 ```

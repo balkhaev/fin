@@ -57,7 +57,7 @@ margin_safety_multiplier = 1.20
 id = "binance"
 exchange_class = "binanceusdm"
 enabled = true
-markets = ["BTC/USDT:USDT", "ETH/USDT:USDT", "PENDLE/USDT:USDT"]
+markets = ["BTC/USDT:USDT", "ETH/USDT:USDT", "PENDLE/USDT:USDT", "WIF/USDT:USDT", "DOT/USDT:USDT"]
 maker_fee_bps = 2.0
 taker_fee_bps = 5.0
 api_key_env = "BINANCE_API_KEY"
@@ -74,7 +74,7 @@ params = { marginMode = "cross" }
 id = "bybit"
 exchange_class = "bybit"
 enabled = true
-markets = ["BTC/USDT:USDT", "ETH/USDT:USDT", "PENDLE/USDT:USDT"]
+markets = ["BTC/USDT:USDT", "ETH/USDT:USDT", "PENDLE/USDT:USDT", "WIF/USDT:USDT", "DOT/USDT:USDT"]
 maker_fee_bps = 2.0
 taker_fee_bps = 5.5
 api_key_env = "BYBIT_API_KEY"

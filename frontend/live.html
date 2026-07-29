@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a0d10">
-  <meta name="description" content="FIN Paper — реальные рыночные данные и paper-торговля в реальном времени.">
-  <title>FIN Paper</title>
+  <meta name="theme-color" content="#090c0f">
+  <meta name="description" content="FIN Strategy Hub — единый realtime-интерфейс paper-стратегий.">
+  <title>FIN Strategy Hub</title>
   <link rel="stylesheet" href="./live.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="FIN Paper — главная">
+    <a class="brand" href="/" aria-label="FIN Strategy Hub — главная">
       <span class="brand-mark">F</span>
-      <span><strong>FIN</strong><small>PAPER TRADING</small></span>
+      <span><strong>FIN</strong><small>STRATEGY HUB</small></span>
     </a>
     <div class="status-line">
-      <span class="paper-badge">PAPER</span>
+      <span class="paper-badge">PAPER ONLY</span>
       <span id="connection-pill" class="connection connecting"><i></i>Подключение</span>
       <time id="updated-at">—</time>
       <button id="refresh" class="icon-button" type="button" aria-label="Обновить данные">↻</button>
@@ -27,19 +27,27 @@
 
     <section class="account-overview" aria-labelledby="account-title">
       <div class="account-primary">
-        <span class="eyebrow">Paper account</span>
+        <span class="eyebrow">Все paper-счета</span>
         <div class="equity-row">
           <h1 id="account-title"><span id="equity">—</span> <small>USDT</small></h1>
           <span id="pnl-chip" class="pnl-chip neutral">—</span>
         </div>
-        <p>Текущая стоимость paper-счёта по реальным котировкам.</p>
+        <p>Единая сводка четырёх стратегий. Каждый ledger считается отдельно.</p>
       </div>
       <dl class="account-metrics">
         <div><dt>Общий PnL</dt><dd id="total-pnl">—</dd></div>
-        <div><dt>В позиции</dt><dd id="unrealized-pnl">—</dd></div>
-        <div><dt>Зафиксировано</dt><dd id="realized-pnl">—</dd></div>
-        <div><dt>Закрыто сделок</dt><dd id="closed-trades">—</dd></div>
+        <div><dt>Стратегии</dt><dd id="strategy-count">—</dd></div>
+        <div><dt>В работе</dt><dd id="running-count">—</dd></div>
+        <div><dt>Позиции</dt><dd id="open-positions">—</dd></div>
       </dl>
+    </section>
+
+    <section class="strategy-section" aria-labelledby="strategies-title">
+      <header class="section-heading">
+        <div><span class="eyebrow">Стратегии</span><h2 id="strategies-title">Выберите, что смотреть</h2></div>
+        <span class="safe-note">Реальные ордера отключены</span>
+      </header>
+      <div id="strategy-tabs" class="strategy-tabs"></div>
     </section>
 
     <section class="trading-grid">
@@ -60,19 +68,25 @@
         </div>
         <div class="chart-wrap">
           <svg id="candle-chart" viewBox="0 0 960 360" role="img" aria-label="Свечной график реальных цен"></svg>
-          <div id="chart-empty" class="empty-state" hidden>Ждём первые свечи биржи…</div>
+          <div id="chart-empty" class="empty-state" hidden>Для стратегии пока нет свечей.</div>
         </div>
         <footer class="chart-footer">
-          <span id="chart-range">1m · последние 2 часа</span>
+          <span id="chart-range">—</span>
           <span><b id="chart-low">—</b> минимум · <b id="chart-high">—</b> максимум</span>
         </footer>
       </article>
 
-      <aside class="panel position-panel" aria-labelledby="position-title">
+      <aside class="panel strategy-detail" aria-labelledby="position-title">
         <header class="panel-head">
-          <div><span class="eyebrow">Текущая сделка</span><h2 id="position-title">Позиция</h2></div>
-          <span id="position-status" class="position-status waiting">Ожидание</span>
+          <div><span id="selected-repo" class="eyebrow">Стратегия</span><h2 id="position-title">—</h2></div>
+          <span id="position-status" class="position-status waiting">—</span>
         </header>
+        <div class="selected-summary">
+          <span>Paper equity</span>
+          <strong id="selected-equity">—</strong>
+          <small id="selected-pnl">—</small>
+        </div>
+        <div id="strategy-facts" class="strategy-facts"></div>
         <div id="position-body" class="position-body"></div>
       </aside>
     </section>
@@ -84,24 +98,16 @@
       </header>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>Рынок</th><th>Цена</th><th>Funding 8ч</th><th>Прогноз</th><th>Спред книги</th><th>Open interest</th><th>Состояние</th></tr></thead>
+          <thead><tr><th>Рынок</th><th>Цена</th><th>Funding 8ч</th><th>Прогноз</th><th>Спред книги</th><th>Open interest</th><th>Статус</th></tr></thead>
           <tbody id="market-rows"></tbody>
         </table>
       </div>
     </section>
-
-    <section class="panel decisions-panel" aria-labelledby="decisions-title">
-      <header class="panel-head">
-        <div><span class="eyebrow">Решения стратегии</span><h2 id="decisions-title">Что происходит сейчас</h2></div>
-        <span class="safe-note">Реальные ордера отключены</span>
-      </header>
-      <div id="decision-list" class="decision-list"></div>
-    </section>
   </main>
 
   <footer class="footer">
-    <span>FIN Paper · Binance + Bybit · публичные данные</span>
-    <span>Только симуляция — без API-ключей и реальных ордеров</span>
+    <span>fin + trader + fin2 · один интерфейс</span>
+    <span>Публичные market data · отдельные paper-ledgers · без API-ключей</span>
   </footer>
 
   <script src="./live.js" defer></script>

@@ -16,6 +16,7 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
 from .control_room import build_runtime_snapshot, snapshot_digest
+from .strategy_hub import StrategyHub, read_consensus_snapshot
 
 
 @dataclass(frozen=True, slots=True)
@@ -24,6 +25,7 @@ class ControlRoomConfig:
     dashboard_path: Path
     runtime_root: Path
     paper_snapshot_path: Path | None = None
+    consensus_snapshot_path: Path | None = None
     stale_after_seconds: int = 172_800
     incident_limit: int = 100
     poll_seconds: float = 2.0
@@ -132,6 +134,7 @@ class ControlRoomHTTPServer(ThreadingHTTPServer):
     def __init__(self, address: tuple[str, int], config: ControlRoomConfig):
         config.validate()
         self.config = config
+        self.strategy_hub = StrategyHub()
         self.started_monotonic = time.monotonic()
         super().__init__(address, ControlRoomHandler)
 
@@ -209,9 +212,29 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
         )
         return _read_paper_snapshot(path)
 
+    def _consensus(self) -> dict[str, Any]:
+        path = self.server.config.consensus_snapshot_path or (
+            self.server.config.runtime_root / "consensus_paper_snapshot.json"
+        )
+        return read_consensus_snapshot(path)
+
+    def _strategies(self) -> dict[str, Any]:
+        return self.server.strategy_hub.snapshot(
+            funding=self._paper(),
+            runtime=self._runtime(),
+            consensus=self._consensus(),
+        )
+
     def _health(self) -> dict[str, object]:
         runtime = self._runtime()
         paper = self._paper()
+        consensus = self._consensus()
+        consensus_updated_at_ms = consensus.get("market_data_at_ms")
+        consensus_age_seconds = (
+            max(0.0, time.time() - float(consensus_updated_at_ms) / 1000.0)
+            if isinstance(consensus_updated_at_ms, (int, float))
+            else None
+        )
         return {
             "service": "fin-control-room",
             "status": runtime["status"],
@@ -225,6 +248,12 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                 "health": paper.get("health"),
                 "available": paper.get("available"),
                 "age_seconds": paper.get("age_seconds"),
+            },
+            "consensus_paper": {
+                "health": consensus.get("health"),
+                "available": consensus_updated_at_ms is not None,
+                "age_seconds": consensus_age_seconds,
+                "open_positions": len(consensus.get("paper", {}).get("positions", [])),
             },
             "exchange_submission_available": False,
             "live_ready": False,
@@ -240,6 +269,9 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                 return True
             if path == "/api/v1/paper":
                 self._send_json(self._paper(), head_only=head_only)
+                return True
+            if path == "/api/v1/strategies":
+                self._send_json(self._strategies(), head_only=head_only)
                 return True
             if path == "/api/v1/incidents":
                 runtime = self._runtime()
@@ -308,9 +340,7 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                         ensure_ascii=False,
                         separators=(",", ":"),
                     )
-                    self.wfile.write(
-                        f"event: snapshot\ndata: {data}\n\n".encode("utf-8")
-                    )
+                    self.wfile.write(f"event: snapshot\ndata: {data}\n\n".encode())
                     self.wfile.flush()
                     last_digest = digest
                     if once:
@@ -383,13 +413,13 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
             return
         self._serve_static(parsed.path, head_only=head_only)
 
-    def do_GET(self) -> None:  # noqa: N802
+    def do_GET(self) -> None:
         self._dispatch_get()
 
-    def do_HEAD(self) -> None:  # noqa: N802
+    def do_HEAD(self) -> None:
         self._dispatch_get(head_only=True)
 
-    def do_POST(self) -> None:  # noqa: N802
+    def do_POST(self) -> None:
         self._send_json(
             {
                 "error": "method_not_allowed",
@@ -408,6 +438,7 @@ def create_server(
     dashboard_path: str | Path,
     runtime_root: str | Path,
     paper_snapshot_path: str | Path | None = None,
+    consensus_snapshot_path: str | Path | None = None,
     stale_after_seconds: int = 172_800,
     incident_limit: int = 100,
     poll_seconds: float = 2.0,
@@ -419,6 +450,11 @@ def create_server(
         paper_snapshot_path=(
             Path(paper_snapshot_path).expanduser().resolve()
             if paper_snapshot_path is not None
+            else None
+        ),
+        consensus_snapshot_path=(
+            Path(consensus_snapshot_path).expanduser().resolve()
+            if consensus_snapshot_path is not None
             else None
         ),
         stale_after_seconds=stale_after_seconds,
@@ -444,6 +480,10 @@ def main(argv: list[str] | None = None) -> int:
         "--runtime-root", default=os.environ.get("FIN_RUNTIME_ROOT", "runtime")
     )
     parser.add_argument(
+        "--consensus-snapshot",
+        default=os.environ.get("FIN_CONSENSUS_SNAPSHOT"),
+    )
+    parser.add_argument(
         "--paper-snapshot",
         default=os.environ.get("FIN_FUNDING_SNAPSHOT"),
     )
@@ -467,6 +507,11 @@ def main(argv: list[str] | None = None) -> int:
         paper_snapshot_path=(
             Path(args.paper_snapshot).expanduser().resolve()
             if args.paper_snapshot
+            else None
+        ),
+        consensus_snapshot_path=(
+            Path(args.consensus_snapshot).expanduser().resolve()
+            if args.consensus_snapshot
             else None
         ),
         stale_after_seconds=args.stale_after_seconds,

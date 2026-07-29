@@ -64,6 +64,7 @@ def _terminate(processes: list[subprocess.Popen[bytes]]) -> None:
 def main() -> int:
     initialize_account()
     funding_snapshot = RUNTIME_ROOT / "funding_router_snapshot.json"
+    consensus_snapshot = RUNTIME_ROOT / "consensus_paper_snapshot.json"
     funding_environment = dict(os.environ)
     funding_environment.update(
         {
@@ -82,6 +83,17 @@ def main() -> int:
                 "paper",
             ],
             funding_environment,
+        ),
+        (
+            [
+                sys.executable,
+                "scripts/run_consensus_paper.py",
+                "--snapshot",
+                str(consensus_snapshot),
+                "--poll-seconds",
+                "60",
+            ],
+            None,
         ),
         (
             [
@@ -108,6 +120,8 @@ def main() -> int:
                 str(RUNTIME_ROOT),
                 "--paper-snapshot",
                 str(funding_snapshot),
+                "--consensus-snapshot",
+                str(consensus_snapshot),
             ],
             None,
         ),

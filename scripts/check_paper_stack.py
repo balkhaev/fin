@@ -8,6 +8,7 @@ from urllib.request import urlopen
 
 BASE_URL = "http://127.0.0.1:8000"
 MAX_SCHEDULER_AGE_SECONDS = 20.0
+MAX_CONSENSUS_AGE_SECONDS = 180.0
 HEALTHY_SCHEDULER_STATES = {"idle", "running"}
 
 
@@ -44,6 +45,17 @@ def main() -> int:
         or paper_age_seconds > MAX_SCHEDULER_AGE_SECONDS
     ):
         raise RuntimeError(f"funding paper snapshot is stale: {paper_age_seconds}")
+    consensus = health.get("consensus_paper")
+    if not isinstance(consensus, dict) or not consensus.get("available"):
+        raise RuntimeError("WIF/DOT paper worker snapshot is unavailable")
+    if consensus.get("health") != "healthy":
+        raise RuntimeError(f"WIF/DOT paper worker is not healthy: {consensus}")
+    consensus_age_seconds = consensus.get("age_seconds")
+    if (
+        not isinstance(consensus_age_seconds, (int, float))
+        or consensus_age_seconds > MAX_CONSENSUS_AGE_SECONDS
+    ):
+        raise RuntimeError(f"WIF/DOT paper snapshot is stale: {consensus_age_seconds}")
     return 0
 
 
