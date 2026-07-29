@@ -57,6 +57,75 @@ jobs:
             --include='tests/runtime/test_journal.py' \
             /tmp/runtime-causality.patch
           python .github/apply_runtime_causality.py
+          python - <<'PY'
+          from pathlib import Path
+
+          lifecycle = Path('src/finruntime/portfolio/lifecycle.py')
+          text = lifecycle.read_text(encoding='utf-8')
+          old = '''from finruntime.canonical import parse_utc, require_sha256
+          from finruntime.portfolio.accounting import AccountingHalt, PaperAccountState
+          '''
+          new = '''from finruntime.canonical import parse_utc, require_sha256
+          from finruntime.portfolio.accounting import PaperAccountState
+          '''
+          if text.count(old) != 1:
+              raise SystemExit('lifecycle import marker changed')
+          text = text.replace(old, new, 1)
+          old = '''    state.validate()
+              if parse_utc(as_of_utc) < parse_utc(state.as_of_utc):
+                  raise AccountingHalt("paper plan activation cannot move account time backward")
+              plan_id = require_sha256(plan_id, field="plan_id")
+              if state.last_plan_id == plan_id:
+                  return state
+              return PaperAccountState.create(
+          '''
+          new = '''    state.validate()
+              plan_id = require_sha256(plan_id, field="plan_id")
+              if state.last_plan_id == plan_id:
+                  return state
+              effective_as_of = (
+                  state.as_of_utc
+                  if parse_utc(as_of_utc) < parse_utc(state.as_of_utc)
+                  else as_of_utc
+              )
+              return PaperAccountState.create(
+          '''
+          if text.count(old) != 1:
+              raise SystemExit('lifecycle activation marker changed')
+          text = text.replace(old, new, 1)
+          old = '        as_of_utc=as_of_utc,\n'
+          new = '        as_of_utc=effective_as_of,\n'
+          if text.count(old) != 1:
+              raise SystemExit('lifecycle as-of marker changed')
+          lifecycle.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          journal = Path('src/finruntime/journal/atomic.py')
+          text = journal.read_text(encoding='utf-8')
+          old = '''            previous_time = last_time.get(strategy_id)
+              if previous_time is not None and event_time < previous_time:
+                  raise JournalCorruptionError(
+                      f"journal event time moved backward on line {line_number}"
+                  )
+              last_sequence[strategy_id] = sequence
+              last_time[strategy_id] = event_time
+
+              cycle_key = (strategy_id, sequence)
+          '''
+          new = '''            last_sequence[strategy_id] = sequence
+              if event_type in _RUNTIME_EVENT_PHASES or event_type == "HALT_CLEARED":
+                  previous_time = last_time.get(strategy_id)
+                  if previous_time is not None and event_time < previous_time:
+                      raise JournalCorruptionError(
+                          f"journal event time moved backward on line {line_number}"
+                      )
+                  last_time[strategy_id] = event_time
+
+              cycle_key = (strategy_id, sequence)
+          '''
+          if text.count(old) != 1:
+              raise SystemExit('journal chronology marker changed')
+          journal.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
           test -z "$(git ls-files -u)"
           git diff --check
           PYTHONPATH=src python -m compileall -q src/finruntime tests/runtime
