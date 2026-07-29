@@ -34,12 +34,13 @@ jobs:
           text = path.read_text(encoding='utf-8')
           start = text.index('    previous: str | None = None\n')
           end = text.index('\n\n\ndef _normalize_string_sequence', start)
-          replacement = '''    for path, digest in value.items():
-              _require_repository_path(path, field=f"{field} path")
-              normalized = require_sha256(digest, field=f"{field}.{path}")
-              if normalized != digest:
-                  raise ContractError(f"{field}.{path} must use the sha256: prefix")
-          '''
+          replacement = (
+              '    for path, digest in value.items():\n'
+              '        _require_repository_path(path, field=f"{field} path")\n'
+              '        normalized = require_sha256(digest, field=f"{field}.{path}")\n'
+              '        if normalized != digest:\n'
+              '            raise ContractError(f"{field}.{path} must use the sha256: prefix")\n'
+          )
           path.write_text(text[:start] + replacement + text[end:], encoding='utf-8')
           PY
           git diff --check
