@@ -1,0 +1,55 @@
+name: Apply runtime causality patch from PR
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/agent-runtime-causality-patch.yml'
+      - '.github/workflows/agent-runtime-causality-pr-driver.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Extract and apply reviewed patch
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          source = Path('.github/workflows/agent-runtime-causality-patch.yml')
+          lines = source.read_text(encoding='utf-8').splitlines()
+          start = next(i for i, line in enumerate(lines) if "cat >/tmp/runtime-causality.patch <<'PATCH'" in line)
+          end = next(i for i in range(start + 1, len(lines)) if lines[i].strip() == 'PATCH')
+          indent = len(lines[start]) - len(lines[start].lstrip())
+          payload = []
+          for line in lines[start + 1:end]:
+              payload.append(line[indent:] if line.startswith(' ' * indent) else line)
+          Path('/tmp/runtime-causality.patch').write_text('\n'.join(payload) + '\n', encoding='utf-8')
+          PY
+          git apply --check /tmp/runtime-causality.patch
+          git apply /tmp/runtime-causality.patch
+          PYTHONPATH=src python -m compileall -q src/finruntime tests/runtime
+          PYTHONPATH=src python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+          python scripts/verify_runtime.py --contracts-only
+          rm .github/workflows/agent-runtime-causality-patch.yml
+          rm .github/workflows/agent-runtime-causality-pr-driver.yml
+          git config user.name 'OpenAI Agent'
+          git config user.email 'agent@openai.com'
+          git add -A
+          git commit -m 'Add resumable paper progress and journal semantics'
+          git push origin HEAD:"$HEAD_REF"
