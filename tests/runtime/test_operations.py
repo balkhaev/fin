@@ -4,16 +4,18 @@ import csv
 import json
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from finruntime.canonical import ContractError
 from finruntime.execution import PaperBrokerPolicy, PaperQuote
-from finruntime.journal import AppendOnlyJournal
+from finruntime.journal import AppendOnlyJournal, write_atomic_json
 from finruntime.models import MarketSnapshot, SourceObservation, StrategySnapshot
 from finruntime.operations import (
     PaperCyclePaths,
     PaperCycleRequest,
     append_telemetry_row_atomic,
+    cycle_id_for,
     run_paper_cycle,
     runtime_status,
 )
@@ -228,6 +230,92 @@ class OperationsTests(unittest.TestCase):
             changed["equity"] = "9991"
             with self.assertRaises(ContractError):
                 append_telemetry_row_atomic(path, changed)
+
+    def test_cycle_identity_is_bound_to_starting_account(self) -> None:
+        market = self.market()
+        first = self.request(market=market, account=self.account())
+        alternative = PaperAccountState.create(
+            strategy_id="v75_atlas_nx",
+            sequence=0,
+            as_of_utc="2026-07-28T00:05:00Z",
+            cash="9999",
+            equity="9999",
+            high_water="9999",
+        )
+        second = self.request(market=market, account=alternative)
+        self.assertNotEqual(cycle_id_for(first), cycle_id_for(second))
+
+
+    def test_tampered_commit_marker_blocks_restore(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request = self.request()
+            paths = PaperCyclePaths.under(root, request.strategy_snapshot.strategy_id)
+            write_atomic_json(paths.account_state, request.starting_account.to_dict())
+            result = run_paper_cycle(request=request, paths=paths)
+            committed_path = Path(result.cycle_directory) / "COMMITTED.json"
+            committed = json.loads(committed_path.read_text())
+            committed["plan_id"] = "sha256:" + "f" * 64
+            write_atomic_json(committed_path, committed)
+            with self.assertRaisesRegex(ContractError, "plan id mismatch"):
+                run_paper_cycle(request=request, paths=paths)
+
+    def test_tampered_cycle_artifact_blocks_restore(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            paths = PaperCyclePaths.under(directory, "v75_atlas_nx")
+            request = self.request()
+            result = run_paper_cycle(request=request, paths=paths)
+            artifact = Path(result.cycle_directory) / "execution_plan.json"
+            artifact.write_text('{\"tampered\":true}\n', encoding="utf-8")
+            with self.assertRaises(ContractError):
+                run_paper_cycle(request=request, paths=paths)
+
+    def test_divergent_global_account_blocks_restore(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            paths = PaperCyclePaths.under(directory, "v75_atlas_nx")
+            request = self.request()
+            run_paper_cycle(request=request, paths=paths)
+            divergent = PaperAccountState.create(
+                strategy_id="v75_atlas_nx",
+                sequence=request.starting_account.sequence,
+                as_of_utc=request.starting_account.as_of_utc,
+                cash="9999",
+                equity="9999",
+                high_water="9999",
+            )
+            paths.account_state.write_text(
+                json.dumps(divergent.to_dict()), encoding="utf-8"
+            )
+            with self.assertRaises(ContractError):
+                run_paper_cycle(request=request, paths=paths)
+
+    def test_concurrent_retry_commits_only_once(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            paths = PaperCyclePaths.under(directory, "v75_atlas_nx")
+            request = self.request()
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                results = list(
+                    pool.map(
+                        lambda _: run_paper_cycle(request=request, paths=paths),
+                        range(2),
+                    )
+                )
+            self.assertEqual(results[0].cycle_id, results[1].cycle_id)
+            self.assertEqual(len(AppendOnlyJournal(paths.journal).verify()), 6)
+            with paths.telemetry_csv.open(newline="", encoding="utf-8") as handle:
+                self.assertEqual(len(list(csv.DictReader(handle))), 1)
+
+    def test_stale_quality_sets_telemetry_stale_without_caller_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            market = self.market(quality="stale")
+            request = self.request(market=market, quotes=(), data_stale=False)
+            paths = PaperCyclePaths.under(directory, "v75_atlas_nx")
+            result = run_paper_cycle(request=request, paths=paths)
+            telemetry = json.loads(
+                (Path(result.cycle_directory) / "forward_telemetry.json").read_text()
+            )
+            self.assertTrue(telemetry["data_stale"])
+            self.assertEqual(result.status, "halt")
 
 
 if __name__ == "__main__":

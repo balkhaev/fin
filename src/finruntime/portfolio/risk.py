@@ -244,6 +244,8 @@ def apply_pretrade_risk(
     critical_sources: Sequence[str],
     onchain_sources: Sequence[str] = (),
     limits: RiskLimits = DEFAULT_RISK_LIMITS,
+    external_risk_increase_permitted: bool = True,
+    external_blocking_reasons: Sequence[str] = (),
 ) -> RiskDecision:
     """Apply fail-closed availability, gross and collateral constraints to target weights.
 
@@ -290,10 +292,14 @@ def apply_pretrade_risk(
         "perp": dict(requested["perp"]),
     }
     reasons: list[str] = []
-    if not availability.risk_increase_permitted:
+    risk_increase_permitted = (
+        availability.risk_increase_permitted and bool(external_risk_increase_permitted)
+    )
+    if not risk_increase_permitted:
         selected = _block_instrument_risk_increase(selected, current)
         reasons.append("critical_data_blocks_risk_increase")
         reasons.extend(availability.blocking_reasons)
+        reasons.extend(str(item) for item in external_blocking_reasons if str(item))
 
     effective_cap = _effective_gross_cap(strategy_snapshot, limits)
     gross = _gross(selected)
@@ -318,7 +324,7 @@ def apply_pretrade_risk(
         market_requirement = spot_gross + limits.initial_margin_ratio * perp_gross
         required_fraction = market_requirement + limits.operational_reserve
 
-    if not availability.risk_increase_permitted and _contains_instrument_risk_increase(
+    if not risk_increase_permitted and _contains_instrument_risk_increase(
         selected, current
     ):
         raise ContractError("fail-closed risk layer created an instrument risk increase")
@@ -334,7 +340,7 @@ def apply_pretrade_risk(
         perp_gross_after=decimal_text(perp_gross),
         effective_gross_cap=decimal_text(effective_cap),
         required_fraction_after=decimal_text(required_fraction),
-        risk_increase_permitted=availability.risk_increase_permitted,
+        risk_increase_permitted=risk_increase_permitted,
         accelerator_permitted=availability.accelerator_permitted,
         reasons=tuple(reasons),
         quality_flags=availability.quality_flags,

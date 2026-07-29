@@ -262,6 +262,90 @@ def _optional_json(root: Path, *candidates: str) -> tuple[dict[str, Any] | None,
     return None, None
 
 
+
+def _scheduler_snapshot(
+    root: Path,
+    current: datetime,
+    stale_after_seconds: int,
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    scheduler_root = root / ".scheduler"
+    status_path = scheduler_root / "status.json"
+    events_path = scheduler_root / "events.jsonl"
+    incidents: list[dict[str, object]] = []
+    status: dict[str, Any] = {}
+    errors: list[str] = []
+    if status_path.is_file():
+        try:
+            status = _read_json(status_path)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            errors.append(f"invalid scheduler status: {exc}")
+    event_count = 0
+    if events_path.exists():
+        try:
+            event_count = len(AppendOnlyJournal(events_path).verify())
+        except (OSError, JournalCorruptionError, ValueError) as exc:
+            errors.append(f"scheduler journal verification failed: {exc}")
+    generated = status.get("generated_at_utc")
+    age_seconds: float | None = None
+    if generated:
+        try:
+            age_seconds = max(0.0, (current - parse_timestamp(generated)).total_seconds())
+        except (TypeError, ValueError):
+            errors.append("scheduler heartbeat timestamp is invalid")
+    state = str(status.get("state") or ("idle" if not status_path.exists() else "unknown"))
+    health = "idle"
+    if errors or state == "halt":
+        health = "halt"
+    elif state == "warn":
+        health = "warn"
+    elif age_seconds is not None and age_seconds > stale_after_seconds:
+        health = "warn"
+        errors.append(f"scheduler heartbeat is stale by {age_seconds:.0f}s")
+    elif status_path.exists():
+        health = "healthy" if state in {"running", "idle"} else "idle"
+    for error in errors:
+        incidents.append(
+            _incident(
+                timestamp=generated or current,
+                strategy_id="fin-paper-scheduler",
+                severity="halt" if health == "halt" else "warn",
+                category="scheduler_integrity" if "journal" in error or "invalid" in error else "scheduler_stale",
+                title="Paper scheduler requires attention",
+                detail=error,
+            )
+        )
+    last_error = status.get("last_error")
+    if last_error and not errors:
+        incidents.append(
+            _incident(
+                timestamp=generated or current,
+                strategy_id="fin-paper-scheduler",
+                severity="halt" if state == "halt" else "warn",
+                category="scheduler_last_error",
+                title="Paper scheduler reported an error",
+                detail=str(last_error),
+            )
+        )
+    return {
+        "available": status_path.is_file(),
+        "health": health,
+        "state": state,
+        "generated_at_utc": generated,
+        "age_seconds": age_seconds,
+        "queued": int(status.get("queued", 0) or 0),
+        "processing": int(status.get("processing", 0) or 0),
+        "completed": int(status.get("completed", 0) or 0),
+        "rejected": int(status.get("rejected", 0) or 0),
+        "last_request_id": status.get("last_request_id"),
+        "last_result": status.get("last_result"),
+        "last_error": last_error,
+        "heartbeat_sequence": int(status.get("heartbeat_sequence", 0) or 0),
+        "event_count": event_count,
+        "status_source": str(status_path) if status_path.is_file() else None,
+        "events_source": str(events_path) if events_path.exists() else None,
+        "exchange_submission_available": False,
+    }, incidents
+
 def build_runtime_snapshot(
     runtime_root: str | Path,
     *,
@@ -277,10 +361,16 @@ def build_runtime_snapshot(
         summary, current_incidents = _strategy_snapshot(strategy_root, current, stale_after_seconds)
         strategies.append(summary)
         incidents.extend(current_incidents)
+    scheduler, scheduler_incidents = _scheduler_snapshot(
+        root, current, stale_after_seconds
+    )
+    incidents.extend(scheduler_incidents)
     incidents = _deduplicate(incidents)
 
     rank = {"idle": 0, "healthy": 1, "warn": 2, "halt": 3}
-    status = max((str(item["health"]) for item in strategies), key=lambda value: rank.get(value, 3), default="idle")
+    health_values = [str(item["health"]) for item in strategies]
+    health_values.append(str(scheduler["health"]))
+    status = max(health_values, key=lambda value: rank.get(value, 3), default="idle")
     latest_times = [parse_timestamp(item["latest_timestamp"]) for item in strategies if item.get("latest_timestamp")]
 
     v517_state, v517_state_source = _optional_json(root, "v517_state.json", "v517_tristate_guard_shadow/v517_state.json", "v517_tristate_guard_shadow/state.json")
@@ -303,7 +393,10 @@ def build_runtime_snapshot(
             "critical_incidents": sum(item["severity"] == "halt" for item in incidents),
             "warning_incidents": sum(item["severity"] == "warn" for item in incidents),
             "latest_timestamp": iso_utc(max(latest_times)) if latest_times else None,
+            "scheduler_queue": int(scheduler["queued"]),
+            "scheduler_rejected": int(scheduler["rejected"]),
         },
+        "scheduler": scheduler,
         "strategies": strategies,
         "incidents": incidents[: max(0, incident_limit)],
         "v517": {

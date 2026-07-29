@@ -5,7 +5,9 @@
 Control Room превращает committed research dashboard в локальное read-only приложение, которое автоматически наблюдает за runtime-каталогом.
 
 ```text
-paper-cycle artifacts
+sealed scheduler inbox
+        ↓
+deterministic paper-cycle artifacts
         ↓
 strict telemetry / journal parser
         ↓
@@ -54,7 +56,14 @@ fin-control-room \
         └── ...
 ```
 
-Optional context:
+Scheduler context:
+
+```text
+<runtime-root>/.scheduler/status.json
+<runtime-root>/.scheduler/events.jsonl
+```
+
+Optional strategy/market context:
 
 ```text
 <runtime-root>/v517_state.json
@@ -69,6 +78,7 @@ Optional context:
 | `GET /api/v1/dashboard` | historical dashboard + live runtime overlay |
 | `GET /api/v1/runtime` | account/cycle/telemetry summary |
 | `GET /api/v1/incidents` | latest integrity/execution incidents |
+| `GET /api/v1/scheduler` | queue, heartbeat и last result scheduler |
 | `GET /api/v1/health` | health и uptime server |
 | `GET /api/v1/events` | Server-Sent Events при изменении snapshot |
 
@@ -93,8 +103,20 @@ Historical incidents сохраняются в timeline. Текущий status �
 - invalid account/cycle JSON → `halt`;
 - missing runtime root → `idle`, не `healthy`;
 - no runtime market-state → archived V413 остаётся единственным контекстом;
+- corrupt/stale scheduler heartbeat → `warn` или `halt`;
+- rejected scheduler request остаётся immutable evidence;
 - UI/API никогда не меняют `live_ready`, `real_leverage_authorized` или exchange submission на `true`.
 
 ## Сетевой доступ
 
 По умолчанию server слушает `127.0.0.1`. Для `0.0.0.0` требуется `--allow-remote`; это лишь защита от случайного exposure, а не authentication layer. Для удалённого доступа используйте отдельный reverse proxy с TLS и authentication.
+
+## Непрерывное paper-исполнение
+
+```bash
+fin-paper-scheduler daemon \
+  --runtime-root /var/lib/fin/runtime \
+  --poll-seconds 5
+```
+
+Подробный spool/envelope contract: `docs/PAPER_SCHEDULER_RU.md`. Control Room не управляет scheduler и не предоставляет mutation endpoint — он только читает его status и journal.

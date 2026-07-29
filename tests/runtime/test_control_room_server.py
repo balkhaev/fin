@@ -73,6 +73,9 @@ class ControlRoomServerTests(unittest.TestCase):
         health = self.json_get("/api/v1/health")
         self.assertTrue(health["read_only"])
         self.assertFalse(health["exchange_submission_available"])
+        scheduler = self.json_get("/api/v1/scheduler")
+        self.assertFalse(scheduler["exchange_submission_available"])
+        self.assertIn("scheduler", scheduler)
 
     def test_post_is_rejected(self) -> None:
         request = urllib.request.Request(self.base + "/api/v1/orders", data=b"{}", method="POST")

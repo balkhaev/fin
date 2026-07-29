@@ -57,6 +57,38 @@
     $('#aggregate-grid').innerHTML = metrics.map(([label, value, note]) => `<article class="card metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`).join('');
   }
 
+  function renderScheduler(runtime) {
+    const scheduler = runtime.scheduler || {};
+    const health = String(scheduler.health || 'idle');
+    const serviceState = String(scheduler.state || 'idle');
+    setText('#scheduler-state', serviceState.toUpperCase());
+    const pill = $('#scheduler-health');
+    pill.textContent = health.toUpperCase();
+    pill.className = `pill ${statusClass(health)}`;
+    const metrics = [
+      ['Queued', scheduler.queued ?? 0],
+      ['Processing', scheduler.processing ?? 0],
+      ['Completed', scheduler.completed ?? 0],
+      ['Rejected', scheduler.rejected ?? 0],
+      ['Heartbeat', scheduler.heartbeat_sequence ?? 0],
+      ['Events', scheduler.event_count ?? 0],
+    ];
+    $('#scheduler-metrics').innerHTML = metrics.map(([label, value]) => `<div class="scheduler-metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
+    setText('#scheduler-source', scheduler.status_source || 'Scheduler status has not been materialized');
+    const last = scheduler.last_result || {};
+    const request = scheduler.last_request_id || '—';
+    setText('#scheduler-last-title', scheduler.available ? `Request ${String(request).slice(0, 20)}` : 'Scheduler ещё не запускался');
+    $('#scheduler-last').innerHTML = [
+      detail('Status', last.status ?? scheduler.state ?? '—'),
+      detail('Processed', last.processed ?? '—'),
+      detail('Completed', last.completed ?? '—'),
+      detail('Halted', last.halted ?? '—'),
+    ].join('');
+    const error = $('#scheduler-error');
+    error.hidden = !scheduler.last_error;
+    error.textContent = scheduler.last_error || '';
+  }
+
   function renderStrategies(runtime) {
     const strategies = runtime.strategies || [];
     $('#strategy-empty').hidden = strategies.length > 0;
@@ -119,6 +151,7 @@
     const runtime = data.runtime || { status: 'idle', aggregate: {}, strategies: [], incidents: [], v517: {} };
     renderStatus(runtime);
     renderAggregate(runtime);
+    renderScheduler(runtime);
     renderStrategies(runtime);
     renderIncidents(runtime);
     renderContext(runtime, data);
