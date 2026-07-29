@@ -32,6 +32,17 @@ jobs:
           git show origin/agent/runtime-v75-materialization:scripts/recover_v75_v138.py \
             > scripts/recover_v75_v138.py
           chmod +x scripts/recover_v75_v138.py
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/recover_v75_v138.py')
+          text = path.read_text(encoding='utf-8')
+          old = 'archive_sources = [load_v138_archive(), load_v87b_archive()]'
+          new = 'archive_sources = [load_v138_archive()]'
+          if text.count(old) != 1:
+              raise SystemExit('recovery archive source marker changed')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
 
           python scripts/recover_v75_v138.py --write \
             2>&1 | tee /tmp/v75-recovery.log
