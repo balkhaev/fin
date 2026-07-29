@@ -212,7 +212,7 @@ jobs:
           assert scheduler['exchange_submission_available'] is False
           assert rejected['exchange_submission_available'] is False
           assert 'event: snapshot' in Path('/tmp/events.txt').read_text()
-          assert 'FIN Runtime Control Plane' in Path('/tmp/live.html').read_text()
+          assert 'FIN Strategy Hub' in Path('/tmp/live.html').read_text()
           PY
 
       - name: Assemble preview artifact
