@@ -41,8 +41,8 @@ jobs:
               payload.append(line[indent:] if line.startswith(' ' * indent) else line)
           Path('/tmp/runtime-causality.patch').write_text('\n'.join(payload) + '\n', encoding='utf-8')
           PY
-          git apply --check /tmp/runtime-causality.patch
-          git apply /tmp/runtime-causality.patch
+          git apply --recount --check /tmp/runtime-causality.patch
+          git apply --recount /tmp/runtime-causality.patch
           PYTHONPATH=src python -m compileall -q src/finruntime tests/runtime
           PYTHONPATH=src python -m unittest discover -s tests/runtime -p 'test_*.py' -v
           python scripts/verify_runtime.py --contracts-only
