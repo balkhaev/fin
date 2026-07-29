@@ -1,0 +1,64 @@
+name: Fix migration manifest order semantics
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/agent-fix-migration-manifest-order.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Make JSON object order semantically irrelevant
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/finruntime/provenance/migration.py')
+          text = path.read_text(encoding='utf-8')
+          old = '''    previous: str | None = None
+          for path, digest in value.items():
+              _require_repository_path(path, field=f"{field} path")
+              normalized = require_sha256(digest, field=f"{field}.{path}")
+              if normalized != digest:
+                  raise ContractError(f"{field}.{path} must use the sha256: prefix")
+              if previous is not None and path <= previous:
+                  raise ContractError(f"{field} paths must be strictly sorted")
+              previous = path
+          '''
+          new = '''    for path, digest in value.items():
+              _require_repository_path(path, field=f"{field} path")
+              normalized = require_sha256(digest, field=f"{field}.{path}")
+              if normalized != digest:
+                  raise ContractError(f"{field}.{path} must use the sha256: prefix")
+          '''
+          if text.count(old) != 1:
+              raise SystemExit('migration manifest validation marker changed')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          git diff --check
+          PYTHONPATH=src python -m compileall -q src/finruntime tests/runtime
+          PYTHONPATH=src python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+          python scripts/verify_runtime.py --contracts-only
+          rm .github/workflows/agent-fix-migration-manifest-order.yml
+          git config user.name 'OpenAI Agent'
+          git config user.email 'agent@openai.com'
+          git add -A
+          git commit -m 'Make migration manifests order-independent'
+          git push origin HEAD:"$HEAD_REF"
