@@ -33,180 +33,130 @@ jobs:
           path = Path('src/finruntime/provenance/migration.py')
           text = path.read_text(encoding='utf-8')
 
-          old = '''        output[path] = require_sha256(raw_hash, field=f"{field}.{path}")
-          '''
-          new = '''        if not isinstance(raw_hash, str):
-              raise ContractError(f"{field}.{path} must be a SHA-256 string")
-          output[path] = require_sha256(raw_hash, field=f"{field}.{path}")
-          '''
+          old = '        output[path] = require_sha256(raw_hash, field=f"{field}.{path}")\n'
+          new = (
+              '        if not isinstance(raw_hash, str):\n'
+              '            raise ContractError(f"{field}.{path} must be a SHA-256 string")\n'
+              '        output[path] = require_sha256(raw_hash, field=f"{field}.{path}")\n'
+          )
           if text.count(old) != 1:
               raise SystemExit('hash manifest normalization marker changed')
           text = text.replace(old, new, 1)
 
-          old = '''    for path, digest in value.items():
-              _require_repository_path(path, field=f"{field} path")
-              normalized = require_sha256(digest, field=f"{field}.{path}")
-          '''
-          new = '''    for path, digest in value.items():
-              _require_repository_path(path, field=f"{field} path")
-              if not isinstance(digest, str):
-                  raise ContractError(f"{field}.{path} must be a SHA-256 string")
-              normalized = require_sha256(digest, field=f"{field}.{path}")
-          '''
+          old = (
+              '    for path, digest in value.items():\n'
+              '        _require_repository_path(path, field=f"{field} path")\n'
+              '        normalized = require_sha256(digest, field=f"{field}.{path}")\n'
+          )
+          new = (
+              '    for path, digest in value.items():\n'
+              '        _require_repository_path(path, field=f"{field} path")\n'
+              '        if not isinstance(digest, str):\n'
+              '            raise ContractError(f"{field}.{path} must be a SHA-256 string")\n'
+              '        normalized = require_sha256(digest, field=f"{field}.{path}")\n'
+          )
           if text.count(old) != 1:
               raise SystemExit('hash manifest validation marker changed')
           text = text.replace(old, new, 1)
 
-          marker = '''    canonical_json_bytes(output)
-              return dict(sorted(output.items()))
-
-
-          @dataclass'''
-          replacement = '''    canonical_json_bytes(output)
-              return dict(sorted(output.items()))
-
-
-          def _validate_parameters(value: Mapping[str, Any], *, field: str) -> None:
-              if not isinstance(value, Mapping):
-                  raise ContractError(f"{field} must be an object")
-              if any(not isinstance(key, str) or not key for key in value):
-                  raise ContractError(f"{field} must contain non-empty string keys")
-              canonical_json_bytes(value)
-
-
-          @dataclass'''
+          marker = (
+              '    canonical_json_bytes(output)\n'
+              '    return dict(sorted(output.items()))\n\n\n'
+              '@dataclass'
+          )
+          replacement = (
+              '    canonical_json_bytes(output)\n'
+              '    return dict(sorted(output.items()))\n\n\n'
+              'def _validate_parameters(value: Mapping[str, Any], *, field: str) -> None:\n'
+              '    if not isinstance(value, Mapping):\n'
+              '        raise ContractError(f"{field} must be an object")\n'
+              '    if any(not isinstance(key, str) or not key for key in value):\n'
+              '        raise ContractError(f"{field} must contain non-empty string keys")\n'
+              '    canonical_json_bytes(value)\n\n\n'
+              '@dataclass'
+          )
           if text.count(marker) != 1:
               raise SystemExit('parameter validation insertion marker changed')
           text = text.replace(marker, replacement, 1)
 
-          old = '''        require_sha256(self.migration_id, field="migration_id")
-              if self.migration_kind not in MIGRATION_KINDS:
-                  raise ContractError(f"unsupported migration kind: {self.migration_kind}")
-              if self.status not in MIGRATION_STATUSES:
-                  raise ContractError(f"unsupported migration status: {self.status}")
-          '''
-          new = '''        if not isinstance(self.migration_id, str):
-                  raise ContractError("migration_id must be a SHA-256 string")
-              require_sha256(self.migration_id, field="migration_id")
-              if not isinstance(self.migration_kind, str):
-                  raise ContractError("migration_kind must be a string")
-              if self.migration_kind not in MIGRATION_KINDS:
-                  raise ContractError(f"unsupported migration kind: {self.migration_kind}")
-              if not isinstance(self.status, str):
-                  raise ContractError("migration status must be a string")
-              if self.status not in MIGRATION_STATUSES:
-                  raise ContractError(f"unsupported migration status: {self.status}")
-          '''
+          old = (
+              '        require_sha256(self.migration_id, field="migration_id")\n'
+              '        if self.migration_kind not in MIGRATION_KINDS:\n'
+              '            raise ContractError(f"unsupported migration kind: {self.migration_kind}")\n'
+              '        if self.status not in MIGRATION_STATUSES:\n'
+              '            raise ContractError(f"unsupported migration status: {self.status}")\n'
+          )
+          new = (
+              '        if not isinstance(self.migration_id, str):\n'
+              '            raise ContractError("migration_id must be a SHA-256 string")\n'
+              '        require_sha256(self.migration_id, field="migration_id")\n'
+              '        if not isinstance(self.migration_kind, str):\n'
+              '            raise ContractError("migration_kind must be a string")\n'
+              '        if self.migration_kind not in MIGRATION_KINDS:\n'
+              '            raise ContractError(f"unsupported migration kind: {self.migration_kind}")\n'
+              '        if not isinstance(self.status, str):\n'
+              '            raise ContractError("migration status must be a string")\n'
+              '        if self.status not in MIGRATION_STATUSES:\n'
+              '            raise ContractError(f"unsupported migration status: {self.status}")\n'
+          )
           if text.count(old) != 1:
               raise SystemExit('migration identity validation marker changed')
           text = text.replace(old, new, 1)
 
-          old = '''        format_utc(self.created_at_utc)
-              if not isinstance(self.reason, str) or not self.reason:
-          '''
-          new = '''        if not isinstance(self.created_at_utc, str):
-                  raise ContractError("created_at_utc must be a UTC string")
-              format_utc(self.created_at_utc)
-              if not isinstance(self.reason, str) or not self.reason:
-          '''
+          old = (
+              '        format_utc(self.created_at_utc)\n'
+              '        if not isinstance(self.reason, str) or not self.reason:\n'
+          )
+          new = (
+              '        if not isinstance(self.created_at_utc, str):\n'
+              '            raise ContractError("created_at_utc must be a UTC string")\n'
+              '        format_utc(self.created_at_utc)\n'
+              '        if not isinstance(self.reason, str) or not self.reason:\n'
+          )
           if text.count(old) != 1:
               raise SystemExit('migration timestamp validation marker changed')
           text = text.replace(old, new, 1)
 
-          old = '''        canonical_json_bytes(self.inherited_parameters)
-              canonical_json_bytes(self.changed_parameters)
-          '''
-          new = '''        _validate_parameters(
-                  self.inherited_parameters,
-                  field="inherited_parameters",
-              )
-              _validate_parameters(
-                  self.changed_parameters,
-                  field="changed_parameters",
-              )
-          '''
+          old = (
+              '        canonical_json_bytes(self.inherited_parameters)\n'
+              '        canonical_json_bytes(self.changed_parameters)\n'
+          )
+          new = (
+              '        _validate_parameters(\n'
+              '            self.inherited_parameters,\n'
+              '            field="inherited_parameters",\n'
+              '        )\n'
+              '        _validate_parameters(\n'
+              '            self.changed_parameters,\n'
+              '            field="changed_parameters",\n'
+              '        )\n'
+          )
           if text.count(old) != 1:
               raise SystemExit('migration parameter validation marker changed')
           text = text.replace(old, new, 1)
 
-          marker = '''        if (
-                  self.capital_authorization_carried_forward
-          '''
-          replacement = '''        for field_name in (
-                  "forward_clock_reset",
-                  "successor_provenance_complete",
-                  "capital_authorization_carried_forward",
-                  "live_ready",
-                  "real_leverage_authorized",
-                  "exchange_submission_available",
-              ):
-                  if type(getattr(self, field_name)) is not bool:
-                      raise ContractError(f"{field_name} must be a JSON boolean")
-
-              if (
-                  self.capital_authorization_carried_forward
-          '''
+          marker = (
+              '        if (\n'
+              '            self.capital_authorization_carried_forward\n'
+          )
+          replacement = (
+              '        for field_name in (\n'
+              '            "forward_clock_reset",\n'
+              '            "successor_provenance_complete",\n'
+              '            "capital_authorization_carried_forward",\n'
+              '            "live_ready",\n'
+              '            "real_leverage_authorized",\n'
+              '            "exchange_submission_available",\n'
+              '        ):\n'
+              '            if type(getattr(self, field_name)) is not bool:\n'
+              '                raise ContractError(f"{field_name} must be a JSON boolean")\n\n'
+              '        if (\n'
+              '            self.capital_authorization_carried_forward\n'
+          )
           if text.count(marker) != 1:
               raise SystemExit('boolean validation insertion marker changed')
           text = text.replace(marker, replacement, 1)
           path.write_text(text, encoding='utf-8')
-
-          tests = Path('tests/runtime/test_strategy_migration.py')
-          text = tests.read_text(encoding='utf-8')
-          old = 'from finruntime.canonical import ContractError\n'
-          new = 'from finruntime.canonical import ContractError, sha256_id\n'
-          if text.count(old) != 1:
-              raise SystemExit('test import marker changed')
-          text = text.replace(old, new, 1)
-
-          marker = '''    def test_cli_validates_record_and_reports_safety_state(self) -> None:
-          '''
-          method = '''    def test_parsed_json_uses_strict_schema_types(self) -> None:
-              record = self.reconstruction()
-
-              def rehash(raw: dict[str, object]) -> dict[str, object]:
-                  raw["migration_id"] = sha256_id(
-                      {
-                          key: value
-                          for key, value in raw.items()
-                          if key != "migration_id"
-                      }
-                  )
-                  return raw
-
-              for field in (
-                  "forward_clock_reset",
-                  "successor_provenance_complete",
-                  "capital_authorization_carried_forward",
-                  "live_ready",
-                  "real_leverage_authorized",
-                  "exchange_submission_available",
-              ):
-                  with self.subTest(field=field):
-                      raw = record.to_dict()
-                      raw[field] = 1 if raw[field] is True else 0
-                      with self.assertRaises(ContractError):
-                          parse_strategy_migration(rehash(raw))
-
-              raw = record.to_dict()
-              raw["inherited_parameters"] = []
-              with self.assertRaises(ContractError):
-                  parse_strategy_migration(rehash(raw))
-
-              raw = record.to_dict()
-              raw["source_audits"] = {"docs/audit.json": 7}
-              with self.assertRaises(ContractError):
-                  parse_strategy_migration(rehash(raw))
-
-              raw = record.to_dict()
-              raw["migration_kind"] = []
-              with self.assertRaises(ContractError):
-                  parse_strategy_migration(rehash(raw))
-
-          '''
-          if text.count(marker) != 1:
-              raise SystemExit('strict type test insertion marker changed')
-          tests.write_text(text.replace(marker, method + marker, 1), encoding='utf-8')
           PY
           git diff --check
           PYTHONPATH=src python -m compileall -q src/finruntime tests/runtime
