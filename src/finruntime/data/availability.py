@@ -16,13 +16,35 @@ class AvailabilityDecision:
     quality_flags: tuple[str, ...]
 
 
+def _temporal_violations(
+    observation: SourceObservation,
+    *,
+    decision_time_utc: str | None = None,
+) -> tuple[str, ...]:
+    source_time = parse_utc(observation.source_timestamp_utc)
+    available_time = parse_utc(observation.available_at_utc)
+    violations: list[str] = []
+    if source_time > available_time:
+        violations.append("source_timestamp_after_available_at")
+    if decision_time_utc is not None and source_time > parse_utc(decision_time_utc):
+        violations.append("source_timestamp_after_decision_time")
+    return tuple(violations)
+
+
 def seal_sources(observations: Iterable[SourceObservation]) -> dict[str, SourceObservation]:
     sealed: dict[str, SourceObservation] = {}
     for observation in observations:
-        existing = sealed.get(observation.source)
-        if existing is not None and existing.payload_sha256 != observation.payload_sha256:
+        observation.validate()
+        violations = _temporal_violations(observation)
+        if violations:
             raise ContractError(
-                f"conflicting payload hashes for source {observation.source!r}"
+                f"source {observation.source!r} violates temporal ordering: "
+                + ", ".join(violations)
+            )
+        existing = sealed.get(observation.source)
+        if existing is not None and existing != observation:
+            raise ContractError(
+                f"conflicting observations for source {observation.source!r}"
             )
         sealed[observation.source] = observation
     if not sealed:
@@ -44,6 +66,20 @@ def evaluate_availability(
     blocking: list[str] = []
     flags: list[str] = list(snapshot.quality_flags)
     accelerator_permitted = True
+    temporal_invalid_sources: set[str] = set()
+
+    for source, observation in sorted(snapshot.sources.items()):
+        violations = _temporal_violations(
+            observation,
+            decision_time_utc=snapshot.decision_time_utc,
+        )
+        if not violations:
+            continue
+        temporal_invalid_sources.add(source)
+        for violation in violations:
+            reason = f"{violation}:{source}"
+            blocking.append(reason)
+            flags.append(reason)
 
     for source in sorted(critical):
         observation = snapshot.sources.get(source)
@@ -59,6 +95,9 @@ def evaluate_availability(
         if observation is None:
             accelerator_permitted = False
             flags.append(f"onchain_missing:{source}")
+            continue
+        if source in temporal_invalid_sources:
+            accelerator_permitted = False
             continue
         source_time = parse_utc(observation.source_timestamp_utc)
         if observation.quality != "ok" or decision_time - source_time > stale_limit:
@@ -82,3 +121,12 @@ def validate_source_map(
         if name != observation.source:
             raise ContractError(f"source map key mismatch: {name!r}")
         observation.validate(decision_time_utc=decision_time_utc)
+        violations = _temporal_violations(
+            observation,
+            decision_time_utc=decision_time_utc,
+        )
+        if violations:
+            raise ContractError(
+                f"source {name!r} violates temporal ordering: "
+                + ", ".join(violations)
+            )
