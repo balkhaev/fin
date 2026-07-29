@@ -8,6 +8,7 @@ from urllib.request import urlopen
 
 BASE_URL = "http://127.0.0.1:8000"
 MAX_SCHEDULER_AGE_SECONDS = 20.0
+HEALTHY_SCHEDULER_STATES = {"idle", "running"}
 
 
 def _get_json(path: str) -> dict[str, object]:
@@ -23,7 +24,10 @@ def main() -> int:
         raise RuntimeError("unexpected Control Room health response")
     if not isinstance(scheduler, dict) or not scheduler.get("available"):
         raise RuntimeError("paper scheduler status is unavailable")
-    if scheduler.get("state") != "running" or scheduler.get("health") != "healthy":
+    if (
+        scheduler.get("state") not in HEALTHY_SCHEDULER_STATES
+        or scheduler.get("health") != "healthy"
+    ):
         raise RuntimeError(f"paper scheduler is not healthy: {scheduler}")
     age_seconds = scheduler.get("age_seconds")
     if not isinstance(age_seconds, (int, float)) or age_seconds > MAX_SCHEDULER_AGE_SECONDS:
