@@ -28,37 +28,47 @@ def require_object(value: Any, *, label: str) -> dict[str, Any]:
     return value
 
 
-def load_market_snapshot(path: str | Path) -> MarketSnapshot:
-    raw = require_object(load_json(path), label="MarketSnapshot")
+def parse_market_snapshot(value: Any) -> MarketSnapshot:
+    raw = require_object(value, label="MarketSnapshot")
     source_map = raw.get("sources")
     if not isinstance(source_map, Mapping):
         raise ContractError("MarketSnapshot.sources must be an object")
-    raw = dict(raw)
-    raw["sources"] = {
-        str(name): SourceObservation(**require_object(value, label=f"source {name}"))
-        for name, value in source_map.items()
+    normalized = dict(raw)
+    normalized["sources"] = {
+        str(name): SourceObservation(**require_object(item, label=f"source {name}"))
+        for name, item in source_map.items()
     }
-    snapshot = MarketSnapshot(**raw)
+    snapshot = MarketSnapshot(**normalized)
+    snapshot.validate()
+    return snapshot
+
+
+def load_market_snapshot(path: str | Path) -> MarketSnapshot:
+    return parse_market_snapshot(load_json(path))
+
+
+def parse_strategy_snapshot(value: Any) -> StrategySnapshot:
+    snapshot = StrategySnapshot(**require_object(value, label="StrategySnapshot"))
     snapshot.validate()
     return snapshot
 
 
 def load_strategy_snapshot(path: str | Path) -> StrategySnapshot:
-    raw = require_object(load_json(path), label="StrategySnapshot")
-    snapshot = StrategySnapshot(**raw)
-    snapshot.validate()
-    return snapshot
+    return parse_strategy_snapshot(load_json(path))
 
 
-def load_paper_account(path: str | Path) -> PaperAccountState:
-    raw = require_object(load_json(path), label="PaperAccountState")
-    state = PaperAccountState(**raw)
+def parse_paper_account(value: Any) -> PaperAccountState:
+    state = PaperAccountState(**require_object(value, label="PaperAccountState"))
     state.validate()
     return state
 
 
-def load_paper_quotes(path: str | Path) -> tuple[PaperQuote, ...]:
-    raw = load_json(path)
+def load_paper_account(path: str | Path) -> PaperAccountState:
+    return parse_paper_account(load_json(path))
+
+
+def parse_paper_quotes(value: Any) -> tuple[PaperQuote, ...]:
+    raw = value
     if not isinstance(raw, Sequence) or isinstance(raw, (str, bytes, bytearray)):
         raise ContractError("paper quotes must be a JSON array")
     quotes: list[PaperQuote] = []
@@ -69,8 +79,12 @@ def load_paper_quotes(path: str | Path) -> tuple[PaperQuote, ...]:
     return tuple(quotes)
 
 
-def load_reference_prices(path: str | Path) -> dict[str, dict[str, object]]:
-    raw = require_object(load_json(path), label="reference price book")
+def load_paper_quotes(path: str | Path) -> tuple[PaperQuote, ...]:
+    return parse_paper_quotes(load_json(path))
+
+
+def parse_reference_prices(value: Any) -> dict[str, dict[str, object]]:
+    raw = require_object(value, label="reference price book")
     unsupported = set(raw) - {"spot", "perp"}
     if unsupported:
         raise ContractError(f"unsupported reference-price sections: {sorted(unsupported)}")
@@ -79,8 +93,12 @@ def load_reference_prices(path: str | Path) -> dict[str, dict[str, object]]:
         side = raw.get(market_type, {})
         if not isinstance(side, Mapping):
             raise ContractError(f"reference prices {market_type!r} must be an object")
-        output[market_type] = {str(key): value for key, value in side.items()}
+        output[market_type] = {str(key): item for key, item in side.items()}
     return output
+
+
+def load_reference_prices(path: str | Path) -> dict[str, dict[str, object]]:
+    return parse_reference_prices(load_json(path))
 
 
 def object_dict(value: Any) -> dict[str, Any]:

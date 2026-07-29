@@ -1,0 +1,29 @@
+[Unit]
+Description=FIN sealed paper-cycle scheduler
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=fin
+Group=fin
+WorkingDirectory=/opt/fin
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/fin/.venv/bin/fin-paper-scheduler daemon --runtime-root /var/lib/fin/runtime --poll-seconds 5 --max-items-per-pass 10
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+ReadWritePaths=/var/lib/fin/runtime
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

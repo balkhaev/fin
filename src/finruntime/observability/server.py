@@ -163,6 +163,10 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                 runtime = self._runtime()
                 self._send_json({"schema_version": 1, "generated_at_utc": runtime["generated_at_utc"], "status": runtime["status"], "incidents": runtime["incidents"]}, head_only=head_only)
                 return True
+            if path == "/api/v1/scheduler":
+                runtime = self._runtime()
+                self._send_json({"schema_version": 1, "generated_at_utc": runtime["generated_at_utc"], "scheduler": runtime.get("scheduler", {}), "exchange_submission_available": False}, head_only=head_only)
+                return True
             if path == "/api/v1/health":
                 self._send_json(self._health(), head_only=head_only)
                 return True

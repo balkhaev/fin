@@ -93,6 +93,44 @@ class TelemetryTests(unittest.TestCase):
             self.assertEqual(snapshot["market_state"]["state_label"], "transition")
             self.assertEqual(snapshot["status"], "idle")
 
+    def test_scheduler_status_is_exposed_and_affects_health(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            scheduler = root / ".scheduler"
+            scheduler.mkdir()
+            (scheduler / "status.json").write_text(
+                json.dumps(
+                    {
+                        "state": "warn",
+                        "generated_at_utc": "2026-07-28T12:20:00Z",
+                        "queued": 2,
+                        "processing": 0,
+                        "completed": 4,
+                        "rejected": 1,
+                        "heartbeat_sequence": 9,
+                        "last_error": "synthetic warning",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            AppendOnlyJournal(scheduler / "events.jsonl").append(
+                event_type="REQUEST_REJECTED",
+                event_time_utc="2026-07-28T12:20:00Z",
+                strategy_id="fin-paper-scheduler",
+                sequence=1,
+                payload={"request_id": "sha256:" + "4" * 64},
+            )
+            snapshot = build_runtime_snapshot(
+                root,
+                now=datetime(2026, 7, 28, 12, 30, tzinfo=timezone.utc),
+            )
+            self.assertEqual(snapshot["status"], "warn")
+            self.assertEqual(snapshot["scheduler"]["queued"], 2)
+            self.assertEqual(snapshot["aggregate"]["scheduler_rejected"], 1)
+            self.assertTrue(
+                any(item["category"] == "scheduler_last_error" for item in snapshot["incidents"])
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

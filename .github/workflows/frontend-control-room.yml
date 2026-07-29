@@ -1,17 +1,26 @@
-name: FIN frontend and live control plane
+name: FIN frontend, scheduler and live control plane
 
 on:
   push:
-    branches: [main, agent/live-control-plane]
+    branches: [main, agent/live-control-plane, agent/paper-scheduler]
     paths:
       - 'frontend/**'
       - 'src/finruntime/observability/**'
+      - 'src/finruntime/scheduler/**'
+      - 'src/finruntime/operations/**'
+      - 'src/finruntime/journal/**'
+      - 'src/finruntime/locking.py'
+      - 'src/finruntime/io.py'
+      - 'src/finruntime/portfolio/risk.py'
       - 'scripts/build_frontend_data.py'
       - 'scripts/run_control_room.py'
+      - 'scripts/run_paper_scheduler.py'
       - 'tests/frontend/**'
       - 'tests/runtime/**'
       - 'docs/CONTROL_ROOM_RUNTIME_RU.md'
+      - 'docs/PAPER_SCHEDULER_RU.md'
       - 'deploy/systemd/fin-control-room.service.example'
+      - 'deploy/systemd/fin-paper-scheduler.service.example'
       - 'pyproject.toml'
       - '.github/workflows/frontend-control-room.yml'
       - 'docs/checkpoints/v138/CHECKPOINT_V138.json'
@@ -24,11 +33,19 @@ on:
     paths:
       - 'frontend/**'
       - 'src/finruntime/observability/**'
+      - 'src/finruntime/scheduler/**'
+      - 'src/finruntime/operations/**'
+      - 'src/finruntime/journal/**'
+      - 'src/finruntime/locking.py'
+      - 'src/finruntime/io.py'
+      - 'src/finruntime/portfolio/risk.py'
       - 'scripts/run_control_room.py'
+      - 'scripts/run_paper_scheduler.py'
       - 'tests/frontend/**'
       - 'tests/runtime/**'
       - 'docs/CONTROL_ROOM_RUNTIME_RU.md'
-      - 'deploy/systemd/fin-control-room.service.example'
+      - 'docs/PAPER_SCHEDULER_RU.md'
+      - 'deploy/systemd/**'
       - 'pyproject.toml'
       - '.github/workflows/frontend-control-room.yml'
   workflow_dispatch:
@@ -37,13 +54,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: frontend-control-room-${{ github.ref }}
+  group: frontend-scheduler-control-room-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -74,33 +91,87 @@ jobs:
           node --check frontend/app.js
           node --check frontend/live.js
           ! grep -R -E 'https?://(cdn|unpkg|jsdelivr)' frontend
-          ! grep -R -E 'submit_order|/api/v1/orders' frontend src/finruntime/observability
+          ! grep -R -E 'submit_order|create_order|/api/v1/orders' frontend src/finruntime/observability src/finruntime/scheduler
 
-      - name: Build synthetic paper feed
+      - name: Build sealed scheduler request and execute one paper cycle
         run: |
           set -euxo pipefail
+          rm -rf /tmp/fin-runtime /tmp/fin-inputs
+          mkdir -p /tmp/fin-inputs
           python - <<'PY'
-          import csv
+          import json
           from pathlib import Path
-          from finruntime.operations.cycle import TELEMETRY_FIELDS
-          root=Path('/tmp/fin-runtime/v75_atlas_nx')
-          root.mkdir(parents=True)
-          row={
-            'timestamp':'2026-07-28T12:00:00Z',
-            'strategy_id':'v75_atlas_nx',
-            'source_bundle_sha256':'sha256:'+'1'*64,
-            'target_hash':'sha256:'+'2'*64,
-            'realized_position_hash':'sha256:'+'3'*64,
-            'gross_target':0.8,'gross_realized':0.79,'turnover':0.04,
-            'modelled_slippage_bps':4.0,'paper_slippage_bps':4.5,
-            'net_return':0.001,'equity':10010,'drawdown':-0.01,
-            'reconciliation_ok':True,'source_hash_match':True,
-            'data_stale':False,'execution_complete':True,
-          }
-          with (root/'forward_telemetry.csv').open('w',newline='',encoding='utf-8') as handle:
-              writer=csv.DictWriter(handle,fieldnames=TELEMETRY_FIELDS)
-              writer.writeheader(); writer.writerow(row)
+          from finruntime.execution import PaperQuote
+          from finruntime.journal import write_atomic_json
+          from finruntime.models import MarketSnapshot, SourceObservation, StrategySnapshot
+          from finruntime.operations import PaperCyclePaths
+          from finruntime.portfolio import PaperAccountState
+
+          runtime=Path('/tmp/fin-runtime')
+          inputs=Path('/tmp/fin-inputs')
+          account=PaperAccountState.empty(
+              strategy_id='v75_atlas_nx',
+              as_of_utc='2026-07-29T00:00:00Z',
+              starting_cash='10000',
+          )
+          write_atomic_json(PaperCyclePaths.under(runtime, account.strategy_id).account_state, account.to_dict())
+          source=SourceObservation(
+              source='spot_daily',
+              source_timestamp_utc='2026-07-29T00:00:00Z',
+              available_at_utc='2026-07-29T00:01:00Z',
+              payload_sha256='sha256:'+'1'*64,
+          )
+          market=MarketSnapshot.create(
+              as_of_utc='2026-07-29T00:00:00Z',
+              decision_time_utc='2026-07-29T00:05:00Z',
+              sources={'spot_daily': source},
+              spot={'BTC/USDT': {'reference_price':'100'}},
+          )
+          strategy=StrategySnapshot.create(
+              strategy_id='v75_atlas_nx',
+              strategy_version='runtime-v1',
+              decision_time_utc=market.decision_time_utc,
+              market_snapshot_id=market.snapshot_id,
+              state_sequence=1,
+              targets={'spot': {'BTC/USDT':'0.1'}, 'perp': {}},
+              gross_target='0.1',
+              cash_target='0.9',
+              risk={'gross_cap':'1.05'},
+          )
+          quote=PaperQuote(
+              instrument='BTC/USDT', market_type='spot',
+              observed_at_utc='2026-07-29T00:06:00Z',
+              source_observation_hash='sha256:'+'2'*64,
+              bid='99.95', ask='100.05', mid='100', available_quantity='1000',
+          )
+          write_atomic_json(inputs/'market.json', market.to_dict())
+          write_atomic_json(inputs/'strategy.json', strategy.to_dict())
+          write_atomic_json(inputs/'quotes.json', [quote.__dict__ if hasattr(quote,'__dict__') else {
+              'instrument':quote.instrument,'market_type':quote.market_type,
+              'observed_at_utc':quote.observed_at_utc,
+              'source_observation_hash':quote.source_observation_hash,
+              'bid':quote.bid,'ask':quote.ask,'mid':quote.mid,
+              'available_quantity':quote.available_quantity,'quality':quote.quality,
+          }])
+          write_atomic_json(inputs/'prices.json', {'spot':{'BTC/USDT':{'reference_price':'100'}},'perp':{}})
           PY
+          fin-paper-scheduler enqueue \
+            --runtime-root /tmp/fin-runtime \
+            --market-snapshot /tmp/fin-inputs/market.json \
+            --strategy-snapshot /tmp/fin-inputs/strategy.json \
+            --quotes /tmp/fin-inputs/quotes.json \
+            --reference-prices /tmp/fin-inputs/prices.json \
+            --critical-source spot_daily \
+            --created-at-utc 2026-07-29T00:06:00Z \
+            --expires-at-utc 2026-07-30T00:06:00Z \
+            --modelled-cost 1 \
+            --modelled-slippage-bps 8 \
+            >/tmp/enqueue.json
+          fin-paper-scheduler run-once \
+            --runtime-root /tmp/fin-runtime \
+            --max-items 5 \
+            >/tmp/scheduler-run.json
+          fin-paper-scheduler verify --runtime-root /tmp/fin-runtime >/tmp/scheduler-verify.json
 
       - name: Exercise read-only HTTP API and SSE
         run: |
@@ -120,6 +191,7 @@ jobs:
             sleep 0.2
           done
           curl -fsS http://127.0.0.1:8765/api/v1/dashboard >/tmp/live-dashboard.json
+          curl -fsS http://127.0.0.1:8765/api/v1/scheduler >/tmp/scheduler-api.json
           curl -fsS 'http://127.0.0.1:8765/api/v1/events?once=1' >/tmp/events.txt
           curl -fsS http://127.0.0.1:8765/live.html >/tmp/live.html
           status=$(curl -sS -o /tmp/post.json -w '%{http_code}' -X POST http://127.0.0.1:8765/api/v1/orders)
@@ -129,11 +201,15 @@ jobs:
           from pathlib import Path
           dashboard=json.loads(Path('/tmp/live-dashboard.json').read_text())
           health=json.loads(Path('/tmp/health.json').read_text())
+          scheduler=json.loads(Path('/tmp/scheduler-api.json').read_text())
           rejected=json.loads(Path('/tmp/post.json').read_text())
           assert dashboard['runtime']['aggregate']['observation_count']==1
+          assert dashboard['runtime']['scheduler']['completed']==1
           assert dashboard['environment']['live_ready'] is False
           assert health['read_only'] is True
           assert health['exchange_submission_available'] is False
+          assert scheduler['scheduler']['completed']==1
+          assert scheduler['exchange_submission_available'] is False
           assert rejected['exchange_submission_available'] is False
           assert 'event: snapshot' in Path('/tmp/events.txt').read_text()
           assert 'FIN Runtime Control Plane' in Path('/tmp/live.html').read_text()
@@ -143,7 +219,12 @@ jobs:
         run: |
           set -euxo pipefail
           cp /tmp/dashboard.json frontend/data/dashboard.json
-          python -m zipfile -c /tmp/fin-control-room.zip frontend docs/CONTROL_ROOM_RUNTIME_RU.md deploy/systemd/fin-control-room.service.example
+          python -m zipfile -c /tmp/fin-control-room.zip \
+            frontend \
+            docs/CONTROL_ROOM_RUNTIME_RU.md \
+            docs/PAPER_SCHEDULER_RU.md \
+            deploy/systemd/fin-control-room.service.example \
+            deploy/systemd/fin-paper-scheduler.service.example
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -154,6 +235,9 @@ jobs:
             /tmp/control-room.log
             /tmp/live-dashboard.json
             /tmp/health.json
+            /tmp/scheduler-api.json
+            /tmp/scheduler-run.json
+            /tmp/scheduler-verify.json
             /tmp/events.txt
           if-no-files-found: warn
           retention-days: 30

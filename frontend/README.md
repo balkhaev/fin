@@ -12,6 +12,7 @@ Control-room приложение для research/paper/shadow контура `b
 ```bash
 python -m pip install -e .
 python scripts/build_frontend_data.py
+fin-paper-scheduler daemon --runtime-root runtime &
 fin-control-room --runtime-root runtime --open-browser
 ```
 
@@ -24,10 +25,11 @@ python scripts/run_control_room.py --runtime-root runtime --open-browser
 Операторский экран доступен по `http://127.0.0.1:8000/live.html`. Сервер:
 
 - отдаёт static frontend;
-- предоставляет read-only API `/api/v1/dashboard`, `/api/v1/runtime`, `/api/v1/incidents`, `/api/v1/health`;
+- предоставляет read-only API `/api/v1/dashboard`, `/api/v1/runtime`, `/api/v1/incidents`, `/api/v1/scheduler`, `/api/v1/health`;
 - отправляет change notifications через `/api/v1/events`;
 - автоматически читает `<runtime-root>/<strategy-id>/forward_telemetry.csv`, `events.jsonl`, `cycles/*/COMMITTED.json` и `account_state.json`;
 - показывает optional `v517_state.json`, `v517_decision.json` и `market_state.json`;
+- показывает scheduler queue, heartbeat, completed/rejected requests и last error;
 - не имеет POST/order endpoint и не читает API-ключи.
 
 Связывание с non-loopback интерфейсом требует явного `--allow-remote`; аутентификация в server не реализована, поэтому по умолчанию он слушает только localhost.

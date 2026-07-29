@@ -8,9 +8,10 @@
 - V75 ATLAS-NX benchmark и V136 execution shadow;
 - V517 tri-state risk-budget profile;
 - deterministic planner, paper broker, accounting, funding и reconciliation;
-- append-only hash-chain journal и atomic paper cycles;
+- append-only hash-chain journal, single-writer locks и write-once paper cycles;
 - V413/V421 market-state observatory, drift и state memory;
 - state-conditioned forward telemetry и mechanism validator;
+- sealed continuous paper scheduler;
 - FIN Control Room с автоматическим runtime monitoring.
 
 ## Текущий исторический engineering target
@@ -35,6 +36,12 @@ fin-control-room --runtime-root runtime --open-browser
 
 Операторский экран откроется по `http://127.0.0.1:8000/live.html`; исторический research dashboard остаётся на `/index.html`.
 
+Запуск scheduler:
+
+```bash
+fin-paper-scheduler daemon --runtime-root runtime
+```
+
 Control Room автоматически читает:
 
 ```text
@@ -50,6 +57,7 @@ API полностью read-only:
 GET /api/v1/dashboard
 GET /api/v1/runtime
 GET /api/v1/incidents
+GET /api/v1/scheduler
 GET /api/v1/health
 GET /api/v1/events
 ```
@@ -61,6 +69,9 @@ POST/order endpoints отсутствуют.
 ```bash
 python -m finruntime init-account --help
 python -m finruntime paper-cycle --help
+fin-paper-scheduler enqueue --help
+fin-paper-scheduler run-once --help
+fin-paper-scheduler daemon --help
 python -m finruntime status --help
 python -m finruntime verify-journal --help
 ```
@@ -89,5 +100,6 @@ Shadow preflight должен пройти. Live preflight обязан fail-clo
 
 - `docs/LIVE_HANDOFF_RU.md`;
 - `docs/CONTROL_ROOM_RUNTIME_RU.md`;
+- `docs/PAPER_SCHEDULER_RU.md`;
 - `docs/checkpoints/runtime-v1/OPERATIONS_RUNBOOK_RU.md`;
 - `frontend/README.md`.

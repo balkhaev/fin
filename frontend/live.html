@@ -11,7 +11,7 @@
 <body>
   <header class="topbar">
     <a class="brand" href="./index.html"><span class="mark">F</span><span><strong>FIN</strong><small>RUNTIME CONTROL PLANE</small></span></a>
-    <nav aria-label="Разделы"><a href="#runtime">Runtime</a><a href="#strategies">Стратегии</a><a href="#incidents">Инциденты</a><a href="#context">Контекст</a></nav>
+    <nav aria-label="Разделы"><a href="#runtime">Runtime</a><a href="#scheduler">Scheduler</a><a href="#strategies">Стратегии</a><a href="#incidents">Инциденты</a><a href="#context">Контекст</a></nav>
     <div class="top-actions"><button id="refresh" class="button" type="button">Обновить</button><button id="pause" class="button button-muted" type="button">Пауза</button><span id="service-status" class="pill pill-idle">CONNECTING</span></div>
   </header>
 
@@ -37,6 +37,22 @@
       <div id="aggregate-grid" class="metric-grid"></div>
     </section>
 
+    <section id="scheduler" class="section">
+      <div class="section-head"><div><span class="kicker">Continuous paper loop</span><h2>Scheduler</h2></div><p>Запечатанные cycle requests обрабатываются последовательно и только через paper broker.</p></div>
+      <div class="scheduler-grid">
+        <article class="card scheduler-card">
+          <div class="scheduler-head"><div><span class="kicker">SERVICE</span><h3 id="scheduler-state">IDLE</h3></div><span id="scheduler-health" class="pill pill-idle">IDLE</span></div>
+          <div id="scheduler-metrics" class="scheduler-metrics"></div>
+          <small id="scheduler-source">runtime/.scheduler/status.json</small>
+        </article>
+        <article class="card scheduler-card">
+          <span class="kicker">LAST RESULT</span><h3 id="scheduler-last-title">Нет обработанных запросов</h3>
+          <div id="scheduler-last" class="detail-list"></div>
+          <p id="scheduler-error" class="scheduler-error" hidden></p>
+        </article>
+      </div>
+    </section>
+
     <section id="strategies" class="section">
       <div class="section-head"><div><span class="kicker">Execution stack</span><h2>Стратегии</h2></div><p>Последнее reconciled состояние каждой paper/shadow линии.</p></div>
       <div class="card table-wrap"><table><thead><tr><th>Strategy</th><th>Health</th><th>Equity</th><th>Return</th><th>Gross</th><th>Turnover</th><th>Slippage</th><th>Latest</th></tr></thead><tbody id="strategy-rows"></tbody></table><div id="strategy-empty" class="empty" hidden>Runtime strategies ещё не обнаружены.</div></div>
@@ -58,7 +74,7 @@
 
     <section class="section api-section">
       <div class="section-head"><div><span class="kicker">Local API</span><h2>Контракт наблюдения</h2></div></div>
-      <div class="api-grid"><code>GET /api/v1/dashboard</code><code>GET /api/v1/runtime</code><code>GET /api/v1/incidents</code><code>GET /api/v1/health</code><code>GET /api/v1/events</code><code class="blocked">POST * → 405</code></div>
+      <div class="api-grid"><code>GET /api/v1/dashboard</code><code>GET /api/v1/runtime</code><code>GET /api/v1/incidents</code><code>GET /api/v1/scheduler</code><code>GET /api/v1/health</code><code>GET /api/v1/events</code><code class="blocked">POST * → 405</code></div>
     </section>
   </main>
 
