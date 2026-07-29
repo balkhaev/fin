@@ -26,7 +26,7 @@ python scripts/run_control_room.py --runtime-root runtime --open-browser
 
 - отдаёт static frontend;
 - предоставляет read-only API `/api/v1/dashboard`, `/api/v1/runtime`, `/api/v1/incidents`, `/api/v1/scheduler`, `/api/v1/health`;
-- отправляет change notifications через `/api/v1/events`;
+- отправляет готовые paper/strategy snapshots по WebSocket `/api/v1/ws` без frontend polling;
 - автоматически читает `<runtime-root>/<strategy-id>/forward_telemetry.csv`, `events.jsonl`, `cycles/*/COMMITTED.json` и `account_state.json`;
 - показывает optional `v517_state.json`, `v517_decision.json` и `market_state.json`;
 - показывает scheduler queue, heartbeat, completed/rejected requests и last error;

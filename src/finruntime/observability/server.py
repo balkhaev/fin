@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import hashlib
 import json
 import mimetypes
 import os
+import struct
 import threading
 import time
 import webbrowser
@@ -17,6 +20,23 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from .control_room import build_runtime_snapshot, snapshot_digest
 from .strategy_hub import StrategyHub, read_consensus_snapshot
+
+WEBSOCKET_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+WEBSOCKET_HEARTBEAT_SECONDS = 15.0
+
+
+def _websocket_frame(payload: bytes, *, opcode: int = 0x1) -> bytes:
+    header = bytearray([0x80 | opcode])
+    length = len(payload)
+    if length <= 125:
+        header.append(length)
+    elif length <= 65_535:
+        header.append(126)
+        header.extend(struct.pack("!H", length))
+    else:
+        header.append(127)
+        header.extend(struct.pack("!Q", length))
+    return bytes(header) + payload
 
 
 @dataclass(frozen=True, slots=True)
@@ -225,6 +245,36 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
             consensus=self._consensus(),
         )
 
+    def _realtime_snapshot(self) -> dict[str, Any]:
+        funding = self._paper()
+        runtime = self._runtime()
+        consensus = self._consensus()
+        strategies = self.server.strategy_hub.snapshot(
+            funding=funding,
+            runtime=runtime,
+            consensus=consensus,
+        )
+        return {
+            "schema_version": 1,
+            "type": "snapshot",
+            "generated_at_ms": int(time.time() * 1000),
+            "paper": funding,
+            "strategies": strategies,
+        }
+
+    @staticmethod
+    def _realtime_digest(payload: dict[str, Any]) -> str:
+        paper = dict(payload["paper"])
+        paper.pop("age_seconds", None)
+        strategies = dict(payload["strategies"])
+        strategies.pop("generated_at_ms", None)
+        return snapshot_digest(
+            {
+                "paper": paper,
+                "strategies": strategies,
+            }
+        )
+
     def _health(self) -> dict[str, object]:
         runtime = self._runtime()
         paper = self._paper()
@@ -254,6 +304,11 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                 "available": consensus_updated_at_ms is not None,
                 "age_seconds": consensus_age_seconds,
                 "open_positions": len(consensus.get("paper", {}).get("positions", [])),
+            },
+            "realtime": {
+                "transport": "websocket",
+                "path": "/api/v1/ws",
+                "heartbeat_seconds": WEBSOCKET_HEARTBEAT_SECONDS,
             },
             "exchange_submission_available": False,
             "live_ready": False,
@@ -357,6 +412,85 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
             if once:
                 self.close_connection = True
 
+    def _websocket_request_is_valid(self) -> bool:
+        upgrade = self.headers.get("Upgrade", "").lower() == "websocket"
+        connection_tokens = {
+            token.strip().lower()
+            for token in self.headers.get("Connection", "").split(",")
+        }
+        key = self.headers.get("Sec-WebSocket-Key", "")
+        try:
+            decoded_key = base64.b64decode(key, validate=True)
+        except (binascii.Error, ValueError):
+            decoded_key = b""
+        return (
+            upgrade
+            and "upgrade" in connection_tokens
+            and self.headers.get("Sec-WebSocket-Version") == "13"
+            and len(decoded_key) == 16
+        )
+
+    def _serve_websocket(self) -> None:
+        if not self._websocket_request_is_valid():
+            self._send_json(
+                {"error": "websocket_upgrade_required"},
+                status=HTTPStatus.UPGRADE_REQUIRED,
+            )
+            return
+
+        origin = self.headers.get("Origin")
+        host = self.headers.get("Host")
+        if origin and urlparse(origin).netloc != host:
+            self._send_json(
+                {"error": "websocket_origin_rejected"},
+                status=HTTPStatus.FORBIDDEN,
+            )
+            return
+
+        key = self.headers["Sec-WebSocket-Key"]
+        accept = base64.b64encode(
+            hashlib.sha1(f"{key}{WEBSOCKET_GUID}".encode()).digest()
+        ).decode()
+        self.send_response(HTTPStatus.SWITCHING_PROTOCOLS)
+        self.send_header("Upgrade", "websocket")
+        self.send_header("Connection", "Upgrade")
+        self.send_header("Sec-WebSocket-Accept", accept)
+        self.end_headers()
+        self.wfile.flush()
+
+        last_digest: str | None = None
+        last_heartbeat = time.monotonic()
+        try:
+            while True:
+                payload = self._realtime_snapshot()
+                digest = self._realtime_digest(payload)
+                now = time.monotonic()
+                if digest != last_digest:
+                    message = payload
+                    last_digest = digest
+                elif now - last_heartbeat >= WEBSOCKET_HEARTBEAT_SECONDS:
+                    message = {
+                        "schema_version": 1,
+                        "type": "heartbeat",
+                        "sent_at_ms": int(time.time() * 1000),
+                    }
+                else:
+                    time.sleep(self.server.config.poll_seconds)
+                    continue
+                encoded = json.dumps(
+                    message,
+                    ensure_ascii=False,
+                    allow_nan=False,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+                self.connection.sendall(_websocket_frame(encoded))
+                last_heartbeat = now
+                time.sleep(self.server.config.poll_seconds)
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            return
+        finally:
+            self.close_connection = True
+
     def _static_path(self, request_path: str) -> Path | None:
         relative = unquote(request_path).lstrip("/") or "live.html"
         candidate = (self.server.config.frontend_root / relative).resolve()
@@ -396,6 +530,16 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
 
     def _dispatch_get(self, *, head_only: bool = False) -> None:
         parsed = urlparse(self.path)
+        if parsed.path == "/api/v1/ws":
+            if head_only:
+                self._send_json(
+                    {"error": "head_not_supported"},
+                    status=HTTPStatus.METHOD_NOT_ALLOWED,
+                    head_only=True,
+                )
+            else:
+                self._serve_websocket()
+            return
         if parsed.path == "/api/v1/events":
             if head_only:
                 self._send_json(

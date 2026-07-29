@@ -41,9 +41,11 @@ class StaticAssetTests(unittest.TestCase):
         self.assertIn('id="candle-chart"', html)
         self.assertIn('id="position-body"', html)
         self.assertIn('id="market-rows"', html)
-        self.assertIn("/api/v1/paper", script)
+        self.assertIn("/api/v1/ws", script)
         self.assertIn("renderChart", script)
-        self.assertIn("EventSource", script)
+        self.assertIn("WebSocket", script)
+        self.assertNotIn("EventSource", script)
+        self.assertNotIn("setInterval", script)
         self.assertNotIn("submit_order", script)
         self.assertNotIn("/api/v1/orders", script)
 

@@ -89,6 +89,7 @@ GET /api/v1/paper
 GET /api/v1/strategies
 GET /api/v1/health
 GET /api/v1/events
+WS  /api/v1/ws
 ```
 
 POST/order endpoints отсутствуют.

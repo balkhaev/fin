@@ -7,9 +7,10 @@
     selectedStrategyId: "funding-neutral",
     selectedAsset: null,
     selectedVenue: null,
-    eventSource: null,
-    fetching: false,
-    fallbackTimer: null,
+    socket: null,
+    reconnectTimer: null,
+    reconnectAttempts: 0,
+    unloading: false,
   };
   const svgNamespace = "http://www.w3.org/2000/svg";
   const $ = (selector) => document.querySelector(selector);
@@ -418,53 +419,80 @@
     banner.hidden = errors.length === 0;
     banner.textContent = errors.join(" · ");
     const healthy = state.funding?.health === "healthy";
-    setConnection(healthy ? "live" : "error", healthy ? "Realtime" : "Данные устарели");
+    setConnection(healthy ? "live" : "error", healthy ? "WebSocket" : "Данные устарели");
   };
 
-  const fetchAll = async () => {
-    if (state.fetching) return;
-    state.fetching = true;
+  const showConnectionError = (message) => {
+    setConnection("error", "Переподключение");
+    if (state.hub) return;
+    const banner = $("#error-banner");
+    banner.hidden = false;
+    banner.textContent = message;
+  };
+
+  const applySocketMessage = (event) => {
     try {
-      const [paperResponse, strategyResponse] = await Promise.all([
-        fetch("/api/v1/paper", { cache: "no-store" }),
-        fetch("/api/v1/strategies", { cache: "no-store" }),
-      ]);
-      if (!paperResponse.ok || !strategyResponse.ok) {
-        throw new Error(`HTTP ${paperResponse.status}/${strategyResponse.status}`);
+      const message = JSON.parse(event.data);
+      if (message.type === "heartbeat") return;
+      if (message.type !== "snapshot" || !message.paper || !message.strategies) {
+        throw new Error("неверный формат snapshot");
       }
-      [state.funding, state.hub] = await Promise.all([
-        paperResponse.json(),
-        strategyResponse.json(),
-      ]);
+      state.funding = message.paper;
+      state.hub = message.strategies;
       render();
     } catch (error) {
-      setConnection("error", "Нет связи");
-      const banner = $("#error-banner");
-      banner.hidden = false;
-      banner.textContent = `Не удалось получить paper-данные: ${error.message}`;
-    } finally {
-      state.fetching = false;
+      showConnectionError(`Ошибка WebSocket: ${error.message}`);
     }
   };
 
-  const connect = () => {
-    state.eventSource?.close();
-    const source = new EventSource("/api/v1/events?seconds=300");
-    state.eventSource = source;
-    source.addEventListener("snapshot", fetchAll);
-    source.onopen = () => setConnection("live", "Realtime");
-    source.onerror = () => {
-      if (!state.hub) setConnection("error", "Переподключение");
-    };
-    clearInterval(state.fallbackTimer);
-    state.fallbackTimer = setInterval(fetchAll, 10_000);
+  const scheduleReconnect = () => {
+    if (state.unloading || state.reconnectTimer) return;
+    const delay = Math.min(15_000, 1000 * 2 ** Math.min(state.reconnectAttempts, 4));
+    state.reconnectAttempts += 1;
+    state.reconnectTimer = setTimeout(() => {
+      state.reconnectTimer = null;
+      connect();
+    }, delay);
   };
 
-  $("#refresh").addEventListener("click", fetchAll);
+  const connect = () => {
+    if (state.unloading) return;
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const socket = new WebSocket(`${protocol}//${window.location.host}/api/v1/ws`);
+    state.socket = socket;
+    socket.onopen = () => {
+      state.reconnectAttempts = 0;
+      setConnection("live", "WebSocket");
+    };
+    socket.onmessage = applySocketMessage;
+    socket.onerror = () => {
+      if (state.socket === socket) {
+        showConnectionError("WebSocket недоступен");
+      }
+    };
+    socket.onclose = () => {
+      if (state.socket !== socket) return;
+      state.socket = null;
+      showConnectionError("WebSocket переподключается");
+      scheduleReconnect();
+    };
+  };
+
+  const reconnectNow = () => {
+    clearTimeout(state.reconnectTimer);
+    state.reconnectTimer = null;
+    state.reconnectAttempts = 0;
+    const socket = state.socket;
+    state.socket = null;
+    socket?.close(1000, "manual reconnect");
+    connect();
+  };
+
+  $("#refresh").addEventListener("click", reconnectNow);
   window.addEventListener("beforeunload", () => {
-    state.eventSource?.close();
-    clearInterval(state.fallbackTimer);
+    state.unloading = true;
+    clearTimeout(state.reconnectTimer);
+    state.socket?.close(1000, "page unload");
   });
-  fetchAll();
   connect();
 })();

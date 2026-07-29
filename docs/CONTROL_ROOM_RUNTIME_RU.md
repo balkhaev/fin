@@ -81,6 +81,7 @@ Optional strategy/market context:
 | `GET /api/v1/scheduler` | queue, heartbeat и last result scheduler |
 | `GET /api/v1/health` | health и uptime server |
 | `GET /api/v1/events` | Server-Sent Events при изменении snapshot |
+| `WS /api/v1/ws` | realtime paper/strategy snapshots и heartbeat без polling |
 
 Любой `POST` возвращает `405`. Orders/mutation routes отсутствуют.
 

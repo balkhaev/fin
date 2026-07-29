@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import socket
 import tempfile
 import threading
 import time
@@ -158,6 +159,7 @@ class ControlRoomServerTests(unittest.TestCase):
         self.assertFalse(dashboard["environment"]["live_ready"])
         health = self.json_get("/api/v1/health")
         self.assertTrue(health["read_only"])
+        self.assertEqual(health["realtime"]["transport"], "websocket")
         self.assertFalse(health["exchange_submission_available"])
         scheduler = self.json_get("/api/v1/scheduler")
         self.assertFalse(scheduler["exchange_submission_available"])
@@ -189,6 +191,53 @@ class ControlRoomServerTests(unittest.TestCase):
         with self.assertRaises(urllib.error.HTTPError) as captured:
             urllib.request.urlopen(self.base + "/%2e%2e/secret", timeout=5)
         self.assertEqual(captured.exception.code, 404)
+
+    def test_websocket_pushes_complete_paper_snapshot(self) -> None:
+        host, port = self.server.server_address
+        with socket.create_connection((host, port), timeout=5) as connection:
+            connection.sendall(
+                (
+                    "GET /api/v1/ws HTTP/1.1\r\n"
+                    f"Host: {host}:{port}\r\n"
+                    "Upgrade: websocket\r\n"
+                    "Connection: Upgrade\r\n"
+                    "Sec-WebSocket-Version: 13\r\n"
+                    "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
+                    "\r\n"
+                ).encode("ascii")
+            )
+            received = bytearray()
+            while b"\r\n\r\n" not in received:
+                received.extend(connection.recv(4096))
+            headers, frame_buffer = bytes(received).split(b"\r\n\r\n", 1)
+            self.assertIn(b"101 Switching Protocols", headers)
+            self.assertIn(
+                b"Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=", headers
+            )
+
+            buffered = bytearray(frame_buffer)
+
+            def read_exact(length: int) -> bytes:
+                while len(buffered) < length:
+                    buffered.extend(connection.recv(65_536))
+                result = bytes(buffered[:length])
+                del buffered[:length]
+                return result
+
+            first, second = read_exact(2)
+            self.assertEqual(first & 0x0F, 0x1)
+            self.assertEqual(second & 0x80, 0)
+            payload_length = second & 0x7F
+            if payload_length == 126:
+                payload_length = int.from_bytes(read_exact(2), "big")
+            elif payload_length == 127:
+                payload_length = int.from_bytes(read_exact(8), "big")
+            message = json.loads(read_exact(payload_length))
+
+        self.assertEqual(message["type"], "snapshot")
+        self.assertEqual(message["paper"]["mode"], "paper")
+        self.assertEqual(message["strategies"]["summary"]["strategy_count"], 4)
+        self.assertFalse(message["strategies"]["exchange_submission_available"])
 
 
 if __name__ == "__main__":
