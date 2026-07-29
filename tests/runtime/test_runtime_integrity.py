@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from decimal import Decimal
 
-from finruntime.canonical import ContractError
+from finruntime.canonical import ContractError, sha256_id
 from finruntime.data.availability import seal_sources
 from finruntime.execution import (
     PaperBrokerPolicy,
@@ -79,6 +79,30 @@ class AvailabilityIntegrityTests(unittest.TestCase):
 
         with self.assertRaises(ContractError):
             seal_sources((first, second))
+
+
+class PaperAccountCompatibilityTests(unittest.TestCase):
+    def test_legacy_schema_1_0_hash_and_serialization_remain_valid(self) -> None:
+        current = PaperAccountState.empty(
+            strategy_id="v75_atlas_nx",
+            as_of_utc="2026-07-27T00:05:00Z",
+            starting_cash="10000",
+        )
+        payload = current.to_dict()
+        payload["schema_version"] = "1.0"
+        payload.pop("active_plan_filled_quantities")
+        payload.pop("active_plan_fill_event_ids")
+        payload["account_hash"] = sha256_id(
+            {
+                key: value
+                for key, value in payload.items()
+                if key != "account_hash"
+            }
+        )
+
+        legacy = PaperAccountState(**payload)
+        legacy.validate()
+        self.assertEqual(legacy.to_dict(), payload)
 
 
 class PaperExecutionIntegrityTests(unittest.TestCase):

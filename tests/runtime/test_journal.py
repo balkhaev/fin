@@ -142,6 +142,80 @@ class JournalTests(unittest.TestCase):
                 )
             self.assertEqual(len(journal.verify()), 1)
 
+    def test_same_phase_fill_times_may_arrive_out_of_order(self) -> None:
+        prefix = [
+            {
+                "event_type": "SNAPSHOT_ACCEPTED",
+                "event_time_utc": "2026-07-27T00:05:00Z",
+                "strategy_id": "v75_atlas_nx",
+                "sequence": 1,
+                "payload": {"snapshot": 1},
+            },
+            {
+                "event_type": "TARGET_COMPUTED",
+                "event_time_utc": "2026-07-27T00:05:00Z",
+                "strategy_id": "v75_atlas_nx",
+                "sequence": 1,
+                "payload": {"target": 1},
+            },
+            {
+                "event_type": "PLAN_CREATED",
+                "event_time_utc": "2026-07-27T00:05:00Z",
+                "strategy_id": "v75_atlas_nx",
+                "sequence": 1,
+                "payload": {"plan": 1},
+            },
+            {
+                "event_type": "FILL_RECORDED",
+                "event_time_utc": "2026-07-27T00:07:00Z",
+                "strategy_id": "v75_atlas_nx",
+                "sequence": 1,
+                "payload": {"fill": 1},
+            },
+            {
+                "event_type": "FILL_RECORDED",
+                "event_time_utc": "2026-07-27T00:06:00Z",
+                "strategy_id": "v75_atlas_nx",
+                "sequence": 1,
+                "payload": {"fill": 2},
+            },
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            journal = AppendOnlyJournal(Path(directory) / "events.jsonl")
+            events = journal.append_many(
+                prefix
+                + [
+                    {
+                        "event_type": "STATE_COMMITTED",
+                        "event_time_utc": "2026-07-27T00:07:00Z",
+                        "strategy_id": "v75_atlas_nx",
+                        "sequence": 1,
+                        "payload": {"state": 1},
+                    },
+                    {
+                        "event_type": "RECONCILIATION_COMPLETED",
+                        "event_time_utc": "2026-07-27T00:07:00Z",
+                        "strategy_id": "v75_atlas_nx",
+                        "sequence": 1,
+                        "payload": {"reconciliation": 1},
+                    },
+                ]
+            )
+            self.assertEqual(len(events), 7)
+            self.assertEqual(len(journal.verify()), 7)
+
+            bad = AppendOnlyJournal(Path(directory) / "bad-events.jsonl")
+            bad.append_many(prefix)
+            with self.assertRaises(JournalCorruptionError):
+                bad.append(
+                    event_type="STATE_COMMITTED",
+                    event_time_utc="2026-07-27T00:06:30Z",
+                    strategy_id="v75_atlas_nx",
+                    sequence=1,
+                    payload={"state": "too-early"},
+                )
+            self.assertEqual(len(bad.verify()), 5)
+
     def test_corruption_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "events.jsonl"

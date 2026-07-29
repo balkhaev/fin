@@ -160,13 +160,6 @@ class AppendOnlyJournal:
                     f"journal sequence moved backward on line {line_number}"
                 )
             last_sequence[strategy_id] = sequence
-            if event_type in _RUNTIME_EVENT_PHASES or event_type == "HALT_CLEARED":
-                previous_time = last_time.get(strategy_id)
-                if previous_time is not None and event_time < previous_time:
-                    raise JournalCorruptionError(
-                        f"journal event time moved backward on line {line_number}"
-                    )
-                last_time[strategy_id] = event_time
 
             cycle_key = (strategy_id, sequence)
             seen = seen_by_cycle.setdefault(cycle_key, set())
@@ -177,6 +170,17 @@ class AppendOnlyJournal:
                     raise JournalCorruptionError(
                         f"runtime event phase moved backward on line {line_number}"
                     )
+                previous_time = last_time.get(strategy_id)
+                if (
+                    previous_time is not None
+                    and phase > prior_phase
+                    and event_time < previous_time
+                ):
+                    raise JournalCorruptionError(
+                        f"journal event time moved backward across phases on line {line_number}"
+                    )
+                if previous_time is None or event_time > previous_time:
+                    last_time[strategy_id] = event_time
                 required = _RUNTIME_EVENT_PREDECESSORS.get(event_type, set())
                 missing = required - seen
                 if missing:
@@ -186,6 +190,13 @@ class AppendOnlyJournal:
                     )
                 phase_by_cycle[cycle_key] = phase
                 seen.add(event_type)
+            elif event_type == "HALT_CLEARED":
+                previous_time = last_time.get(strategy_id)
+                if previous_time is not None and event_time < previous_time:
+                    raise JournalCorruptionError(
+                        f"HALT_CLEARED moved backward in time on line {line_number}"
+                    )
+                last_time[strategy_id] = event_time
 
             if event_type == "HALT_RAISED":
                 halted.add(strategy_id)
