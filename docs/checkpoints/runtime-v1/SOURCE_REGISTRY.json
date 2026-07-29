@@ -17,19 +17,33 @@
         "research/active_v131_v138/DATA_REQUIREMENTS.json": "5984f1ba39fe415dd324ade047195d471f8c55e8646b8b64d496d0a6a7ef9d3c",
         "docs/checkpoints/v138/CHECKPOINT_V138.json": "8f7663ab93fa08291fd84425d362338c00d20e29e5e4f6daf6cd8e319e184690"
       },
+      "recovery_audit": {
+        "path": "docs/checkpoints/runtime-v1/V75_MATERIALIZATION_AUDIT.json",
+        "audited_at_utc": "2026-07-29T23:30:22Z",
+        "conclusion": "exact_v75_evidence_not_recoverable_from_current_repository_history",
+        "provenance_complete": false
+      },
       "unmaterialized_requirements": {
         "canonical_engine": {
-          "expected_layout": "dependencies/atlas/source/v75_operational_feedback_engine.py",
+          "expected_layout": "research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py",
           "expected_sha256": "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc",
-          "status": "not_materialized_in_main"
+          "expected_bytes": 17495,
+          "status": "not_recoverable_from_current_repository_history"
         },
         "full_regression_equity": {
-          "expected_layout": "results/v136/v75_original_stress_equity.csv",
+          "expected_layout": "research/active_v131_v138/results/v136/v75_original_stress_equity.csv",
           "expected_sha256": "0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b",
-          "status": "not_materialized_in_main"
+          "expected_bytes": 522305,
+          "status": "not_recoverable_from_current_repository_history"
+        },
+        "annual_returns_fixture": {
+          "expected_layout": "research/active_v131_v138/results/v136/v75_original_annual_returns.csv",
+          "expected_sha256": "e3de37108b5d459ad9f8324388a3a34571f29c5c594a77d82477cb812c8e0d25",
+          "expected_bytes": 167,
+          "status": "not_recoverable_from_current_repository_history"
         }
       },
-      "runtime_blocker": "exact V75 target engine and daily regression fixture must be materialized directly before M2"
+      "runtime_blocker": "exact V75 source and regression fixtures are absent from current repository history; M2 requires an external retained artifact matching the pinned hashes or a new strategy identity with an explicit migration record"
     },
     "v136_execution_shadow": {
       "role": "shadow",
@@ -57,7 +71,7 @@
       "runtime_blocker": "research source still references uncommitted local dependency paths; direct fixture materialization required before M3"
     }
   },
-  "checkpoint_status": "contracts_ready_provenance_blocked_on_v75_and_v28_materialization",
+  "checkpoint_status": "v75_recovery_audited_unavailable_v28_provenance_still_blocked",
   "safety": {
     "live_execution_available": false,
     "live_ready": false,
