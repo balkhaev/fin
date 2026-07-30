@@ -1,0 +1,56 @@
+name: Build research checkpoint V130
+
+on:
+  push:
+    branches: [agent/checkpoint-v130]
+    paths:
+      - "scripts/build_checkpoint_v130.py"
+      - ".github/workflows/checkpoint-v130.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/checkpoint-v130
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build checkpoint
+        run: |
+          set -euxo pipefail
+          python scripts/build_checkpoint_v130.py
+          test -s docs/checkpoints/v130/CHECKPOINT_V130.json
+          test -s docs/checkpoints/v130/RESEARCH_CHECKPOINT_V130_RU.md
+          test -s docs/checkpoints/v130/CALENDAR_PROFILES.csv
+          test -s docs/checkpoints/v130/CALENDAR_AUDIT_REPORT_RU.md
+          test -s docs/checkpoints/v130/MANIFEST.json
+          grep -q 'Current checkpoint: V130' docs/HANDOFF.md
+      - name: Verify audit and safety contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          value=json.loads(Path('docs/checkpoints/v130/CHECKPOINT_V130.json').read_text())
+          assert value['parameters_changed_by_audit'] is False
+          assert value['candidate_selection_performed_by_audit'] is False
+          assert value['live_ready'] is False
+          assert value['real_leverage_authorized'] is False
+          assert value['V111_calendar_decision']['corrected_status']
+          assert value['V119_calendar_decision']['corrected_status']
+          print(json.dumps(value,indent=2))
+          PY
+      - name: Commit checkpoint
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/checkpoints/v130 docs/HANDOFF.md scripts/build_checkpoint_v130.py
+          git commit -m "Add research checkpoint V130 [skip ci]"
+          git push origin HEAD:agent/checkpoint-v130
