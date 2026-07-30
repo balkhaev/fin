@@ -1,0 +1,12 @@
+{
+  "candidate": "ACTIVE_V189_DEFINED_RISK_OPTIONS_VRP",
+  "status": "eoh_data_not_execution_grade",
+  "executability_gate_passed": false,
+  "selection_run": false,
+  "full_backtest_run": false,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "design_sha256": "63c18ba80bf3d651886c46dbdbe6f5f0cde9225642431f485a703a464f294d5b"
+}

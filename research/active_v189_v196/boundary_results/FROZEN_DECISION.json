@@ -1,0 +1,11 @@
+{
+  "candidate": "ACTIVE_V189_DEFINED_RISK_OPTIONS_VRP",
+  "status": "archive_discontinued_or_ambiguous",
+  "continuous_research_permitted": false,
+  "selection_run": false,
+  "full_backtest_run": false,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

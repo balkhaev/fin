@@ -1,0 +1,73 @@
+{
+  "candidate": "ACTIVE_V189_DEFINED_RISK_OPTIONS_VRP",
+  "files": {
+    "README.md": {
+      "bytes": 3835,
+      "sha256": "20545fbdc05e6cdba8fd358719dbb02c943afa6bd8a76fcc890ce8c7c23ac56c"
+    },
+    "V189_V196_DESIGN.json": {
+      "bytes": 2919,
+      "sha256": "63c18ba80bf3d651886c46dbdbe6f5f0cde9225642431f485a703a464f294d5b"
+    },
+    "boundary_results/FROZEN_DECISION.json": {
+      "bytes": 332,
+      "sha256": "75b362f3fa2ed75f3cf865207e3e8ed4de7ffbb3ee70c0917571501e73877efa"
+    },
+    "boundary_results/REPORT_RU.md": {
+      "bytes": 511,
+      "sha256": "1baeb427f2b15cd5c32202ae8c240857fc0f3c1f94849ec23eb739cf73849ba2"
+    },
+    "boundary_results/boundary_scan.json": {
+      "bytes": 438289,
+      "sha256": "2bdd6007f9f88b6b26e47d5f1ff9cc2cde804e6c5d5ed3aba410a72f4e14ab90"
+    },
+    "boundary_results/daily_availability.csv": {
+      "bytes": 123659,
+      "sha256": "e4e4e27a07731e14448f309494fe77c0257dc864c60c7e8f50c36a26a9435cd3"
+    },
+    "boundary_results/summary.json": {
+      "bytes": 2423,
+      "sha256": "9cf584424e4e406006998a94b69a0e7562e8ee4dada20e0c564d692cd0a8c106"
+    },
+    "boundary_scan.log": {
+      "bytes": 249,
+      "sha256": "61b5e7dc56b14c67e25e36f1171aff503e6ff27fd9c57a22119d025b714dabdd"
+    },
+    "boundary_scan.py": {
+      "bytes": 10582,
+      "sha256": "9ce08fd89b6b437053627c475a1286ff64dec6204283e46cb2f7639e036ffe3b"
+    },
+    "probe.log": {
+      "bytes": 2407,
+      "sha256": "bab50a07151da412faf06e5b4085982ffe1e8f25329efb9d2137f8c4c226247e"
+    },
+    "probe.py": {
+      "bytes": 16035,
+      "sha256": "391dfc32334059075820a8570ecf2b840f9dc431ecb080ad065763d0183f7a03"
+    },
+    "probe_results/FROZEN_DECISION.json": {
+      "bytes": 410,
+      "sha256": "6b1c759d184086af715a1836f5feefaf8b94ca0e5bfb5b32dce5791a4841d24f"
+    },
+    "probe_results/REPORT_RU.md": {
+      "bytes": 470,
+      "sha256": "dc10db8e669bb2f45c380f3d091c0d4a8c207655262aeafc3b5bcfb2327d2a10"
+    },
+    "probe_results/coverage.csv": {
+      "bytes": 2090,
+      "sha256": "06242d70b550d1484f86c9cf35849601f21826f51c44f2c21e309435f18c28b2"
+    },
+    "probe_results/executability_gate.json": {
+      "bytes": 1099,
+      "sha256": "de806fe2365e23de427efa945d7a93dde6f38cdb6a1cdbd56497940656c1403b"
+    },
+    "probe_results/raw_probe.json": {
+      "bytes": 30788,
+      "sha256": "a1010f857fba9bc583a239fa4267edc444ece930f9b7424ab84a50b95626218d"
+    },
+    "requirements.txt": {
+      "bytes": 18,
+      "sha256": "a8dc766995bf9cf7992e2132f14c5b2a868a212513a0da7dd2c40458bda55332"
+    }
+  }
+}
