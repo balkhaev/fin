@@ -1,0 +1,47 @@
+{
+  "candidate": "ACTIVE_V245_USDM_COINM_DUAL_PERP",
+  "status": "data_access_insufficient",
+  "standalone_selection_passed": false,
+  "integration_permitted": false,
+  "promoted_candidates": [],
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "coverage_gate": {
+    "candidate": "V245_DUAL_PERP_DATA_COVERAGE",
+    "minimum_month_archive_share": 0.95,
+    "minimum_price_coverage": 0.98,
+    "assets": {
+      "BTC": {
+        "rows": 48168,
+        "price_coverage": 0.9975087194818136,
+        "dataset_month_shares": {
+          "usdm_prices": 1.0,
+          "coinm_prices": 1.0,
+          "usdm_funding": 1.0,
+          "coinm_funding": 0.7272727272727273
+        },
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "passed": false
+      },
+      "ETH": {
+        "rows": 48168,
+        "price_coverage": 0.9975087194818136,
+        "dataset_month_shares": {
+          "usdm_prices": 1.0,
+          "coinm_prices": 1.0,
+          "usdm_funding": 1.0,
+          "coinm_funding": 0.7272727272727273
+        },
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T23:00:00+00:00",
+        "passed": false
+      }
+    },
+    "passed": false
+  },
+  "selection": null,
+  "collateral_audit_required": true,
+  "provenance_sha256": "aee47931e3304880038f466c2d0e716241b498846e9015d683a480889b794aa0"
+}

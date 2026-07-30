@@ -1,0 +1,10 @@
+{
+  "candidate": "ACTIVE_V245_USDM_COINM_DUAL_PERP",
+  "status": "data_access_insufficient",
+  "standalone_selection_passed": false,
+  "integration_permitted": false,
+  "promoted_candidates": [],
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
