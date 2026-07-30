@@ -97,10 +97,11 @@ blocked   канонический producer отсутствует; подмен
 
 Historical incidents сохраняются в timeline. Текущий status определяется latest evidence и целостностью источников.
 
-В Docker paper-stack три исполняемых worker (`Funding Neutral`, `Consensus
-WIF + DOT`, `DYN-IV113`) обязаны иметь свежие снимки. `Atlas NX` отдельно
-показывается как `blocked`, пока в main отсутствует exact V75 producer с
-зарегистрированным SHA-256. Это не маскируется как CASH или idle.
+В Docker paper-stack четыре исполняемых worker (`Funding Neutral`, `Consensus
+WIF + DOT`, `DYN-IV113`, `Atlas NX R1`) обязаны иметь свежие снимки. Exact
+`v75_atlas_nx` остаётся внутренне заблокированным, а в операторском интерфейсе
+работает зарегистрированный successor `atlas_nx_r1` с новым forward clock и
+отдельным paper-счётом. Старые метрики V75 ему не приписываются.
 
 ## Fail-closed rules
 

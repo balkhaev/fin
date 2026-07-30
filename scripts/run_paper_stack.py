@@ -66,6 +66,7 @@ def main() -> int:
     funding_snapshot = RUNTIME_ROOT / "funding_router_snapshot.json"
     consensus_snapshot = RUNTIME_ROOT / "consensus_paper_snapshot.json"
     dyn_snapshot = RUNTIME_ROOT / "dyn_paper_snapshot.json"
+    atlas_snapshot = RUNTIME_ROOT / "atlas_nx_r1_paper_snapshot.json"
     funding_environment = dict(os.environ)
     funding_environment.update(
         {
@@ -112,6 +113,20 @@ def main() -> int:
         ),
         (
             [
+                sys.executable,
+                "-m",
+                "finruntime.strategies.atlas_nx_r1_paper",
+                "--snapshot",
+                str(atlas_snapshot),
+                "--poll-seconds",
+                "60",
+                "--starting-cash",
+                "10000",
+            ],
+            None,
+        ),
+        (
+            [
                 "fin-paper-scheduler",
                 "daemon",
                 "--runtime-root",
@@ -139,6 +154,8 @@ def main() -> int:
                 str(consensus_snapshot),
                 "--dyn-snapshot",
                 str(dyn_snapshot),
+                "--atlas-snapshot",
+                str(atlas_snapshot),
             ],
             None,
         ),

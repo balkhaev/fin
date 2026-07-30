@@ -16,7 +16,8 @@
 
 Strategy Hub сводит в один интерфейс рабочие контуры трёх репозиториев:
 
-- `fin`: Funding Neutral и V75 Atlas NX;
+- `fin`: Funding Neutral и Atlas NX R1 — paper-реконструкция V27/V4/V67 под
+  новой identity без наследования метрик V75;
 - `trader`: Consensus WIF + DOT, портированный в отдельный public-data paper-ledger;
 - `fin2`: DYN-IV113, перенесённый в этот же контейнер как точный локальный
   paper-порт исходного forward engine (17 Binance USDT spot активов).
@@ -55,22 +56,22 @@ fin-paper-scheduler daemon --runtime-root runtime
 
 ## Docker / Coolify paper mode
 
-The root container initializes a persistent `v75_atlas_nx` paper account, runs
-the sealed paper scheduler, Funding Neutral, WIF/DOT and DYN-IV113 paper
-workers, and serves Strategy Hub on port `8000`:
+The root container initializes the sealed scheduler, runs Funding Neutral,
+WIF/DOT, DYN-IV113 and Atlas NX R1 paper workers, and serves Strategy Hub on
+port `8000`:
 
 ```bash
 docker build -t fin-paper .
 docker run --rm -p 8000:8000 -v fin-runtime:/data/runtime fin-paper
 ```
 
-The scheduler intentionally does not invent market or target snapshots. Atlas
-NX remains visibly blocked until the exact V75 producer with SHA-256
-`3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc`
-is materialized; the runtime never substitutes another strategy. The repository's standalone
+The scheduler intentionally does not invent market or target snapshots. Exact
+`v75_atlas_nx` remains blocked internally. The UI runs the explicitly migrated
+`atlas_nx_r1` successor with a reset forward clock, real Binance candles and a
+separate `$10,000` paper account. Its V67 accelerator fails closed to zero until
+a fresh on-chain publication snapshot exists. The repository's standalone
 public-market paper engine is `services/funding_router`; its Docker image starts
-in `paper` mode, uses no exchange credentials and persists its SQLite state in
-`/app/data`.
+in `paper` mode and uses no exchange credentials.
 
 Control Room автоматически читает:
 
@@ -97,10 +98,9 @@ WS  /api/v1/ws
 
 POST/order endpoints отсутствуют.
 
-`/api/v1/health` reports every strategy separately. A blocked Atlas producer
-therefore makes aggregate application health `degraded`, while the container
-healthcheck still verifies that the scheduler and three executable paper
-workers are fresh and operational.
+`/api/v1/health` reports every strategy separately and requires fresh local DYN
+and Atlas snapshots. The original V75 provenance block remains auditable but no
+longer substitutes for the running successor card.
 
 ## Paper operations
 
@@ -142,4 +142,5 @@ Shadow preflight должен пройти. Live preflight обязан fail-clo
 - `docs/PAPER_SCHEDULER_RU.md`;
 - `docs/checkpoints/runtime-v1/OPERATIONS_RUNBOOK_RU.md`;
 - `docs/checkpoints/runtime-v1/STRATEGY_IDENTITY_MIGRATION_RU.md`;
+- `docs/checkpoints/runtime-v1/ATLAS_NX_R1_RECONSTRUCTION_RU.md`;
 - `frontend/README.md`.

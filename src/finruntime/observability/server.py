@@ -47,6 +47,7 @@ class ControlRoomConfig:
     paper_snapshot_path: Path | None = None
     consensus_snapshot_path: Path | None = None
     dyn_snapshot_path: Path | None = None
+    atlas_snapshot_path: Path | None = None
     stale_after_seconds: int = 172_800
     incident_limit: int = 100
     poll_seconds: float = 2.0
@@ -155,7 +156,10 @@ class ControlRoomHTTPServer(ThreadingHTTPServer):
     def __init__(self, address: tuple[str, int], config: ControlRoomConfig):
         config.validate()
         self.config = config
-        self.strategy_hub = StrategyHub(dyn_snapshot_path=config.dyn_snapshot_path)
+        self.strategy_hub = StrategyHub(
+            dyn_snapshot_path=config.dyn_snapshot_path,
+            atlas_snapshot_path=config.atlas_snapshot_path,
+        )
         self.started_monotonic = time.monotonic()
         super().__init__(address, ControlRoomHandler)
 
@@ -609,6 +613,7 @@ def create_server(
     paper_snapshot_path: str | Path | None = None,
     consensus_snapshot_path: str | Path | None = None,
     dyn_snapshot_path: str | Path | None = None,
+    atlas_snapshot_path: str | Path | None = None,
     stale_after_seconds: int = 172_800,
     incident_limit: int = 100,
     poll_seconds: float = 2.0,
@@ -630,6 +635,11 @@ def create_server(
         dyn_snapshot_path=(
             Path(dyn_snapshot_path).expanduser().resolve()
             if dyn_snapshot_path is not None
+            else None
+        ),
+        atlas_snapshot_path=(
+            Path(atlas_snapshot_path).expanduser().resolve()
+            if atlas_snapshot_path is not None
             else None
         ),
         stale_after_seconds=stale_after_seconds,
@@ -666,6 +676,10 @@ def main(argv: list[str] | None = None) -> int:
         "--dyn-snapshot",
         default=os.environ.get("FIN_DYN_SNAPSHOT"),
     )
+    parser.add_argument(
+        "--atlas-snapshot",
+        default=os.environ.get("FIN_ATLAS_SNAPSHOT"),
+    )
     parser.add_argument("--stale-after-seconds", type=int, default=172_800)
     parser.add_argument("--incident-limit", type=int, default=100)
     parser.add_argument("--poll-seconds", type=float, default=2.0)
@@ -696,6 +710,11 @@ def main(argv: list[str] | None = None) -> int:
         dyn_snapshot_path=(
             Path(args.dyn_snapshot).expanduser().resolve()
             if args.dyn_snapshot
+            else None
+        ),
+        atlas_snapshot_path=(
+            Path(args.atlas_snapshot).expanduser().resolve()
+            if args.atlas_snapshot
             else None
         ),
         stale_after_seconds=args.stale_after_seconds,

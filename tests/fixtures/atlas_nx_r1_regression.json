@@ -1,0 +1,39 @@
+{
+  "fixture_id": "atlas_nx_r1_bullish_daily_v1",
+  "input_recipe": {
+    "start_utc": "2025-09-01T00:00:00Z",
+    "days": 335,
+    "base_price": 20.0,
+    "asset_price_step": 1.0,
+    "base_daily_growth": 1.0008,
+    "asset_growth_step": 0.00008,
+    "open_multiplier": 0.997,
+    "high_multiplier": 1.02,
+    "low_multiplier": 0.98,
+    "base_quote_volume": 20000000.0,
+    "asset_quote_volume_step": 1000000.0
+  },
+  "paper": {
+    "reset_date": "2026-07-20",
+    "initial_nav_usd": 10000.0
+  },
+  "expected": {
+    "as_of": "2026-08-01",
+    "target_weights": {
+      "ADA": 0.0,
+      "BCH": 0.0,
+      "BNB": 0.0,
+      "BTC": 0.0,
+      "DOGE": 0.0,
+      "EOS": 0.0,
+      "ETH": 0.3333333333333333,
+      "LTC": 0.3333333333333333,
+      "XRP": 0.3333333333333333
+    },
+    "target_gross": 1.0,
+    "paper_nav_usd": 10123.768581826242,
+    "total_executions": 3,
+    "ratchet_stage": 0,
+    "volatility_multiplier": 1.0
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "strategy_id": "atlas_nx_r1",
+  "strategy_version": "reconstruction-v1",
+  "predecessor_strategy_id": "v75_atlas_nx",
+  "role": "primary_reconstruction",
+  "allowed_modes": ["paper", "shadow"],
+  "starting_cash_usd": 10000,
+  "forward_clock_reset": true,
+  "historical_metrics_inherited": false,
+  "market": {
+    "venue": "binance",
+    "timeframe": "1d",
+    "assets": ["ADA", "BCH", "BNB", "BTC", "DOGE", "EOS", "ETH", "LTC", "XRP"]
+  },
+  "risk": {
+    "high_water_thresholds": [1.75, 2.5],
+    "defensive_weights": [0.0, 0.1, 0.2],
+    "maximum_accelerator": [0.35, 0.3, 0.25],
+    "gross_caps": [1.1, 1.05, 1.0],
+    "volatility_thresholds": [0.25, 0.35],
+    "volatility_multipliers": [1.0, 0.75, 0.5],
+    "onchain_max_age_hours": 48,
+    "execution_cost_per_side": 0.004,
+    "financing_annual": 0.06
+  },
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "exchange_submission_available": false
+}

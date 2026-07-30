@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "migration_id": "sha256:04f9d2270f3f959ffb7f9f427ca34ed3a33d79ddf42daff830c48ebc58ea1b9d",
+  "migration_kind": "reconstruction",
+  "status": "validated",
+  "predecessor_strategy_id": "v75_atlas_nx",
+  "successor_strategy_id": "atlas_nx_r1",
+  "created_at_utc": "2026-07-30T08:45:00Z",
+  "reason": "Exact V75 artifacts are absent from repository history; reconstruct committed V27, V4 and V67 contracts under a new paper-only identity without inheriting V75 metrics or forward state.",
+  "source_audits": {
+    "docs/checkpoints/runtime-v1/V75_MATERIALIZATION_AUDIT.json": "sha256:b0219d6478376af0105446b26cffb607d17bbea1022164f3da28d4f66f5ef6e7",
+    "docs/implementation/IMPLEMENTATION_PLAN.json": "sha256:72406568c9d5abcee7b3149a23001113f363126fe4c717d84e68497356934a3e"
+  },
+  "predecessor_artifact_hashes": {
+    "research/active_v131_v138/dependencies/atlas/source/v75_operational_feedback_engine.py": "sha256:3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc",
+    "research/active_v131_v138/results/v136/v75_original_stress_equity.csv": "sha256:0f578a56132ec9858031cc6ad5cc919f732e66990625c2fdd6ff91143e44956b"
+  },
+  "successor_source_hashes": {
+    "config/strategies/atlas_nx_r1.json": "sha256:1493fe6f2dcc26419499077ede36f38bdc906437b37ddec8b42410ca255d6b17",
+    "src/finruntime/strategies/atlas_nx_r1_paper.py": "sha256:52d45ab5b15d9a0d636758f63c5ca0e5659f7b8f6ec47673ef307a316889ec76"
+  },
+  "regression_fixture_hashes": {
+    "tests/fixtures/atlas_nx_r1_regression.json": "sha256:a9ab3d5a93c80e23f3dcf7345da58f613c9be81f029246062842c2848af6f176"
+  },
+  "inherited_parameters": {
+    "defensive_weights": [0.0, 0.1, 0.2],
+    "gross_caps": [1.1, 1.05, 1.0],
+    "high_water_thresholds": [1.75, 2.5],
+    "maximum_accelerator": [0.35, 0.3, 0.25],
+    "onchain_max_age_hours": 48,
+    "volatility_multipliers": [1.0, 0.75, 0.5],
+    "volatility_thresholds": [0.25, 0.35]
+  },
+  "changed_parameters": {
+    "execution_cost_per_side": 0.004,
+    "financing_annual": 0.06,
+    "forward_reset_date": "2026-07-29",
+    "strategy_identity": "atlas_nx_r1"
+  },
+  "changed_components": [
+    "paper_execution_and_live_marking",
+    "v27_reconstructed_daily_core",
+    "v4_reconstructed_defensive_ensemble",
+    "v67_fail_closed_without_fresh_onchain"
+  ],
+  "allowed_modes": ["paper", "shadow"],
+  "forward_clock_reset": true,
+  "successor_provenance_complete": true,
+  "capital_authorization_carried_forward": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "exchange_submission_available": false
+}

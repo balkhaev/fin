@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import unittest
 from datetime import UTC, datetime
 from pathlib import Path
@@ -9,6 +10,7 @@ from finruntime.observability.strategy_hub import (
     StrategyHub,
     UpstreamSnapshotCache,
     _dyn_strategy,
+    read_atlas_snapshot,
     read_dyn_snapshot,
 )
 from finruntime.strategies.consensus_paper import (
@@ -118,6 +120,32 @@ class StrategyHubTests(unittest.TestCase):
             snapshot, error, stale = read_dyn_snapshot(path, stale_after_seconds=-1)
             self.assertIsNotNone(snapshot)
             self.assertIn("stale", error or "")
+            self.assertTrue(stale)
+
+    def test_reads_only_fresh_reconstructed_atlas_identity(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "atlas.json"
+            path.write_text(
+                '{"schema_version":1,"strategyId":"atlas_nx_r1",'
+                f'"generatedAt":"{datetime.now(UTC).isoformat()}",'
+                '"status":"ready"}',
+                encoding="utf-8",
+            )
+
+            snapshot, error, stale = read_atlas_snapshot(path, stale_after_seconds=60)
+            self.assertEqual(snapshot["strategyId"], "atlas_nx_r1")
+            self.assertIsNone(error)
+            self.assertFalse(stale)
+
+            path.write_text(
+                '{"schema_version":1,"strategyId":"v75_atlas_nx",'
+                f'"generatedAt":"{datetime.now(UTC).isoformat()}",'
+                '"status":"ready"}',
+                encoding="utf-8",
+            )
+            snapshot, error, stale = read_atlas_snapshot(path)
+            self.assertIsNone(snapshot)
+            self.assertIn("identity", error or "")
             self.assertTrue(stale)
 
     def test_normalizes_all_repository_strategies(self) -> None:
@@ -277,6 +305,68 @@ class StrategyHubTests(unittest.TestCase):
         self.assertEqual(atlas["status"], "blocked")
         self.assertIn("3303cd91511b", atlas["context"]["waiting_for"])
         self.assertEqual(snapshot["summary"]["running_count"], 3)
+
+    def test_local_reconstructed_atlas_replaces_blocked_card(self) -> None:
+        dyn = {
+            "status": "ready",
+            "paper": {"account": {"initialNavUsd": 10_000}, "navUsd": 10_000},
+            "positions": [],
+        }
+        with TemporaryDirectory() as directory:
+            atlas_path = Path(directory) / "atlas.json"
+            atlas_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "strategyId": "atlas_nx_r1",
+                        "predecessorStrategyId": "v75_atlas_nx",
+                        "status": "ready",
+                        "generatedAt": datetime.now(UTC).isoformat(),
+                        "marketDataAt": datetime.now(UTC).isoformat(),
+                        "paper": {
+                            "account": {"initialNavUsd": 10_000},
+                            "navUsd": 10_050,
+                            "daily": [],
+                            "totalExecutions": 1,
+                        },
+                        "positions": [{"asset": "BTC", "weight": 0.5}],
+                        "candles": [],
+                        "targetGross": 0.5,
+                        "cashWeight": 0.5,
+                        "ratchetStage": 0,
+                        "defensiveWeight": 0,
+                        "volatilityMultiplier": 1,
+                        "onchainAcceleratorScale": 0,
+                        "onchainStatus": "disabled_stale_or_missing",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            hub = StrategyHub(
+                fin2_url="https://example.test/forward",
+                cache=UpstreamSnapshotCache(lambda _url, _timeout: dyn),
+                atlas_snapshot_path=atlas_path,
+            )
+            snapshot = hub.snapshot(
+                funding={
+                    "health": "healthy",
+                    "paper": {
+                        "starting_balance_usdt": 10_000,
+                        "equity_usdt": 10_000,
+                    },
+                },
+                consensus={**_empty_state(), "health": "healthy"},
+                runtime={"scheduler": {"state": "idle"}, "strategies": []},
+            )
+
+        atlas = next(
+            item for item in snapshot["strategies"] if item["id"] == "atlas-nx"
+        )
+        self.assertEqual(atlas["status"], "running")
+        self.assertEqual(atlas["equity_usdt"], 10_050)
+        self.assertEqual(atlas["open_positions"], 1)
+        self.assertIn("новой identity", atlas["context"]["how_it_works"])
+        self.assertIn("on-chain", atlas["context"]["waiting_for"])
 
 
 if __name__ == "__main__":

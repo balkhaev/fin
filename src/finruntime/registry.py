@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass
-from typing import Mapping
 
 from .canonical import ContractError
 
@@ -17,6 +17,19 @@ class FrozenStrategy:
 
 
 STRATEGIES: dict[str, FrozenStrategy] = {
+    "atlas_nx_r1": FrozenStrategy(
+        strategy_id="atlas_nx_r1",
+        role="primary_reconstruction",
+        allowed_modes=("paper", "shadow"),
+        live_ready=False,
+        real_leverage_authorized=False,
+        parameters={
+            "profile": "Atlas NX R1 reconstruction",
+            "predecessor_strategy_id": "v75_atlas_nx",
+            "forward_clock_reset": True,
+            "historical_metrics_inherited": False,
+        },
+    ),
     "v75_atlas_nx": FrozenStrategy(
         strategy_id="v75_atlas_nx",
         role="primary",
@@ -80,8 +93,7 @@ def registry_payload() -> dict[str, object]:
         "registry_version": "runtime-v1",
         "live_execution_available": False,
         "strategies": {
-            strategy_id: asdict(profile)
-            for strategy_id, profile in STRATEGIES.items()
+            strategy_id: asdict(profile) for strategy_id, profile in STRATEGIES.items()
         },
     }
 

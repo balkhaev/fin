@@ -9,6 +9,26 @@
     "missing_dependencies": "record expected hash and fail closed; never substitute another file"
   },
   "profiles": {
+    "atlas_nx_r1": {
+      "role": "primary_reconstruction",
+      "provenance_complete": true,
+      "migration_record": {
+        "path": "docs/checkpoints/runtime-v1/ATLAS_NX_R1_MIGRATION.json",
+        "migration_id": "sha256:04f9d2270f3f959ffb7f9f427ca34ed3a33d79ddf42daff830c48ebc58ea1b9d",
+        "predecessor_strategy_id": "v75_atlas_nx",
+        "forward_clock_reset": true
+      },
+      "source_paths": {
+        "config/strategies/atlas_nx_r1.json": "1493fe6f2dcc26419499077ede36f38bdc906437b37ddec8b42410ca255d6b17",
+        "src/finruntime/strategies/atlas_nx_r1_paper.py": "52d45ab5b15d9a0d636758f63c5ca0e5659f7b8f6ec47673ef307a316889ec76"
+      },
+      "regression_fixtures": {
+        "tests/fixtures/atlas_nx_r1_regression.json": "a9ab3d5a93c80e23f3dcf7345da58f613c9be81f029246062842c2848af6f176"
+      },
+      "historical_v75_metrics_inherited": false,
+      "allowed_modes": ["paper", "shadow"],
+      "runtime_blocker": null
+    },
     "v75_atlas_nx": {
       "role": "primary",
       "provenance_complete": false,

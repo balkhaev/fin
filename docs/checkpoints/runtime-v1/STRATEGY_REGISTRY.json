@@ -2,29 +2,68 @@
   "registry_version": "runtime-v1",
   "live_execution_available": false,
   "strategies": {
+    "atlas_nx_r1": {
+      "role": "primary_reconstruction",
+      "allowed_modes": ["paper", "shadow"],
+      "live_ready": false,
+      "real_leverage_authorized": false,
+      "parameters": {
+        "profile": "Atlas NX R1 reconstruction",
+        "predecessor_strategy_id": "v75_atlas_nx",
+        "forward_clock_reset": true,
+        "historical_metrics_inherited": false
+      }
+    },
     "v75_atlas_nx": {
       "role": "primary",
       "allowed_modes": ["paper", "shadow"],
       "live_ready": false,
-      "real_leverage_authorized": false
+      "real_leverage_authorized": false,
+      "parameters": {
+        "profile": "frozen V75 ATLAS-NX",
+        "source_checkpoint": "V138"
+      }
     },
     "v28_growth_control": {
       "role": "control",
       "allowed_modes": ["paper", "shadow"],
       "live_ready": false,
-      "real_leverage_authorized": false
+      "real_leverage_authorized": false,
+      "parameters": {
+        "profile": "ACTIVE_V28_EXACT8H_BREAKOUT_CARRY_CASH",
+        "target_gross_cap": 0.85
+      }
     },
     "v136_execution_shadow": {
       "role": "shadow",
       "allowed_modes": ["shadow"],
       "live_ready": false,
-      "real_leverage_authorized": false
+      "real_leverage_authorized": false,
+      "parameters": {
+        "l1_no_trade_band": 0.08,
+        "maximum_target_age_days": 28,
+        "step_fraction": 1.0,
+        "risk_reduction_buffer": 0.02
+      }
     },
     "v517_tristate_guard_shadow": {
       "role": "shadow",
       "allowed_modes": ["shadow"],
       "live_ready": false,
-      "real_leverage_authorized": false
+      "real_leverage_authorized": false,
+      "parameters": {
+        "high_leverage": 2.075,
+        "base_leverage": 0.97,
+        "low_leverage": 0.6,
+        "rebalance_days": 10,
+        "no_trade_band": 0.04,
+        "minimum_state_hold_days": 14,
+        "guard_enter_drawdown": -0.245,
+        "guard_exit_drawdown": -0.18,
+        "guard_cap": 1.0,
+        "source_checkpoint": "V524",
+        "historical_target_non_pristine": true
+      }
     }
   }
 }

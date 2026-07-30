@@ -131,6 +131,35 @@ class ControlRoomServerTests(unittest.TestCase):
             ),
             encoding="utf-8",
         )
+        (root / "runtime" / "atlas_nx_r1_paper_snapshot.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "strategyId": "atlas_nx_r1",
+                    "predecessorStrategyId": "v75_atlas_nx",
+                    "identityKind": "reconstruction",
+                    "historicalMetricsInherited": False,
+                    "status": "ready",
+                    "generatedAt": datetime.now(UTC).isoformat(),
+                    "marketDataAt": datetime.now(UTC).isoformat(),
+                    "paper": {
+                        "account": {"initialNavUsd": 10_000.0},
+                        "navUsd": 10_000.0,
+                        "daily": [],
+                    },
+                    "positions": [],
+                    "candles": [],
+                    "targetGross": 0.0,
+                    "cashWeight": 1.0,
+                    "ratchetStage": 0,
+                    "defensiveWeight": 0.0,
+                    "volatilityMultiplier": 1.0,
+                    "onchainAcceleratorScale": 0.0,
+                    "onchainStatus": "disabled_stale_or_missing",
+                }
+            ),
+            encoding="utf-8",
+        )
         self.server = create_server(
             host="127.0.0.1",
             port=0,
@@ -138,6 +167,7 @@ class ControlRoomServerTests(unittest.TestCase):
             dashboard_path=dashboard,
             runtime_root=root / "runtime",
             dyn_snapshot_path=root / "runtime" / "dyn_paper_snapshot.json",
+            atlas_snapshot_path=root / "runtime" / "atlas_nx_r1_paper_snapshot.json",
             stale_after_seconds=10**9,
             poll_seconds=0.2,
         )
@@ -175,6 +205,8 @@ class ControlRoomServerTests(unittest.TestCase):
         self.assertEqual(strategies["summary"]["strategy_count"], 4)
         self.assertFalse(strategies["exchange_submission_available"])
         self.assertEqual(health["strategies"]["dyn-iv113"]["status"], "running")
+        self.assertEqual(health["strategies"]["atlas-nx"]["status"], "running")
+        self.assertEqual(health["status"], "healthy")
 
     def test_post_is_rejected(self) -> None:
         request = urllib.request.Request(

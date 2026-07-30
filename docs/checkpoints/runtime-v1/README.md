@@ -11,8 +11,10 @@ frozen implementation plan:
 - append-only hash-chain journal foundation;
 - frozen strategy registry with no live mode.
 
-It does **not** port the V75 or V28 target engine and does not create a broker
-submission path. `live_execution_available`, `live_ready` and
+The exact V75 and V28 target engines remain unmaterialized. Atlas NX R1 is a
+separately registered reconstruction with a reset forward clock; see
+`ATLAS_NX_R1_RECONSTRUCTION_RU.md` and `ATLAS_NX_R1_MIGRATION.json`. It does not
+create a broker submission path. `live_execution_available`, `live_ready` and
 `real_leverage_authorized` remain false.
 
 ## V517 shadow risk-budget adapter

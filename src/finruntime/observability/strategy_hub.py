@@ -16,6 +16,7 @@ DEFAULT_FIN2_FORWARD_URL = "https://fin2.balkhaev.com/api/strategy/forward"
 UPSTREAM_CACHE_SECONDS = 10.0
 UPSTREAM_TIMEOUT_SECONDS = 4.0
 DYN_STALE_AFTER_SECONDS = 300.0
+ATLAS_STALE_AFTER_SECONDS = 300.0
 
 
 def _number(value: object, default: float = 0.0) -> float:
@@ -174,6 +175,28 @@ def read_dyn_snapshot(
     age_seconds = max(0.0, (datetime.now(UTC) - generated_at).total_seconds())
     if age_seconds > stale_after_seconds:
         return value, f"local DYN snapshot is stale ({age_seconds:.1f}s)", True
+    return value, None, False
+
+
+def read_atlas_snapshot(
+    path: Path, *, stale_after_seconds: float = ATLAS_STALE_AFTER_SECONDS
+) -> tuple[dict[str, Any] | None, str | None, bool]:
+    if not path.is_file():
+        return None, "local Atlas NX R1 snapshot is not available", True
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return None, f"{type(error).__name__}: {error}", True
+    if not isinstance(value, dict) or value.get("schema_version") != 1:
+        return None, "unsupported local Atlas NX R1 snapshot schema", True
+    if value.get("strategyId") != "atlas_nx_r1":
+        return None, "unexpected local Atlas NX R1 strategy identity", True
+    generated_at = _parse_timestamp(value.get("generatedAt"))
+    if generated_at is None:
+        return value, "local Atlas NX R1 snapshot has no valid generatedAt", True
+    age_seconds = max(0.0, (datetime.now(UTC) - generated_at).total_seconds())
+    if age_seconds > stale_after_seconds:
+        return value, f"local Atlas NX R1 snapshot is stale ({age_seconds:.1f}s)", True
     return value, None, False
 
 
@@ -339,6 +362,121 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
                 _metric("Наблюдения", str(observations)),
                 _metric("Циклы", str(committed_cycles)),
                 _metric("Scheduler", str(scheduler_state or "—")),
+            ],
+        },
+    }
+
+
+def _atlas_reconstructed_strategy(
+    snapshot: dict[str, Any] | None, error: str | None, stale: bool
+) -> dict[str, Any]:
+    source = snapshot or {}
+    paper = source.get("paper") if isinstance(source, dict) else {}
+    paper = paper if isinstance(paper, dict) else {}
+    account = paper.get("account")
+    account = account if isinstance(account, dict) else {}
+    starting = _number(account.get("initialNavUsd"), 10_000.0)
+    equity = _number(paper.get("navUsd"), starting)
+    pnl = equity - starting
+    positions = source.get("positions")
+    positions = positions if isinstance(positions, list) else []
+    target_gross = _number(source.get("targetGross"))
+    cash_weight = _number(source.get("cashWeight"), 1.0)
+    stage = int(_number(source.get("ratchetStage")))
+    defensive_weight = _number(source.get("defensiveWeight"))
+    vol_multiplier = _number(source.get("volatilityMultiplier"))
+    accelerator = _number(source.get("onchainAcceleratorScale"))
+    unavailable = snapshot is None or bool(error) or stale
+    status = "degraded" if unavailable else str(source.get("status", "starting"))
+    if status == "ready":
+        status = "running"
+    if unavailable:
+        why_now = (
+            "Локальный расчёт Atlas NX R1 пока недоступен или устарел; последнее "
+            "состояние показано только справочно."
+        )
+    elif positions:
+        why_now = (
+            f"Открыто paper-позиций: {len(positions)}, целевая gross-экспозиция "
+            f"{target_gross:.2f}×. Риск-ступень {stage}, волатильностный множитель "
+            f"{vol_multiplier:.2f}×."
+        )
+    elif vol_multiplier <= 0:
+        why_now = (
+            "Стратегия в кэше: для устойчивой оценки волатильности пока недостаточно "
+            "закрытых свечей после применения причинного лага."
+        )
+    else:
+        why_now = (
+            "Стратегия в кэше: недельный ребаланс и momentum/trend-фильтры пока не "
+            "разрешили материальную позицию."
+        )
+    updated_at = source.get("marketDataAt") or source.get("generatedAt")
+    updated_at_datetime = _parse_timestamp(updated_at)
+    return {
+        "id": "atlas-nx",
+        "repository": "fin",
+        "name": "Atlas NX R1",
+        "description": "Восстановленный портфель V27 + V4 с fail-closed V67.",
+        "mode": "paper",
+        "status": status,
+        "status_label": (
+            "Нет данных" if unavailable else "В рынке" if positions else "Режим CASH"
+        ),
+        "equity_usdt": equity,
+        "starting_balance_usdt": starting,
+        "pnl_usdt": pnl,
+        "return_percent": _percent(pnl, starting),
+        "open_positions": len(positions),
+        "closed_positions": int(_number(paper.get("totalExecutions"))),
+        "market": "Binance spot · 9 assets",
+        "timeframe": "daily close · live marks",
+        "updated_at_ms": (
+            int(updated_at_datetime.timestamp() * 1000)
+            if updated_at_datetime is not None
+            else None
+        ),
+        "updated_at": updated_at,
+        "positions": positions,
+        "candles": source.get("candles") or [],
+        "equity_history": paper.get("daily") or [],
+        "signals": [],
+        "detail": {
+            "strategy_id": source.get("strategyId", "atlas_nx_r1"),
+            "predecessor_strategy_id": source.get(
+                "predecessorStrategyId", "v75_atlas_nx"
+            ),
+            "identity_kind": source.get("identityKind", "reconstruction"),
+            "historical_metrics_inherited": source.get(
+                "historicalMetricsInherited", False
+            ),
+            "target_gross": target_gross,
+            "cash_weight": cash_weight,
+            "ratchet_stage": stage,
+            "defensive_weight": defensive_weight,
+            "volatility_multiplier": vol_multiplier,
+            "onchain_accelerator_scale": accelerator,
+            "onchain_status": source.get("onchainStatus"),
+            "upstream_error": error,
+            "upstream_stale": stale,
+        },
+        "context": {
+            "how_it_works": (
+                "Под новой identity объединяет momentum/trend ядро V27 и защитный "
+                "ансамбль V4; high-water ratchet, gross-cap и волатильностный фильтр "
+                "необратимо уменьшают риск. Старые результаты V75 не наследуются."
+            ),
+            "why_now": why_now,
+            "waiting_for": (
+                "Ждём следующую закрытую дневную свечу и недельный ребаланс. V67 "
+                "on-chain ускоритель останется нулевым, пока нет свежего снимка "
+                "публикаций не старше 48 часов."
+            ),
+            "metrics": [
+                _metric("Risk stage", f"{stage}/2"),
+                _metric("Target gross", f"{target_gross:.2f}×"),
+                _metric("V4 защита", f"{defensive_weight * 100:.0f}%"),
+                _metric("V67 accelerator", f"{accelerator:.2f}×"),
             ],
         },
     }
@@ -574,14 +712,18 @@ class StrategyHub:
         *,
         fin2_url: str | None = None,
         dyn_snapshot_path: Path | None = None,
+        atlas_snapshot_path: Path | None = None,
         dyn_stale_after_seconds: float = DYN_STALE_AFTER_SECONDS,
+        atlas_stale_after_seconds: float = ATLAS_STALE_AFTER_SECONDS,
         cache: UpstreamSnapshotCache | None = None,
     ) -> None:
         self.fin2_url = fin2_url or os.environ.get(
             "FIN2_FORWARD_URL", DEFAULT_FIN2_FORWARD_URL
         )
         self.dyn_snapshot_path = dyn_snapshot_path
+        self.atlas_snapshot_path = atlas_snapshot_path
         self.dyn_stale_after_seconds = dyn_stale_after_seconds
+        self.atlas_stale_after_seconds = atlas_stale_after_seconds
         self.cache = cache or UpstreamSnapshotCache()
 
     def snapshot(
@@ -598,11 +740,21 @@ class StrategyHub:
                 self.dyn_snapshot_path,
                 stale_after_seconds=self.dyn_stale_after_seconds,
             )
+        if self.atlas_snapshot_path is None:
+            atlas = _atlas_strategy(runtime)
+        else:
+            atlas_snapshot, atlas_error, atlas_stale = read_atlas_snapshot(
+                self.atlas_snapshot_path,
+                stale_after_seconds=self.atlas_stale_after_seconds,
+            )
+            atlas = _atlas_reconstructed_strategy(
+                atlas_snapshot, atlas_error, atlas_stale
+            )
         strategies = [
             _funding_strategy(funding),
             _consensus_strategy(consensus),
             _dyn_strategy(dyn, dyn_error, dyn_stale),
-            _atlas_strategy(runtime),
+            atlas,
         ]
         paper_strategies = [item for item in strategies if item["mode"] == "paper"]
         equity = sum(_number(item.get("equity_usdt")) for item in paper_strategies)

@@ -62,6 +62,9 @@ def main() -> int:
     dyn = strategies.get("dyn-iv113")
     if not isinstance(dyn, dict) or dyn.get("status") != "running":
         raise RuntimeError(f"DYN paper worker is not healthy: {dyn}")
+    atlas = strategies.get("atlas-nx")
+    if not isinstance(atlas, dict) or atlas.get("status") != "running":
+        raise RuntimeError(f"Atlas NX R1 paper worker is not healthy: {atlas}")
     return 0
 
 
