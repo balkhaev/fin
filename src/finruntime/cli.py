@@ -9,6 +9,7 @@ from pathlib import Path
 from .canonical import canonical_json_text
 from .data.availability import evaluate_availability
 from .io import (
+    load_json,
     load_market_snapshot,
     load_paper_account,
     load_paper_quotes,
@@ -19,6 +20,7 @@ from .journal import AppendOnlyJournal, write_atomic_json
 from .models import MarketSnapshot, SourceObservation
 from .operations import PaperCyclePaths, PaperCycleRequest, run_paper_cycle, runtime_status
 from .portfolio import PaperAccountState
+from .provenance import parse_strategy_migration
 from .registry import get_strategy, registry_payload
 
 
@@ -48,6 +50,37 @@ def command_validate_snapshot(args: argparse.Namespace) -> int:
         )
     )
     return 0 if decision.risk_increase_permitted else 2
+
+
+def command_validate_migration(args: argparse.Namespace) -> int:
+    record = parse_strategy_migration(load_json(args.path))
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "migration_id": record.migration_id,
+                "migration_kind": record.migration_kind,
+                "status": record.status,
+                "predecessor_strategy_id": record.predecessor_strategy_id,
+                "successor_strategy_id": record.successor_strategy_id,
+                "forward_clock_reset": record.forward_clock_reset,
+                "successor_provenance_complete": (
+                    record.successor_provenance_complete
+                ),
+                "capital_authorization_carried_forward": (
+                    record.capital_authorization_carried_forward
+                ),
+                "live_ready": record.live_ready,
+                "real_leverage_authorized": record.real_leverage_authorized,
+                "exchange_submission_available": (
+                    record.exchange_submission_available
+                ),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+    return 0
 
 
 def command_verify_journal(args: argparse.Namespace) -> int:
@@ -177,6 +210,10 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--critical-source", action="append", default=[])
     validate.add_argument("--onchain-source", action="append", default=[])
     validate.set_defaults(function=command_validate_snapshot)
+
+    migration = subparsers.add_parser("validate-migration")
+    migration.add_argument("path", type=Path)
+    migration.set_defaults(function=command_validate_migration)
 
     journal = subparsers.add_parser("verify-journal")
     journal.add_argument("path", type=Path)

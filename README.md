@@ -107,6 +107,7 @@ workers are fresh and operational.
 ```bash
 python -m finruntime init-account --help
 python -m finruntime paper-cycle --help
+python -m finruntime validate-migration --help
 fin-paper-scheduler enqueue --help
 fin-paper-scheduler run-once --help
 fin-paper-scheduler daemon --help
@@ -140,4 +141,5 @@ Shadow preflight должен пройти. Live preflight обязан fail-clo
 - `docs/CONTROL_ROOM_RUNTIME_RU.md`;
 - `docs/PAPER_SCHEDULER_RU.md`;
 - `docs/checkpoints/runtime-v1/OPERATIONS_RUNBOOK_RU.md`;
+- `docs/checkpoints/runtime-v1/STRATEGY_IDENTITY_MIGRATION_RU.md`;
 - `frontend/README.md`.
