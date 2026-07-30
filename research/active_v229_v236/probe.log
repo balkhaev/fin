@@ -1,0 +1,50 @@
+/home/runner/work/fin/fin/research/active_v229_v236/probe.py:81: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`).Please use a specific unit instead.
+  start = pd.Timestamp(expiry) - pd.Timedelta(days=185)
+probed 50/308 archives
+probed 100/308 archives
+probed 150/308 archives
+probed 200/308 archives
+probed 250/308 archives
+probed 300/308 archives
+{
+  "candidate": "ACTIVE_V229_USDM_PERP_QUARTERLY_SPREAD",
+  "status": "data_gate_passed_needs_full_research",
+  "coverage_gate": {
+    "candidate": "V229_USDM_QUARTERLY_ARCHIVE_COVERAGE",
+    "symbol_rule": "<ASSET>USDT_YYMMDD",
+    "expiry_rule": "last Friday of quarter",
+    "scan_start": "2021-01-01T00:00:00+00:00",
+    "scan_end": "2026-06-30T00:00:00+00:00",
+    "assets": {
+      "BTC": {
+        "expected_contracts": 22,
+        "valid_contracts": 22,
+        "valid_contract_share": 1.0,
+        "minimum_contract_share": 0.8,
+        "minimum_valid_months_per_contract": 2,
+        "latest_required_expiry": "2026-06-26",
+        "latest_required_contract_passed": true,
+        "passed": true
+      },
+      "ETH": {
+        "expected_contracts": 22,
+        "valid_contracts": 22,
+        "valid_contract_share": 1.0,
+        "minimum_contract_share": 0.8,
+        "minimum_valid_months_per_contract": 2,
+        "latest_required_expiry": "2026-06-26",
+        "latest_required_contract_passed": true,
+        "passed": true
+      }
+    },
+    "passed": true,
+    "coin_m_fallback_permitted": false
+  },
+  "selection_run": false,
+  "full_backtest_run": false,
+  "continuous_research_permitted": true,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

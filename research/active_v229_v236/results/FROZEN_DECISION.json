@@ -1,0 +1,9 @@
+{
+  "candidate": "ACTIVE_V229_USDM_PERP_QUARTERLY_SPREAD",
+  "status": "rejected_before_validation",
+  "standalone_selection_passed": false,
+  "integration_permitted": false,
+  "promoted_candidates": [],
+  "live_ready": false,
+  "real_leverage_authorized": false
+}

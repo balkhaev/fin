@@ -1,0 +1,23 @@
+{
+  "candidate": "V230_FULL_PANEL_COVERAGE",
+  "assets": {
+    "BTC": {
+      "valid_contracts": 22,
+      "expected_contracts": 22,
+      "perpetual_rows": 48168,
+      "funding_rows": 6021,
+      "latest_required_contract_passed": true,
+      "passed": true
+    },
+    "ETH": {
+      "valid_contracts": 22,
+      "expected_contracts": 22,
+      "perpetual_rows": 48168,
+      "funding_rows": 6021,
+      "latest_required_contract_passed": true,
+      "passed": true
+    }
+  },
+  "passed": true,
+  "coin_m_fallback_permitted": false
+}
