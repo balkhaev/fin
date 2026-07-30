@@ -3,10 +3,19 @@
   "strategy_version": "runtime-v1",
   "role": "shadow",
   "allowed_modes": ["shadow"],
+  "identity_origin": "legacy_frozen",
+  "migration_record_path": null,
+  "forward_clock_reset_record_path": null,
+  "predecessor_strategy_id": null,
+  "provenance_profile": null,
+  "forward_clock_reset": false,
+  "forward_state_reuse_permitted": false,
+  "historical_evidence_carried_forward": false,
   "l1_no_trade_band": 0.08,
   "maximum_target_age_days": 28,
   "step_fraction": 1.0,
   "risk_reduction_buffer": 0.02,
   "live_ready": false,
-  "real_leverage_authorized": false
+  "real_leverage_authorized": false,
+  "exchange_submission_available": false
 }
