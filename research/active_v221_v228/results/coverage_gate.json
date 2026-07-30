@@ -1,0 +1,52 @@
+{
+  "candidate": "V221_CROSS_ASSET_PANEL_COVERAGE",
+  "required_month_coverage": 0.95,
+  "required_full_month_share": 0.9,
+  "periods": {
+    "development": {
+      "months": 36,
+      "full_months": 36,
+      "required_full_months": 33,
+      "minimum_coverage": 0.997800925925926,
+      "median_coverage": 1.0,
+      "passed": true
+    },
+    "validation": {
+      "months": 12,
+      "full_months": 12,
+      "required_full_months": 11,
+      "minimum_coverage": 0.9982078853046595,
+      "median_coverage": 1.0,
+      "passed": true
+    },
+    "holdout": {
+      "months": 12,
+      "full_months": 12,
+      "required_full_months": 11,
+      "minimum_coverage": 0.9996639784946236,
+      "median_coverage": 1.0,
+      "passed": true
+    },
+    "final": {
+      "months": 6,
+      "full_months": 6,
+      "required_full_months": 6,
+      "minimum_coverage": 1.0,
+      "median_coverage": 1.0,
+      "passed": true
+    }
+  },
+  "archives": {
+    "BTC": {
+      "valid_months": 66,
+      "attempted_months": 66,
+      "passed": true
+    },
+    "ETH": {
+      "valid_months": 66,
+      "attempted_months": 66,
+      "passed": true
+    }
+  },
+  "passed": true
+}
