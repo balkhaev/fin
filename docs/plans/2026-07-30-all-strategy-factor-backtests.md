@@ -102,3 +102,31 @@ Input SHA-256:
   ослабляется.
 - Публичные market-data endpoints могут временно быть недоступны; запрос тогда
   завершается ошибкой и не публикует частичный CAGR.
+
+## Production readback
+
+- Release code: `8165fd5baf35030b936f11a4d2e3b85d3667ee44` на `main`.
+- Оба обязательных GitHub Actions workflow для runtime и frontend показывают
+  `passing` на `main`; предшествующие полные release-runs на основном feature
+  commit: `30541977838` и `30541978191`.
+- Coolify rolling deployment: `xk90yhrgkl9vfnykjp9er4ar`; приложение вернулось
+  в `running:healthy`.
+- Atlas production run `780a2a6c-d790-4bad-bc83-42869cad76dd` подтвердил
+  identity separation, `50.547706%` full CAGR, `43.344905%` last-two-year CAGR
+  и pinned SHA `f9d543ba…`.
+- Consensus production run `667c0fa8-c075-4cdc-ba10-6468e1c026fa` совпал с
+  локальным replay: `8.125377%`, 23 сделки, SHA `fa876f99…`.
+- Funding production run `9fb48edb-f43a-4125-863c-11f0270b04ba` совпал с
+  локальным replay: 0 кандидатов, 0 сделок, `0%`, SHA `0d86d7fc…`.
+- DYN production run `480dcbdd-5f76-481a-9782-521cd7e8a2e8`: `142.548766%`,
+  56 эпизодов, final NAV `$58 760.73`.
+- `/api/v1/health`: `healthy`, transport `websocket`, exchange submission
+  `false`; реальный WebSocket handshake вернул `101` и snapshot четырёх стратегий.
+- Все четыре стратегии имеют `mode=paper`, `status=running`,
+  `starting_balance_usdt=10000` и текущий `equity_usdt=10000`.
+- `POST /api/v1/orders` возвращает `405`; legacy Coolify apps `fin2` и `trader`
+  остаются `exited:unhealthy`.
+- Production `live.js` содержит `requested_window_metrics` и
+  `account_leverage_episodes`. Повторная визуальная browser-проверка не состоялась
+  из-за недоступности in-app Browser после потери соединения; UI-контракт покрыт
+  11/11 frontend tests и проверен по отданному production asset.
