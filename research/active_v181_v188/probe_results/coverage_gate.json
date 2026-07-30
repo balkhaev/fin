@@ -1,0 +1,103 @@
+{
+  "candidate": "V181_DATA_SCHEMA_COVERAGE",
+  "sample_date_rule": "15th day of each calendar quarter, 2021 through 2025, plus 2026-01-15 and 2026-04-15",
+  "sample_dates": [
+    "2021-01-15",
+    "2021-04-15",
+    "2021-07-15",
+    "2021-10-15",
+    "2022-01-15",
+    "2022-04-15",
+    "2022-07-15",
+    "2022-10-15",
+    "2023-01-15",
+    "2023-04-15",
+    "2023-07-15",
+    "2023-10-15",
+    "2024-01-15",
+    "2024-04-15",
+    "2024-07-15",
+    "2024-10-15",
+    "2025-01-15",
+    "2025-04-15",
+    "2025-07-15",
+    "2025-10-15",
+    "2026-01-15",
+    "2026-04-15"
+  ],
+  "details": [
+    {
+      "symbol": "BTCUSD_PERP",
+      "dataset": "liquidations",
+      "attempted": 22,
+      "valid": 5,
+      "availability": 0.22727272727272727,
+      "row_count_min": 2,
+      "row_count_median": 206,
+      "row_count_max": 510,
+      "schema_count": 1,
+      "gate_passed": false
+    },
+    {
+      "symbol": "BTCUSD_PERP",
+      "dataset": "metrics",
+      "attempted": 22,
+      "valid": 19,
+      "availability": 0.8636363636363636,
+      "row_count_min": 288,
+      "row_count_median": 288,
+      "row_count_max": 288,
+      "schema_count": 1,
+      "gate_passed": false
+    },
+    {
+      "symbol": "BTCUSD_PERP",
+      "dataset": "mark_price_1m",
+      "attempted": 22,
+      "valid": 22,
+      "availability": 1.0,
+      "row_count_min": 1440,
+      "row_count_median": 1440,
+      "row_count_max": 1440,
+      "schema_count": 2,
+      "gate_passed": false
+    },
+    {
+      "symbol": "ETHUSD_PERP",
+      "dataset": "liquidations",
+      "attempted": 22,
+      "valid": 5,
+      "availability": 0.22727272727272727,
+      "row_count_min": 16,
+      "row_count_median": 82,
+      "row_count_max": 256,
+      "schema_count": 1,
+      "gate_passed": false
+    },
+    {
+      "symbol": "ETHUSD_PERP",
+      "dataset": "metrics",
+      "attempted": 22,
+      "valid": 19,
+      "availability": 0.8636363636363636,
+      "row_count_min": 288,
+      "row_count_median": 288,
+      "row_count_max": 288,
+      "schema_count": 1,
+      "gate_passed": false
+    },
+    {
+      "symbol": "ETHUSD_PERP",
+      "dataset": "mark_price_1m",
+      "attempted": 22,
+      "valid": 22,
+      "availability": 1.0,
+      "row_count_min": 1440,
+      "row_count_median": 1440,
+      "row_count_max": 1440,
+      "schema_count": 2,
+      "gate_passed": false
+    }
+  ],
+  "passed": false
+}

@@ -1,0 +1,73 @@
+{
+  "candidate": "ACTIVE_V181_COINM_LIQUIDATION_FLOW",
+  "files": {
+    "README.md": {
+      "bytes": 4023,
+      "sha256": "284939791be84d867f0f552b68beb3fb479542b1f2b456351ec7f6057759bd9e"
+    },
+    "V181_V188_DESIGN.json": {
+      "bytes": 2536,
+      "sha256": "7682ec186930843cae3111bf16e341d053a2ec2f044de848b594649a1debf2e0"
+    },
+    "boundary_results/FROZEN_DECISION.json": {
+      "bytes": 296,
+      "sha256": "fac09a0c2d64010ab844b1d8a3a70f5704e5f90c25e4f110f4d3fd7b811e4197"
+    },
+    "boundary_results/REPORT_RU.md": {
+      "bytes": 477,
+      "sha256": "726584b33eed88803d522083688600f91ec1c91fb86f82b4c481ce8ad16a032f"
+    },
+    "boundary_results/boundary_scan.json": {
+      "bytes": 665197,
+      "sha256": "d976fe2493047eeccfc1c38ec29dd6319bbd1b28fdb91f614ca51b1b7fdb9de2"
+    },
+    "boundary_results/daily_availability.csv": {
+      "bytes": 230499,
+      "sha256": "a89b170a8cf91245e2720c1d5334c7dfa96fec8cf0858cfd928e2fe0587ba761"
+    },
+    "boundary_results/summary.json": {
+      "bytes": 3186,
+      "sha256": "61a9cfd4e50f29dfd001032d5f7adb9491ec0259503c3fdacb0c521b0c2d5879"
+    },
+    "boundary_scan.log": {
+      "bytes": 339,
+      "sha256": "f49a192483b3a1a6e43a09bae10c017b4bb85afff676c49474b7169cc147d48d"
+    },
+    "boundary_scan.py": {
+      "bytes": 10597,
+      "sha256": "876aaad02b77f205b8129c1518d69298538c426ea168f0f04ab27055439e338e"
+    },
+    "probe.log": {
+      "bytes": 9690,
+      "sha256": "7b6bea5d3d03bc28e57a63d6ba8ebe0564f8a6473c6ab20b2d117fec93d02382"
+    },
+    "probe.py": {
+      "bytes": 12687,
+      "sha256": "3ec1e63b908536e1a06b49aca47a3235907bf5c52805a905dde04460a01737e1"
+    },
+    "probe_results/REPORT_RU.md": {
+      "bytes": 703,
+      "sha256": "ed04cc9f873fdcfeb51fdf72eeeda3bc7ee001f2a3c28313c8ba6cd8a3d9a5cb"
+    },
+    "probe_results/coverage.csv": {
+      "bytes": 15594,
+      "sha256": "7ecf94818d96db03ddd849f1a4f715c7cf0b82f344933f4d3f63cf2aeae96e76"
+    },
+    "probe_results/coverage_gate.json": {
+      "bytes": 2379,
+      "sha256": "63ee5a9342f505ad9c9dc7d6b293b20c939728f8d286ed088efa0ffc90bd1aad"
+    },
+    "probe_results/raw_probe.json": {
+      "bytes": 256872,
+      "sha256": "1769b313dbe96fc9465e48ff2859faedd57b7ae81f4a09f4600c8c95925e014e"
+    },
+    "probe_results/summary.json": {
+      "bytes": 3242,
+      "sha256": "1272c922914e7409549698170c663ff306d81ccbaff6ac0bd60ef9c9cbc5ec7d"
+    },
+    "requirements.txt": {
+      "bytes": 18,
+      "sha256": "a8dc766995bf9cf7992e2132f14c5b2a868a212513a0da7dd2c40458bda55332"
+    }
+  }
+}

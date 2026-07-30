@@ -1,0 +1,250 @@
+probe 1/132: BTCUSD_PERP liquidations 2021-01-15
+probe 2/132: BTCUSD_PERP liquidations 2021-04-15
+probe 3/132: BTCUSD_PERP liquidations 2021-07-15
+probe 4/132: BTCUSD_PERP liquidations 2021-10-15
+probe 5/132: BTCUSD_PERP liquidations 2022-01-15
+probe 6/132: BTCUSD_PERP liquidations 2022-04-15
+probe 7/132: BTCUSD_PERP liquidations 2022-07-15
+probe 8/132: BTCUSD_PERP liquidations 2022-10-15
+probe 9/132: BTCUSD_PERP liquidations 2023-01-15
+probe 10/132: BTCUSD_PERP liquidations 2023-04-15
+probe 11/132: BTCUSD_PERP liquidations 2023-07-15
+probe 12/132: BTCUSD_PERP liquidations 2023-10-15
+probe 13/132: BTCUSD_PERP liquidations 2024-01-15
+probe 14/132: BTCUSD_PERP liquidations 2024-04-15
+probe 15/132: BTCUSD_PERP liquidations 2024-07-15
+probe 16/132: BTCUSD_PERP liquidations 2024-10-15
+probe 17/132: BTCUSD_PERP liquidations 2025-01-15
+probe 18/132: BTCUSD_PERP liquidations 2025-04-15
+probe 19/132: BTCUSD_PERP liquidations 2025-07-15
+probe 20/132: BTCUSD_PERP liquidations 2025-10-15
+probe 21/132: BTCUSD_PERP liquidations 2026-01-15
+probe 22/132: BTCUSD_PERP liquidations 2026-04-15
+probe 23/132: BTCUSD_PERP metrics 2021-01-15
+probe 24/132: BTCUSD_PERP metrics 2021-04-15
+probe 25/132: BTCUSD_PERP metrics 2021-07-15
+probe 26/132: BTCUSD_PERP metrics 2021-10-15
+probe 27/132: BTCUSD_PERP metrics 2022-01-15
+probe 28/132: BTCUSD_PERP metrics 2022-04-15
+probe 29/132: BTCUSD_PERP metrics 2022-07-15
+probe 30/132: BTCUSD_PERP metrics 2022-10-15
+probe 31/132: BTCUSD_PERP metrics 2023-01-15
+probe 32/132: BTCUSD_PERP metrics 2023-04-15
+probe 33/132: BTCUSD_PERP metrics 2023-07-15
+probe 34/132: BTCUSD_PERP metrics 2023-10-15
+probe 35/132: BTCUSD_PERP metrics 2024-01-15
+probe 36/132: BTCUSD_PERP metrics 2024-04-15
+probe 37/132: BTCUSD_PERP metrics 2024-07-15
+probe 38/132: BTCUSD_PERP metrics 2024-10-15
+probe 39/132: BTCUSD_PERP metrics 2025-01-15
+probe 40/132: BTCUSD_PERP metrics 2025-04-15
+probe 41/132: BTCUSD_PERP metrics 2025-07-15
+probe 42/132: BTCUSD_PERP metrics 2025-10-15
+probe 43/132: BTCUSD_PERP metrics 2026-01-15
+probe 44/132: BTCUSD_PERP metrics 2026-04-15
+probe 45/132: BTCUSD_PERP mark_price_1m 2021-01-15
+probe 46/132: BTCUSD_PERP mark_price_1m 2021-04-15
+probe 47/132: BTCUSD_PERP mark_price_1m 2021-07-15
+probe 48/132: BTCUSD_PERP mark_price_1m 2021-10-15
+probe 49/132: BTCUSD_PERP mark_price_1m 2022-01-15
+probe 50/132: BTCUSD_PERP mark_price_1m 2022-04-15
+probe 51/132: BTCUSD_PERP mark_price_1m 2022-07-15
+probe 52/132: BTCUSD_PERP mark_price_1m 2022-10-15
+probe 53/132: BTCUSD_PERP mark_price_1m 2023-01-15
+probe 54/132: BTCUSD_PERP mark_price_1m 2023-04-15
+probe 55/132: BTCUSD_PERP mark_price_1m 2023-07-15
+probe 56/132: BTCUSD_PERP mark_price_1m 2023-10-15
+probe 57/132: BTCUSD_PERP mark_price_1m 2024-01-15
+probe 58/132: BTCUSD_PERP mark_price_1m 2024-04-15
+probe 59/132: BTCUSD_PERP mark_price_1m 2024-07-15
+probe 60/132: BTCUSD_PERP mark_price_1m 2024-10-15
+probe 61/132: BTCUSD_PERP mark_price_1m 2025-01-15
+probe 62/132: BTCUSD_PERP mark_price_1m 2025-04-15
+probe 63/132: BTCUSD_PERP mark_price_1m 2025-07-15
+probe 64/132: BTCUSD_PERP mark_price_1m 2025-10-15
+probe 65/132: BTCUSD_PERP mark_price_1m 2026-01-15
+probe 66/132: BTCUSD_PERP mark_price_1m 2026-04-15
+probe 67/132: ETHUSD_PERP liquidations 2021-01-15
+probe 68/132: ETHUSD_PERP liquidations 2021-04-15
+probe 69/132: ETHUSD_PERP liquidations 2021-07-15
+probe 70/132: ETHUSD_PERP liquidations 2021-10-15
+probe 71/132: ETHUSD_PERP liquidations 2022-01-15
+probe 72/132: ETHUSD_PERP liquidations 2022-04-15
+probe 73/132: ETHUSD_PERP liquidations 2022-07-15
+probe 74/132: ETHUSD_PERP liquidations 2022-10-15
+probe 75/132: ETHUSD_PERP liquidations 2023-01-15
+probe 76/132: ETHUSD_PERP liquidations 2023-04-15
+probe 77/132: ETHUSD_PERP liquidations 2023-07-15
+probe 78/132: ETHUSD_PERP liquidations 2023-10-15
+probe 79/132: ETHUSD_PERP liquidations 2024-01-15
+probe 80/132: ETHUSD_PERP liquidations 2024-04-15
+probe 81/132: ETHUSD_PERP liquidations 2024-07-15
+probe 82/132: ETHUSD_PERP liquidations 2024-10-15
+probe 83/132: ETHUSD_PERP liquidations 2025-01-15
+probe 84/132: ETHUSD_PERP liquidations 2025-04-15
+probe 85/132: ETHUSD_PERP liquidations 2025-07-15
+probe 86/132: ETHUSD_PERP liquidations 2025-10-15
+probe 87/132: ETHUSD_PERP liquidations 2026-01-15
+probe 88/132: ETHUSD_PERP liquidations 2026-04-15
+probe 89/132: ETHUSD_PERP metrics 2021-01-15
+probe 90/132: ETHUSD_PERP metrics 2021-04-15
+probe 91/132: ETHUSD_PERP metrics 2021-07-15
+probe 92/132: ETHUSD_PERP metrics 2021-10-15
+probe 93/132: ETHUSD_PERP metrics 2022-01-15
+probe 94/132: ETHUSD_PERP metrics 2022-04-15
+probe 95/132: ETHUSD_PERP metrics 2022-07-15
+probe 96/132: ETHUSD_PERP metrics 2022-10-15
+probe 97/132: ETHUSD_PERP metrics 2023-01-15
+probe 98/132: ETHUSD_PERP metrics 2023-04-15
+probe 99/132: ETHUSD_PERP metrics 2023-07-15
+probe 100/132: ETHUSD_PERP metrics 2023-10-15
+probe 101/132: ETHUSD_PERP metrics 2024-01-15
+probe 102/132: ETHUSD_PERP metrics 2024-04-15
+probe 103/132: ETHUSD_PERP metrics 2024-07-15
+probe 104/132: ETHUSD_PERP metrics 2024-10-15
+probe 105/132: ETHUSD_PERP metrics 2025-01-15
+probe 106/132: ETHUSD_PERP metrics 2025-04-15
+probe 107/132: ETHUSD_PERP metrics 2025-07-15
+probe 108/132: ETHUSD_PERP metrics 2025-10-15
+probe 109/132: ETHUSD_PERP metrics 2026-01-15
+probe 110/132: ETHUSD_PERP metrics 2026-04-15
+probe 111/132: ETHUSD_PERP mark_price_1m 2021-01-15
+probe 112/132: ETHUSD_PERP mark_price_1m 2021-04-15
+probe 113/132: ETHUSD_PERP mark_price_1m 2021-07-15
+probe 114/132: ETHUSD_PERP mark_price_1m 2021-10-15
+probe 115/132: ETHUSD_PERP mark_price_1m 2022-01-15
+probe 116/132: ETHUSD_PERP mark_price_1m 2022-04-15
+probe 117/132: ETHUSD_PERP mark_price_1m 2022-07-15
+probe 118/132: ETHUSD_PERP mark_price_1m 2022-10-15
+probe 119/132: ETHUSD_PERP mark_price_1m 2023-01-15
+probe 120/132: ETHUSD_PERP mark_price_1m 2023-04-15
+probe 121/132: ETHUSD_PERP mark_price_1m 2023-07-15
+probe 122/132: ETHUSD_PERP mark_price_1m 2023-10-15
+probe 123/132: ETHUSD_PERP mark_price_1m 2024-01-15
+probe 124/132: ETHUSD_PERP mark_price_1m 2024-04-15
+probe 125/132: ETHUSD_PERP mark_price_1m 2024-07-15
+probe 126/132: ETHUSD_PERP mark_price_1m 2024-10-15
+probe 127/132: ETHUSD_PERP mark_price_1m 2025-01-15
+probe 128/132: ETHUSD_PERP mark_price_1m 2025-04-15
+probe 129/132: ETHUSD_PERP mark_price_1m 2025-07-15
+probe 130/132: ETHUSD_PERP mark_price_1m 2025-10-15
+probe 131/132: ETHUSD_PERP mark_price_1m 2026-01-15
+probe 132/132: ETHUSD_PERP mark_price_1m 2026-04-15
+{
+  "candidate": "ACTIVE_V181_COINM_LIQUIDATION_FLOW",
+  "status": "data_access_insufficient",
+  "coverage_gate": {
+    "candidate": "V181_DATA_SCHEMA_COVERAGE",
+    "sample_date_rule": "15th day of each calendar quarter, 2021 through 2025, plus 2026-01-15 and 2026-04-15",
+    "sample_dates": [
+      "2021-01-15",
+      "2021-04-15",
+      "2021-07-15",
+      "2021-10-15",
+      "2022-01-15",
+      "2022-04-15",
+      "2022-07-15",
+      "2022-10-15",
+      "2023-01-15",
+      "2023-04-15",
+      "2023-07-15",
+      "2023-10-15",
+      "2024-01-15",
+      "2024-04-15",
+      "2024-07-15",
+      "2024-10-15",
+      "2025-01-15",
+      "2025-04-15",
+      "2025-07-15",
+      "2025-10-15",
+      "2026-01-15",
+      "2026-04-15"
+    ],
+    "details": [
+      {
+        "symbol": "BTCUSD_PERP",
+        "dataset": "liquidations",
+        "attempted": 22,
+        "valid": 5,
+        "availability": 0.22727272727272727,
+        "row_count_min": 2,
+        "row_count_median": 206,
+        "row_count_max": 510,
+        "schema_count": 1,
+        "gate_passed": false
+      },
+      {
+        "symbol": "BTCUSD_PERP",
+        "dataset": "metrics",
+        "attempted": 22,
+        "valid": 19,
+        "availability": 0.8636363636363636,
+        "row_count_min": 288,
+        "row_count_median": 288,
+        "row_count_max": 288,
+        "schema_count": 1,
+        "gate_passed": false
+      },
+      {
+        "symbol": "BTCUSD_PERP",
+        "dataset": "mark_price_1m",
+        "attempted": 22,
+        "valid": 22,
+        "availability": 1.0,
+        "row_count_min": 1440,
+        "row_count_median": 1440,
+        "row_count_max": 1440,
+        "schema_count": 2,
+        "gate_passed": false
+      },
+      {
+        "symbol": "ETHUSD_PERP",
+        "dataset": "liquidations",
+        "attempted": 22,
+        "valid": 5,
+        "availability": 0.22727272727272727,
+        "row_count_min": 16,
+        "row_count_median": 82,
+        "row_count_max": 256,
+        "schema_count": 1,
+        "gate_passed": false
+      },
+      {
+        "symbol": "ETHUSD_PERP",
+        "dataset": "metrics",
+        "attempted": 22,
+        "valid": 19,
+        "availability": 0.8636363636363636,
+        "row_count_min": 288,
+        "row_count_median": 288,
+        "row_count_max": 288,
+        "schema_count": 1,
+        "gate_passed": false
+      },
+      {
+        "symbol": "ETHUSD_PERP",
+        "dataset": "mark_price_1m",
+        "attempted": 22,
+        "valid": 22,
+        "availability": 1.0,
+        "row_count_min": 1440,
+        "row_count_median": 1440,
+        "row_count_max": 1440,
+        "schema_count": 2,
+        "gate_passed": false
+      }
+    ],
+    "passed": false
+  },
+  "full_backtest_run": false,
+  "selection_run": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "design_sha256": "7682ec186930843cae3111bf16e341d053a2ec2f044de848b594649a1debf2e0",
+  "limitations": [
+    "The probe samples deterministic calendar dates; it does not establish continuous daily coverage.",
+    "Liquidation snapshots are exchange observations, not guaranteed complete liquidation-engine internals.",
+    "No strategy return or threshold selection is computed in V181."
+  ]
+}

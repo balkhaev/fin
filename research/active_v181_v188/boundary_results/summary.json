@@ -1,0 +1,119 @@
+{
+  "candidate": "V182_LIQUIDATION_ARCHIVE_BOUNDARY",
+  "scan_start": "2020-01-01",
+  "scan_end": "2026-06-30",
+  "symbols": {
+    "BTCUSD_PERP": {
+      "attempted_days": 2373,
+      "archive_days": 472,
+      "first_archive_date": "2023-06-25",
+      "last_archive_date": "2024-10-14",
+      "monthly_counts": {
+        "2023-06": 6,
+        "2023-07": 31,
+        "2023-08": 31,
+        "2023-09": 27,
+        "2023-10": 31,
+        "2023-11": 30,
+        "2023-12": 31,
+        "2024-01": 31,
+        "2024-02": 29,
+        "2024-03": 31,
+        "2024-04": 30,
+        "2024-05": 31,
+        "2024-06": 27,
+        "2024-07": 31,
+        "2024-08": 31,
+        "2024-09": 30,
+        "2024-10": 14
+      },
+      "periods": {
+        "development": {
+          "months": 36,
+          "months_with_archive": 7,
+          "month_coverage": 0.19444444444444445,
+          "archive_days": 187
+        },
+        "validation": {
+          "months": 12,
+          "months_with_archive": 10,
+          "month_coverage": 0.8333333333333334,
+          "archive_days": 285
+        },
+        "holdout": {
+          "months": 12,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        },
+        "final": {
+          "months": 6,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        }
+      },
+      "live_through_final": false,
+      "gate_passed": false,
+      "request_errors": 0
+    },
+    "ETHUSD_PERP": {
+      "attempted_days": 2373,
+      "archive_days": 474,
+      "first_archive_date": "2023-06-25",
+      "last_archive_date": "2024-10-14",
+      "monthly_counts": {
+        "2023-06": 6,
+        "2023-07": 31,
+        "2023-08": 30,
+        "2023-09": 27,
+        "2023-10": 31,
+        "2023-11": 30,
+        "2023-12": 31,
+        "2024-01": 31,
+        "2024-02": 29,
+        "2024-03": 31,
+        "2024-04": 30,
+        "2024-05": 31,
+        "2024-06": 30,
+        "2024-07": 31,
+        "2024-08": 31,
+        "2024-09": 30,
+        "2024-10": 14
+      },
+      "periods": {
+        "development": {
+          "months": 36,
+          "months_with_archive": 7,
+          "month_coverage": 0.19444444444444445,
+          "archive_days": 186
+        },
+        "validation": {
+          "months": 12,
+          "months_with_archive": 10,
+          "month_coverage": 0.8333333333333334,
+          "archive_days": 288
+        },
+        "holdout": {
+          "months": 12,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        },
+        "final": {
+          "months": 6,
+          "months_with_archive": 0,
+          "month_coverage": 0.0,
+          "archive_days": 0
+        }
+      },
+      "live_through_final": false,
+      "gate_passed": false,
+      "request_errors": 0
+    }
+  },
+  "cross_symbol_last_date_gap_days": 0,
+  "aligned_last_boundary": true,
+  "continuous_research_permitted": false,
+  "interpretation_rule": "Missing daily archives may be treated as zero-event days only if both symbols remain published through the final window and at least 80% of holdout/final months contain one or more archives."
+}
