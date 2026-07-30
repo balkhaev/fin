@@ -102,8 +102,22 @@ Execution lane: repository engineering. Изменение локально дл
     single-flight действует на один процесс; factor-стратегии намеренно
     fail-closed до появления полного исторического архива.
   - Required fixes: none.
-  - Verification gaps: Linux CI, Coolify build и production browser/API smoke
-    ещё не выполнены.
-- Release/readback: pending.
+  - Verification gaps: none for the released scope.
+- Release/readback:
+  - commit `d1c74b47c66a84c9cec16b6f2226ff56c6564bf6` pushed to `main`;
+  - GitHub Actions runs `30538810276` (frontend/control-plane) and `30538810317`
+    (runtime contracts) completed successfully;
+  - Coolify deployment `c1481xbb83z9rg4uxd6xu9hh` finished with rolling update
+    and container healthcheck on the exact commit;
+  - production `/api/v1/health`: `healthy`, transport `websocket`,
+    `exchange_submission_available=false`, `live_ready=false`;
+  - browser click produced DYN run `61240dee…`; a second click produced the new
+    run `574dfc0b…`, both with 56 episodes and the same reproducible input/result;
+  - production Atlas POST produced run `cfa99fe9…`, 52 episodes, CAGR `-13.604%`;
+    Funding POST returned `blocked_missing_inputs`; settings body returned 400;
+    order POST remained 405;
+  - UI modal visually checked: loading state, metrics, NAV, scrollable trades and
+    provenance render correctly; WebSocket populated four `$10,000` paper cards;
+  - legacy Coolify apps `fin2` and `trader` remain `exited:unhealthy` (stopped).
 - Memory: этот план является durable handoff; отдельный Hub changelog не нужен,
   потому что Hub runtime/authority не меняются.
