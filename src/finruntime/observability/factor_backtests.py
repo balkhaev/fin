@@ -661,7 +661,7 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
     ]
     metric_rows, metric_audit = _download_archives(metric_specs, allow_missing=True)
     archived_oi_points = _metrics_points(metric_rows.get("wif_metrics", []))
-    recent_oi_points, recent_oi_audit = _recent_open_interest_points()
+    recent_oi_points, recent_oi_audit = _recent_open_interest_points(end)
     oi_by_timestamp = {timestamp: value for timestamp, value in archived_oi_points}
     oi_by_timestamp.update(dict(recent_oi_points))
     oi_points = [(key, oi_by_timestamp[key]) for key in sorted(oi_by_timestamp)]
@@ -854,7 +854,9 @@ def _binance_api_funding(
     )
 
 
-def _recent_open_interest_points() -> tuple[list[tuple[int, float]], DownloadAudit]:
+def _recent_open_interest_points(
+    end: date,
+) -> tuple[list[tuple[int, float]], DownloadAudit]:
     rows: list[dict[str, Any]] = []
     payloads: list[Any] = []
     end_time = int(datetime.now(UTC).timestamp() * 1000)
@@ -873,19 +875,32 @@ def _recent_open_interest_points() -> tuple[list[tuple[int, float]], DownloadAud
         payloads.append(payload)
         rows.extend(payload)
         end_time = min(int(item["timestamp"]) for item in payload) - 1
+    window_end_ms = (
+        int(
+            datetime.combine(
+                end + timedelta(days=1), datetime.min.time(), UTC
+            ).timestamp()
+            * 1000
+        )
+        - 1
+    )
     points = {
         int(row["timestamp"]): float(row["sumOpenInterest"])
         for row in rows
-        if float(row["sumOpenInterest"]) > 0
+        if int(row["timestamp"]) <= window_end_ms and float(row["sumOpenInterest"]) > 0
     }
-    canonical = json.dumps(payloads, separators=(",", ":"), allow_nan=False).encode(
+    downloaded = json.dumps(payloads, separators=(",", ":"), allow_nan=False).encode(
         "utf-8"
     )
+    ordered_points = [(key, points[key]) for key in sorted(points)]
+    canonical = json.dumps(
+        ordered_points, separators=(",", ":"), allow_nan=False
+    ).encode("utf-8")
     return (
-        [(key, points[key]) for key in sorted(points)],
+        ordered_points,
         DownloadAudit(
             request_count=len(payloads),
-            byte_count=len(canonical),
+            byte_count=len(downloaded),
             payload_sha256=hashlib.sha256(canonical).hexdigest(),
         ),
     )

@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import unittest
 from datetime import UTC, date, datetime, timedelta
+from unittest.mock import patch
 
 from finruntime.observability.factor_backtests import (
     ONE_HOUR_MS,
     _funding_candidates,
     _funding_exit_reason,
+    _recent_open_interest_points,
     _simulate_consensus,
 )
 
@@ -66,6 +68,23 @@ class FactorBacktestTests(unittest.TestCase):
             _funding_exit_reason(position, origin + 72 * ONE_HOUR_MS, data),
             "max_hold_hours",
         )
+
+    def test_recent_open_interest_provenance_excludes_future_tail(self) -> None:
+        inside = int(datetime(2026, 7, 29, 23, 55, tzinfo=UTC).timestamp() * 1000)
+        future = int(datetime(2026, 7, 30, 0, 0, tzinfo=UTC).timestamp() * 1000)
+        payload = [
+            {"timestamp": inside, "sumOpenInterest": "100"},
+            {"timestamp": future, "sumOpenInterest": "999"},
+        ]
+        with patch(
+            "finruntime.observability.factor_backtests._fetch_json",
+            side_effect=[payload, []],
+        ):
+            points, audit = _recent_open_interest_points(date(2026, 7, 29))
+
+        self.assertEqual(points, [(inside, 100.0)])
+        self.assertEqual(audit.request_count, 1)
+        self.assertEqual(len(audit.payload_sha256), 64)
 
     def test_consensus_intrabar_collision_is_stop_first(self) -> None:
         observed = datetime(2026, 1, 1, tzinfo=UTC)
