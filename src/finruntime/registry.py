@@ -13,7 +13,16 @@ class FrozenStrategy:
     allowed_modes: tuple[str, ...]
     live_ready: bool
     real_leverage_authorized: bool
+    identity_origin: str
     parameters: Mapping[str, object]
+    exchange_submission_available: bool = False
+    migration_record_path: str | None = None
+    forward_clock_reset_record_path: str | None = None
+    predecessor_strategy_id: str | None = None
+    provenance_profile: str | None = None
+    forward_clock_reset: bool = False
+    forward_state_reuse_permitted: bool = False
+    historical_evidence_carried_forward: bool = False
 
 
 STRATEGIES: dict[str, FrozenStrategy] = {
@@ -23,6 +32,7 @@ STRATEGIES: dict[str, FrozenStrategy] = {
         allowed_modes=("paper", "shadow"),
         live_ready=False,
         real_leverage_authorized=False,
+        identity_origin="legacy_frozen",
         parameters={
             "profile": "frozen V75 ATLAS-NX",
             "source_checkpoint": "V138",
@@ -34,6 +44,7 @@ STRATEGIES: dict[str, FrozenStrategy] = {
         allowed_modes=("paper", "shadow"),
         live_ready=False,
         real_leverage_authorized=False,
+        identity_origin="legacy_frozen",
         parameters={
             "profile": "ACTIVE_V28_EXACT8H_BREAKOUT_CARRY_CASH",
             "target_gross_cap": 0.85,
@@ -45,6 +56,7 @@ STRATEGIES: dict[str, FrozenStrategy] = {
         allowed_modes=("shadow",),
         live_ready=False,
         real_leverage_authorized=False,
+        identity_origin="legacy_frozen",
         parameters={
             "l1_no_trade_band": 0.08,
             "maximum_target_age_days": 28,
@@ -58,6 +70,7 @@ STRATEGIES: dict[str, FrozenStrategy] = {
         allowed_modes=("shadow",),
         live_ready=False,
         real_leverage_authorized=False,
+        identity_origin="legacy_frozen",
         parameters={
             "high_leverage": 2.075,
             "base_leverage": 0.97,
