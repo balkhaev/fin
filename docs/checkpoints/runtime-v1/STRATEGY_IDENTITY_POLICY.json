@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "allowed_identity_origins": [
+    "legacy_frozen",
+    "migration"
+  ],
+  "grandfathered_legacy_strategy_ids": [
+    "v136_execution_shadow",
+    "v28_growth_control",
+    "v517_tristate_guard_shadow",
+    "v75_atlas_nx"
+  ],
+  "requirements": {
+    "validated_migration_record": true,
+    "complete_successor_provenance": true,
+    "separate_forward_clock_reset_record": true,
+    "new_strategy_id_for_reconstruction": true,
+    "native_registration_available": false,
+    "forward_state_reuse_permitted": false,
+    "historical_evidence_carried_forward": false,
+    "capital_authorization_carried_forward": false,
+    "live_ready": false,
+    "real_leverage_authorized": false,
+    "exchange_submission_available": false
+  }
+}
