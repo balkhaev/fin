@@ -5,26 +5,62 @@
     "v75_atlas_nx": {
       "role": "primary",
       "allowed_modes": ["paper", "shadow"],
+      "identity_origin": "legacy_frozen",
+      "migration_record_path": null,
+      "forward_clock_reset_record_path": null,
+      "predecessor_strategy_id": null,
+      "provenance_profile": null,
+      "forward_clock_reset": false,
+      "forward_state_reuse_permitted": false,
+      "historical_evidence_carried_forward": false,
       "live_ready": false,
-      "real_leverage_authorized": false
+      "real_leverage_authorized": false,
+      "exchange_submission_available": false
     },
     "v28_growth_control": {
       "role": "control",
       "allowed_modes": ["paper", "shadow"],
+      "identity_origin": "legacy_frozen",
+      "migration_record_path": null,
+      "forward_clock_reset_record_path": null,
+      "predecessor_strategy_id": null,
+      "provenance_profile": null,
+      "forward_clock_reset": false,
+      "forward_state_reuse_permitted": false,
+      "historical_evidence_carried_forward": false,
       "live_ready": false,
-      "real_leverage_authorized": false
+      "real_leverage_authorized": false,
+      "exchange_submission_available": false
     },
     "v136_execution_shadow": {
       "role": "shadow",
       "allowed_modes": ["shadow"],
+      "identity_origin": "legacy_frozen",
+      "migration_record_path": null,
+      "forward_clock_reset_record_path": null,
+      "predecessor_strategy_id": null,
+      "provenance_profile": null,
+      "forward_clock_reset": false,
+      "forward_state_reuse_permitted": false,
+      "historical_evidence_carried_forward": false,
       "live_ready": false,
-      "real_leverage_authorized": false
+      "real_leverage_authorized": false,
+      "exchange_submission_available": false
     },
     "v517_tristate_guard_shadow": {
       "role": "shadow",
       "allowed_modes": ["shadow"],
+      "identity_origin": "legacy_frozen",
+      "migration_record_path": null,
+      "forward_clock_reset_record_path": null,
+      "predecessor_strategy_id": null,
+      "provenance_profile": null,
+      "forward_clock_reset": false,
+      "forward_state_reuse_permitted": false,
+      "historical_evidence_carried_forward": false,
       "live_ready": false,
-      "real_leverage_authorized": false
+      "real_leverage_authorized": false,
+      "exchange_submission_available": false
     }
   }
 }
