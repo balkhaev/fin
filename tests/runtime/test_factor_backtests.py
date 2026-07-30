@@ -79,10 +79,11 @@ class FactorBacktestTests(unittest.TestCase):
         with patch(
             "finruntime.observability.factor_backtests._fetch_json",
             side_effect=[payload, []],
-        ):
+        ) as fetch:
             points, audit = _recent_open_interest_points(date(2026, 7, 29))
 
         self.assertEqual(points, [(inside, 100.0)])
+        self.assertEqual(fetch.call_args_list[0].args[1]["endTime"], str(future - 1))
         self.assertEqual(audit.request_count, 1)
         self.assertEqual(len(audit.payload_sha256), 64)
 

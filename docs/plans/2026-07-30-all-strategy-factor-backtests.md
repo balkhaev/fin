@@ -73,7 +73,7 @@ buffers, одна позиция по `$1 000`, выход при collapse/rever
 Результат Consensus получен из 72 864 WIF и 72 864 DOT свечей, 72 768 premium
 свечей и 58 143 OI observations. Из 39 предварительных WIF событий прошли 9;
 DOT дал 49 сигналов; risk state допустил 23 сделки. Input SHA-256:
-`d54f2465308e91505771cd1044cc28693788fe52bf16ed0a826b73fb987bb475`.
+`fa876f99b47aedd8b942bf81bff15907082172439bb436380531dbb898a7af9d`.
 
 Funding проверил 231 market-data response (`17 667 771` bytes), но ни один
 момент не прошёл строгий expected-net порог после всех доступных costs/buffers.

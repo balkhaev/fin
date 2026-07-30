@@ -859,7 +859,16 @@ def _recent_open_interest_points(
 ) -> tuple[list[tuple[int, float]], DownloadAudit]:
     rows: list[dict[str, Any]] = []
     payloads: list[Any] = []
-    end_time = int(datetime.now(UTC).timestamp() * 1000)
+    window_end_ms = (
+        int(
+            datetime.combine(
+                end + timedelta(days=1), datetime.min.time(), UTC
+            ).timestamp()
+            * 1000
+        )
+        - 1
+    )
+    end_time = window_end_ms
     for _batch in range(8):
         payload = _fetch_json(
             f"{BINANCE_FUTURES_API}/futures/data/openInterestHist",
@@ -875,15 +884,6 @@ def _recent_open_interest_points(
         payloads.append(payload)
         rows.extend(payload)
         end_time = min(int(item["timestamp"]) for item in payload) - 1
-    window_end_ms = (
-        int(
-            datetime.combine(
-                end + timedelta(days=1), datetime.min.time(), UTC
-            ).timestamp()
-            * 1000
-        )
-        - 1
-    )
     points = {
         int(row["timestamp"]): float(row["sumOpenInterest"])
         for row in rows
