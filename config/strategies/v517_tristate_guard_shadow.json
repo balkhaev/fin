@@ -3,6 +3,14 @@
   "strategy_version": "runtime-v1",
   "role": "shadow",
   "allowed_modes": ["shadow"],
+  "identity_origin": "legacy_frozen",
+  "migration_record_path": null,
+  "forward_clock_reset_record_path": null,
+  "predecessor_strategy_id": null,
+  "provenance_profile": null,
+  "forward_clock_reset": false,
+  "forward_state_reuse_permitted": false,
+  "historical_evidence_carried_forward": false,
   "source_checkpoint": "V524",
   "high_leverage": 2.075,
   "base_leverage": 0.97,
@@ -17,5 +25,6 @@
   "position_level_margin_replay_complete": false,
   "forward_validation_complete": false,
   "live_ready": false,
-  "real_leverage_authorized": false
+  "real_leverage_authorized": false,
+  "exchange_submission_available": false
 }
