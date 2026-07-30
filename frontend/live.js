@@ -659,8 +659,10 @@
       evidence.cagr_threshold_passed,
     );
     const metrics = report.metrics;
+    const requestedMetrics = report.requested_window_metrics;
+    const leverageEpisodes = report.trade_table_kind === "account_leverage_episodes";
     $("#backtest-repo").textContent = `${report.provenance?.source_repository || strategy.repository} · paper replay`;
-    $("#backtest-dialog-title").textContent = `${strategy.name} · 2 года`;
+    $("#backtest-dialog-title").textContent = report.strategy_name || strategy.name;
     const status = $("#backtest-status");
     status.textContent = evidence.status_label || (completed ? "Рассчитано" : "Недостаточно данных");
     status.className = `backtest-status ${resultClass}`;
@@ -673,7 +675,9 @@
     evidenceCard.className = `backtest-evidence ${resultClass}`;
     $("#backtest-evidence-title").textContent = evidence.headline || "Проверка завершена";
     $("#backtest-evidence-copy").textContent = completed
-      ? `CAGR ${formatNumber(metrics?.cagr_percent, 3)}% · порог ${formatNumber(evidence.cagr_threshold_percent, 0)}% ${evidence.cagr_threshold_passed ? "пройден" : "не пройден"}. Метрики относятся к: ${metrics?.scope_label || "исторический replay"}.`
+      ? requestedMetrics
+        ? `Полный период: CAGR ${formatNumber(metrics?.cagr_percent, 3)}% · порог ${formatNumber(evidence.cagr_threshold_percent, 0)}% ${evidence.cagr_threshold_passed ? "пройден" : "не пройден"}. Последние 2 года потока: ${formatNumber(requestedMetrics.cagr_percent, 3)}%. ${metrics?.scope_label || "Исторический replay"}.`
+        : `CAGR ${formatNumber(metrics?.cagr_percent, 3)}% · порог ${formatNumber(evidence.cagr_threshold_percent, 0)}% ${evidence.cagr_threshold_passed ? "пройден" : "не пройден"}. Метрики относятся к: ${metrics?.scope_label || "исторический replay"}.`
       : "Результат не подменяется приближением: без обязательных исторических сигналов CAGR и сделки неизвестны.";
 
     const metricList = $("#backtest-metrics");
@@ -682,8 +686,8 @@
     if (metrics) {
       const cagr = asNumber(metrics.cagr_percent);
       const totalReturn = asNumber(metrics.total_return_percent);
-      for (const [label, value, className] of [
-        ["CAGR · текущий replay", `${cagr > 0 ? "+" : ""}${formatNumber(cagr, 3)}%`, tone(cagr)],
+      const metricRows = [
+        [requestedMetrics ? "CAGR · полный V517" : "CAGR · текущий replay", `${cagr > 0 ? "+" : ""}${formatNumber(cagr, 3)}%`, tone(cagr)],
         ["Total return", `${totalReturn > 0 ? "+" : ""}${formatNumber(totalReturn, 2)}%`, tone(totalReturn)],
         [
           "Sharpe",
@@ -696,8 +700,17 @@
           `${formatUsd(metrics.starting_nav_usd)} → ${formatUsd(metrics.ending_nav_usd)}`,
           tone(metrics.ending_nav_usd - metrics.starting_nav_usd),
         ],
-        ["Сделки · 2 года", String(asNumber(report.trade_count)), ""],
-      ]) {
+        [leverageEpisodes ? "Плечо · 2 года" : "Сделки · 2 года", String(asNumber(report.trade_count)), ""],
+      ];
+      if (requestedMetrics) {
+        const requestedCagr = asNumber(requestedMetrics.cagr_percent);
+        metricRows.splice(1, 0, [
+          "CAGR · последние 2 года",
+          `${requestedCagr > 0 ? "+" : ""}${formatNumber(requestedCagr, 3)}%`,
+          tone(requestedCagr),
+        ]);
+      }
+      for (const [label, value, className] of metricRows) {
         const item = create("div");
         item.append(create("dt", "", label), create("dd", className, value));
         metricList.append(item);
@@ -709,7 +722,11 @@
     renderBacktestList("#backtest-blockers", report.blockers);
 
     const trades = Array.isArray(report.trades) ? report.trades : [];
-    $("#backtest-trade-count").textContent = `${trades.length} эпизодов`;
+    $("#backtest-trade-eyebrow").textContent = leverageEpisodes ? "Действия по риску" : "Сделки";
+    $("#backtest-trade-title").textContent = leverageEpisodes
+      ? "Плечо Atlas · последние 2 года потока"
+      : "Последние 2 года";
+    $("#backtest-trade-count").textContent = `${trades.length} ${leverageEpisodes ? "эпизодов плеча" : "эпизодов"}`;
     const tradeBody = $("#backtest-trades");
     tradeBody.replaceChildren();
     for (const trade of trades) {

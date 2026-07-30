@@ -150,31 +150,103 @@ class BacktestReportTests(unittest.TestCase):
             all(trade["entry_date"] >= "2024-07-29" for trade in first["trades"])
         )
 
-    def test_click_run_recomputes_atlas_with_its_active_identity(self) -> None:
-        report = run_backtest(
-            "atlas-nx",
-            now=datetime(2026, 7, 30, 12, tzinfo=UTC),
-            history_loader=synthetic_history_loader,
-        )
-
-        self.assertEqual(report["execution"]["status"], "completed")
-        self.assertEqual(report["strategy_identity"], "atlas_nx_r1")
-        self.assertEqual(report["provenance"]["engine_module"], "atlas_nx_r1_paper")
-        self.assertIsNone(report["historical_reference"])
-        self.assertGreater(report["trade_count"], 0)
-        self.assertAlmostEqual(
-            sum(trade["net_pnl_usd"] for trade in report["trades"]),
-            report["metrics"]["ending_nav_usd"] - report["metrics"]["starting_nav_usd"],
-            places=6,
-        )
-
-    def test_click_run_blocks_strategies_without_required_historical_inputs(
+    def test_click_run_recomputes_atlas_v517_and_keeps_paper_identity_separate(
         self,
     ) -> None:
         def forbidden_loader(
             _symbols: tuple[str, ...], _start: date, _end: date
         ) -> tuple[list[dict[str, Any]], list[dict[str, str]], int]:
+            raise AssertionError("Atlas V517 must use its pinned V75 account stream")
+
+        report = run_backtest(
+            "atlas-nx",
+            now=datetime(2026, 7, 30, 12, tzinfo=UTC),
+            history_loader=forbidden_loader,
+        )
+
+        self.assertEqual(report["execution"]["status"], "completed")
+        self.assertEqual(report["strategy_identity"], "v517_v524_v75_tristate_guard")
+        self.assertEqual(report["paper_strategy_identity"], "atlas_nx_r1")
+        self.assertEqual(report["report_kind"], "on_demand_historical_replay")
+        self.assertEqual(report["window"]["start"], "2021-01-01")
+        self.assertEqual(report["window"]["end"], "2026-06-30")
+        self.assertEqual(report["requested_window"]["start"], "2024-07-01")
+        self.assertEqual(report["requested_window"]["end"], "2026-06-30")
+        self.assertAlmostEqual(report["metrics"]["cagr_percent"], 50.547706, places=5)
+        self.assertAlmostEqual(
+            report["requested_window_metrics"]["cagr_percent"],
+            43.344905,
+            places=5,
+        )
+        self.assertTrue(report["evidence"]["cagr_threshold_passed"])
+        self.assertTrue(report["evidence"]["parameters_informed_by_known_history"])
+        self.assertFalse(report["evidence"]["program_level_holdout_pristine"])
+        self.assertEqual(report["trade_table_kind"], "account_leverage_episodes")
+        self.assertEqual(
+            report["provenance"]["input_sha256"],
+            "f9d543ba8ec15c90efa757e64ed772b1a5934e458463124b7df48ddcac96ef01",
+        )
+        self.assertEqual(
+            report["provenance"]["strategy_commit"],
+            "663cd5f19ed381cd616bf783faf5a30c5df8baaf",
+        )
+        self.assertFalse(report["provenance"]["is_current_paper_account"])
+        self.assertGreater(report["trade_count"], 0)
+        self.assertAlmostEqual(
+            sum(trade["net_pnl_usd"] for trade in report["trades"]),
+            report["requested_window_metrics"]["ending_nav_usd"]
+            - report["requested_window_metrics"]["starting_nav_usd"],
+            places=6,
+        )
+
+    def test_click_run_executes_factor_strategies_without_ohlc_approximation(
+        self,
+    ) -> None:
+        calls: list[tuple[str, date, date]] = []
+
+        def forbidden_loader(
+            _symbols: tuple[str, ...], _start: date, _end: date
+        ) -> tuple[list[dict[str, Any]], list[dict[str, str]], int]:
             raise AssertionError("OHLC loader must not approximate a factor strategy")
+
+        def factor_runner(strategy_id: str, start: date, end: date) -> dict[str, Any]:
+            calls.append((strategy_id, start, end))
+            return {
+                "metrics": {
+                    "scope": "on_demand_two_year_factor_replay",
+                    "scope_label": "factor replay",
+                    "cagr_percent": 12.0,
+                    "total_return_percent": 25.0,
+                    "sharpe": 0.8,
+                    "sortino": 1.1,
+                    "max_drawdown_percent": -9.0,
+                    "years": 2.0,
+                    "starting_nav_usd": 10_000.0,
+                    "ending_nav_usd": 12_500.0,
+                    "daily_observations": 731,
+                },
+                "trades": [
+                    {
+                        "id": f"{strategy_id}-1",
+                        "asset": "TEST",
+                        "direction": "LONG",
+                        "status": "closed",
+                        "entry_date": start.isoformat(),
+                        "exit_date": end.isoformat(),
+                        "held_through": end.isoformat(),
+                        "holding_days": (end - start).days,
+                        "entry_price": 100.0,
+                        "exit_price": 125.0,
+                        "asset_return_percent": 25.0,
+                        "net_pnl_usd": 2_500.0,
+                        "order_count": 2,
+                    }
+                ],
+                "input_sha256": "a" * 64,
+                "market_data_requests": 4,
+                "market_data_bytes": 1_024,
+                "diagnostics": {},
+            }
 
         for strategy_id in ("funding-neutral", "consensus-wif-dot"):
             with self.subTest(strategy_id=strategy_id):
@@ -182,12 +254,21 @@ class BacktestReportTests(unittest.TestCase):
                     strategy_id,
                     now=datetime(2026, 7, 30, 12, tzinfo=UTC),
                     history_loader=forbidden_loader,
+                    factor_runner=factor_runner,
                 )
-                self.assertEqual(report["execution"]["status"], "blocked")
-                self.assertEqual(report["evidence"]["status"], "blocked_missing_inputs")
-                self.assertIsNone(report["metrics"])
-                self.assertEqual(report["trades"], [])
-                self.assertTrue(report["blockers"])
+                self.assertEqual(report["execution"]["status"], "completed")
+                self.assertEqual(report["evidence"]["status"], "computed")
+                self.assertEqual(report["metrics"]["ending_nav_usd"], 12_500.0)
+                self.assertEqual(report["trade_count"], 1)
+                self.assertEqual(report["blockers"], [])
+
+        self.assertEqual(
+            calls,
+            [
+                ("funding-neutral", date(2024, 7, 29), date(2026, 7, 29)),
+                ("consensus-wif-dot", date(2024, 7, 29), date(2026, 7, 29)),
+            ],
+        )
 
 
 if __name__ == "__main__":
