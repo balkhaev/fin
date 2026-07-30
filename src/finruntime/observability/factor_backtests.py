@@ -949,14 +949,18 @@ def _bybit_funding(
         cursor = next_cursor
         if min(timestamps) < start_ms:
             break
-    canonical = json.dumps(payloads, separators=(",", ":"), allow_nan=False).encode(
+    downloaded = json.dumps(payloads, separators=(",", ":"), allow_nan=False).encode(
         "utf-8"
     )
+    ordered_rates = [(key, unique[key]) for key in sorted(unique)]
+    canonical = json.dumps(
+        ordered_rates, separators=(",", ":"), allow_nan=False
+    ).encode("utf-8")
     return (
-        [(key, unique[key]) for key in sorted(unique)],
+        ordered_rates,
         DownloadAudit(
             request_count=len(payloads),
-            byte_count=len(canonical),
+            byte_count=len(downloaded),
             payload_sha256=hashlib.sha256(canonical).hexdigest(),
         ),
     )
@@ -1006,14 +1010,18 @@ def _bybit_mark_klines(
         cursor = next_cursor
         if min(timestamps) < start_ms:
             break
-    canonical = json.dumps(payloads, separators=(",", ":"), allow_nan=False).encode(
+    downloaded = json.dumps(payloads, separators=(",", ":"), allow_nan=False).encode(
         "utf-8"
     )
+    ordered_prices = [(key, unique[key]) for key in sorted(unique)]
+    canonical = json.dumps(
+        ordered_prices, separators=(",", ":"), allow_nan=False
+    ).encode("utf-8")
     return (
-        [(key, unique[key]) for key in sorted(unique)],
+        ordered_prices,
         DownloadAudit(
             request_count=len(payloads),
-            byte_count=len(canonical),
+            byte_count=len(downloaded),
             payload_sha256=hashlib.sha256(canonical).hexdigest(),
         ),
     )

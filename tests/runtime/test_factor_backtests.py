@@ -6,6 +6,8 @@ from unittest.mock import patch
 
 from finruntime.observability.factor_backtests import (
     ONE_HOUR_MS,
+    _bybit_funding,
+    _bybit_mark_klines,
     _funding_candidates,
     _funding_exit_reason,
     _recent_open_interest_points,
@@ -86,6 +88,72 @@ class FactorBacktestTests(unittest.TestCase):
         self.assertEqual(fetch.call_args_list[0].args[1]["endTime"], str(future - 1))
         self.assertEqual(audit.request_count, 1)
         self.assertEqual(len(audit.payload_sha256), 64)
+
+    def test_bybit_provenance_ignores_transport_server_time(self) -> None:
+        observed = int(datetime(2026, 1, 1, 8, tzinfo=UTC).timestamp() * 1000)
+        before = int(datetime(2025, 12, 31, 16, tzinfo=UTC).timestamp() * 1000)
+
+        def funding_payload(server_time: int) -> dict[str, object]:
+            return {
+                "retCode": 0,
+                "time": server_time,
+                "result": {
+                    "list": [
+                        {
+                            "fundingRateTimestamp": str(observed),
+                            "fundingRate": "0.001",
+                        },
+                        {
+                            "fundingRateTimestamp": str(before),
+                            "fundingRate": "0.0",
+                        },
+                    ]
+                },
+            }
+
+        def mark_payload(server_time: int) -> dict[str, object]:
+            return {
+                "retCode": 0,
+                "time": server_time,
+                "result": {
+                    "list": [
+                        [str(observed), "1", "1", "1", "1"],
+                        [str(before), "1", "1", "1", "1"],
+                    ]
+                },
+            }
+
+        with patch(
+            "finruntime.observability.factor_backtests._fetch_json",
+            return_value=funding_payload(1),
+        ):
+            funding_first = _bybit_funding(
+                "BTCUSDT", date(2026, 1, 1), date(2026, 1, 1)
+            )
+        with patch(
+            "finruntime.observability.factor_backtests._fetch_json",
+            return_value=funding_payload(2),
+        ):
+            funding_second = _bybit_funding(
+                "BTCUSDT", date(2026, 1, 1), date(2026, 1, 1)
+            )
+        with patch(
+            "finruntime.observability.factor_backtests._fetch_json",
+            return_value=mark_payload(1),
+        ):
+            mark_first = _bybit_mark_klines(
+                "BTCUSDT", date(2026, 1, 1), date(2026, 1, 1)
+            )
+        with patch(
+            "finruntime.observability.factor_backtests._fetch_json",
+            return_value=mark_payload(2),
+        ):
+            mark_second = _bybit_mark_klines(
+                "BTCUSDT", date(2026, 1, 1), date(2026, 1, 1)
+            )
+
+        self.assertEqual(funding_first, funding_second)
+        self.assertEqual(mark_first, mark_second)
 
     def test_consensus_intrabar_collision_is_stop_first(self) -> None:
         observed = datetime(2026, 1, 1, tzinfo=UTC)
