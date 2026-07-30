@@ -162,8 +162,7 @@ jobs:
             --quotes /tmp/fin-inputs/quotes.json \
             --reference-prices /tmp/fin-inputs/prices.json \
             --critical-source spot_daily \
-            --created-at-utc 2026-07-29T00:06:00Z \
-            --expires-at-utc 2026-07-30T00:06:00Z \
+            --ttl-seconds 3600 \
             --modelled-cost 1 \
             --modelled-slippage-bps 8 \
             >/tmp/enqueue.json

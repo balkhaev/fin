@@ -21,6 +21,7 @@ from finruntime.portfolio.accounting import (
 from finruntime.portfolio.risk import ReferencePriceBook, decimal_text
 
 _ZERO = Decimal("0")
+_MINIMUM_QUANTITY = Decimal("0.000000000001")
 _QUOTE_QUALITIES = {"ok", "stale", "outage", "invalid"}
 
 
@@ -43,7 +44,8 @@ class PaperQuote:
             raise ContractError("paper quote market_type must be spot or perpetual")
         parse_utc(self.observed_at_utc)
         require_sha256(
-            self.source_observation_hash, field="source_observation_hash"
+            self.source_observation_hash,
+            field="source_observation_hash",
         )
         if self.quality not in _QUOTE_QUALITIES:
             raise ContractError(f"unsupported paper quote quality: {self.quality}")
@@ -54,21 +56,27 @@ class PaperQuote:
         )
         bid = (
             require_decimal_string(
-                self.bid, field="bid", minimum=Decimal("0.000000000001")
+                self.bid,
+                field="bid",
+                minimum=_MINIMUM_QUANTITY,
             )
             if self.bid is not None
             else None
         )
         ask = (
             require_decimal_string(
-                self.ask, field="ask", minimum=Decimal("0.000000000001")
+                self.ask,
+                field="ask",
+                minimum=_MINIMUM_QUANTITY,
             )
             if self.ask is not None
             else None
         )
         mid = (
             require_decimal_string(
-                self.mid, field="mid", minimum=Decimal("0.000000000001")
+                self.mid,
+                field="mid",
+                minimum=_MINIMUM_QUANTITY,
             )
             if self.mid is not None
             else None
@@ -101,6 +109,8 @@ class PaperBrokerPolicy:
                 raise ContractError(f"{name} must be non-negative")
         if not (_ZERO < self.participation_rate <= Decimal("1")):
             raise ContractError("participation_rate must be in (0, 1]")
+        if type(self.permit_stale_quotes) is not bool:
+            raise ContractError("permit_stale_quotes must be a boolean")
 
 
 DEFAULT_PAPER_BROKER_POLICY = PaperBrokerPolicy(
@@ -134,15 +144,18 @@ class PaperExecutionResult:
     execution_complete: bool
 
 
-def _quote_key(intent: ExecutionIntent) -> tuple[str, str]:
+QuoteKey = tuple[str, str]
+
+
+def _quote_key(intent: ExecutionIntent) -> QuoteKey:
     return intent.market_type, intent.instrument
 
 
 def _quote_map(
-    quotes: Sequence[PaperQuote] | Mapping[tuple[str, str], PaperQuote],
-) -> dict[tuple[str, str], PaperQuote]:
+    quotes: Sequence[PaperQuote] | Mapping[QuoteKey, PaperQuote],
+) -> dict[QuoteKey, PaperQuote]:
     values = quotes.values() if isinstance(quotes, Mapping) else quotes
-    output: dict[tuple[str, str], PaperQuote] = {}
+    output: dict[QuoteKey, PaperQuote] = {}
     for quote in values:
         quote.validate()
         key = (quote.market_type, quote.instrument)
@@ -151,6 +164,28 @@ def _quote_map(
             raise ContractError(f"conflicting paper quotes for {key}")
         output[key] = quote
     return output
+
+
+def _quote_capacities(
+    quotes: Mapping[QuoteKey, PaperQuote],
+    policy: PaperBrokerPolicy,
+) -> dict[QuoteKey, Decimal]:
+    """Return the shared executable quantity available from each sealed quote.
+
+    A quote is one liquidity observation. Its participation allowance is shared by all
+    intents using that quote (for example, a perpetual sign-flip close and child open),
+    rather than being reset independently for every intent.
+    """
+
+    return {
+        key: require_decimal_string(
+            quote.available_quantity,
+            field=f"quote.available_quantity.{key[0]}:{key[1]}",
+            minimum=_ZERO,
+        )
+        * policy.participation_rate
+        for key, quote in quotes.items()
+    }
 
 
 def _rejection_fill(
@@ -175,7 +210,10 @@ def _rejection_fill(
     )
 
 
-def _commission_bps(intent: ExecutionIntent, policy: PaperBrokerPolicy) -> Decimal:
+def _commission_bps(
+    intent: ExecutionIntent,
+    policy: PaperBrokerPolicy,
+) -> Decimal:
     return (
         policy.spot_commission_bps
         if intent.market_type == "spot"
@@ -192,15 +230,21 @@ def _base_fill_price(
         return require_decimal_string(
             quote.ask if intent.side == "buy" else quote.bid,
             field="quote side price",
-            minimum=Decimal("0.000000000001"),
+            minimum=_MINIMUM_QUANTITY,
         )
     if quote.mid is None:
         raise ContractError("paper quote has no executable price")
     mid = require_decimal_string(
-        quote.mid, field="mid", minimum=Decimal("0.000000000001")
+        quote.mid,
+        field="mid",
+        minimum=_MINIMUM_QUANTITY,
     )
     spread = policy.proxy_half_spread_bps / Decimal("10000")
-    return mid * (Decimal("1") + spread if intent.side == "buy" else Decimal("1") - spread)
+    return mid * (
+        Decimal("1") + spread
+        if intent.side == "buy"
+        else Decimal("1") - spread
+    )
 
 
 def _adverse_price(
@@ -210,14 +254,18 @@ def _adverse_price(
 ) -> Decimal:
     base = _base_fill_price(intent, quote, policy)
     impact = policy.impact_bps / Decimal("10000")
-    return base * (Decimal("1") + impact if intent.side == "buy" else Decimal("1") - impact)
+    return base * (
+        Decimal("1") + impact
+        if intent.side == "buy"
+        else Decimal("1") - impact
+    )
 
 
 def _slippage_bps(intent: ExecutionIntent, fill_price: Decimal) -> Decimal:
     reference = require_decimal_string(
         intent.reference_price,
         field="intent.reference_price",
-        minimum=Decimal("0.000000000001"),
+        minimum=_MINIMUM_QUANTITY,
     )
     if intent.side == "buy":
         adverse = (fill_price - reference) / reference
@@ -236,14 +284,20 @@ def _current_reduce_capacity(
         if intent.side != "sell":
             raise AccountingHalt("reduce-only spot intent must sell")
         raw = account.spot_positions.get(intent.instrument, "0")
-        return require_decimal_string(raw, field="spot reduce capacity", minimum=_ZERO)
+        return require_decimal_string(
+            raw,
+            field="spot reduce capacity",
+            minimum=_ZERO,
+        )
     raw = account.perp_positions.get(intent.instrument, "0")
     current = require_decimal_string(raw, field="perp reduce capacity")
     if current == 0:
         return _ZERO
     expected_side = "sell" if current > 0 else "buy"
     if intent.side != expected_side:
-        raise AccountingHalt("reduce-only perpetual intent points in the wrong direction")
+        raise AccountingHalt(
+            "reduce-only perpetual intent points in the wrong direction"
+        )
     return abs(current)
 
 
@@ -251,7 +305,7 @@ def _intent_quantity(intent: ExecutionIntent) -> Decimal:
     return require_decimal_string(
         intent.quantity,
         field=f"intent.quantity.{intent.intent_id}",
-        minimum=Decimal("0.000000000001"),
+        minimum=_MINIMUM_QUANTITY,
     )
 
 
@@ -272,11 +326,13 @@ def _plan_progress(
     for intent_id, raw in account.active_plan_filled_quantities.items():
         intent = intents.get(intent_id)
         if intent is None:
-            raise AccountingHalt("account progress references an intent outside the plan")
+            raise AccountingHalt(
+                "account progress references an intent outside the plan"
+            )
         quantity = require_decimal_string(
             raw,
             field=f"active_plan_filled_quantities.{intent_id}",
-            minimum=Decimal("0.000000000001"),
+            minimum=_MINIMUM_QUANTITY,
         )
         if quantity > _intent_quantity(intent):
             raise AccountingHalt("account progress exceeds an intent quantity")
@@ -288,7 +344,10 @@ def _plan_complete(
     intents: Mapping[str, ExecutionIntent],
     progress: Mapping[str, Decimal],
 ) -> bool:
-    return all(progress.get(intent_id, _ZERO) == _intent_quantity(intent) for intent_id, intent in intents.items())
+    return all(
+        progress.get(intent_id, _ZERO) == _intent_quantity(intent)
+        for intent_id, intent in intents.items()
+    )
 
 
 def _make_outcome(
@@ -311,11 +370,11 @@ def execute_paper_plan(
     *,
     plan: ExecutionPlan,
     account_state: PaperAccountState,
-    quotes: Sequence[PaperQuote] | Mapping[tuple[str, str], PaperQuote],
+    quotes: Sequence[PaperQuote] | Mapping[QuoteKey, PaperQuote],
     mark_prices: ReferencePriceBook,
     policy: PaperBrokerPolicy = DEFAULT_PAPER_BROKER_POLICY,
 ) -> PaperExecutionResult:
-    """Execute a plan against immutable paper observations; no external order API exists."""
+    """Execute a plan against immutable paper observations; no order API exists."""
 
     plan.validate()
     account_state.validate()
@@ -336,13 +395,17 @@ def execute_paper_plan(
         )
 
     quote_by_key = _quote_map(quotes)
+    remaining_liquidity = _quote_capacities(quote_by_key, policy)
     state = account_state
     fills: list[FillEvent] = []
     outcomes: list[PaperFillOutcome] = []
     total_notional = _ZERO
     total_fees = _ZERO
     slippage_notional = _ZERO
-    latest_time = max(parse_utc(plan.created_at_utc), parse_utc(state.as_of_utc))
+    latest_time = max(
+        parse_utc(plan.created_at_utc),
+        parse_utc(state.as_of_utc),
+    )
 
     for intent in plan.intents:
         intent.validate()
@@ -351,11 +414,19 @@ def execute_paper_plan(
         requested = total_requested - already_filled
         if requested == 0:
             continue
-        quote = quote_by_key.get(_quote_key(intent))
+
+        quote_key = _quote_key(intent)
+        quote = quote_by_key.get(quote_key)
         source_hash = (
-            quote.source_observation_hash if quote is not None else plan.market_snapshot_id
+            quote.source_observation_hash
+            if quote is not None
+            else plan.market_snapshot_id
         )
-        event_time = quote.observed_at_utc if quote is not None else state.as_of_utc
+        event_time = (
+            quote.observed_at_utc
+            if quote is not None
+            else state.as_of_utc
+        )
         latest_time = max(latest_time, parse_utc(event_time))
 
         parent = (
@@ -365,7 +436,12 @@ def execute_paper_plan(
         )
         if intent.parent_intent_id is not None and parent is None:
             raise AccountingHalt("execution intent parent is outside the plan")
-        if parent is not None and progress.get(parent.intent_id, _ZERO) != _intent_quantity(parent):
+
+        filled_quantity = _ZERO
+        if (
+            parent is not None
+            and progress.get(parent.intent_id, _ZERO) != _intent_quantity(parent)
+        ):
             fill = _rejection_fill(
                 plan=plan,
                 intent=intent,
@@ -413,17 +489,12 @@ def execute_paper_plan(
             )
             reason = f"quote_quality_{quote.quality}"
         else:
-            available = require_decimal_string(
-                quote.available_quantity,
-                field="quote.available_quantity",
-                minimum=_ZERO,
-            )
-            capacity = available * policy.participation_rate
+            capacity = remaining_liquidity[quote_key]
             reduce_capacity = _current_reduce_capacity(state, intent)
             fill_quantity = min(requested, capacity)
             if reduce_capacity is not None:
                 fill_quantity = min(fill_quantity, reduce_capacity)
-            if fill_quantity < Decimal("0.000000000001"):
+            if fill_quantity < _MINIMUM_QUANTITY:
                 fill = _rejection_fill(
                     plan=plan,
                     intent=intent,
@@ -453,8 +524,16 @@ def execute_paper_plan(
                     with localcontext() as context:
                         context.prec = 50
                         notional = fill_quantity * fill_price
-                        fee = notional * _commission_bps(intent, policy) / Decimal("10000")
-                    status = "filled" if fill_quantity == requested else "partial"
+                        fee = (
+                            notional
+                            * _commission_bps(intent, policy)
+                            / Decimal("10000")
+                        )
+                    status = (
+                        "filled"
+                        if fill_quantity == requested
+                        else "partial"
+                    )
                     fill = FillEvent.create(
                         plan_id=plan.plan_id,
                         intent_id=intent.intent_id,
@@ -467,7 +546,12 @@ def execute_paper_plan(
                         slippage_bps=decimal_text(slippage),
                         source_observation_hash=source_hash,
                     )
-                    reason = "executed" if status == "filled" else "partial_liquidity_fill"
+                    reason = (
+                        "executed"
+                        if status == "filled"
+                        else "partial_liquidity_fill"
+                    )
+                    filled_quantity = fill_quantity
                     total_notional += notional
                     total_fees += fee
                     slippage_notional += slippage * notional
@@ -476,9 +560,11 @@ def execute_paper_plan(
         fills.append(fill)
         outcomes.append(_make_outcome(intent, fill, reason, requested))
         if fill.status in {"partial", "filled"}:
-            progress[intent.intent_id] = already_filled + require_decimal_string(
-                fill.filled_quantity, field="fill.filled_quantity", minimum=_ZERO
-            )
+            progress[intent.intent_id] = already_filled + filled_quantity
+            remaining = remaining_liquidity[quote_key] - filled_quantity
+            if remaining < 0:
+                raise AccountingHalt("paper quote liquidity was over-consumed")
+            remaining_liquidity[quote_key] = remaining
 
     marked = mark_account(
         state,
@@ -486,10 +572,16 @@ def execute_paper_plan(
         reference_prices=mark_prices,
     )
     weighted_slippage = (
-        slippage_notional / total_notional if total_notional > 0 else _ZERO
+        slippage_notional / total_notional
+        if total_notional > 0
+        else _ZERO
     )
     final_progress = {
-        key: require_decimal_string(value, field=f"active_plan_filled_quantities.{key}") for key, value in marked.active_plan_filled_quantities.items()
+        key: require_decimal_string(
+            value,
+            field=f"active_plan_filled_quantities.{key}",
+        )
+        for key, value in marked.active_plan_filled_quantities.items()
     }
     return PaperExecutionResult(
         account_state=marked,

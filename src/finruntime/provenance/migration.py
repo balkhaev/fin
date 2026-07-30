@@ -27,6 +27,30 @@ def _hash_payload(instance: Any, excluded: set[str]) -> dict[str, Any]:
     }
 
 
+def _require_string(value: object, *, field: str) -> str:
+    if not isinstance(value, str):
+        raise ContractError(f"{field} must be a string")
+    return value
+
+
+def _require_enum_string(
+    value: object,
+    *,
+    field: str,
+    allowed: set[str],
+) -> str:
+    normalized = _require_string(value, field=field)
+    if normalized not in allowed:
+        raise ContractError(f"unsupported {field}: {normalized}")
+    return normalized
+
+
+def _require_bool(value: object, *, field: str) -> bool:
+    if type(value) is not bool:
+        raise ContractError(f"{field} must be a JSON boolean")
+    return value
+
+
 def _require_strategy_id(value: str, *, field: str) -> str:
     if not isinstance(value, str) or not _STRATEGY_ID_RE.fullmatch(value):
         raise ContractError(
@@ -61,7 +85,9 @@ def _normalize_hash_manifest(
         raise ContractError(f"{field} must be an object mapping paths to SHA-256")
     output: dict[str, str] = {}
     for raw_path, raw_hash in value.items():
-        path = _require_repository_path(str(raw_path), field=f"{field} path")
+        if not isinstance(raw_path, str):
+            raise ContractError(f"{field} paths must be strings")
+        path = _require_repository_path(raw_path, field=f"{field} path")
         if path in output:
             raise ContractError(f"duplicate path in {field}: {path}")
         if not isinstance(raw_hash, str):
@@ -81,13 +107,14 @@ def _validate_hash_manifest(
     if required and not value:
         raise ContractError(f"{field} must contain at least one entry")
     for path, digest in value.items():
+        if not isinstance(path, str):
+            raise ContractError(f"{field} paths must be strings")
         _require_repository_path(path, field=f"{field} path")
         if not isinstance(digest, str):
             raise ContractError(f"{field}.{path} must be a SHA-256 string")
         normalized = require_sha256(digest, field=f"{field}.{path}")
         if normalized != digest:
             raise ContractError(f"{field}.{path} must use the sha256: prefix")
-
 
 
 def _normalize_string_sequence(
@@ -97,11 +124,19 @@ def _normalize_string_sequence(
 ) -> tuple[str, ...]:
     if values is None:
         return ()
-    if isinstance(values, (str, bytes, bytearray)) or not isinstance(values, Sequence):
+    if isinstance(values, (str, bytes, bytearray)) or not isinstance(
+        values,
+        Sequence,
+    ):
         raise ContractError(f"{field} must be an array of strings")
-    normalized = tuple(str(value).strip() for value in values)
-    if any(not value for value in normalized):
-        raise ContractError(f"{field} cannot contain empty values")
+    normalized: list[str] = []
+    for value in values:
+        if not isinstance(value, str):
+            raise ContractError(f"{field} must contain strings")
+        item = value.strip()
+        if not item:
+            raise ContractError(f"{field} cannot contain empty values")
+        normalized.append(item)
     if len(set(normalized)) != len(normalized):
         raise ContractError(f"{field} values must be unique")
     return tuple(sorted(normalized))
@@ -112,7 +147,10 @@ def _validate_string_sequence(
     *,
     field: str,
 ) -> tuple[str, ...]:
-    if isinstance(values, (str, bytes, bytearray)) or not isinstance(values, Sequence):
+    if isinstance(values, (str, bytes, bytearray)) or not isinstance(
+        values,
+        Sequence,
+    ):
         raise ContractError(f"{field} must be an array of strings")
     normalized = tuple(values)
     if any(not isinstance(value, str) or not value for value in normalized):
@@ -133,9 +171,11 @@ def _normalize_parameters(
         return {}
     if not isinstance(value, Mapping):
         raise ContractError(f"{field} must be an object")
-    output = {str(key): item for key, item in value.items()}
-    if any(not key for key in output):
-        raise ContractError(f"{field} cannot contain an empty key")
+    output: dict[str, Any] = {}
+    for key, item in value.items():
+        if not isinstance(key, str) or not key:
+            raise ContractError(f"{field} must contain non-empty string keys")
+        output[key] = item
     canonical_json_bytes(output)
     return dict(sorted(output.items()))
 
@@ -198,12 +238,25 @@ class StrategyMigrationRecord:
         real_leverage_authorized: bool = False,
         exchange_submission_available: bool = False,
     ) -> "StrategyMigrationRecord":
-        normalized_reason = str(reason).strip()
+        normalized_reason = _require_string(reason, field="reason").strip()
+        if not normalized_reason:
+            raise ContractError("migration reason is required")
+        normalized_created_at = format_utc(
+            _require_string(created_at_utc, field="created_at_utc")
+        )
         provisional = cls(
             schema_version="1.0",
             migration_id="sha256:" + "0" * 64,
-            migration_kind=str(migration_kind),
-            status=str(status),
+            migration_kind=_require_enum_string(
+                migration_kind,
+                field="migration kind",
+                allowed=MIGRATION_KINDS,
+            ),
+            status=_require_enum_string(
+                status,
+                field="migration status",
+                allowed=MIGRATION_STATUSES,
+            ),
             predecessor_strategy_id=_require_strategy_id(
                 predecessor_strategy_id,
                 field="predecessor_strategy_id",
@@ -212,7 +265,7 @@ class StrategyMigrationRecord:
                 successor_strategy_id,
                 field="successor_strategy_id",
             ),
-            created_at_utc=format_utc(created_at_utc),
+            created_at_utc=normalized_created_at,
             reason=normalized_reason,
             source_audits=_normalize_hash_manifest(
                 source_audits,
@@ -246,14 +299,27 @@ class StrategyMigrationRecord:
                 allowed_modes,
                 field="allowed_modes",
             ),
-            forward_clock_reset=bool(forward_clock_reset),
-            successor_provenance_complete=bool(successor_provenance_complete),
-            capital_authorization_carried_forward=bool(
-                capital_authorization_carried_forward
+            forward_clock_reset=_require_bool(
+                forward_clock_reset,
+                field="forward_clock_reset",
             ),
-            live_ready=bool(live_ready),
-            real_leverage_authorized=bool(real_leverage_authorized),
-            exchange_submission_available=bool(exchange_submission_available),
+            successor_provenance_complete=_require_bool(
+                successor_provenance_complete,
+                field="successor_provenance_complete",
+            ),
+            capital_authorization_carried_forward=_require_bool(
+                capital_authorization_carried_forward,
+                field="capital_authorization_carried_forward",
+            ),
+            live_ready=_require_bool(live_ready, field="live_ready"),
+            real_leverage_authorized=_require_bool(
+                real_leverage_authorized,
+                field="real_leverage_authorized",
+            ),
+            exchange_submission_available=_require_bool(
+                exchange_submission_available,
+                field="exchange_submission_available",
+            ),
         )
         result = replace(
             provisional,
@@ -318,9 +384,7 @@ class StrategyMigrationRecord:
             field="changed_parameters",
         )
         if set(self.inherited_parameters) & set(self.changed_parameters):
-            raise ContractError(
-                "a parameter cannot be both inherited and changed"
-            )
+            raise ContractError("a parameter cannot be both inherited and changed")
 
         changed_components = _validate_string_sequence(
             self.changed_components,
