@@ -11,6 +11,7 @@
     chartKeyboardIndex: null,
     chartInteractionController: null,
     resizeFrame: null,
+    modalStrategyId: null,
     socket: null,
     reconnectTimer: null,
     reconnectAttempts: 0,
@@ -546,6 +547,74 @@
     }
   };
 
+  const renderDescriptionList = (selector, items) => {
+    const list = $(selector);
+    list.replaceChildren();
+    for (const value of Array.isArray(items) ? items : []) {
+      list.append(create("li", "", String(value)));
+    }
+  };
+
+  const renderStrategyDialog = (strategy) => {
+    const context = strategy.context || {};
+    const full = context.full_description || {};
+    $("#strategy-dialog-repo").textContent = `${strategy.repository} · ${strategy.mode}`;
+    $("#strategy-dialog-title").textContent = strategy.name;
+    const status = $("#strategy-dialog-status");
+    status.className = `context-state ${strategy.status}`;
+    status.textContent = strategy.status_label;
+    $("#strategy-dialog-summary").textContent =
+      full.summary || context.how_it_works || strategy.description;
+    $("#strategy-dialog-current-state").textContent =
+      full.current_state || context.why_now || strategy.status_label;
+    $("#strategy-dialog-waiting").textContent =
+      context.waiting_for || "Следующего подтверждённого сигнала.";
+    $("#strategy-dialog-data").textContent =
+      full.data_scope || `${strategy.market} · ${strategy.timeframe}`;
+
+    const metrics = $("#strategy-dialog-metrics");
+    metrics.replaceChildren();
+    for (const metric of context.metrics || []) {
+      const item = create("div");
+      item.append(
+        create("dt", "", String(metric.label || "Показатель")),
+        create("dd", "", String(metric.value ?? "—"))
+      );
+      metrics.append(item);
+    }
+
+    const steps = $("#strategy-dialog-steps");
+    steps.replaceChildren();
+    for (const [index, step] of (full.steps || []).entries()) {
+      const item = create("li");
+      const copy = create("div");
+      copy.append(
+        create("h4", "", String(step.title || `Шаг ${index + 1}`)),
+        create("p", "", String(step.description || ""))
+      );
+      item.append(create("span", "strategy-dialog-step-number", String(index + 1)), copy);
+      steps.append(item);
+    }
+
+    renderDescriptionList("#strategy-dialog-entry", full.entry_conditions);
+    renderDescriptionList("#strategy-dialog-exit", full.exit_conditions);
+    renderDescriptionList("#strategy-dialog-risk", full.risk_controls);
+  };
+
+  const openStrategyDialog = (strategy) => {
+    const dialog = $("#strategy-dialog");
+    state.modalStrategyId = strategy.id;
+    renderStrategyDialog(strategy);
+    if (!dialog.open) dialog.showModal();
+    document.body.classList.add("modal-open");
+    $("#strategy-dialog-close").focus();
+  };
+
+  const closeStrategyDialog = () => {
+    const dialog = $("#strategy-dialog");
+    if (dialog.open) dialog.close();
+  };
+
   const renderStrategyContexts = () => {
     const container = $("#strategy-contexts");
     container.replaceChildren();
@@ -553,6 +622,11 @@
       const context = strategy.context || {};
       const card = create("article", "strategy-context-card");
       card.setAttribute("aria-label", `Контекст стратегии ${strategy.name}`);
+      card.setAttribute("aria-haspopup", "dialog");
+      card.setAttribute("aria-controls", "strategy-dialog");
+      card.setAttribute("role", "button");
+      card.tabIndex = 0;
+      card.dataset.strategyId = strategy.id;
 
       const head = create("header", "strategy-context-head");
       const title = create("div");
@@ -585,7 +659,19 @@
         );
         metrics.append(item);
       }
-      card.append(head, copy, metrics);
+      const action = create("span", "context-open");
+      action.append(
+        create("span", "", "Полное описание стратегии"),
+        create("span", "context-open-arrow", "↗")
+      );
+      card.append(head, copy, metrics, action);
+      const openDialog = () => openStrategyDialog(strategy);
+      card.addEventListener("click", openDialog);
+      card.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        openDialog();
+      });
       container.append(card);
     }
   };
@@ -633,6 +719,14 @@
     renderSelected();
     renderMarkets();
     renderStrategyContexts();
+    const dialog = $("#strategy-dialog");
+    if (dialog.open) {
+      const strategy = (state.hub?.strategies || []).find(
+        (item) => item.id === state.modalStrategyId
+      );
+      if (strategy) renderStrategyDialog(strategy);
+      else closeStrategyDialog();
+    }
     const updated = state.hub?.generated_at_ms || state.funding?.updated_at_ms;
     $("#updated-at").textContent = `обновлено ${formatTime(updated)}`;
     const errors = [...(state.funding?.scan?.errors || [])];
@@ -718,6 +812,23 @@
     connect();
   };
 
+  const strategyDialog = $("#strategy-dialog");
+  $("#strategy-dialog-close").addEventListener("click", closeStrategyDialog);
+  strategyDialog.addEventListener("click", (event) => {
+    if (event.target === strategyDialog) closeStrategyDialog();
+  });
+  strategyDialog.addEventListener("close", () => {
+    document.body.classList.remove("modal-open");
+    const closedStrategyId = state.modalStrategyId;
+    state.modalStrategyId = null;
+    const cards = document.querySelectorAll("[data-strategy-id]");
+    for (const card of cards) {
+      if (card.dataset.strategyId === closedStrategyId) {
+        card.focus();
+        break;
+      }
+    }
+  });
   $("#refresh").addEventListener("click", reconnectNow);
   window.addEventListener("resize", () => {
     if (state.resizeFrame) cancelAnimationFrame(state.resizeFrame);

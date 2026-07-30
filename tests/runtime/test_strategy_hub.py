@@ -217,11 +217,29 @@ class StrategyHubTests(unittest.TestCase):
                     "why_now",
                     "waiting_for",
                     "metrics",
+                    "full_description",
                 }
                 <= item["context"].keys()
                 for item in snapshot["strategies"]
             )
         )
+        for item in snapshot["strategies"]:
+            description = item["context"]["full_description"]
+            self.assertTrue(
+                {
+                    "summary",
+                    "steps",
+                    "entry_conditions",
+                    "exit_conditions",
+                    "risk_controls",
+                    "data_scope",
+                    "current_state",
+                }
+                <= description.keys()
+            )
+            self.assertGreaterEqual(len(description["steps"]), 3)
+            self.assertGreaterEqual(len(description["risk_controls"]), 2)
+            self.assertEqual(description["current_state"], item["context"]["why_now"])
         self.assertFalse(snapshot["exchange_submission_available"])
 
     def test_funding_context_explains_current_spread_gap(self) -> None:

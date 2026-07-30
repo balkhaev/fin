@@ -138,6 +138,77 @@
     <span>Публичные market data · отдельные paper-ledgers · без API-ключей</span>
   </footer>
 
+  <dialog
+    id="strategy-dialog"
+    class="strategy-dialog"
+    aria-labelledby="strategy-dialog-title"
+    aria-describedby="strategy-dialog-summary"
+  >
+    <article class="strategy-dialog-surface">
+      <button
+        id="strategy-dialog-close"
+        class="strategy-dialog-close"
+        type="button"
+        aria-label="Закрыть описание стратегии"
+      >×</button>
+
+      <header class="strategy-dialog-hero">
+        <div class="strategy-dialog-meta">
+          <span id="strategy-dialog-repo" class="strategy-dialog-repo">—</span>
+          <span class="paper-badge">PAPER ONLY</span>
+        </div>
+        <div class="strategy-dialog-title-row">
+          <h2 id="strategy-dialog-title">—</h2>
+          <span id="strategy-dialog-status" class="context-state">—</span>
+        </div>
+        <p id="strategy-dialog-summary">—</p>
+      </header>
+
+      <section class="strategy-dialog-current" aria-labelledby="strategy-dialog-current-title">
+        <span class="eyebrow">Сейчас</span>
+        <h3 id="strategy-dialog-current-title">Что видит стратегия</h3>
+        <p id="strategy-dialog-current-state">—</p>
+        <div class="strategy-dialog-waiting">
+          <span>Чего ждём сейчас</span>
+          <p id="strategy-dialog-waiting">—</p>
+        </div>
+        <dl id="strategy-dialog-metrics" class="strategy-dialog-metrics"></dl>
+      </section>
+
+      <section class="strategy-dialog-section" aria-labelledby="strategy-dialog-steps-title">
+        <span class="eyebrow">Механика</span>
+        <h3 id="strategy-dialog-steps-title">Как принимается решение</h3>
+        <ol id="strategy-dialog-steps" class="strategy-dialog-steps"></ol>
+      </section>
+
+      <div class="strategy-dialog-rules">
+        <section aria-labelledby="strategy-dialog-entry-title">
+          <span class="strategy-dialog-rule-icon entry" aria-hidden="true">↗</span>
+          <h3 id="strategy-dialog-entry-title">Когда входит</h3>
+          <ul id="strategy-dialog-entry"></ul>
+        </section>
+        <section aria-labelledby="strategy-dialog-exit-title">
+          <span class="strategy-dialog-rule-icon exit" aria-hidden="true">↘</span>
+          <h3 id="strategy-dialog-exit-title">Когда выходит</h3>
+          <ul id="strategy-dialog-exit"></ul>
+        </section>
+        <section aria-labelledby="strategy-dialog-risk-title">
+          <span class="strategy-dialog-rule-icon risk" aria-hidden="true">◇</span>
+          <h3 id="strategy-dialog-risk-title">Как ограничивает риск</h3>
+          <ul id="strategy-dialog-risk"></ul>
+        </section>
+      </div>
+
+      <footer class="strategy-dialog-footer">
+        <div>
+          <span>Данные и частота</span>
+          <p id="strategy-dialog-data">—</p>
+        </div>
+        <p class="strategy-dialog-safety">Реальные ордера отключены. Это наблюдение за paper-счётом, а не торговая рекомендация.</p>
+      </footer>
+    </article>
+  </dialog>
+
   <script src="./live.js" defer></script>
 </body>
 </html>

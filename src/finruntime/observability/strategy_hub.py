@@ -33,6 +33,285 @@ def _metric(label: str, value: str) -> dict[str, str]:
     return {"label": label, "value": value}
 
 
+STRATEGY_GUIDES: dict[str, dict[str, Any]] = {
+    "funding-neutral": {
+        "summary": (
+            "Рыночно-нейтральная paper-стратегия: она пытается заработать на "
+            "разнице funding одного и того же бессрочного фьючерса на Binance и "
+            "Bybit, а не на угадывании направления цены монеты."
+        ),
+        "steps": [
+            {
+                "title": "Сравнивает одинаковые рынки",
+                "description": (
+                    "Каждые 5 секунд сопоставляет mark price, текущий и прогнозный "
+                    "funding, стакан и open interest одного актива на двух биржах."
+                ),
+            },
+            {
+                "title": "Считает доход после расходов",
+                "description": (
+                    "Из funding-спреда вычитает комиссии и ожидаемое проскальзывание; "
+                    "пара проходит дальше только при достаточной ликвидности."
+                ),
+            },
+            {
+                "title": "Открывает две paper-ноги",
+                "description": (
+                    "Покупает контракт с более низким funding и одновременно шортит "
+                    "контракт с более высоким funding, сохраняя близкую к нулю дельту."
+                ),
+            },
+            {
+                "title": "Закрывает пару целиком",
+                "description": (
+                    "Обе ноги переоцениваются вместе и закрываются синхронно, когда "
+                    "преимущество исчезает или срабатывает ограничение удержания."
+                ),
+            },
+        ],
+        "entry_conditions": [
+            "Текущий funding-спред не ниже 8 bps за 8 часов.",
+            "Прогнозный funding-спред не ниже 5 bps за 8 часов.",
+            "Ожидаемый результат после расходов не ниже 10 bps.",
+            "Обе биржи дают свежие данные и достаточную ликвидность для двух ног.",
+        ],
+        "exit_conditions": [
+            "Текущий funding-спред снизился до порога выхода — по умолчанию 1 bps.",
+            "Прогнозный funding-спред стал нулевым или отрицательным.",
+            "Достигнут предельный срок удержания — по умолчанию 72 часа.",
+        ],
+        "risk_controls": [
+            "Лонг и шорт одного актива уменьшают направленный риск рынка.",
+            "Одновременно допускается одна пара; до 80% капитала может быть размещено, 20% остаётся резервом.",
+            "Вход блокируют слабый стакан, OI ниже лимита и чрезмерное расхождение mark/basis; допустимое время без хеджа — до 4 секунд.",
+            "Неполные или устаревшие market data не создают новое решение и сохраняют текущее paper-состояние.",
+            "Exchange submission отсутствует: реальные ордера отправить невозможно.",
+        ],
+        "data_scope": (
+            "Публичные perpetual-данные Binance и Bybit, минутные свечи; сканирование "
+            "примерно раз в 5 секунд."
+        ),
+    },
+    "consensus-wif-dot": {
+        "summary": (
+            "Две независимые контртрендовые идеи в одном paper-счёте. WIF ищет "
+            "капитуляцию цены и открытого интереса с сильным отскоком, а DOT — "
+            "аномально отрицательный funding сразу после расчётного окна."
+        ),
+        "steps": [
+            {
+                "title": "Проверяет WIF-капитуляцию",
+                "description": (
+                    "На 15-минутных данных измеряет падение за 45 минут в ATR, "
+                    "всплеск объёма, сброс OI, premium, нижнюю тень и силу закрытия."
+                ),
+            },
+            {
+                "title": "Проверяет DOT funding",
+                "description": (
+                    "В разрешённые дни ищет funding ниже дневного порога в окне "
+                    "15–30 минут после его начисления."
+                ),
+            },
+            {
+                "title": "Выбирает размер по риску",
+                "description": (
+                    "Стоп в ATR задаёт расстояние риска, после чего paper-notional "
+                    "подбирается для текущего режима base, boost или stopped."
+                ),
+            },
+            {
+                "title": "Выходит по заранее заданному правилу",
+                "description": (
+                    "После входа стратегия не импровизирует: ждёт stop-loss, "
+                    "take-profit или максимальное время удержания."
+                ),
+            },
+        ],
+        "entry_conditions": [
+            "WIF: падение за 45 минут не менее 2 ATR, volume z ≥ 1 и OI z ≤ −1.",
+            "WIF: длинная нижняя тень, сильное закрытие свечи и суммарная сила ≥ 3.5.",
+            "DOT: funding ≤ −2.25/−2.50 bps в разрешённый день недели.",
+            "DOT: проверка выполняется через 15–30 минут после funding timestamp.",
+        ],
+        "exit_conditions": [
+            "WIF: stop 1.25 ATR, цель 5R или максимум 60 минут.",
+            "DOT: stop 6 ATR, цель 2R или максимум 480 минут.",
+            "Любая позиция закрывается по первой наступившей причине.",
+        ],
+        "risk_controls": [
+            "Base-риск: 3% для WIF и 5% для DOT; одновременно не более двух позиций.",
+            "Boost включается только после +15% paper-прибыли на новом high-water.",
+            "Просадка 8% возвращает boost в base; 15% необратимо включает stopped.",
+            "Суммарная gross-экспозиция ограничена 3× и учитывает round-trip costs.",
+        ],
+        "data_scope": (
+            "Публичные Binance USD-M данные WIFUSDT и DOTUSDT: 15-минутные свечи, "
+            "funding, premium index и open interest; цикл примерно раз в минуту."
+        ),
+    },
+    "dyn-iv113": {
+        "summary": (
+            "Дневная мультиактивная momentum-стратегия. Она выбирает самые ликвидные "
+            "монеты, объединяет FLOW и absolute momentum, а состояние тренда BTC "
+            "решает, разрешён ли риск вообще."
+        ),
+        "steps": [
+            {
+                "title": "Формирует ликвидную вселенную",
+                "description": (
+                    "Из 17 spot-активов оставляет до восьми с историей не короче "
+                    "180 дней и медианным дневным объёмом не ниже $1 млн."
+                ),
+            },
+            {
+                "title": "Строит два семейства сигналов",
+                "description": (
+                    "FLOW оценивает положение закрытия внутри свечи с учётом объёма; "
+                    "absolute momentum сравнивает цену на горизонтах 126 и 168 дней."
+                ),
+            },
+            {
+                "title": "Применяет BTC-фильтры",
+                "description": (
+                    "Риск разрешает хотя бы один трендовый фильтр: BTC/EMA100, "
+                    "BTC/SMA150 или пересечение EMA50 и EMA200."
+                ),
+            },
+            {
+                "title": "Нормирует и исполняет paper-веса",
+                "description": (
+                    "Лучшие активы получают inverse-volatility веса; общий gross "
+                    "масштабируется к целевой волатильности и ребалансируется недельно."
+                ),
+            },
+        ],
+        "entry_conditions": [
+            "Не менее шести пригодных активов после фильтров истории и ликвидности.",
+            "Хотя бы один из трёх BTC trend-фильтров разрешает рыночный риск.",
+            "FLOW либо положительный absolute momentum выводит актив в верхнюю группу.",
+            "Изменение веса достаточно велико для очередной недельной ребалансировки.",
+        ],
+        "exit_conditions": [
+            "Актив теряет положительный momentum или выпадает из верхнего ранга.",
+            "BTC-фильтры выключают режим риска — целевой портфель уходит в CASH.",
+            "Актив перестаёт проходить требования истории, свежести или ликвидности.",
+        ],
+        "risk_controls": [
+            "Inverse-volatility веса уменьшают вклад более волатильных монет.",
+            "Gross ограничен 2.5×, вес одного актива — 1×.",
+            "В расчёте учитываются 30 bps execution cost и 25% годового financing.",
+            "Сигналы используют закрытые свечи с причинным лагом; режим fail-closed.",
+        ],
+        "data_scope": (
+            "Публичные дневные spot-свечи Binance для 17 активов и live mark для "
+            "переоценки paper-портфеля."
+        ),
+    },
+    "atlas-nx-r1": {
+        "summary": (
+            "Новый paper-successor Atlas, восстановленный из доступных компонентов "
+            "V27, V4 и V67. Он ищет устойчивый momentum, добавляет защитный BTC/ETH "
+            "ансамбль и необратимо снижает риск после достижения high-water ступеней."
+        ),
+        "steps": [
+            {
+                "title": "Строит V27 momentum-ядро",
+                "description": (
+                    "По 9 spot-активам проверяет доходности за 63, 126 и 252 дня, "
+                    "оставляет активы с двумя положительными горизонтами и выбирает top 3."
+                ),
+            },
+            {
+                "title": "Добавляет защитный V4",
+                "description": (
+                    "Для BTC и ETH объединяет breadth, dual momentum и Donchian "
+                    "90/45; его вес растёт на high-water ступенях."
+                ),
+            },
+            {
+                "title": "Ограничивает общий риск",
+                "description": (
+                    "63-дневная волатильность задаёт множитель 1.0, 0.75 или 0.5, "
+                    "после чего применяется gross-cap текущей risk stage."
+                ),
+            },
+            {
+                "title": "Ребалансирует только существенно",
+                "description": (
+                    "Новые веса вступают в силу по закрытой дневной свече, обычно в "
+                    "понедельник и только при изменении turnover не меньше 10%."
+                ),
+            },
+        ],
+        "entry_conditions": [
+            "Не менее семи активов имеют свежую достаточную дневную историю.",
+            "У актива положительны минимум два горизонта из 63/126/252 дней.",
+            "Актив входит в top 3 по среднему положительному momentum.",
+            "Наступил недельный rebalance и изменение веса превышает no-trade band 10%.",
+        ],
+        "exit_conditions": [
+            "Momentum больше не проходит два из трёх горизонтов или актив покидает top 3.",
+            "Нулевой целевой портфель закрывается сразу, не дожидаясь понедельника.",
+            "Устаревший или недоступный актив исключается из текущей вселенной.",
+        ],
+        "risk_controls": [
+            "High-water 1.75× и 2.5× необратимо переводит risk stage с 0 на 1 и 2.",
+            "Защитный вес растёт 0% → 10% → 20%, gross-cap падает 1.10× → 1.05× → 1.00×.",
+            "При волатильности выше 25%/35% exposure уменьшается до 0.75×/0.50×.",
+            "V67 равен нулю без on-chain публикации не старше 48 часов.",
+            "Учитываются 40 bps turnover cost и 6% годового financing сверх 1× gross.",
+        ],
+        "data_scope": (
+            "Публичные дневные spot-свечи Binance для ADA, BCH, BNB, BTC, DOGE, "
+            "EOS, ETH, LTC и XRP; старые результаты V75 и его forward clock не наследуются."
+        ),
+    },
+    "atlas-nx-blocked": {
+        "summary": (
+            "Зарезервированный runtime исходного V75 ATLAS-NX. Он остаётся "
+            "fail-closed, пока точный канонический target producer отсутствует."
+        ),
+        "steps": [
+            {
+                "title": "Принимает только канонические веса",
+                "description": "Runtime не подменяет отсутствующий V75 другим алгоритмом.",
+            },
+            {
+                "title": "Проверяет provenance",
+                "description": "Producer должен совпасть с зафиксированным SHA-256.",
+            },
+            {
+                "title": "Ведёт отдельный paper-ledger",
+                "description": (
+                    "После материализации веса будут учитывать комиссии, funding и "
+                    "сверку циклов отдельно от других стратегий."
+                ),
+            },
+        ],
+        "entry_conditions": [
+            "Канонический V75 target producer доступен и прошёл проверку SHA-256.",
+            "Scheduler получил свежие закрытые дневные веса.",
+        ],
+        "exit_conditions": [
+            "Целевой вес закрывается каноническим producer либо fail-closed проверкой.",
+        ],
+        "risk_controls": [
+            "Без точного producer новые позиции запрещены.",
+            "Исторические результаты не используются как разрешение live-торговли.",
+            "Exchange submission отсутствует: runtime остаётся paper-only.",
+        ],
+        "data_scope": "Только проверенные веса V75 и отдельная runtime-телеметрия.",
+    },
+}
+
+
+def _full_description(strategy_id: str, current_state: str) -> dict[str, Any]:
+    guide = STRATEGY_GUIDES[strategy_id]
+    return {**guide, "current_state": current_state}
+
+
 def _number_text(value: object, digits: int = 2) -> str:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return "—"
@@ -292,6 +571,7 @@ def _funding_strategy(paper_snapshot: dict[str, Any]) -> dict[str, Any]:
                 _metric("Порог входа", f"{current_threshold:.2f} bps / 8ч"),
                 _metric("Кандидаты", str(len(candidates))),
             ],
+            "full_description": _full_description("funding-neutral", why_now),
         },
     }
 
@@ -314,6 +594,22 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
     status = "blocked" if observations == 0 else source_health
     if status == "healthy":
         status = "running"
+    why_now = (
+        "Циклов ещё не было: канонический V75 target producer отсутствует "
+        "в main и реестр runtime запрещает заменять его другим алгоритмом."
+        if observations == 0
+        else (
+            f"Обработано наблюдений: {observations}; завершено циклов: "
+            f"{committed_cycles}."
+        )
+    )
+    waiting_for = (
+        "Нужен исходник V75 с SHA-256 "
+        "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc; "
+        "после его материализации scheduler сможет выполнять paper-циклы."
+        if observations == 0
+        else "Ждём следующие закрытые дневные веса и плановый цикл scheduler."
+    )
     return {
         "id": "atlas-nx",
         "repository": "fin",
@@ -345,24 +641,14 @@ def _atlas_strategy(runtime: dict[str, Any]) -> dict[str, Any]:
                 "Получает дневные веса портфеля V75 ATLAS-NX и проводит их "
                 "через отдельный paper-счёт с комиссиями, funding и сверкой."
             ),
-            "why_now": (
-                "Циклов ещё не было: канонический V75 target producer отсутствует "
-                "в main и реестр runtime запрещает заменять его другим алгоритмом."
-                if observations == 0
-                else f"Обработано наблюдений: {observations}; завершено циклов: {committed_cycles}."
-            ),
-            "waiting_for": (
-                "Нужен исходник V75 с SHA-256 "
-                "3303cd91511bca0be81ade21272e1e8ba6f76adf826d238e9c4bd7cbe78f69fc; "
-                "после его материализации scheduler сможет выполнять paper-циклы."
-                if observations == 0
-                else "Ждём следующие закрытые дневные веса и плановый цикл scheduler."
-            ),
+            "why_now": why_now,
+            "waiting_for": waiting_for,
             "metrics": [
                 _metric("Наблюдения", str(observations)),
                 _metric("Циклы", str(committed_cycles)),
                 _metric("Scheduler", str(scheduler_state or "—")),
             ],
+            "full_description": _full_description("atlas-nx-blocked", why_now),
         },
     }
 
@@ -478,6 +764,7 @@ def _atlas_reconstructed_strategy(
                 _metric("V4 защита", f"{defensive_weight * 100:.0f}%"),
                 _metric("V67 accelerator", f"{accelerator:.2f}×"),
             ],
+            "full_description": _full_description("atlas-nx-r1", why_now),
         },
     }
 
@@ -586,6 +873,7 @@ def _consensus_strategy(snapshot: dict[str, Any]) -> dict[str, Any]:
                 ),
                 _metric("Риск-режим", str(risk_state.get("mode", "base"))),
             ],
+            "full_description": _full_description("consensus-wif-dot", why_now),
         },
     }
 
@@ -699,6 +987,7 @@ def _dyn_strategy(
                 _metric("Target gross", f"{target_gross:.2f}×"),
                 _metric("Cash", f"{cash_weight * 100:.0f}%"),
             ],
+            "full_description": _full_description("dyn-iv113", why_now),
         },
     }
 
