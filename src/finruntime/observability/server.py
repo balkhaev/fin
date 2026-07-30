@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
+from .backtests import backtest_report
 from .control_room import build_runtime_snapshot, snapshot_digest
 from .strategy_hub import StrategyHub, read_consensus_snapshot
 
@@ -344,6 +345,20 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
         }
 
     def _serve_api(self, path: str, *, head_only: bool = False) -> bool:
+        backtest_prefix = "/api/v1/backtests/"
+        if path.startswith(backtest_prefix):
+            strategy_id = unquote(path.removeprefix(backtest_prefix))
+            try:
+                report = backtest_report(strategy_id)
+            except KeyError:
+                self._send_json(
+                    {"error": "unknown_strategy", "strategy_id": strategy_id},
+                    status=HTTPStatus.NOT_FOUND,
+                    head_only=head_only,
+                )
+                return True
+            self._send_json(report, head_only=head_only)
+            return True
         try:
             if path == "/api/v1/dashboard":
                 self._send_json(self._dashboard(), head_only=head_only)

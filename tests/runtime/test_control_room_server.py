@@ -218,6 +218,25 @@ class ControlRoomServerTests(unittest.TestCase):
         body = json.loads(captured.exception.read())
         self.assertFalse(body["exchange_submission_available"])
 
+    def test_backtest_endpoint_is_read_only_and_identity_safe(self) -> None:
+        report = self.json_get("/api/v1/backtests/dyn-iv113")
+        self.assertEqual(report["strategy_id"], "dyn-iv113")
+        self.assertEqual(report["evidence"]["status"], "verified")
+        self.assertEqual(report["trade_count"], 53)
+
+        atlas = self.json_get("/api/v1/backtests/atlas-nx")
+        self.assertEqual(atlas["evidence"]["status"], "insufficient_evidence")
+        self.assertFalse(atlas["historical_reference"]["belongs_to_active_strategy"])
+
+        with self.assertRaises(urllib.error.HTTPError) as captured:
+            urllib.request.urlopen(
+                self.base + "/api/v1/backtests/not-a-strategy", timeout=5
+            )
+        self.assertEqual(captured.exception.code, 404)
+        self.assertEqual(
+            json.loads(captured.exception.read())["error"], "unknown_strategy"
+        )
+
     def test_sse_once_and_path_traversal(self) -> None:
         with urllib.request.urlopen(
             self.base + "/api/v1/events?once=1", timeout=5

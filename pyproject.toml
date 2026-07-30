@@ -19,3 +19,6 @@ runtime-dev = []
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"finruntime.observability" = ["backtest_data/*.json", "backtest_data/*.b64"]

@@ -26,6 +26,13 @@ Strategy Hub сводит в один интерфейс рабочие конт
 операторская сводка; деньги между ledger не смешиваются. Все market data
 реальные, но exchange submission отсутствует.
 
+Кнопка `Бектест · 2 года` использует identity-safe historical reports. Сейчас
+только DYN-IV113 имеет checksum-проверяемый frozen ledger: его полный OOS CAGR
+равен `112.638%`, а в двухлетнем окне показаны 53 trade episode. Funding Neutral,
+Consensus WIF + DOT и Atlas NX R1 возвращают `insufficient_evidence` с точными
+причинами; 50.55% V517/V524 не приписываются реконструированному Atlas NX R1.
+Это исторические simulated model outputs, не текущий paper PnL и не прогноз.
+
 ## Текущий исторический engineering target
 
 V517/V524 показывает на известной истории около `50.55% CAGR`, Sharpe `1.460` и Max DD `-23.68%`. Это не pristine OOS и не обещание будущей доходности. Position-level margin replay, frozen forward acceptance и exchange adapter отсутствуют, поэтому:
@@ -91,6 +98,7 @@ GET /api/v1/incidents
 GET /api/v1/scheduler
 GET /api/v1/paper
 GET /api/v1/strategies
+GET /api/v1/backtests/<strategy-id>
 GET /api/v1/health
 GET /api/v1/events
 WS  /api/v1/ws

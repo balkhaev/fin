@@ -12,6 +12,9 @@
     chartInteractionController: null,
     resizeFrame: null,
     modalStrategyId: null,
+    backtestStrategyId: null,
+    backtestCache: new Map(),
+    backtestAbortController: null,
     socket: null,
     reconnectTimer: null,
     reconnectAttempts: 0,
@@ -554,6 +557,17 @@
       list.append(create("li", "", String(value)));
     }
   };
+  const formatDate = (value) => {
+    if (!value) return "—";
+    const parsed = new Date(`${value}T00:00:00Z`);
+    if (Number.isNaN(parsed.getTime())) return String(value);
+    return parsed.toLocaleDateString("ru-RU", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  };
 
   const renderStrategyDialog = (strategy) => {
     const context = strategy.context || {};
@@ -612,6 +626,163 @@
 
   const closeStrategyDialog = () => {
     const dialog = $("#strategy-dialog");
+    if (dialog.open) dialog.close();
+  };
+
+  const renderBacktestList = (selector, values) => {
+    const list = $(selector);
+    list.replaceChildren();
+    for (const value of values || []) list.append(create("li", "", String(value)));
+  };
+
+  const renderBacktestLoading = (strategy) => {
+    $("#backtest-repo").textContent = `${strategy.repository} · ${strategy.mode}`;
+    $("#backtest-dialog-title").textContent = `${strategy.name} · 2 года`;
+    $("#backtest-status").textContent = "Проверка";
+    $("#backtest-status").className = "backtest-status loading";
+    $("#backtest-dialog-summary").textContent =
+      "Проверяем архив, checksum и совпадение identity стратегии…";
+    $("#backtest-loading").hidden = false;
+    $("#backtest-report").hidden = true;
+    $("#backtest-error").hidden = true;
+  };
+
+  const renderBacktestReport = (report, strategy) => {
+    const evidence = report.evidence || {};
+    const verified = evidence.status === "verified";
+    const metrics = report.metrics;
+    $("#backtest-repo").textContent = `${report.provenance?.source_repository || strategy.repository} · historical`;
+    $("#backtest-dialog-title").textContent = `${strategy.name} · 2 года`;
+    const status = $("#backtest-status");
+    status.textContent = evidence.status_label || (verified ? "Проверено" : "Недостаточно данных");
+    status.className = `backtest-status ${verified ? "verified" : "insufficient"}`;
+    $("#backtest-dialog-summary").textContent = evidence.summary || "—";
+    $("#backtest-loading").hidden = true;
+    $("#backtest-error").hidden = true;
+    $("#backtest-report").hidden = false;
+
+    const evidenceCard = $("#backtest-evidence");
+    evidenceCard.className = `backtest-evidence ${verified ? "verified" : "insufficient"}`;
+    $("#backtest-evidence-title").textContent = evidence.headline || "Проверка завершена";
+    $("#backtest-evidence-copy").textContent = verified
+      ? `CAGR ${formatNumber(metrics?.cagr_percent, 3)}% · порог ${formatNumber(evidence.cagr_threshold_percent, 0)}% пройден. Метрики относятся к ${metrics?.scope_label || "frozen OOS"}.`
+      : "Результат не подменяется нулём: для этой версии CAGR и сделки пока неизвестны.";
+
+    const metricList = $("#backtest-metrics");
+    metricList.replaceChildren();
+    metricList.hidden = !metrics;
+    if (metrics) {
+      for (const [label, value, className] of [
+        ["CAGR · full OOS", `+${formatNumber(metrics.cagr_percent, 3)}%`, "positive"],
+        ["Total return", `+${formatNumber(metrics.total_return_percent, 2)}%`, "positive"],
+        ["Sharpe", formatNumber(metrics.sharpe, 3), ""],
+        ["Max drawdown", `${formatNumber(metrics.max_drawdown_percent, 2)}%`, "negative"],
+        ["Период метрик", `${formatNumber(metrics.years, 3)} года`, ""],
+        ["Сделки · 2 года", String(asNumber(report.trade_count)), ""],
+      ]) {
+        const item = create("div");
+        item.append(create("dt", "", label), create("dd", className, value));
+        metricList.append(item);
+      }
+    }
+
+    const blockerSection = $("#backtest-blocker-section");
+    blockerSection.hidden = !(report.blockers || []).length;
+    renderBacktestList("#backtest-blockers", report.blockers);
+
+    const trades = Array.isArray(report.trades) ? report.trades : [];
+    $("#backtest-trade-count").textContent = `${trades.length} эпизодов`;
+    const tradeBody = $("#backtest-trades");
+    tradeBody.replaceChildren();
+    for (const trade of trades) {
+      const row = document.createElement("tr");
+      const asset = document.createElement("td");
+      asset.append(create("strong", "backtest-asset", trade.asset));
+      row.append(asset);
+      for (const [value, className] of [
+        [formatDate(trade.entry_date), ""],
+        [formatDate(trade.exit_date || trade.held_through), ""],
+        [String(asNumber(trade.holding_days)), ""],
+        [formatPrice(trade.entry_price), ""],
+        [formatPrice(trade.exit_price), ""],
+        [`${asNumber(trade.asset_return_percent) > 0 ? "+" : ""}${formatNumber(trade.asset_return_percent, 2)}%`, tone(trade.asset_return_percent)],
+        [formatUsd(trade.net_pnl_usd, true), tone(trade.net_pnl_usd)],
+      ]) {
+        row.append(create("td", className, value));
+      }
+      tradeBody.append(row);
+    }
+    $(".backtest-table-scroll").hidden = trades.length === 0;
+    $("#backtest-empty").hidden = trades.length !== 0;
+
+    renderBacktestList("#backtest-limitations", report.limitations);
+    const provenance = report.provenance || {};
+    const checksum = provenance.episodes_payload_sha256
+      ? ` · SHA256 ${String(provenance.episodes_payload_sha256).slice(0, 12)}…`
+      : "";
+    const snapshot = provenance.snapshot_date ? ` · snapshot ${formatDate(provenance.snapshot_date)}` : "";
+    $("#backtest-provenance").textContent =
+      `${provenance.source_repository || strategy.repository} · ${provenance.strategy_identity || report.strategy_identity}${snapshot}${checksum}`;
+  };
+
+  const renderBacktestError = (strategy, error) => {
+    $("#backtest-repo").textContent = `${strategy.repository} · historical`;
+    $("#backtest-status").textContent = "Ошибка";
+    $("#backtest-status").className = "backtest-status error";
+    $("#backtest-dialog-summary").textContent = "Отчёт не был показан без проверки.";
+    $("#backtest-loading").hidden = true;
+    $("#backtest-report").hidden = true;
+    $("#backtest-error").hidden = false;
+    $("#backtest-error-copy").textContent = error.message || "Неизвестная ошибка";
+  };
+
+  const openBacktestDialog = async () => {
+    const strategy = selectedStrategy();
+    if (!strategy) return;
+    const dialog = $("#backtest-dialog");
+    state.backtestStrategyId = strategy.id;
+    renderBacktestLoading(strategy);
+    if (!dialog.open) dialog.showModal();
+    document.body.classList.add("modal-open");
+    $("#backtest-dialog-close").focus();
+
+    const cached = state.backtestCache.get(strategy.id);
+    if (cached) {
+      renderBacktestReport(cached, strategy);
+      return;
+    }
+
+    state.backtestAbortController?.abort();
+    const controller = new AbortController();
+    state.backtestAbortController = controller;
+    $("#backtest-button").disabled = true;
+    try {
+      const response = await fetch(`/api/v1/backtests/${encodeURIComponent(strategy.id)}`, {
+        headers: { Accept: "application/json" },
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const report = await response.json();
+      if (report.strategy_id !== strategy.id || report.schema_version !== 1) {
+        throw new Error("Сервер вернул отчёт другой стратегии");
+      }
+      state.backtestCache.set(strategy.id, report);
+      if (dialog.open && state.backtestStrategyId === strategy.id) {
+        renderBacktestReport(report, strategy);
+      }
+    } catch (error) {
+      if (error.name !== "AbortError" && dialog.open) renderBacktestError(strategy, error);
+    } finally {
+      if (state.backtestAbortController === controller) state.backtestAbortController = null;
+      $("#backtest-button").disabled = false;
+    }
+  };
+
+  const closeBacktestDialog = () => {
+    const dialog = $("#backtest-dialog");
+    state.backtestAbortController?.abort();
+    state.backtestAbortController = null;
+    $("#backtest-button").disabled = false;
     if (dialog.open) dialog.close();
   };
 
@@ -834,6 +1005,22 @@
       }
     }
   });
+  const backtestDialog = $("#backtest-dialog");
+  $("#backtest-button").addEventListener("click", openBacktestDialog);
+  $("#backtest-dialog-close").addEventListener("click", closeBacktestDialog);
+  backtestDialog.addEventListener("click", (event) => {
+    if (event.target === backtestDialog) closeBacktestDialog();
+  });
+  backtestDialog.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    closeBacktestDialog();
+  });
+  backtestDialog.addEventListener("close", () => {
+    document.body.classList.remove("modal-open");
+    state.backtestStrategyId = null;
+    $("#backtest-button").focus();
+  });
   $("#refresh").addEventListener("click", reconnectNow);
   window.addEventListener("resize", () => {
     if (state.resizeFrame) cancelAnimationFrame(state.resizeFrame);
@@ -844,6 +1031,7 @@
   });
   window.addEventListener("beforeunload", () => {
     state.unloading = true;
+    state.backtestAbortController?.abort();
     state.chartInteractionController?.abort();
     if (state.resizeFrame) cancelAnimationFrame(state.resizeFrame);
     clearTimeout(state.reconnectTimer);

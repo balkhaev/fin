@@ -1,0 +1,14 @@
+{
+  "strategy": "DYN-IV113",
+  "snapshotDate": "2026-07-26",
+  "oosStart": "2024-01-01",
+  "orderLegs": 2443,
+  "retainedOrderLegs": 827,
+  "materialDeltaThreshold": 0.005,
+  "tradeEpisodes": 69,
+  "executionPayloadSha256": "11a1430de1cd36cfd2537ba98702978b7a76dd04895baef8408a890fb1f3610c",
+  "episodesPayloadSha256": "7a35e00cd449bc0d9359498137ad09f90f7a253497d69ec14e8b25ffde32815a",
+  "modelStartNavUsd": 100000,
+  "modelEndingNavUsd": 692685.31,
+  "episodeNetContributionUsd": 592685.31
+}

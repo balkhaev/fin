@@ -102,6 +102,19 @@
           <strong id="selected-equity">—</strong>
           <small id="selected-pnl">—</small>
           <div id="strategy-history" class="strategy-history" aria-label="История paper equity"></div>
+          <div class="selected-actions">
+            <button
+              id="backtest-button"
+              class="backtest-button"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="backtest-dialog"
+            >
+              <span>Бектест · 2 года</span>
+              <small>Без настроек · сделки и доказательства</small>
+              <b aria-hidden="true">↗</b>
+            </button>
+          </div>
         </div>
         <div id="strategy-facts" class="strategy-facts"></div>
         <div id="position-body" class="position-body"></div>
@@ -205,6 +218,98 @@
           <p id="strategy-dialog-data">—</p>
         </div>
         <p class="strategy-dialog-safety">Реальные ордера отключены. Это наблюдение за paper-счётом, а не торговая рекомендация.</p>
+      </footer>
+    </article>
+  </dialog>
+
+  <dialog
+    id="backtest-dialog"
+    class="strategy-dialog backtest-dialog"
+    aria-labelledby="backtest-dialog-title"
+    aria-describedby="backtest-dialog-summary"
+  >
+    <article class="strategy-dialog-surface backtest-dialog-surface">
+      <button
+        id="backtest-dialog-close"
+        class="strategy-dialog-close"
+        type="button"
+        aria-label="Закрыть бектест"
+      >×</button>
+
+      <header class="strategy-dialog-hero backtest-hero">
+        <div class="strategy-dialog-meta">
+          <span id="backtest-repo" class="strategy-dialog-repo">—</span>
+          <span class="paper-badge">HISTORICAL · READ ONLY</span>
+        </div>
+        <div class="strategy-dialog-title-row">
+          <h2 id="backtest-dialog-title">Бектест · 2 года</h2>
+          <span id="backtest-status" class="backtest-status">—</span>
+        </div>
+        <p id="backtest-dialog-summary">Загружаем проверяемый отчёт…</p>
+      </header>
+
+      <section id="backtest-result" class="backtest-result" aria-live="polite">
+        <div id="backtest-loading" class="backtest-loading">
+          <i aria-hidden="true"></i>
+          <strong>Проверяем архив и identity стратегии</strong>
+          <span>Настройки не требуются</span>
+        </div>
+
+        <div id="backtest-report" hidden>
+          <section id="backtest-evidence" class="backtest-evidence">
+            <span class="eyebrow">Проверка 50%+ CAGR</span>
+            <h3 id="backtest-evidence-title">—</h3>
+            <p id="backtest-evidence-copy">—</p>
+          </section>
+
+          <dl id="backtest-metrics" class="backtest-metrics"></dl>
+
+          <section id="backtest-blocker-section" class="backtest-blocker-section" hidden>
+            <span class="eyebrow">Почему результата пока нет</span>
+            <h3>Не хватает воспроизводимых данных</h3>
+            <ul id="backtest-blockers"></ul>
+          </section>
+
+          <section id="backtest-trade-section" class="backtest-trade-section">
+            <header>
+              <div>
+                <span class="eyebrow">Сделки</span>
+                <h3>Последние 2 года</h3>
+              </div>
+              <span id="backtest-trade-count" class="scan-meta">—</span>
+            </header>
+            <div class="table-scroll backtest-table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Актив</th><th>Вход</th><th>Выход</th><th>Дней</th><th>Цена входа</th><th>Цена выхода</th><th>Доходность</th><th>Net PnL</th></tr>
+                </thead>
+                <tbody id="backtest-trades"></tbody>
+              </table>
+            </div>
+            <p id="backtest-empty" class="backtest-empty" hidden>Воспроизводимый список сделок для этой версии пока отсутствует.</p>
+          </section>
+
+          <section class="backtest-notes">
+            <div>
+              <span class="eyebrow">Ограничения</span>
+              <ul id="backtest-limitations"></ul>
+            </div>
+            <div>
+              <span class="eyebrow">Источник</span>
+              <p id="backtest-provenance">—</p>
+            </div>
+          </section>
+        </div>
+
+        <div id="backtest-error" class="backtest-error" role="alert" hidden>
+          <strong>Не удалось загрузить отчёт</strong>
+          <p id="backtest-error-copy">—</p>
+        </div>
+      </section>
+
+      <footer class="strategy-dialog-footer backtest-footer">
+        <p>Бектест не меняет paper-счёт и не отправляет ордера. Историческая доходность не гарантирует будущую.</p>
+        <p class="strategy-dialog-safety">50%+ отмечается только при совпадении identity и проверенном архиве.</p>
       </footer>
     </article>
   </dialog>
