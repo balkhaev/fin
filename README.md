@@ -26,12 +26,14 @@ Strategy Hub сводит в один интерфейс рабочие конт
 операторская сводка; деньги между ledger не смешиваются. Все market data
 реальные, но exchange submission отсутствует.
 
-Кнопка `Бектест · 2 года` использует identity-safe historical reports. Сейчас
-только DYN-IV113 имеет checksum-проверяемый frozen ledger: его полный OOS CAGR
-равен `112.638%`, а в двухлетнем окне показаны 53 trade episode. Funding Neutral,
-Consensus WIF + DOT и Atlas NX R1 возвращают `insufficient_evidence` с точными
-причинами; 50.55% V517/V524 не приписываются реконструированному Atlas NX R1.
-Это исторические simulated model outputs, не текущий paper PnL и не прогноз.
+Кнопка `Бектест · 2 года` при каждом нажатии запускает новый серверный replay без
+настроек и с отдельным начальным капиталом `$10,000`. DYN-IV113 и Atlas NX R1
+заново прогоняются их текущими движками на закрытых Binance Spot 1d candles;
+интерфейс показывает новый run id, input SHA-256, метрики и сделки. Funding
+Neutral и Consensus WIF + DOT блокируются без выдуманного результата, потому что
+для точного replay им нужны недоступные двухлетние predicted funding,
+order-book, OI и basis ряды. Архивный identity-safe `GET` сохранён для аудита;
+50.55% V517/V524 не приписываются реконструированному Atlas NX R1.
 
 ## Текущий исторический engineering target
 
@@ -89,7 +91,8 @@ runtime/<strategy-id>/account_state.json
 runtime/<strategy-id>/cycles/*/COMMITTED.json
 ```
 
-API полностью read-only:
+API не содержит endpoint для ордеров и не меняет paper-ledger. Единственный POST
+запускает изолированный исторический расчёт:
 
 ```text
 GET /api/v1/dashboard
@@ -99,12 +102,13 @@ GET /api/v1/scheduler
 GET /api/v1/paper
 GET /api/v1/strategies
 GET /api/v1/backtests/<strategy-id>
+POST /api/v1/backtests/<strategy-id>  # новый replay, body запрещён
 GET /api/v1/health
 GET /api/v1/events
 WS  /api/v1/ws
 ```
 
-POST/order endpoints отсутствуют.
+Order endpoints отсутствуют; повторный конкурентный backtest получает `409`.
 
 `/api/v1/health` reports every strategy separately and requires fresh local DYN
 and Atlas snapshots. The original V75 provenance block remains auditable but no

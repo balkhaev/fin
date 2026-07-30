@@ -488,6 +488,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.018); }
   text-transform: uppercase;
 }
 .backtest-status.verified { color: var(--green); border-color: rgba(66, 214, 155, 0.3); background: var(--green-soft); }
+.backtest-status.computed { color: var(--blue); border-color: rgba(106, 168, 255, 0.34); background: rgba(106, 168, 255, 0.09); }
 .backtest-status.insufficient { color: var(--amber); border-color: rgba(234, 184, 95, 0.34); background: rgba(234, 184, 95, 0.09); }
 .backtest-status.error { color: var(--red); border-color: rgba(242, 111, 121, 0.34); background: rgba(242, 111, 121, 0.08); }
 .backtest-result { min-height: 240px; }
@@ -502,6 +503,7 @@ tbody tr:hover { background: rgba(255, 255, 255, 0.018); }
 .backtest-error strong { color: var(--red); }
 .backtest-evidence { padding: 26px 34px; border-bottom: 1px solid var(--border); }
 .backtest-evidence.verified { background: linear-gradient(120deg, rgba(66, 214, 155, 0.11), transparent 62%); }
+.backtest-evidence.computed { background: linear-gradient(120deg, rgba(106, 168, 255, 0.1), transparent 62%); }
 .backtest-evidence.insufficient { background: linear-gradient(120deg, rgba(234, 184, 95, 0.1), transparent 62%); }
 .backtest-evidence h3,
 .backtest-blocker-section h3,

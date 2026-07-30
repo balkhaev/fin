@@ -160,6 +160,23 @@ class ControlRoomServerTests(unittest.TestCase):
             ),
             encoding="utf-8",
         )
+        self.backtest_calls: list[str] = []
+
+        def run_backtest(strategy_id: str) -> dict[str, object]:
+            self.backtest_calls.append(strategy_id)
+            return {
+                "schema_version": 1,
+                "strategy_id": strategy_id,
+                "execution": {
+                    "status": "completed",
+                    "run_id": f"run-{len(self.backtest_calls)}",
+                    "trigger": "user_click",
+                },
+                "evidence": {"status": "computed"},
+                "trade_count": 0,
+                "trades": [],
+            }
+
         self.server = create_server(
             host="127.0.0.1",
             port=0,
@@ -170,6 +187,7 @@ class ControlRoomServerTests(unittest.TestCase):
             atlas_snapshot_path=root / "runtime" / "atlas_nx_r1_paper_snapshot.json",
             stale_after_seconds=10**9,
             poll_seconds=0.2,
+            backtest_runner=run_backtest,
         )
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -183,6 +201,12 @@ class ControlRoomServerTests(unittest.TestCase):
 
     def json_get(self, path: str) -> dict[str, object]:
         with urllib.request.urlopen(self.base + path, timeout=5) as response:
+            self.assertEqual(response.status, 200)
+            return json.loads(response.read())
+
+    def json_post(self, path: str, data: bytes | None = None) -> dict[str, object]:
+        request = urllib.request.Request(self.base + path, data=data, method="POST")
+        with urllib.request.urlopen(request, timeout=5) as response:
             self.assertEqual(response.status, 200)
             return json.loads(response.read())
 
@@ -235,6 +259,42 @@ class ControlRoomServerTests(unittest.TestCase):
         self.assertEqual(captured.exception.code, 404)
         self.assertEqual(
             json.loads(captured.exception.read())["error"], "unknown_strategy"
+        )
+
+    def test_backtest_post_runs_fresh_server_side_job_without_settings(self) -> None:
+        first = self.json_post("/api/v1/backtests/dyn-iv113")
+        second = self.json_post("/api/v1/backtests/dyn-iv113")
+
+        self.assertEqual(self.backtest_calls, ["dyn-iv113", "dyn-iv113"])
+        self.assertEqual(first["execution"]["status"], "completed")
+        self.assertNotEqual(first["execution"]["run_id"], second["execution"]["run_id"])
+
+        request = urllib.request.Request(
+            self.base + "/api/v1/backtests/dyn-iv113",
+            data=b'{"years":10}',
+            method="POST",
+        )
+        with self.assertRaises(urllib.error.HTTPError) as captured:
+            urllib.request.urlopen(request, timeout=5)
+        self.assertEqual(captured.exception.code, 400)
+        self.assertEqual(
+            json.loads(captured.exception.read())["error"], "settings_not_allowed"
+        )
+
+    def test_backtest_post_has_a_global_single_flight_guard(self) -> None:
+        self.server.backtest_lock.acquire()
+        try:
+            request = urllib.request.Request(
+                self.base + "/api/v1/backtests/atlas-nx", method="POST"
+            )
+            with self.assertRaises(urllib.error.HTTPError) as captured:
+                urllib.request.urlopen(request, timeout=5)
+        finally:
+            self.server.backtest_lock.release()
+
+        self.assertEqual(captured.exception.code, 409)
+        self.assertEqual(
+            json.loads(captured.exception.read())["error"], "backtest_busy"
         )
 
     def test_sse_once_and_path_traversal(self) -> None:

@@ -13,7 +13,6 @@
     resizeFrame: null,
     modalStrategyId: null,
     backtestStrategyId: null,
-    backtestCache: new Map(),
     backtestAbortController: null,
     socket: null,
     reconnectTimer: null,
@@ -635,13 +634,18 @@
     for (const value of values || []) list.append(create("li", "", String(value)));
   };
 
+  const backtestResultClass = (completed, thresholdPassed) => {
+    if (!completed) return "insufficient";
+    return thresholdPassed ? "verified" : "computed";
+  };
+
   const renderBacktestLoading = (strategy) => {
     $("#backtest-repo").textContent = `${strategy.repository} · ${strategy.mode}`;
     $("#backtest-dialog-title").textContent = `${strategy.name} · 2 года`;
-    $("#backtest-status").textContent = "Проверка";
+    $("#backtest-status").textContent = "Считаем";
     $("#backtest-status").className = "backtest-status loading";
     $("#backtest-dialog-summary").textContent =
-      "Проверяем архив, checksum и совпадение identity стратегии…";
+      "Загружаем закрытые свечи и заново прогоняем текущую стратегию…";
     $("#backtest-loading").hidden = false;
     $("#backtest-report").hidden = true;
     $("#backtest-error").hidden = true;
@@ -649,35 +653,49 @@
 
   const renderBacktestReport = (report, strategy) => {
     const evidence = report.evidence || {};
-    const verified = evidence.status === "verified";
+    const completed = ["verified", "computed"].includes(evidence.status);
+    const resultClass = backtestResultClass(
+      completed,
+      evidence.cagr_threshold_passed,
+    );
     const metrics = report.metrics;
-    $("#backtest-repo").textContent = `${report.provenance?.source_repository || strategy.repository} · historical`;
+    $("#backtest-repo").textContent = `${report.provenance?.source_repository || strategy.repository} · paper replay`;
     $("#backtest-dialog-title").textContent = `${strategy.name} · 2 года`;
     const status = $("#backtest-status");
-    status.textContent = evidence.status_label || (verified ? "Проверено" : "Недостаточно данных");
-    status.className = `backtest-status ${verified ? "verified" : "insufficient"}`;
+    status.textContent = evidence.status_label || (completed ? "Рассчитано" : "Недостаточно данных");
+    status.className = `backtest-status ${resultClass}`;
     $("#backtest-dialog-summary").textContent = evidence.summary || "—";
     $("#backtest-loading").hidden = true;
     $("#backtest-error").hidden = true;
     $("#backtest-report").hidden = false;
 
     const evidenceCard = $("#backtest-evidence");
-    evidenceCard.className = `backtest-evidence ${verified ? "verified" : "insufficient"}`;
+    evidenceCard.className = `backtest-evidence ${resultClass}`;
     $("#backtest-evidence-title").textContent = evidence.headline || "Проверка завершена";
-    $("#backtest-evidence-copy").textContent = verified
-      ? `CAGR ${formatNumber(metrics?.cagr_percent, 3)}% · порог ${formatNumber(evidence.cagr_threshold_percent, 0)}% пройден. Метрики относятся к ${metrics?.scope_label || "frozen OOS"}.`
-      : "Результат не подменяется нулём: для этой версии CAGR и сделки пока неизвестны.";
+    $("#backtest-evidence-copy").textContent = completed
+      ? `CAGR ${formatNumber(metrics?.cagr_percent, 3)}% · порог ${formatNumber(evidence.cagr_threshold_percent, 0)}% ${evidence.cagr_threshold_passed ? "пройден" : "не пройден"}. Метрики относятся к: ${metrics?.scope_label || "исторический replay"}.`
+      : "Результат не подменяется приближением: без обязательных исторических сигналов CAGR и сделки неизвестны.";
 
     const metricList = $("#backtest-metrics");
     metricList.replaceChildren();
     metricList.hidden = !metrics;
     if (metrics) {
+      const cagr = asNumber(metrics.cagr_percent);
+      const totalReturn = asNumber(metrics.total_return_percent);
       for (const [label, value, className] of [
-        ["CAGR · full OOS", `+${formatNumber(metrics.cagr_percent, 3)}%`, "positive"],
-        ["Total return", `+${formatNumber(metrics.total_return_percent, 2)}%`, "positive"],
-        ["Sharpe", formatNumber(metrics.sharpe, 3), ""],
+        ["CAGR · текущий replay", `${cagr > 0 ? "+" : ""}${formatNumber(cagr, 3)}%`, tone(cagr)],
+        ["Total return", `${totalReturn > 0 ? "+" : ""}${formatNumber(totalReturn, 2)}%`, tone(totalReturn)],
+        [
+          "Sharpe",
+          metrics.sharpe === null ? "—" : formatNumber(metrics.sharpe, 3),
+          tone(metrics.sharpe),
+        ],
         ["Max drawdown", `${formatNumber(metrics.max_drawdown_percent, 2)}%`, "negative"],
-        ["Период метрик", `${formatNumber(metrics.years, 3)} года`, ""],
+        [
+          "Paper NAV",
+          `${formatUsd(metrics.starting_nav_usd)} → ${formatUsd(metrics.ending_nav_usd)}`,
+          tone(metrics.ending_nav_usd - metrics.starting_nav_usd),
+        ],
         ["Сделки · 2 года", String(asNumber(report.trade_count)), ""],
       ]) {
         const item = create("div");
@@ -717,19 +735,22 @@
 
     renderBacktestList("#backtest-limitations", report.limitations);
     const provenance = report.provenance || {};
-    const checksum = provenance.episodes_payload_sha256
-      ? ` · SHA256 ${String(provenance.episodes_payload_sha256).slice(0, 12)}…`
+    const payloadChecksum = provenance.input_sha256 || provenance.episodes_payload_sha256;
+    const checksum = payloadChecksum
+      ? ` · SHA256 ${String(payloadChecksum).slice(0, 12)}…`
       : "";
     const snapshot = provenance.snapshot_date ? ` · snapshot ${formatDate(provenance.snapshot_date)}` : "";
+    const marketData = provenance.market_data_as_of ? ` · данные по ${formatDate(provenance.market_data_as_of)}` : "";
+    const runId = report.execution?.run_id ? ` · run ${String(report.execution.run_id).slice(0, 8)}` : "";
     $("#backtest-provenance").textContent =
-      `${provenance.source_repository || strategy.repository} · ${provenance.strategy_identity || report.strategy_identity}${snapshot}${checksum}`;
+      `${provenance.source_repository || strategy.repository} · ${provenance.strategy_identity || report.strategy_identity}${marketData}${snapshot}${runId}${checksum}`;
   };
 
   const renderBacktestError = (strategy, error) => {
-    $("#backtest-repo").textContent = `${strategy.repository} · historical`;
+    $("#backtest-repo").textContent = `${strategy.repository} · paper replay`;
     $("#backtest-status").textContent = "Ошибка";
     $("#backtest-status").className = "backtest-status error";
-    $("#backtest-dialog-summary").textContent = "Отчёт не был показан без проверки.";
+    $("#backtest-dialog-summary").textContent = "Расчёт не завершён; старый результат не подставлен.";
     $("#backtest-loading").hidden = true;
     $("#backtest-report").hidden = true;
     $("#backtest-error").hidden = false;
@@ -746,27 +767,25 @@
     document.body.classList.add("modal-open");
     $("#backtest-dialog-close").focus();
 
-    const cached = state.backtestCache.get(strategy.id);
-    if (cached) {
-      renderBacktestReport(cached, strategy);
-      return;
-    }
-
     state.backtestAbortController?.abort();
     const controller = new AbortController();
     state.backtestAbortController = controller;
     $("#backtest-button").disabled = true;
     try {
       const response = await fetch(`/api/v1/backtests/${encodeURIComponent(strategy.id)}`, {
+        method: "POST",
+        cache: "no-store",
         headers: { Accept: "application/json" },
         signal: controller.signal,
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        const failure = await response.json().catch(() => ({}));
+        throw new Error(failure.detail || `HTTP ${response.status}`);
+      }
       const report = await response.json();
       if (report.strategy_id !== strategy.id || report.schema_version !== 1) {
         throw new Error("Сервер вернул отчёт другой стратегии");
       }
-      state.backtestCache.set(strategy.id, report);
       if (dialog.open && state.backtestStrategyId === strategy.id) {
         renderBacktestReport(report, strategy);
       }
@@ -780,9 +799,6 @@
 
   const closeBacktestDialog = () => {
     const dialog = $("#backtest-dialog");
-    state.backtestAbortController?.abort();
-    state.backtestAbortController = null;
-    $("#backtest-button").disabled = false;
     if (dialog.open) dialog.close();
   };
 

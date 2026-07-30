@@ -11,6 +11,7 @@ import struct
 import threading
 import time
 import webbrowser
+from collections.abc import Callable
 from dataclasses import dataclass
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -18,6 +19,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
+from .backtest_runner import run_backtest
 from .backtests import backtest_report
 from .control_room import build_runtime_snapshot, snapshot_digest
 from .strategy_hub import StrategyHub, read_consensus_snapshot
@@ -154,9 +156,16 @@ def build_dashboard_payload(config: ControlRoomConfig) -> dict[str, Any]:
 class ControlRoomHTTPServer(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, address: tuple[str, int], config: ControlRoomConfig):
+    def __init__(
+        self,
+        address: tuple[str, int],
+        config: ControlRoomConfig,
+        backtest_runner: Callable[[str], dict[str, Any]] = run_backtest,
+    ):
         config.validate()
         self.config = config
+        self.backtest_runner = backtest_runner
+        self.backtest_lock = threading.Lock()
         self.strategy_hub = StrategyHub(
             dyn_snapshot_path=config.dyn_snapshot_path,
             atlas_snapshot_path=config.atlas_snapshot_path,
@@ -608,6 +617,55 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
         self._dispatch_get(head_only=True)
 
     def do_POST(self) -> None:
+        path = urlparse(self.path).path
+        backtest_prefix = "/api/v1/backtests/"
+        if path.startswith(backtest_prefix):
+            strategy_id = unquote(path.removeprefix(backtest_prefix))
+            try:
+                content_length = int(self.headers.get("Content-Length", "0"))
+            except ValueError:
+                content_length = -1
+            if content_length != 0 or self.headers.get("Transfer-Encoding"):
+                self._send_json(
+                    {
+                        "error": "settings_not_allowed",
+                        "detail": "Бэктест всегда запускается с фиксированными настройками.",
+                    },
+                    status=HTTPStatus.BAD_REQUEST,
+                )
+                return
+            if not self.server.backtest_lock.acquire(blocking=False):
+                self._send_json(
+                    {
+                        "error": "backtest_busy",
+                        "detail": "Другой бэктест уже выполняется. Повторите позже.",
+                    },
+                    status=HTTPStatus.CONFLICT,
+                )
+                return
+            try:
+                report = self.server.backtest_runner(strategy_id)
+                self._send_json(report)
+            except KeyError:
+                self._send_json(
+                    {"error": "unknown_strategy", "strategy_id": strategy_id},
+                    status=HTTPStatus.NOT_FOUND,
+                )
+            except (OSError, RuntimeError, TypeError, ValueError) as error:
+                self.log_error("backtest failed for %s: %s", strategy_id, error)
+                self._send_json(
+                    {
+                        "error": "backtest_failed",
+                        "detail": (
+                            "Не удалось получить полный набор рыночных данных или "
+                            "выполнить расчёт. Paper-счёт не изменён."
+                        ),
+                    },
+                    status=HTTPStatus.BAD_GATEWAY,
+                )
+            finally:
+                self.server.backtest_lock.release()
+            return
         self._send_json(
             {
                 "error": "method_not_allowed",
@@ -632,6 +690,7 @@ def create_server(
     stale_after_seconds: int = 172_800,
     incident_limit: int = 100,
     poll_seconds: float = 2.0,
+    backtest_runner: Callable[[str], dict[str, Any]] = run_backtest,
 ) -> ControlRoomHTTPServer:
     config = ControlRoomConfig(
         frontend_root=Path(frontend_root).expanduser().resolve(),
@@ -661,7 +720,7 @@ def create_server(
         incident_limit=incident_limit,
         poll_seconds=poll_seconds,
     )
-    return ControlRoomHTTPServer((host, port), config)
+    return ControlRoomHTTPServer((host, port), config, backtest_runner)
 
 
 def _is_loopback(host: str) -> bool:
