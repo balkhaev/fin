@@ -1,0 +1,33 @@
+bybit requires to release all resources with an explicit call to the .close() coroutine. If you are using the exchange instance with async coroutines, add `await exchange.close()` to your code into a place when you're done with the exchange and don't need the exchange instance anymore (at the end of your async coroutine).
+Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x7f0f5251aa50>
+Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7f0f522d5390>, 57.982778419)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7f0f526b2bd0>
+{
+  "candidate": "V163_CURRENT_FUNDING_DISLOCATION_PROBE",
+  "as_of_utc": "2026-07-26T19:54:57.740852+00:00",
+  "status": "insufficient_cross_venue_access",
+  "expected_exchange_count": 3,
+  "initialized_exchange_count": 1,
+  "observed_exchange_count": 1,
+  "observed_exchanges": [
+    "okx"
+  ],
+  "expected_snapshot_count": 15,
+  "observed_snapshot_count": 5,
+  "missing_snapshot_count": 10,
+  "candidate_count": 0,
+  "rejection_count": 0,
+  "error_count": 2,
+  "initialization_errors": [
+    "binance: ExchangeNotAvailable: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo 451  {\n  \"code\": 0,\n  \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.\"\n}",
+    "bybit: RateLimitExceeded: bybit GET https://api.bybit.com/v5/market/instruments-info?category=spot 403 Forbidden {\n    error:The Amazon CloudFront distribution is configured to block access from your country\n}"
+  ],
+  "scan_errors": [],
+  "top_candidates": [],
+  "historical_research_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

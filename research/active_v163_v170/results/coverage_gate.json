@@ -1,0 +1,67 @@
+{
+  "required_start": "2021-01-01T00:00:00+00:00",
+  "required_end": "2026-06-30T00:00:00+00:00",
+  "start_tolerance_days": 7,
+  "end_tolerance_days": 7,
+  "min_aligned_rows": 35000,
+  "min_full_assets": 2,
+  "full_assets": [
+    "BTC",
+    "DOGE",
+    "ETH",
+    "XRP"
+  ],
+  "passed": true,
+  "assets": [
+    {
+      "asset": "BTC",
+      "timestamp_min": "2021-01-01T00:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00",
+      "aligned_rows": 48166,
+      "starts_on_time": true,
+      "ends_on_time": true,
+      "enough_rows": true,
+      "full_coverage": true
+    },
+    {
+      "asset": "ETH",
+      "timestamp_min": "2021-01-01T00:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00",
+      "aligned_rows": 48168,
+      "starts_on_time": true,
+      "ends_on_time": true,
+      "enough_rows": true,
+      "full_coverage": true
+    },
+    {
+      "asset": "SOL",
+      "timestamp_min": "2021-01-22T07:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00",
+      "aligned_rows": 47506,
+      "starts_on_time": false,
+      "ends_on_time": true,
+      "enough_rows": true,
+      "full_coverage": false
+    },
+    {
+      "asset": "XRP",
+      "timestamp_min": "2021-01-01T00:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00",
+      "aligned_rows": 48044,
+      "starts_on_time": true,
+      "ends_on_time": true,
+      "enough_rows": true,
+      "full_coverage": true
+    },
+    {
+      "asset": "DOGE",
+      "timestamp_min": "2021-01-01T00:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00",
+      "aligned_rows": 48166,
+      "starts_on_time": true,
+      "ends_on_time": true,
+      "enough_rows": true,
+      "full_coverage": true
+    }
+  ]
+}

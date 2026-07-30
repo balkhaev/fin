@@ -1,0 +1,19 @@
+{
+  "candidate": "V164_HISTORICAL_FUNDING_ACCESS_PROBE",
+  "as_of_utc": "2026-07-26T19:19:19.359355+00:00",
+  "binance_valid_assets": [
+    "BTC",
+    "DOGE",
+    "ETH",
+    "SOL",
+    "XRP"
+  ],
+  "okx_valid_assets": [],
+  "paired_assets": [],
+  "paired_assets_with_okx_2021_coverage": [],
+  "full_historical_download_permitted": false,
+  "status": "historical_pair_access_insufficient",
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}

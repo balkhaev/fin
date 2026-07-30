@@ -1,0 +1,270 @@
+processed 20/162 policies
+processed 40/162 policies
+processed 60/162 policies
+processed 80/162 policies
+processed 100/162 policies
+processed 120/162 policies
+processed 140/162 policies
+processed 160/162 policies
+{
+  "candidate": "ACTIVE_V165_CROSS_VENUE_BASIS_CONVERGENCE",
+  "status": "rejected_or_needs_iteration",
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false,
+  "selection": {
+    "candidate": "V165_CROSS_VENUE_BASIS_CONVERGENCE",
+    "selection_cutoff": "2025-12-31T23:59:59Z",
+    "selection_uses_2026": false,
+    "program_level_final_pristine": false,
+    "policy_count": 162,
+    "eligible_policy_count": 0,
+    "selected": [
+      {
+        "lookback_hours": 168,
+        "entry_abs_z": 5.0,
+        "entry_abs_spread_bps": 60.0,
+        "max_hold_hours": 4,
+        "stability_bars": 1,
+        "name": "basis_l168_z5_s60_h4_c1"
+      },
+      {
+        "lookback_hours": 336,
+        "entry_abs_z": 5.0,
+        "entry_abs_spread_bps": 60.0,
+        "max_hold_hours": 4,
+        "stability_bars": 1,
+        "name": "basis_l336_z5_s60_h4_c1"
+      },
+      {
+        "lookback_hours": 168,
+        "entry_abs_z": 3.0,
+        "entry_abs_spread_bps": 60.0,
+        "max_hold_hours": 2,
+        "stability_bars": 1,
+        "name": "basis_l168_z3_s60_h2_c1"
+      }
+    ],
+    "gates": {
+      "cagr_min": 0.05,
+      "sharpe_min": 0.75,
+      "max_drawdown_min": -0.12,
+      "all_years_positive": true,
+      "annual_turnover_max": 30.0
+    },
+    "ranking_sha256": "6ca0b00e5db4e757d7210b0a511b8fcb50dc44308f15e5754efcf6b730d130d1",
+    "design_sha256": "059285329f989815ed5386a32078493cfd4add52a67c55a9571bd7ce20f71b7f",
+    "selection_proof_sha256": "bd76ced3fbec6e87dbb69d45e1663a6358c2530014961de8e65402adb528c8f2"
+  },
+  "checks": {
+    "eligible_before_final": false,
+    "prefinal_cagr": false,
+    "prefinal_sharpe": true,
+    "prefinal_max_drawdown": true,
+    "all_prefinal_years_positive": false,
+    "severe_full_cagr_positive": true,
+    "worst_year": true,
+    "final_return_positive": false,
+    "zero_liquidations": true,
+    "positive_margin_buffer": true
+  },
+  "standalone_selection_passed": false,
+  "integration": {
+    "permitted": false,
+    "tested": false,
+    "reason": "standalone gates failed"
+  },
+  "candidate_full": {
+    "total_return": 0.029619388875445685,
+    "cagr": 0.0053262222749808075,
+    "max_drawdown": -0.007934204412405443,
+    "sharpe": 0.7580359163205787,
+    "annual_turnover": 5.702293271326842,
+    "average_gross": 0.0008788684050268505,
+    "max_gross": 0.5,
+    "costs": 417.79212465057304,
+    "trade_count": 31,
+    "liquidations": 0,
+    "min_margin_buffer": 0.5,
+    "observations_per_year": 8765.82
+  },
+  "candidate_prefinal": {
+    "total_return": 0.029619388875445685,
+    "cagr": 0.005855732487162424,
+    "max_drawdown": -0.007934204412405443,
+    "sharpe": 0.7947206429177058,
+    "annual_turnover": 6.267538963557948,
+    "average_gross": 0.0009659851527321408,
+    "max_gross": 0.5,
+    "costs": 417.792124650573,
+    "trade_count": 31,
+    "liquidations": 0,
+    "min_margin_buffer": 0.5,
+    "observations_per_year": 8765.82
+  },
+  "candidate_final_2026h1": {
+    "total_return": 0.0,
+    "cagr": 0.0,
+    "max_drawdown": 0.0,
+    "sharpe": 0.0,
+    "annual_turnover": 0.0,
+    "average_gross": 0.0,
+    "max_gross": 0.0,
+    "costs": 0.0,
+    "trade_count": 0,
+    "liquidations": 0,
+    "min_margin_buffer": 1.0,
+    "observations_per_year": 8765.82
+  },
+  "worst_year": -0.0031637652177277653,
+  "audit_metrics": [
+    {
+      "audit": "base",
+      "name": "base",
+      "fee_bps": 5.0,
+      "slippage_bps": 3.0,
+      "funding_buffer_bps": 10.0,
+      "forced_exit_extra_bps": 10.0,
+      "execution_delay_hours": 0,
+      "total_return": 0.029619388875445685,
+      "cagr": 0.0053262222749808075,
+      "max_drawdown": -0.007934204412405443,
+      "sharpe": 0.7580359163205787,
+      "annual_turnover": 5.702293271326842,
+      "average_gross": 0.0008788684050268505,
+      "max_gross": 0.5,
+      "costs": 417.79212465057304,
+      "trade_count": 31,
+      "liquidations": 0,
+      "min_margin_buffer": 0.5,
+      "observations_per_year": 8765.82,
+      "prefinal_cagr": 0.005855732487162424,
+      "prefinal_sharpe": 0.7947206429177058,
+      "prefinal_max_drawdown": -0.007934204412405443,
+      "final_return": 0.0
+    },
+    {
+      "audit": "severe",
+      "name": "severe",
+      "fee_bps": 5.5,
+      "slippage_bps": 6.0,
+      "funding_buffer_bps": 20.0,
+      "forced_exit_extra_bps": 20.0,
+      "execution_delay_hours": 0,
+      "total_return": 0.0022406412431994482,
+      "cagr": 0.0004073968164868269,
+      "max_drawdown": -0.014296792865065577,
+      "sharpe": 0.05949962426980596,
+      "annual_turnover": 5.702293271326842,
+      "average_gross": 0.0008788684050268505,
+      "max_gross": 0.5,
+      "costs": 682.831003493698,
+      "trade_count": 31,
+      "liquidations": 0,
+      "min_margin_buffer": 0.5,
+      "observations_per_year": 8765.82,
+      "prefinal_cagr": 0.0004477894858154752,
+      "prefinal_sharpe": 0.06237887407310963,
+      "prefinal_max_drawdown": -0.014296792865065577,
+      "final_return": 0.0
+    },
+    {
+      "audit": "extreme",
+      "name": "extreme",
+      "fee_bps": 7.5,
+      "slippage_bps": 10.0,
+      "funding_buffer_bps": 30.0,
+      "forced_exit_extra_bps": 35.0,
+      "execution_delay_hours": 0,
+      "total_return": -0.03220330882214417,
+      "cagr": -0.005939352143165433,
+      "max_drawdown": -0.044069803679124275,
+      "sharpe": -0.7537492349748803,
+      "annual_turnover": 5.702293271326842,
+      "average_gross": 0.0008788684050268505,
+      "max_gross": 0.5,
+      "costs": 1015.969430377705,
+      "trade_count": 31,
+      "liquidations": 0,
+      "min_margin_buffer": 0.5,
+      "observations_per_year": 8765.82,
+      "prefinal_cagr": -0.006526171412928328,
+      "prefinal_sharpe": -0.7902264810561866,
+      "prefinal_max_drawdown": -0.044069803679124275,
+      "final_return": 0.0
+    },
+    {
+      "audit": "delay_1h",
+      "name": "delay_1h",
+      "fee_bps": 5.0,
+      "slippage_bps": 3.0,
+      "funding_buffer_bps": 10.0,
+      "forced_exit_extra_bps": 10.0,
+      "execution_delay_hours": 1,
+      "total_return": -0.022238089723150556,
+      "cagr": -0.004084381440618068,
+      "max_drawdown": -0.022238089723150556,
+      "sharpe": -0.952158361426083,
+      "annual_turnover": 4.974340938817033,
+      "average_gross": 0.001069174555721641,
+      "max_gross": 0.5,
+      "costs": 354.52494028254034,
+      "trade_count": 27,
+      "liquidations": 0,
+      "min_margin_buffer": 0.5,
+      "observations_per_year": 8765.82,
+      "prefinal_cagr": -0.0044883400618768166,
+      "prefinal_sharpe": -0.9982394096386074,
+      "prefinal_max_drawdown": -0.022238089723150556,
+      "final_return": 0.0
+    }
+  ],
+  "data_quality": [
+    {
+      "asset": "BTC",
+      "binance_rows": 48168,
+      "okx_rows": 48168,
+      "aligned_rows": 48166,
+      "timestamp_min": "2021-01-01T00:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00"
+    },
+    {
+      "asset": "ETH",
+      "binance_rows": 48168,
+      "okx_rows": 48168,
+      "aligned_rows": 48168,
+      "timestamp_min": "2021-01-01T00:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00"
+    },
+    {
+      "asset": "SOL",
+      "binance_rows": 48048,
+      "okx_rows": 47658,
+      "aligned_rows": 47506,
+      "timestamp_min": "2021-01-22T07:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00"
+    },
+    {
+      "asset": "XRP",
+      "binance_rows": 48048,
+      "okx_rows": 48168,
+      "aligned_rows": 48044,
+      "timestamp_min": "2021-01-01T00:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00"
+    },
+    {
+      "asset": "DOGE",
+      "binance_rows": 48168,
+      "okx_rows": 48168,
+      "aligned_rows": 48166,
+      "timestamp_min": "2021-01-01T00:00:00+00:00",
+      "timestamp_max": "2026-06-30T23:00:00+00:00"
+    }
+  ],
+  "limitations": [
+    "OKX and Binance candles are public historical observations, not synchronized executable quotes.",
+    "Funding is charged through a conservative fixed buffer because full OKX historical funding is unavailable.",
+    "Program-level 2026 final is not pristine because the broader program has already inspected it.",
+    "Cross-venue transfer, outage, collateral and liquidation-engine risks are not fully modeled."
+  ]
+}

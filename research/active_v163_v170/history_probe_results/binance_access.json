@@ -1,0 +1,2592 @@
+{
+  "records": [
+    {
+      "venue": "binance",
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "month": "2021-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "cff916dc4b638ec3de97828e8911cd91cf7d7a3d0836ec0175869c374e66823d",
+      "checksum_actual": "cff916dc4b638ec3de97828e8911cd91cf7d7a3d0836ec0175869c374e66823d",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "BTCUSDT-fundingRate-2021-01.csv",
+        "zip_bytes": 981,
+        "zip_sha256": "cff916dc4b638ec3de97828e8911cd91cf7d7a3d0836ec0175869c374e66823d",
+        "raw_bytes": 2562,
+        "raw_sha256": "5be276b085325f3f8a664a6ff55a83ee7611a8a3add42f65b199892c200104f2",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00.002000+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200002",
+            "8",
+            "0.00022753"
+          ],
+          [
+            "1609488000006",
+            "8",
+            "0.00026336"
+          ],
+          [
+            "1609516800003",
+            "8",
+            "0.00034457"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "month": "2021-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/BTCUSDT/8h/BTCUSDT-8h-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "1a43ca3dc86ba09e9a6198393b18bb6df82aaa71531aa0cff535a915e89db682",
+      "checksum_actual": "1a43ca3dc86ba09e9a6198393b18bb6df82aaa71531aa0cff535a915e89db682",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "BTCUSDT-8h-2021-01.csv",
+        "zip_bytes": 3441,
+        "zip_sha256": "1a43ca3dc86ba09e9a6198393b18bb6df82aaa71531aa0cff535a915e89db682",
+        "raw_bytes": 9447,
+        "raw_sha256": "9bc7981150614a4fe91e0019d07fbaa96c3a884964e5cb83f1aae5f1c3c81332",
+        "has_header": false,
+        "columns": [],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200000",
+            "28948.25346318",
+            "29516.67635317",
+            "28716.54546384",
+            "29105.39264364",
+            "0",
+            "1609487999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609488000000",
+            "29105.38675505",
+            "29639.66482579",
+            "28901.51302893",
+            "29210.84000000",
+            "0",
+            "1609516799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609516800000",
+            "29210.84000000",
+            "29378.98505619",
+            "28670",
+            "29340.10000000",
+            "0",
+            "1609545599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "month": "2023-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "05e3df32f28d0d50f4c5a280adee9368b4a66fc68c6ddca1b3277087ac0d19f5",
+      "checksum_actual": "05e3df32f28d0d50f4c5a280adee9368b4a66fc68c6ddca1b3277087ac0d19f5",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "BTCUSDT-fundingRate-2023-01.csv",
+        "zip_bytes": 863,
+        "zip_sha256": "05e3df32f28d0d50f4c5a280adee9368b4a66fc68c6ddca1b3277087ac0d19f5",
+        "raw_bytes": 2566,
+        "raw_sha256": "b83a5af331578615875966fb227bfe8e2583e252837310c9bcfb8efa56ba2895",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00.007000+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1672560000008",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1672588800000",
+            "8",
+            "0.00000691"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "month": "2023-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/BTCUSDT/8h/BTCUSDT-8h-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "8715ec4712cf46f386830386e395f49e802b129d7b138a3b8ba8610da50395b1",
+      "checksum_actual": "8715ec4712cf46f386830386e395f49e802b129d7b138a3b8ba8610da50395b1",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "BTCUSDT-8h-2023-01.csv",
+        "zip_bytes": 3383,
+        "zip_sha256": "8715ec4712cf46f386830386e395f49e802b129d7b138a3b8ba8610da50395b1",
+        "raw_bytes": 9651,
+        "raw_sha256": "b9764c566ba387d7e3d1085b4ad754b5932cabc250235a171aa00db92322ac04",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "16537.60000000",
+            "16557.10000000",
+            "16493.62911039",
+            "16519.50000000",
+            "0",
+            "1672559999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672560000000",
+            "16519.50000000",
+            "16564.70000000",
+            "16498.22544388",
+            "16553.10000000",
+            "0",
+            "1672588799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672588800000",
+            "16553.10000000",
+            "16618.80000000",
+            "16552.70000000",
+            "16610.50000000",
+            "0",
+            "1672617599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "month": "2025-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "df725010d55458866eb5a47e9ee708c6796c9d7e77b14c38342cea11f381815e",
+      "checksum_actual": "df725010d55458866eb5a47e9ee708c6796c9d7e77b14c38342cea11f381815e",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "BTCUSDT-fundingRate-2025-01.csv",
+        "zip_bytes": 825,
+        "zip_sha256": "df725010d55458866eb5a47e9ee708c6796c9d7e77b14c38342cea11f381815e",
+        "raw_bytes": 2560,
+        "raw_sha256": "f1b35c2faa5e1d8eaa8c96a722d77e8de35d8d46d869659fbd3feaaebdc08d5b",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00.015000+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600015",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1735718400000",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1735747200001",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "month": "2025-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/BTCUSDT/8h/BTCUSDT-8h-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "7cf0df63235b64fb182c3d7045ca3fa28c083cf011676e679ce0e1d8ea4d3965",
+      "checksum_actual": "7cf0df63235b64fb182c3d7045ca3fa28c083cf011676e679ce0e1d8ea4d3965",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "BTCUSDT-8h-2025-01.csv",
+        "zip_bytes": 3217,
+        "zip_sha256": "7cf0df63235b64fb182c3d7045ca3fa28c083cf011676e679ce0e1d8ea4d3965",
+        "raw_bytes": 9659,
+        "raw_sha256": "1784b11f17f4070c7b063d7d1b7d2261a225aba845fd849983142d08ad1e9f00",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600000",
+            "93549.66175177",
+            "94451.04560993",
+            "93464.44198092",
+            "93661.08732624",
+            "0",
+            "1735718399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735718400000",
+            "93660.97108511",
+            "94487.30000000",
+            "92911",
+            "94413.60000000",
+            "0",
+            "1735747199999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735747200000",
+            "94413.60000000",
+            "95147.32489759",
+            "93743.99356738",
+            "94581",
+            "0",
+            "1735775999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "month": "2026-06",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "cff97ce688329592bccbbf5873b5c7021649e093f5f5806e332c5b4fb7fd6a00",
+      "checksum_actual": "cff97ce688329592bccbbf5873b5c7021649e093f5f5806e332c5b4fb7fd6a00",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "BTCUSDT-fundingRate-2026-06.csv",
+        "zip_bytes": 964,
+        "zip_sha256": "cff97ce688329592bccbbf5873b5c7021649e093f5f5806e332c5b4fb7fd6a00",
+        "raw_bytes": 2494,
+        "raw_sha256": "10ea717c26b580f5502ebe35c4be852b5e1340dcfb4ab0f4b32e082ff3df7dfb",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 90,
+        "timestamp_min": "2026-06-01T00:00:00.001000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00",
+        "sample_rows": [
+          [
+            "1780272000001",
+            "8",
+            "0.00005703"
+          ],
+          [
+            "1780300800001",
+            "8",
+            "0.00004438"
+          ],
+          [
+            "1780329600000",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "BTC",
+      "symbol": "BTCUSDT",
+      "month": "2026-06",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/BTCUSDT/8h/BTCUSDT-8h-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "552c3b8b955351df7a4ac3c7340fc63b02eaecbbab2f79bf1a9c7f2a33627c7d",
+      "checksum_actual": "552c3b8b955351df7a4ac3c7340fc63b02eaecbbab2f79bf1a9c7f2a33627c7d",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "BTCUSDT-8h-2026-06.csv",
+        "zip_bytes": 3038,
+        "zip_sha256": "552c3b8b955351df7a4ac3c7340fc63b02eaecbbab2f79bf1a9c7f2a33627c7d",
+        "raw_bytes": 9162,
+        "raw_sha256": "135a018a81a2594ae6c55127cb8158ea8b2d011403a17ef000746781a48e3eb2",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 87,
+        "timestamp_min": "2026-06-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1780272000000",
+            "73653.56597826",
+            "74075.13895652",
+            "72671.03831159",
+            "72781.30847101",
+            "0",
+            "1780300799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780300800000",
+            "72778.99260145",
+            "73074.60000000",
+            "71043.66786232",
+            "71103.79261594",
+            "0",
+            "1780329599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780329600000",
+            "71103.48761594",
+            "71766.10000000",
+            "70661.38138406",
+            "71387.50000000",
+            "0",
+            "1780358399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "month": "2021-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "4c18c1df8904dea9770aeba5326d26b3fa9a3ffac4891f5f7125d4be2da847c0",
+      "checksum_actual": "4c18c1df8904dea9770aeba5326d26b3fa9a3ffac4891f5f7125d4be2da847c0",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "ETHUSDT-fundingRate-2021-01.csv",
+        "zip_bytes": 1017,
+        "zip_sha256": "4c18c1df8904dea9770aeba5326d26b3fa9a3ffac4891f5f7125d4be2da847c0",
+        "raw_bytes": 2562,
+        "raw_sha256": "edaa2e3295e0da6d32922f8391e9258ff47a69185218c6f6b5bda192ec5a1a1e",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00.002000+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200002",
+            "8",
+            "0.00034491"
+          ],
+          [
+            "1609488000006",
+            "8",
+            "0.00061141"
+          ],
+          [
+            "1609516800003",
+            "8",
+            "0.00056803"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "month": "2021-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/ETHUSDT/8h/ETHUSDT-8h-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "88f9be03aabd8db99f6d5d3df66caef65c31bf97c66901735b826244b6f685af",
+      "checksum_actual": "88f9be03aabd8db99f6d5d3df66caef65c31bf97c66901735b826244b6f685af",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "ETHUSDT-8h-2021-01.csv",
+        "zip_bytes": 3274,
+        "zip_sha256": "88f9be03aabd8db99f6d5d3df66caef65c31bf97c66901735b826244b6f685af",
+        "raw_bytes": 9228,
+        "raw_sha256": "fefbc407f8b8d63ee3339c434e6fee66fdf0ea075e760d28e50a10327f3f6067",
+        "has_header": false,
+        "columns": [],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200000",
+            "736.96351520",
+            "750.08704384",
+            "730.14000000",
+            "737.96772797",
+            "0",
+            "1609487999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609488000000",
+            "737.96795509",
+            "744.35892409",
+            "726.45797326",
+            "736.05000000",
+            "0",
+            "1609516799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609516800000",
+            "736.06000000",
+            "738.43000000",
+            "715.93629589",
+            "729.67000000",
+            "0",
+            "1609545599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "month": "2023-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "5647d5978092d220eb14e11c7854d86815d0eb6204197e37b4808cc599e986f3",
+      "checksum_actual": "5647d5978092d220eb14e11c7854d86815d0eb6204197e37b4808cc599e986f3",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "ETHUSDT-fundingRate-2023-01.csv",
+        "zip_bytes": 819,
+        "zip_sha256": "5647d5978092d220eb14e11c7854d86815d0eb6204197e37b4808cc599e986f3",
+        "raw_bytes": 2562,
+        "raw_sha256": "3d0a0068da875bb28eb16cac30ea2d88b45b134de6982e33d57e6ab38548466c",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00.007000+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1672560000008",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1672588800000",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "month": "2023-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/ETHUSDT/8h/ETHUSDT-8h-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "c0cd6cefef69f7a2411fdad5729a1cb5c0e0536f8cfbbb819c70c8ae075d1476",
+      "checksum_actual": "c0cd6cefef69f7a2411fdad5729a1cb5c0e0536f8cfbbb819c70c8ae075d1476",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "ETHUSDT-8h-2023-01.csv",
+        "zip_bytes": 3296,
+        "zip_sha256": "c0cd6cefef69f7a2411fdad5729a1cb5c0e0536f8cfbbb819c70c8ae075d1476",
+        "raw_bytes": 9351,
+        "raw_sha256": "c242c672fa30ccc41e297128950ce53ab631218a29a2460686fe5f4bdfb0e449",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "1196.10000000",
+            "1196.98000000",
+            "1191.26875590",
+            "1195.07000000",
+            "0",
+            "1672559999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672560000000",
+            "1195.07000000",
+            "1198.53000000",
+            "1193.51767392",
+            "1196.63739174",
+            "0",
+            "1672588799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672588800000",
+            "1196.63698705",
+            "1204.41888433",
+            "1195.61925414",
+            "1200.08000000",
+            "0",
+            "1672617599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "month": "2025-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "88c95b99d2784a7baac529fe578563d7e05038a1b8a498b2f59bf81b216fee20",
+      "checksum_actual": "88c95b99d2784a7baac529fe578563d7e05038a1b8a498b2f59bf81b216fee20",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "ETHUSDT-fundingRate-2025-01.csv",
+        "zip_bytes": 768,
+        "zip_sha256": "88c95b99d2784a7baac529fe578563d7e05038a1b8a498b2f59bf81b216fee20",
+        "raw_bytes": 2563,
+        "raw_sha256": "fe7c495d8445ba1eecb00a543a8bca624a73dbe5d1479d1c1b3ec83370e37828",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00.015000+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600015",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1735718400000",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1735747200001",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "month": "2025-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/ETHUSDT/8h/ETHUSDT-8h-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "811cff7da0eb9cba607395741f3b5e7b90c387738a7db87b6d62753c94dc6f26",
+      "checksum_actual": "811cff7da0eb9cba607395741f3b5e7b90c387738a7db87b6d62753c94dc6f26",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "ETHUSDT-8h-2025-01.csv",
+        "zip_bytes": 3126,
+        "zip_sha256": "811cff7da0eb9cba607395741f3b5e7b90c387738a7db87b6d62753c94dc6f26",
+        "raw_bytes": 9342,
+        "raw_sha256": "7c3a49dea679451c3a0afa200094ac29b3e4be531df4ce62ba0aec446e271bd9",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600000",
+            "3336.65582576",
+            "3368.01000000",
+            "3335.31000000",
+            "3346.08000000",
+            "0",
+            "1735718399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735718400000",
+            "3345.84000000",
+            "3358.96000000",
+            "3313.49962879",
+            "3352.09496411",
+            "0",
+            "1735747199999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735747200000",
+            "3352.07723684",
+            "3373.96000000",
+            "3322.31417424",
+            "3359.35000000",
+            "0",
+            "1735775999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "month": "2026-06",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "cc6fb028a811bc423b711f6b89de067bf92a2eda61303e1ce0b219b5d3210e47",
+      "checksum_actual": "cc6fb028a811bc423b711f6b89de067bf92a2eda61303e1ce0b219b5d3210e47",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "ETHUSDT-fundingRate-2026-06.csv",
+        "zip_bytes": 967,
+        "zip_sha256": "cc6fb028a811bc423b711f6b89de067bf92a2eda61303e1ce0b219b5d3210e47",
+        "raw_bytes": 2507,
+        "raw_sha256": "ce6e43bde5e82f50da2ae05ca07394394cff681f7856f264461d4f1eb88b8e77",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 90,
+        "timestamp_min": "2026-06-01T00:00:00.001000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00",
+        "sample_rows": [
+          [
+            "1780272000001",
+            "8",
+            "0.00006445"
+          ],
+          [
+            "1780300800001",
+            "8",
+            "0.00005339"
+          ],
+          [
+            "1780329600000",
+            "8",
+            "0.00009572"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "ETH",
+      "symbol": "ETHUSDT",
+      "month": "2026-06",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/ETHUSDT/8h/ETHUSDT-8h-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "a8a87d551976a038204de10dcf49360f7d3d237a879a89d7a4c1cb319407dbee",
+      "checksum_actual": "a8a87d551976a038204de10dcf49360f7d3d237a879a89d7a4c1cb319407dbee",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "ETHUSDT-8h-2026-06.csv",
+        "zip_bytes": 2880,
+        "zip_sha256": "a8a87d551976a038204de10dcf49360f7d3d237a879a89d7a4c1cb319407dbee",
+        "raw_bytes": 8814,
+        "raw_sha256": "85aa1525154f039c2571a0b14fe7684be9ee4343b3f46f8b0c2c54c88de703a9",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 87,
+        "timestamp_min": "2026-06-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1780272000000",
+            "2006.31000000",
+            "2020.78424806",
+            "1970.95000000",
+            "1975.50578295",
+            "0",
+            "1780300799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780300800000",
+            "1975.50624806",
+            "1993.57000000",
+            "1957.71000000",
+            "1967.68379845",
+            "0",
+            "1780329599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780329600000",
+            "1967.67821705",
+            "2008.59298450",
+            "1957.93000000",
+            "2006.06383721",
+            "0",
+            "1780358399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "month": "2021-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "69ceaed5037e3560bd6f31651ba0214de913af8f0c4c25712c95cbbe1308cb97",
+      "checksum_actual": "69ceaed5037e3560bd6f31651ba0214de913af8f0c4c25712c95cbbe1308cb97",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "SOLUSDT-fundingRate-2021-01.csv",
+        "zip_bytes": 965,
+        "zip_sha256": "69ceaed5037e3560bd6f31651ba0214de913af8f0c4c25712c95cbbe1308cb97",
+        "raw_bytes": 2581,
+        "raw_sha256": "6cf304d4e40997e19f3bd8975d1ad8c3b3aea8354e05609f98b00b0f7443b51a",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00.002000+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200002",
+            "8",
+            "-0.00165238"
+          ],
+          [
+            "1609488000006",
+            "8",
+            "-0.00204383"
+          ],
+          [
+            "1609516800003",
+            "8",
+            "-0.00080750"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "month": "2021-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/SOLUSDT/8h/SOLUSDT-8h-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "a066a338bb4d2bf869ddd639a7b50c68450739988960586539ac4abb98775c69",
+      "checksum_actual": "a066a338bb4d2bf869ddd639a7b50c68450739988960586539ac4abb98775c69",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "SOLUSDT-8h-2021-01.csv",
+        "zip_bytes": 2755,
+        "zip_sha256": "a066a338bb4d2bf869ddd639a7b50c68450739988960586539ac4abb98775c69",
+        "raw_bytes": 8184,
+        "raw_sha256": "c016a043d0b16985f3c54f7c02426a17f95517e3b690203c1ee09f9874e0cec5",
+        "has_header": false,
+        "columns": [],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200000",
+            "1.50400000",
+            "1.62500000",
+            "1.49409218",
+            "1.61470000",
+            "0",
+            "1609487999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609488000000",
+            "1.61470000",
+            "1.64910000",
+            "1.56679120",
+            "1.63766172",
+            "0",
+            "1609516799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609516800000",
+            "1.63765603",
+            "1.85055428",
+            "1.60520000",
+            "1.83640000",
+            "0",
+            "1609545599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "month": "2023-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "12a401fc459341834a0d3c2f207d55e7aced058b62838f296028885ee2e52612",
+      "checksum_actual": "12a401fc459341834a0d3c2f207d55e7aced058b62838f296028885ee2e52612",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "SOLUSDT-fundingRate-2023-01.csv",
+        "zip_bytes": 910,
+        "zip_sha256": "12a401fc459341834a0d3c2f207d55e7aced058b62838f296028885ee2e52612",
+        "raw_bytes": 2593,
+        "raw_sha256": "af3f698d3123334f4c3955ee99398bb28da51400bdafa1ab0b1e4c8f5a393c39",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00.007000+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "8",
+            "-0.00092452"
+          ],
+          [
+            "1672560000008",
+            "8",
+            "-0.00039729"
+          ],
+          [
+            "1672588800000",
+            "8",
+            "-0.00097445"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "month": "2023-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/SOLUSDT/8h/SOLUSDT-8h-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "a6fc9da89215dcad1ea6d06254d260848230de50586a4df396627e623b427af5",
+      "checksum_actual": "a6fc9da89215dcad1ea6d06254d260848230de50586a4df396627e623b427af5",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "SOLUSDT-8h-2023-01.csv",
+        "zip_bytes": 2921,
+        "zip_sha256": "a6fc9da89215dcad1ea6d06254d260848230de50586a4df396627e623b427af5",
+        "raw_bytes": 8658,
+        "raw_sha256": "fe98783a5a47b0a436ada8af1e75e560273e83de9413f3bff0b217c185755d1d",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "9.96600000",
+            "10.07200000",
+            "9.69080318",
+            "9.78496343",
+            "0",
+            "1672559999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672560000000",
+            "9.78492797",
+            "9.97356160",
+            "9.70100507",
+            "9.84899832",
+            "0",
+            "1672588799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672588800000",
+            "9.84942654",
+            "10.04135040",
+            "9.82774522",
+            "9.97657350",
+            "0",
+            "1672617599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "month": "2025-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "314888152c16bc2d846f9aaa9ea3ebeec7c67d235ef2671f1a5e6fe0a8b4dbf2",
+      "checksum_actual": "314888152c16bc2d846f9aaa9ea3ebeec7c67d235ef2671f1a5e6fe0a8b4dbf2",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "SOLUSDT-fundingRate-2025-01.csv",
+        "zip_bytes": 916,
+        "zip_sha256": "314888152c16bc2d846f9aaa9ea3ebeec7c67d235ef2671f1a5e6fe0a8b4dbf2",
+        "raw_bytes": 2598,
+        "raw_sha256": "e83c5dcb14ffb95fc9d87e05a66ccd82d6275bc73c631080de836dea23ad91b7",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00.015000+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600015",
+            "8",
+            "-0.00005587"
+          ],
+          [
+            "1735718400000",
+            "8",
+            "-0.00002663"
+          ],
+          [
+            "1735747200001",
+            "8",
+            "-0.00001487"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "month": "2025-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/SOLUSDT/8h/SOLUSDT-8h-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "410792382b78b4fd3c3ee226c8a008cf9e9f9233d0c642a5d369c9f6db2a4119",
+      "checksum_actual": "410792382b78b4fd3c3ee226c8a008cf9e9f9233d0c642a5d369c9f6db2a4119",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "SOLUSDT-8h-2025-01.csv",
+        "zip_bytes": 2905,
+        "zip_sha256": "410792382b78b4fd3c3ee226c8a008cf9e9f9233d0c642a5d369c9f6db2a4119",
+        "raw_bytes": 9015,
+        "raw_sha256": "fc467f8fe2533ab45eb438e14830282ade3690be65cd425778e2a65ca6a976a9",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600000",
+            "189.19974226",
+            "192.58000000",
+            "189.02185526",
+            "189.96000000",
+            "0",
+            "1735718399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735718400000",
+            "189.96000000",
+            "192.05000000",
+            "187.87830352",
+            "191.81270233",
+            "0",
+            "1735747199999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735747200000",
+            "191.81554017",
+            "195.28000000",
+            "189.16000000",
+            "194.22000000",
+            "0",
+            "1735775999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "month": "2026-06",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "8d32fa3153d54c58667650e8b2c65e489b3a433b775052a93208bf60541a40d3",
+      "checksum_actual": "8d32fa3153d54c58667650e8b2c65e489b3a433b775052a93208bf60541a40d3",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "SOLUSDT-fundingRate-2026-06.csv",
+        "zip_bytes": 973,
+        "zip_sha256": "8d32fa3153d54c58667650e8b2c65e489b3a433b775052a93208bf60541a40d3",
+        "raw_bytes": 2545,
+        "raw_sha256": "6cffa9dbfa23926961bec1b65300a10980aaa86d419014f79a6f8d9274cd8269",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 90,
+        "timestamp_min": "2026-06-01T00:00:00.001000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00",
+        "sample_rows": [
+          [
+            "1780272000001",
+            "8",
+            "0.00005009"
+          ],
+          [
+            "1780300800001",
+            "8",
+            "-0.00002566"
+          ],
+          [
+            "1780329600000",
+            "8",
+            "0.00003141"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "SOL",
+      "symbol": "SOLUSDT",
+      "month": "2026-06",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/SOLUSDT/8h/SOLUSDT-8h-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "a7dc6359ff9bd43f338b5cea1fd98f5d7a74ddb03015f99a5ec4f03b35d25146",
+      "checksum_actual": "a7dc6359ff9bd43f338b5cea1fd98f5d7a74ddb03015f99a5ec4f03b35d25146",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "SOLUSDT-8h-2026-06.csv",
+        "zip_bytes": 2652,
+        "zip_sha256": "a7dc6359ff9bd43f338b5cea1fd98f5d7a74ddb03015f99a5ec4f03b35d25146",
+        "raw_bytes": 8118,
+        "raw_sha256": "640a47be58beb6eccd901f7abedceccd148b87edbdb3a516a0d1f1fcf356cd1e",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 87,
+        "timestamp_min": "2026-06-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1780272000000",
+            "82.40772047",
+            "83.07165907",
+            "80.59000000",
+            "80.68000000",
+            "0",
+            "1780300799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780300800000",
+            "80.68087920",
+            "81.24000000",
+            "79.16027331",
+            "79.57226891",
+            "0",
+            "1780329599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780329600000",
+            "79.57367531",
+            "81.61000000",
+            "79.07487314",
+            "81.25000000",
+            "0",
+            "1780358399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "XRP",
+      "symbol": "XRPUSDT",
+      "month": "2021-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "3a7e1661aa17a99e509f7b6d2c32662a2fdcd03b69e67cce6ba80c9abdeba51e",
+      "checksum_actual": "3a7e1661aa17a99e509f7b6d2c32662a2fdcd03b69e67cce6ba80c9abdeba51e",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "XRPUSDT-fundingRate-2021-01.csv",
+        "zip_bytes": 998,
+        "zip_sha256": "3a7e1661aa17a99e509f7b6d2c32662a2fdcd03b69e67cce6ba80c9abdeba51e",
+        "raw_bytes": 2562,
+        "raw_sha256": "6ec358d81da94cbd981f0e9d920767821f4f0facd05f9a7a349f37567273e402",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00.002000+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200002",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1609488000006",
+            "8",
+            "0.00016416"
+          ],
+          [
+            "1609516800003",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "XRP",
+      "symbol": "XRPUSDT",
+      "month": "2021-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/8h/XRPUSDT-8h-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "8b58f4ade0593f5ac4d6763638779e620be9386bcf1fec834ae79843b791b32b",
+      "checksum_actual": "8b58f4ade0593f5ac4d6763638779e620be9386bcf1fec834ae79843b791b32b",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "XRPUSDT-8h-2021-01.csv",
+        "zip_bytes": 2474,
+        "zip_sha256": "8b58f4ade0593f5ac4d6763638779e620be9386bcf1fec834ae79843b791b32b",
+        "raw_bytes": 8184,
+        "raw_sha256": "cecc6b9e13b0b03be177bc07223073a46fcbebe5c4b683bc7311b135d18f31a1",
+        "has_header": false,
+        "columns": [],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200000",
+            "0.21956986",
+            "0.25021224",
+            "0.21610000",
+            "0.22972732",
+            "0",
+            "1609487999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609488000000",
+            "0.22972730",
+            "0.24468282",
+            "0.22603756",
+            "0.24300000",
+            "0",
+            "1609516799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609516800000",
+            "0.24291486",
+            "0.25005711",
+            "0.22902879",
+            "0.23768581",
+            "0",
+            "1609545599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "XRP",
+      "symbol": "XRPUSDT",
+      "month": "2023-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "d5a60c79d144e9157ccd211c4230fb64fdd210dd34cb22e7660e41531f66a5e9",
+      "checksum_actual": "d5a60c79d144e9157ccd211c4230fb64fdd210dd34cb22e7660e41531f66a5e9",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "XRPUSDT-fundingRate-2023-01.csv",
+        "zip_bytes": 805,
+        "zip_sha256": "d5a60c79d144e9157ccd211c4230fb64fdd210dd34cb22e7660e41531f66a5e9",
+        "raw_bytes": 2571,
+        "raw_sha256": "23d52e1d0942a2c5ad6abb5b4de2042dd7d9636998907db2b94a20d60395052b",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00.007000+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1672560000008",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1672588800000",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "XRP",
+      "symbol": "XRPUSDT",
+      "month": "2023-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/8h/XRPUSDT-8h-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "ef3be3648f4dc68e9c3b717204399e9c2ff0b816b7d7df037ceebda633a7656f",
+      "checksum_actual": "ef3be3648f4dc68e9c3b717204399e9c2ff0b816b7d7df037ceebda633a7656f",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "XRPUSDT-8h-2023-01.csv",
+        "zip_bytes": 2506,
+        "zip_sha256": "ef3be3648f4dc68e9c3b717204399e9c2ff0b816b7d7df037ceebda633a7656f",
+        "raw_bytes": 8298,
+        "raw_sha256": "17444c8669b5c868230d6616d0af25b4686d99e001d2f69dfc309098f92e52e4",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "0.33890000",
+            "0.33908007",
+            "0.33530000",
+            "0.33662725",
+            "0",
+            "1672559999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672560000000",
+            "0.33662507",
+            "0.33860000",
+            "0.33620000",
+            "0.33682400",
+            "0",
+            "1672588799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672588800000",
+            "0.33682414",
+            "0.33975972",
+            "0.33675659",
+            "0.33850000",
+            "0",
+            "1672617599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "XRP",
+      "symbol": "XRPUSDT",
+      "month": "2025-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "b14759b7a99d6111f819790de938b2b0f3eeeaac57402c2e1ef71fd38302d26d",
+      "checksum_actual": "b14759b7a99d6111f819790de938b2b0f3eeeaac57402c2e1ef71fd38302d26d",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "XRPUSDT-fundingRate-2025-01.csv",
+        "zip_bytes": 743,
+        "zip_sha256": "b14759b7a99d6111f819790de938b2b0f3eeeaac57402c2e1ef71fd38302d26d",
+        "raw_bytes": 2567,
+        "raw_sha256": "d30a7566b9f80776c7c45f6c709f144efa7e1047aae621885b579bc5559549db",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00.015000+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600015",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1735718400000",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1735747200001",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "XRP",
+      "symbol": "XRPUSDT",
+      "month": "2025-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/8h/XRPUSDT-8h-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "bd1876a89079d0eb0420ee2be4c77fa3e2439f2bea3109a35978c91333a9835f",
+      "checksum_actual": "bd1876a89079d0eb0420ee2be4c77fa3e2439f2bea3109a35978c91333a9835f",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "XRPUSDT-8h-2025-01.csv",
+        "zip_bytes": 2643,
+        "zip_sha256": "bd1876a89079d0eb0420ee2be4c77fa3e2439f2bea3109a35978c91333a9835f",
+        "raw_bytes": 8298,
+        "raw_sha256": "ea8cd3bae8ebfd5f20d0927912d626fbde21c2e86a93776eb22346b2791b0739",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600000",
+            "2.08356447",
+            "2.14840000",
+            "2.08103563",
+            "2.12426992",
+            "0",
+            "1735718399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735718400000",
+            "2.12420000",
+            "2.23258904",
+            "2.09025314",
+            "2.22776513",
+            "0",
+            "1735747199999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735747200000",
+            "2.22758408",
+            "2.35430000",
+            "2.21251559",
+            "2.33212433",
+            "0",
+            "1735775999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "XRP",
+      "symbol": "XRPUSDT",
+      "month": "2026-06",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "f5d1b51767ddc812c4608080adf54cfca0db7cba592d3e62d7416cd358a3ebde",
+      "checksum_actual": "f5d1b51767ddc812c4608080adf54cfca0db7cba592d3e62d7416cd358a3ebde",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "XRPUSDT-fundingRate-2026-06.csv",
+        "zip_bytes": 962,
+        "zip_sha256": "f5d1b51767ddc812c4608080adf54cfca0db7cba592d3e62d7416cd358a3ebde",
+        "raw_bytes": 2554,
+        "raw_sha256": "f0e62ec61b09863c491487f6a503212cab55da8e62af77edf979f633e550468f",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 90,
+        "timestamp_min": "2026-06-01T00:00:00.001000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00",
+        "sample_rows": [
+          [
+            "1780272000001",
+            "8",
+            "0.00004472"
+          ],
+          [
+            "1780300800001",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1780329600000",
+            "8",
+            "-0.00004341"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "XRP",
+      "symbol": "XRPUSDT",
+      "month": "2026-06",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/XRPUSDT/8h/XRPUSDT-8h-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "318991e1e6f3339526135cb83eac1dc576b18030c9337d11c9d52f0d4151ac03",
+      "checksum_actual": "318991e1e6f3339526135cb83eac1dc576b18030c9337d11c9d52f0d4151ac03",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "XRPUSDT-8h-2026-06.csv",
+        "zip_bytes": 2408,
+        "zip_sha256": "318991e1e6f3339526135cb83eac1dc576b18030c9337d11c9d52f0d4151ac03",
+        "raw_bytes": 7770,
+        "raw_sha256": "e0e64b0b2d717fbb0903259eab9bc04c61b219d709bcd067ab70e8c5b63d6eaa",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 87,
+        "timestamp_min": "2026-06-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1780272000000",
+            "1.33270000",
+            "1.34060000",
+            "1.30264543",
+            "1.30300000",
+            "0",
+            "1780300799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780300800000",
+            "1.30294566",
+            "1.30900000",
+            "1.27903775",
+            "1.28149309",
+            "0",
+            "1780329599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780329600000",
+            "1.28146645",
+            "1.30400000",
+            "1.27902829",
+            "1.29669717",
+            "0",
+            "1780358399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "DOGE",
+      "symbol": "DOGEUSDT",
+      "month": "2021-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "14b52fe147a83dc23c5ddd842d33f7f5264b27e87804147812d6af2ba9fc69ac",
+      "checksum_actual": "14b52fe147a83dc23c5ddd842d33f7f5264b27e87804147812d6af2ba9fc69ac",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "DOGEUSDT-fundingRate-2021-01.csv",
+        "zip_bytes": 920,
+        "zip_sha256": "14b52fe147a83dc23c5ddd842d33f7f5264b27e87804147812d6af2ba9fc69ac",
+        "raw_bytes": 2570,
+        "raw_sha256": "f49ed81afb199262786430c808816d58b324407597dbcd36400ef85c78dd4acd",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00.002000+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200002",
+            "8",
+            "0.00042149"
+          ],
+          [
+            "1609488000006",
+            "8",
+            "0.00063967"
+          ],
+          [
+            "1609516800003",
+            "8",
+            "0.00077721"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "DOGE",
+      "symbol": "DOGEUSDT",
+      "month": "2021-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/DOGEUSDT/8h/DOGEUSDT-8h-2021-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "b5536385698316d0e1238b6cf1829b69a97cc993be167d47f6ad4ce42f496fc5",
+      "checksum_actual": "b5536385698316d0e1238b6cf1829b69a97cc993be167d47f6ad4ce42f496fc5",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "DOGEUSDT-8h-2021-01.csv",
+        "zip_bytes": 2378,
+        "zip_sha256": "b5536385698316d0e1238b6cf1829b69a97cc993be167d47f6ad4ce42f496fc5",
+        "raw_bytes": 8184,
+        "raw_sha256": "0d243d12b598c732f6735ff74a8ad497bf715d64326b4be25b6f7ce1e3edd46d",
+        "has_header": false,
+        "columns": [],
+        "row_count": 93,
+        "timestamp_min": "2021-01-01T00:00:00+00:00",
+        "timestamp_max": "2021-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1609459200000",
+            "0.00467618",
+            "0.00501029",
+            "0.00461347",
+            "0.00486400",
+            "0",
+            "1609487999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609488000000",
+            "0.00486400",
+            "0.00500677",
+            "0.00477700",
+            "0.00492400",
+            "0",
+            "1609516799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1609516800000",
+            "0.00492400",
+            "0.00568900",
+            "0.00490228",
+            "0.00567879",
+            "0",
+            "1609545599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "DOGE",
+      "symbol": "DOGEUSDT",
+      "month": "2023-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "49e9a7828c95398a332abecf1747724a951f012fcf2ab22b36e9a3281f8d3a49",
+      "checksum_actual": "49e9a7828c95398a332abecf1747724a951f012fcf2ab22b36e9a3281f8d3a49",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "DOGEUSDT-fundingRate-2023-01.csv",
+        "zip_bytes": 808,
+        "zip_sha256": "49e9a7828c95398a332abecf1747724a951f012fcf2ab22b36e9a3281f8d3a49",
+        "raw_bytes": 2562,
+        "raw_sha256": "ad3c17bbb4fb5a5d4f849d5f0bf8fd15142b244d2f45d687cd26899f6739d471",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00.007000+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "8",
+            "0.00010000"
+          ],
+          [
+            "1672560000008",
+            "8",
+            "0.00008475"
+          ],
+          [
+            "1672588800000",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "DOGE",
+      "symbol": "DOGEUSDT",
+      "month": "2023-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/DOGEUSDT/8h/DOGEUSDT-8h-2023-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "7aded3e425b1d80c1c8070c7486bbbd9e0e16eb75e94d9246c724bc6fee89db2",
+      "checksum_actual": "7aded3e425b1d80c1c8070c7486bbbd9e0e16eb75e94d9246c724bc6fee89db2",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "DOGEUSDT-8h-2023-01.csv",
+        "zip_bytes": 2569,
+        "zip_sha256": "7aded3e425b1d80c1c8070c7486bbbd9e0e16eb75e94d9246c724bc6fee89db2",
+        "raw_bytes": 8298,
+        "raw_sha256": "a9069b843f361990aa79a3a03c68c4feeca839da62027500a4049c85f561658a",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2023-01-01T00:00:00+00:00",
+        "timestamp_max": "2023-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1672531200000",
+            "0.07019909",
+            "0.07034692",
+            "0.06905298",
+            "0.06943000",
+            "0",
+            "1672559999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672560000000",
+            "0.06943000",
+            "0.06987000",
+            "0.06913064",
+            "0.06972928",
+            "0",
+            "1672588799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1672588800000",
+            "0.06972948",
+            "0.07081000",
+            "0.06957000",
+            "0.07024185",
+            "0",
+            "1672617599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "DOGE",
+      "symbol": "DOGEUSDT",
+      "month": "2025-01",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "be2ccf953a2fa5e84f49be601917340ba1b220b7ca42566f4066173633c80107",
+      "checksum_actual": "be2ccf953a2fa5e84f49be601917340ba1b220b7ca42566f4066173633c80107",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "DOGEUSDT-fundingRate-2025-01.csv",
+        "zip_bytes": 871,
+        "zip_sha256": "be2ccf953a2fa5e84f49be601917340ba1b220b7ca42566f4066173633c80107",
+        "raw_bytes": 2580,
+        "raw_sha256": "3dcd1288333e4d5efbde44be1f1b6f3d45826985f79cd5b83f0d492e9e025f08",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00.015000+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600015",
+            "8",
+            "0.00006602"
+          ],
+          [
+            "1735718400000",
+            "8",
+            "0.00002596"
+          ],
+          [
+            "1735747200001",
+            "8",
+            "0.00005957"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "DOGE",
+      "symbol": "DOGEUSDT",
+      "month": "2025-01",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/DOGEUSDT/8h/DOGEUSDT-8h-2025-01.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "e06a61495d25a7bf4a4daa065cf17380b5e66d721fdcb0f487a9abaa2dd10c97",
+      "checksum_actual": "e06a61495d25a7bf4a4daa065cf17380b5e66d721fdcb0f487a9abaa2dd10c97",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "DOGEUSDT-8h-2025-01.csv",
+        "zip_bytes": 2584,
+        "zip_sha256": "e06a61495d25a7bf4a4daa065cf17380b5e66d721fdcb0f487a9abaa2dd10c97",
+        "raw_bytes": 8298,
+        "raw_sha256": "09ad2c34c7936e799e67bc4af38f04031a351f078d510ae818adfc79bf34978a",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 93,
+        "timestamp_min": "2025-01-01T00:00:00+00:00",
+        "timestamp_max": "2025-01-31T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1735689600000",
+            "0.31583125",
+            "0.32140000",
+            "0.31549000",
+            "0.31664000",
+            "0",
+            "1735718399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735718400000",
+            "0.31664000",
+            "0.32059000",
+            "0.31183000",
+            "0.32024005",
+            "0",
+            "1735747199999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1735747200000",
+            "0.32024075",
+            "0.32744540",
+            "0.31708000",
+            "0.32504000",
+            "0",
+            "1735775999999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "DOGE",
+      "symbol": "DOGEUSDT",
+      "month": "2026-06",
+      "dataset": "fundingRate",
+      "url": "https://data.binance.vision/data/futures/um/monthly/fundingRate/DOGEUSDT/DOGEUSDT-fundingRate-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "b701956a49aa6e9daf692eccbe0c79be94dd3e0dbacde8996852f551a5fbfdba",
+      "checksum_actual": "b701956a49aa6e9daf692eccbe0c79be94dd3e0dbacde8996852f551a5fbfdba",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "DOGEUSDT-fundingRate-2026-06.csv",
+        "zip_bytes": 961,
+        "zip_sha256": "b701956a49aa6e9daf692eccbe0c79be94dd3e0dbacde8996852f551a5fbfdba",
+        "raw_bytes": 2502,
+        "raw_sha256": "fad6aca26b251649f7be304c361abc006c2695d12ca9e62059d50befc0fdf79d",
+        "has_header": true,
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "row_count": 90,
+        "timestamp_min": "2026-06-01T00:00:00.001000+00:00",
+        "timestamp_max": "2026-06-30T16:00:00.005000+00:00",
+        "sample_rows": [
+          [
+            "1780272000001",
+            "8",
+            "0.00003009"
+          ],
+          [
+            "1780300800001",
+            "8",
+            "0.00005635"
+          ],
+          [
+            "1780329600000",
+            "8",
+            "0.00010000"
+          ]
+        ]
+      },
+      "valid": true
+    },
+    {
+      "venue": "binance",
+      "asset": "DOGE",
+      "symbol": "DOGEUSDT",
+      "month": "2026-06",
+      "dataset": "markPriceKlines",
+      "url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/DOGEUSDT/8h/DOGEUSDT-8h-2026-06.zip",
+      "checksum_status": 200,
+      "http_status": 200,
+      "content_type": "binary/octet-stream",
+      "checksum_expected": "c5cece9bdda04abd91995053923f4af9643754a95c7668d856bb6dd914ca153b",
+      "checksum_actual": "c5cece9bdda04abd91995053923f4af9643754a95c7668d856bb6dd914ca153b",
+      "checksum_valid": true,
+      "inspection": {
+        "filename": "DOGEUSDT-8h-2026-06.csv",
+        "zip_bytes": 2284,
+        "zip_sha256": "c5cece9bdda04abd91995053923f4af9643754a95c7668d856bb6dd914ca153b",
+        "raw_bytes": 7770,
+        "raw_sha256": "006453dd31994976b0c24f22b5fa5752a4dda0c2b5ae8e67443c00292efc9059",
+        "has_header": true,
+        "columns": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "row_count": 87,
+        "timestamp_min": "2026-06-01T00:00:00+00:00",
+        "timestamp_max": "2026-06-30T16:00:00+00:00",
+        "sample_rows": [
+          [
+            "1780272000000",
+            "0.10038634",
+            "0.10153000",
+            "0.09907185",
+            "0.09915000",
+            "0",
+            "1780300799999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780300800000",
+            "0.09916000",
+            "0.10029759",
+            "0.09797754",
+            "0.09827431",
+            "0",
+            "1780329599999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1780329600000",
+            "0.09827846",
+            "0.10107000",
+            "0.09777061",
+            "0.10106000",
+            "0",
+            "1780358399999",
+            "0",
+            "28800",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "valid": true
+    }
+  ],
+  "valid_count": 40,
+  "total_count": 40,
+  "valid_assets": [
+    "BTC",
+    "DOGE",
+    "ETH",
+    "SOL",
+    "XRP"
+  ],
+  "valid_datasets": [
+    "fundingRate",
+    "markPriceKlines"
+  ]
+}
