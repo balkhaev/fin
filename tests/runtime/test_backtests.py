@@ -41,6 +41,13 @@ class BacktestReportTests(unittest.TestCase):
             report["provenance"]["episodes_payload_sha256"],
             "7a35e00cd449bc0d9359498137ad09f90f7a253497d69ec14e8b25ffde32815a",
         )
+        self.assertEqual(
+            report["provenance"]["normalized_trades_sha256"],
+            "32e2fabaedccb0cea99b19422222d89e7459a787a9b4ca00738b0eca4af69a90",
+        )
+        self.assertEqual(
+            report["provenance"]["normalized_trades_format"], "readable_json"
+        )
         self.assertFalse(report["provenance"]["is_current_paper_account"])
 
     def test_unproven_strategies_never_receive_fabricated_metrics(self) -> None:

@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-import base64
-import binascii
 import copy
-import gzip
 import hashlib
 import json
 from datetime import date
@@ -22,9 +19,12 @@ _STRATEGY_IDS = (
 _CAGR_THRESHOLD_PERCENT = 50.0
 _DYN_WINDOW_START = "2024-07-26"
 _DYN_WINDOW_END = "2026-07-26"
-_DYN_EPISODE_FILES = (
-    "dyniv113-trade-episodes.chunk-01.b64",
-    "dyniv113-trade-episodes.chunk-02.b64",
+_DYN_TRADES_FILE = "dyniv113-two-year-trades.json"
+_DYN_SOURCE_EPISODES_SHA256 = (
+    "7a35e00cd449bc0d9359498137ad09f90f7a253497d69ec14e8b25ffde32815a"
+)
+_DYN_NORMALIZED_TRADES_SHA256 = (
+    "32e2fabaedccb0cea99b19422222d89e7459a787a9b4ca00738b0eca4af69a90"
 )
 _TROPICAL_YEAR_DAYS = 365.2425
 _DYN_RISK_METRICS = {
@@ -49,25 +49,30 @@ def _data_text(name: str) -> str:
 
 def _load_dyn_archive() -> tuple[dict[str, Any], list[dict[str, Any]]]:
     manifest = json.loads(_data_text("dyniv113-ledger-manifest.json"))
-    encoded = "".join(_data_text(name) for name in _DYN_EPISODE_FILES)
-    try:
-        compressed = base64.b64decode("".join(encoded.split()), validate=True)
-        payload = gzip.decompress(compressed)
-    except (binascii.Error, gzip.BadGzipFile) as error:
-        raise ValueError("DYN-IV113 trade archive is not valid base64/gzip") from error
+    if manifest.get("episodesPayloadSha256") != _DYN_SOURCE_EPISODES_SHA256:
+        raise ValueError("DYN-IV113 source archive identity mismatch")
 
-    digest = hashlib.sha256(compressed).hexdigest()
-    if digest != manifest.get("episodesPayloadSha256"):
-        raise ValueError("DYN-IV113 trade archive checksum mismatch")
-
-    episodes = json.loads(payload)
+    episodes = json.loads(_data_text(_DYN_TRADES_FILE))
     if not isinstance(episodes, list):
         raise TypeError("DYN-IV113 trade archive must contain a list")
-    if len(episodes) != manifest.get("tradeEpisodes"):
-        raise ValueError("DYN-IV113 trade archive row count mismatch")
-    contribution = sum(float(item["netContributionUsd"]) for item in episodes)
-    if abs(contribution - float(manifest["episodeNetContributionUsd"])) > 0.02:
-        raise ValueError("DYN-IV113 trade archive contribution mismatch")
+    canonical = json.dumps(
+        episodes,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    if hashlib.sha256(canonical).hexdigest() != _DYN_NORMALIZED_TRADES_SHA256:
+        raise ValueError("DYN-IV113 readable trade extract checksum mismatch")
+    if len(episodes) != 53:
+        raise ValueError("DYN-IV113 readable trade extract row count mismatch")
+    if len({str(item["id"]) for item in episodes}) != len(episodes):
+        raise ValueError("DYN-IV113 readable trade extract contains duplicate IDs")
+    if any(
+        str(item["entryDate"]) > _DYN_WINDOW_END
+        or str(item["heldThrough"]) < _DYN_WINDOW_START
+        for item in episodes
+    ):
+        raise ValueError("DYN-IV113 readable trade extract is outside its window")
     return manifest, episodes
 
 
@@ -179,6 +184,8 @@ def _dyn_report() -> dict[str, Any]:
             "oos_start": str(manifest["oosStart"]),
             "execution_mode": "SIMULATED_CLOSE_FILLS",
             "episodes_payload_sha256": str(manifest["episodesPayloadSha256"]),
+            "normalized_trades_sha256": _DYN_NORMALIZED_TRADES_SHA256,
+            "normalized_trades_format": "readable_json",
             "episode_count": int(manifest["tradeEpisodes"]),
             "order_leg_count": int(manifest["orderLegs"]),
             "risk_metrics_source": "apps/web/src/data/strategy-monitor-data.ts",
