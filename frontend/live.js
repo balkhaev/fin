@@ -817,6 +817,11 @@
   strategyDialog.addEventListener("click", (event) => {
     if (event.target === strategyDialog) closeStrategyDialog();
   });
+  strategyDialog.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    closeStrategyDialog();
+  });
   strategyDialog.addEventListener("close", () => {
     document.body.classList.remove("modal-open");
     const closedStrategyId = state.modalStrategyId;

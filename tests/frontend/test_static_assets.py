@@ -59,6 +59,7 @@ class StaticAssetTests(unittest.TestCase):
         self.assertIn('setAttribute("aria-haspopup", "dialog")', script)
         self.assertIn("showModal()", script)
         self.assertIn('addEventListener("close"', script)
+        self.assertIn('event.key !== "Escape"', script)
         self.assertIn("WebSocket", script)
         self.assertNotIn("EventSource", script)
         self.assertNotIn("setInterval", script)
