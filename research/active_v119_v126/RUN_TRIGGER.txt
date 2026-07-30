@@ -1,0 +1,1 @@
+Trigger full V119–V126 research after V138 checkpoint merge audit.
