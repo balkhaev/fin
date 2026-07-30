@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fin.local/schemas/runtime/forward_clock_reset_record.schema.json",
+  "title": "ForwardClockResetRecord",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "reset_id",
+    "strategy_id",
+    "migration_id",
+    "created_at_utc",
+    "reason",
+    "initial_account_state_path",
+    "initial_account_state_sha256",
+    "initial_account_hash",
+    "initial_account_sequence",
+    "calendar_days_observed",
+    "target_changes_observed",
+    "closed_paper_trades",
+    "nonzero_accelerator_regimes",
+    "forward_observations",
+    "unexplained_delta_mismatches",
+    "state_recovery_failures",
+    "account_state_reused",
+    "historical_evidence_reused",
+    "capital_authorization_carried_forward",
+    "live_ready",
+    "real_leverage_authorized",
+    "exchange_submission_available"
+  ],
+  "$defs": {
+    "strategyId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{1,127}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "repositoryPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)[^\\\\]+$"
+    }
+  },
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "reset_id": {"$ref": "#/$defs/sha256"},
+    "strategy_id": {"$ref": "#/$defs/strategyId"},
+    "migration_id": {"$ref": "#/$defs/sha256"},
+    "created_at_utc": {"type": "string", "pattern": "Z$"},
+    "reason": {"type": "string", "minLength": 1},
+    "initial_account_state_path": {"$ref": "#/$defs/repositoryPath"},
+    "initial_account_state_sha256": {"$ref": "#/$defs/sha256"},
+    "initial_account_hash": {"$ref": "#/$defs/sha256"},
+    "initial_account_sequence": {"const": 0},
+    "calendar_days_observed": {"const": 0},
+    "target_changes_observed": {"const": 0},
+    "closed_paper_trades": {"const": 0},
+    "nonzero_accelerator_regimes": {"const": 0},
+    "forward_observations": {"const": 0},
+    "unexplained_delta_mismatches": {"const": 0},
+    "state_recovery_failures": {"const": 0},
+    "account_state_reused": {"const": false},
+    "historical_evidence_reused": {"const": false},
+    "capital_authorization_carried_forward": {"const": false},
+    "live_ready": {"const": false},
+    "real_leverage_authorized": {"const": false},
+    "exchange_submission_available": {"const": false}
+  },
+  "additionalProperties": false
+}
