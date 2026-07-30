@@ -1,0 +1,81 @@
+name: Active V127-V130 calendar audit
+
+on:
+  push:
+    branches: [agent/active-v127-v130-calendar-audit]
+    paths:
+      - "research/active_v127_v130/**"
+      - ".github/workflows/active-v127-v130-calendar-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: agent/active-v127-v130-calendar-audit
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Assert exact committed inputs
+        run: |
+          set -euxo pipefail
+          for file in \
+            research/active_v88_v94/inputs/atlas/v75_stress_equity.csv \
+            research/active_v95_v102/results/v95_stress_equity.csv \
+            research/active_v103_v110/results/v103_stress_equity.csv \
+            research/active_v111_v118/results/dynamic_equity.csv \
+            research/active_v111_v118/results/delay_5_equity.csv \
+            research/active_v111_v118/results/severe_transfer_cost_equity.csv \
+            research/active_v119_v126/results/v125_robust_ensemble_equity.csv \
+            research/active_v119_v126/results/delay_5_equity.csv \
+            research/active_v119_v126/results/severe_transfer_equity.csv; do
+              test -s "$file"
+          done
+      - name: Install and run audit
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r research/active_v127_v130/requirements.txt
+          python -m py_compile research/active_v127_v130/audit.py
+          rm -rf artifacts/active_v127_v130
+          mkdir -p artifacts/active_v127_v130
+          python research/active_v127_v130/audit.py --root . --output artifacts/active_v127_v130 | tee artifacts/active_v127_v130/run.log
+      - name: Materialize readable results
+        run: |
+          rm -rf research/active_v127_v130/results
+          mkdir -p research/active_v127_v130/results
+          cp -r artifacts/active_v127_v130/. research/active_v127_v130/results/
+          test -s research/active_v127_v130/results/summary.json
+          test -s research/active_v127_v130/results/REPORT_RU.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('research/active_v127_v130/results/summary.json').read_text())
+          assert s['parameters_changed'] is False
+          assert s['candidate_selection_performed'] is False
+          assert s['live_ready'] is False
+          assert s['real_leverage_authorized'] is False
+          print(json.dumps(s,indent=2))
+          PY
+      - name: Commit audit directly to fin
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/active_v127_v130
+          git commit -m "Add Active V127-V130 calendar audit [skip ci]"
+          git push origin HEAD:agent/active-v127-v130-calendar-audit
+      - name: Upload diagnostic artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: active-v127-v130-calendar-audit
+          path: artifacts/active_v127_v130
+          if-no-files-found: warn
+          retention-days: 30
