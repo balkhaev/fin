@@ -1,0 +1,57 @@
+{
+  "candidate": "ACTIVE_V253_CRYPTO_LOW_RISK_FACTOR",
+  "files": {
+    "README.md": {
+      "bytes": 1095,
+      "sha256": "28b4c3f3189843a17ffcd11a7f137f72bd2ec9d91dcec5b99605667aa8c1238f"
+    },
+    "V253_V260_DESIGN.json": {
+      "bytes": 2754,
+      "sha256": "3343a63ba388814c258c7bfadae77eedb494e1d47a18373198331860521887c9"
+    },
+    "requirements.txt": {
+      "bytes": 29,
+      "sha256": "f23698bee800c846d63be3b34bae68c8bcb977b1948ea55a39c508e31f6a521c"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 324,
+      "sha256": "4087173023251deb8c13374f90e87e8157627b7674ae3e6be987e150fbcbf798"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 168,
+      "sha256": "93ea3d9373ae9d9bedebc8cd1a76f27ae13fd7246c28d1b573fbf616ccc9b525"
+    },
+    "results/audit_metrics.csv": {
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 6224,
+      "sha256": "e24b57a4db45111fc72b837e82486e4b6205c87233621afc883bbd00c6b71edc"
+    },
+    "results/data_manifest.csv": {
+      "bytes": 427935,
+      "sha256": "bc2f4c269df8fa943039cfcec8f2369ffdd618857d89963c762625fd146ae5f5"
+    },
+    "results/data_quality.csv": {
+      "bytes": 990,
+      "sha256": "4acf632e791a7032243d4536d56008d99622e7080f78a32d852455f666151025"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 7937,
+      "sha256": "2afdce0931177b265ded83d677cc2fb7bc2774d613b02a7320ec0436f75d5f78"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 127131,
+      "sha256": "8953e7224ea7b195619fe4121dd03a096c4fef6d331566fca5350b8490ae49e6"
+    },
+    "results/summary.json": {
+      "bytes": 35839,
+      "sha256": "00598d010a6bd107a552819f7021490b124ea5591110e3ed07751f562a5d78b3"
+    },
+    "run_research.py": {
+      "bytes": 37659,
+      "sha256": "bf2e8e66a4fe0fa1fdee42f1365a62022097f5283d03439bc870a97215f311fa"
+    }
+  }
+}
