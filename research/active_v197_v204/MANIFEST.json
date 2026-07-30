@@ -1,0 +1,69 @@
+{
+  "candidate": "ACTIVE_V197_DEPTH_REPLENISHMENT",
+  "files": {
+    "README.md": {
+      "bytes": 3515,
+      "sha256": "c5d985f663614c332bd948ab8b46b5cb730c5b0cb91b0a4e7680155113f0a97c"
+    },
+    "V197_V204_DESIGN.json": {
+      "bytes": 2892,
+      "sha256": "b6b0f3b75c65dcf094263a291bd20d58a7bacff52d1ad738b5adf91065c839ac"
+    },
+    "V198_V204_CONFIG.json": {
+      "bytes": 2490,
+      "sha256": "12cc24be98dcc5d530e204249d23b83a9923d9927099c26f11d759c61e4d45dc"
+    },
+    "apply_v198_import_fix.py": {
+      "bytes": 752,
+      "sha256": "810ec636fa69cf89aac812892355d055671b64013d639dfc27a0c334fdf6abcf"
+    },
+    "config.py": {
+      "bytes": 3581,
+      "sha256": "06b2c221e99e91d772df658addce28cd4425f60761b9c0aa65e464f1c385d8b1"
+    },
+    "data.py": {
+      "bytes": 17634,
+      "sha256": "c8f8777d9fc021178ed03b1c5b7efe8c941c85d280e5a2ffbe2b0f5aa91088ea"
+    },
+    "engine.py": {
+      "bytes": 17179,
+      "sha256": "fc6f08f41d14f3b2a8754e763045e9c6cd31333cc4f0d5997db9dc5017b4bd43"
+    },
+    "probe.log": {
+      "bytes": 1503,
+      "sha256": "969bf7e9d860d35bc3438fe09bbc5772c6e268ad818e6a670e50934b448f4965"
+    },
+    "probe.py": {
+      "bytes": 17623,
+      "sha256": "8807df50c0516a47e3a2d36b612c5e5bd6eb4e7f4a285ea4fb413dac77d5877c"
+    },
+    "probe_results/FROZEN_DECISION.json": {
+      "bytes": 401,
+      "sha256": "2e983583a76b2eeaa2b1c9b2ff619088095a5e4de418d2daa756d00792ad4a48"
+    },
+    "probe_results/REPORT_RU.md": {
+      "bytes": 833,
+      "sha256": "9f06e5e26a366dfee8baad599becbc349a7211a242563e13d348db739e52d2e2"
+    },
+    "probe_results/coverage.csv": {
+      "bytes": 4394,
+      "sha256": "8ef1848bbf371d789491845f018755ec500e5b46c8ac0d35fd875efbf2d54f6d"
+    },
+    "probe_results/raw_probe.json": {
+      "bytes": 70789,
+      "sha256": "c37e6538314bd1202496b515354f01c9e57b78613dcf5d899bcaef38e8a25d0e"
+    },
+    "probe_results/schema_gate.json": {
+      "bytes": 2490,
+      "sha256": "13cba94033a4e228db5b63902e1d40f2459d20218d003a30e881f7936342e844"
+    },
+    "requirements.txt": {
+      "bytes": 47,
+      "sha256": "c090b94c5cb6ba3ff5d9e64d7ce05c929899a7f9798ee9d9d52d2c471461b58c"
+    },
+    "run_research.py": {
+      "bytes": 24576,
+      "sha256": "c069e16c38aad92d793dfb18a40f5b2d20e80231a78472dd891122d5223c17ec"
+    }
+  }
+}

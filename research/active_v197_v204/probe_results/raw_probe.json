@@ -1,0 +1,2934 @@
+[
+  {
+    "dataset": "book_depth",
+    "path_type": "bookDepth",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2023-01-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookDepth/BTCUSD_PERP/BTCUSD_PERP-bookDepth-2023-01-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 782,
+    "checksum_valid": true,
+    "archive_sha256": "c8a77286c32f048fdd6277ee97fa8fc4aa758148749c999af76a2523c2cde930",
+    "parsed": {
+      "member": "BTCUSD_PERP-bookDepth-2023-01-15.csv",
+      "rows": 50,
+      "columns": [
+        "timestamp",
+        "percentage",
+        "depth",
+        "notional"
+      ],
+      "column_widths": [
+        4
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "timestamp",
+        "symbol": null,
+        "percentage": "percentage",
+        "depth": "depth",
+        "notional": "notional",
+        "side": null,
+        "price": null,
+        "level": null
+      },
+      "native_median_interval_ms": 30000,
+      "timestamp_min_ms": 1673827050000,
+      "timestamp_max_ms": 1673827170000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2023-01-15 23:57:30",
+          "-5",
+          "635078.00000000",
+          "3001.00000000"
+        ],
+        [
+          "2023-01-15 23:57:30",
+          "-4",
+          "601184.00000000",
+          "2839.00000000"
+        ],
+        [
+          "2023-01-15 23:57:30",
+          "-3",
+          "534134.00000000",
+          "2517.00000000"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2023-01-15 23:59:30",
+          "3",
+          "457736.00000000",
+          "2110.00000000"
+        ],
+        [
+          "2023-01-15 23:59:30",
+          "4",
+          "499536.00000000",
+          "2297.00000000"
+        ],
+        [
+          "2023-01-15 23:59:30",
+          "5",
+          "521306.00000000",
+          "2393.00000000"
+        ]
+      ],
+      "csv_sha256": "b9205d8ce24fc601c0892ccc5a4ddaefa938c1b8efc7ed91615541c520a72037"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_depth",
+    "path_type": "bookDepth",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2024-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookDepth/BTCUSD_PERP/BTCUSD_PERP-bookDepth-2024-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 265903,
+    "checksum_valid": true,
+    "archive_sha256": "91ce1d59e8782332471c6c716be088840d5c61ab92d122c3e2343f8982e52502",
+    "parsed": {
+      "member": "BTCUSD_PERP-bookDepth-2024-07-15.csv",
+      "rows": 28800,
+      "columns": [
+        "timestamp",
+        "percentage",
+        "depth",
+        "notional"
+      ],
+      "column_widths": [
+        4
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "timestamp",
+        "symbol": null,
+        "percentage": "percentage",
+        "depth": "depth",
+        "notional": "notional",
+        "side": null,
+        "price": null,
+        "level": null
+      },
+      "native_median_interval_ms": 30000,
+      "timestamp_min_ms": 1721001600000,
+      "timestamp_max_ms": 1721087970000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2024-07-15 00:00:00",
+          "-5",
+          "1222762.00000000",
+          "1958.00000000"
+        ],
+        [
+          "2024-07-15 00:00:00",
+          "-4",
+          "1167118.00000000",
+          "1878.00000000"
+        ],
+        [
+          "2024-07-15 00:00:00",
+          "-3",
+          "1075198.00000000",
+          "1735.00000000"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2024-07-15 23:59:30",
+          "3",
+          "1285068.00000000",
+          "1882.00000000"
+        ],
+        [
+          "2024-07-15 23:59:30",
+          "4",
+          "1449414.00000000",
+          "2115.00000000"
+        ],
+        [
+          "2024-07-15 23:59:30",
+          "5",
+          "1480016.00000000",
+          "2147.00000000"
+        ]
+      ],
+      "csv_sha256": "3e3cc5f08ab4af59405bff65dc46591e5423f90a5c890d6a3beb74168342186d"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_depth",
+    "path_type": "bookDepth",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2025-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookDepth/BTCUSD_PERP/BTCUSD_PERP-bookDepth-2025-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 278320,
+    "checksum_valid": true,
+    "archive_sha256": "d2e28cc40ea7f98a53e356fb939db5b7f5202791a8c08471c10247db4b24c0f9",
+    "parsed": {
+      "member": "BTCUSD_PERP-bookDepth-2025-07-15.csv",
+      "rows": 28800,
+      "columns": [
+        "timestamp",
+        "percentage",
+        "depth",
+        "notional"
+      ],
+      "column_widths": [
+        4
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "timestamp",
+        "symbol": null,
+        "percentage": "percentage",
+        "depth": "depth",
+        "notional": "notional",
+        "side": null,
+        "price": null,
+        "level": null
+      },
+      "native_median_interval_ms": 30000,
+      "timestamp_min_ms": 1752537600000,
+      "timestamp_max_ms": 1752623970000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2025-07-15 00:00:00",
+          "-5",
+          "4018779.00000000",
+          "3264.00000000"
+        ],
+        [
+          "2025-07-15 00:00:00",
+          "-4",
+          "3704448.00000000",
+          "3008.00000000"
+        ],
+        [
+          "2025-07-15 00:00:00",
+          "-3",
+          "3175219.00000000",
+          "2572.00000000"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2025-07-15 23:59:30",
+          "3",
+          "2122905.00000000",
+          "1729.00000000"
+        ],
+        [
+          "2025-07-15 23:59:30",
+          "4",
+          "2230888.00000000",
+          "1806.00000000"
+        ],
+        [
+          "2025-07-15 23:59:30",
+          "5",
+          "2306781.00000000",
+          "1857.00000000"
+        ]
+      ],
+      "csv_sha256": "7beb1bd6693eea785380f255ac62afb156c5fcd8f759dce6555bd3ba711754f7"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_depth",
+    "path_type": "bookDepth",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2026-04-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookDepth/BTCUSD_PERP/BTCUSD_PERP-bookDepth-2026-04-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 279268,
+    "checksum_valid": true,
+    "archive_sha256": "a7eb22a1f7c42080c58829f83ffeacfd01e932142720ae7d8da877c04b5f87b9",
+    "parsed": {
+      "member": "BTCUSD_PERP-bookDepth-2026-04-15.csv",
+      "rows": 28800,
+      "columns": [
+        "timestamp",
+        "percentage",
+        "depth",
+        "notional"
+      ],
+      "column_widths": [
+        4
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "timestamp",
+        "symbol": null,
+        "percentage": "percentage",
+        "depth": "depth",
+        "notional": "notional",
+        "side": null,
+        "price": null,
+        "level": null
+      },
+      "native_median_interval_ms": 30000,
+      "timestamp_min_ms": 1776211200000,
+      "timestamp_max_ms": 1776297570000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2026-04-15 00:00:00",
+          "-5.00",
+          "2369302.00000000",
+          "3145.00000000"
+        ],
+        [
+          "2026-04-15 00:00:00",
+          "-4.00",
+          "2306557.00000000",
+          "3069.00000000"
+        ],
+        [
+          "2026-04-15 00:00:00",
+          "-3.00",
+          "2193033.00000000",
+          "2922.00000000"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2026-04-15 23:59:30",
+          "3.00",
+          "1510376.00000000",
+          "1916.00000000"
+        ],
+        [
+          "2026-04-15 23:59:30",
+          "4.00",
+          "1763685.00000000",
+          "2230.00000000"
+        ],
+        [
+          "2026-04-15 23:59:30",
+          "5.00",
+          "2064649.00000000",
+          "2606.00000000"
+        ]
+      ],
+      "csv_sha256": "fd459968aea57647dbbb06154a1e77a3026fcef4369972b948785bc1b88c09f0"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_ticker",
+    "path_type": "bookTicker",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2023-01-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookTicker/BTCUSD_PERP/BTCUSD_PERP-bookTicker-2023-01-15.zip",
+    "valid": false,
+    "checksum_status": 404,
+    "http_status": 404,
+    "bytes": 373,
+    "reason": "missing_archive_or_checksum"
+  },
+  {
+    "dataset": "book_ticker",
+    "path_type": "bookTicker",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2024-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookTicker/BTCUSD_PERP/BTCUSD_PERP-bookTicker-2024-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 53063730,
+    "checksum_valid": true,
+    "archive_sha256": "af51045fdb0bdf5472c15b039a86539f7a19acfaed6d333fa53c6af335f80deb",
+    "parsed": {
+      "member": "BTCUSD_PERP-bookTicker-2024-07-15.csv",
+      "rows": 4385466,
+      "columns": [
+        "update_id",
+        "best_bid_price",
+        "best_bid_qty",
+        "best_ask_price",
+        "best_ask_qty",
+        "transaction_time",
+        "event_time"
+      ],
+      "column_widths": [
+        7
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "transaction_time",
+        "symbol": null,
+        "bid_price": "best_bid_price",
+        "bid_qty": "best_bid_qty",
+        "ask_price": "best_ask_price",
+        "ask_qty": "best_ask_qty"
+      },
+      "native_median_interval_ms": 4,
+      "timestamp_min_ms": 1721001600018,
+      "timestamp_max_ms": 1721087999863,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "988742954766",
+          "60775.40000000",
+          "5033.00000000",
+          "60775.50000000",
+          "5823.00000000",
+          "1721001600018",
+          "1721001600028"
+        ],
+        [
+          "988742954771",
+          "60775.40000000",
+          "5033.00000000",
+          "60775.50000000",
+          "6556.00000000",
+          "1721001600018",
+          "1721001600028"
+        ],
+        [
+          "988742955088",
+          "60775.40000000",
+          "5033.00000000",
+          "60775.50000000",
+          "6584.00000000",
+          "1721001600043",
+          "1721001600050"
+        ]
+      ],
+      "last_rows": [
+        [
+          "989413584384",
+          "64742.90000000",
+          "1076.00000000",
+          "64743.00000000",
+          "11144.00000000",
+          "1721087999721",
+          "1721087999729"
+        ],
+        [
+          "989413584740",
+          "64742.90000000",
+          "1076.00000000",
+          "64743.00000000",
+          "11148.00000000",
+          "1721087999852",
+          "1721087999861"
+        ],
+        [
+          "989413584764",
+          "64742.90000000",
+          "1076.00000000",
+          "64743.00000000",
+          "8340.00000000",
+          "1721087999863",
+          "1721087999870"
+        ]
+      ],
+      "csv_sha256": "ce339da90b289335f1f0def1fd55cbf1731ab2b72ddd276b90d9b57f1a219aea"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_ticker",
+    "path_type": "bookTicker",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2025-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookTicker/BTCUSD_PERP/BTCUSD_PERP-bookTicker-2025-07-15.zip",
+    "valid": false,
+    "checksum_status": 404,
+    "http_status": 404,
+    "bytes": 373,
+    "reason": "missing_archive_or_checksum"
+  },
+  {
+    "dataset": "book_ticker",
+    "path_type": "bookTicker",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2026-04-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookTicker/BTCUSD_PERP/BTCUSD_PERP-bookTicker-2026-04-15.zip",
+    "valid": false,
+    "checksum_status": 404,
+    "http_status": 404,
+    "bytes": 373,
+    "reason": "missing_archive_or_checksum"
+  },
+  {
+    "dataset": "mark_price_1m",
+    "path_type": "markPriceKlines",
+    "interval": "1m",
+    "symbol": "BTCUSD_PERP",
+    "date": "2023-01-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/markPriceKlines/BTCUSD_PERP/1m/BTCUSD_PERP-1m-2023-01-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 38710,
+    "checksum_valid": true,
+    "archive_sha256": "223f84b229977ff52f5e120e9546b68fc105d9cb54683a6ce21e43d800ce8b52",
+    "parsed": {
+      "member": "BTCUSD_PERP-1m-2023-01-15.csv",
+      "rows": 1440,
+      "columns": [
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "count",
+        "taker_buy_volume",
+        "taker_buy_quote_volume",
+        "ignore"
+      ],
+      "column_widths": [
+        12
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "open_time",
+        "symbol": null,
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close"
+      },
+      "native_median_interval_ms": 60000,
+      "timestamp_min_ms": 1673740800000,
+      "timestamp_max_ms": 1673827140000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "1673740800000",
+          "20958.05061905",
+          "20969.47748492",
+          "20957.30000000",
+          "20969.47748492",
+          "0",
+          "1673740859999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1673740860000",
+          "20969.73462778",
+          "20999.20000000",
+          "20969.73462778",
+          "20999.20000000",
+          "0",
+          "1673740919999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1673740920000",
+          "20999.14809980",
+          "21003.97461190",
+          "20986.10849524",
+          "20986.72876429",
+          "0",
+          "1673740979999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "last_rows": [
+        [
+          "1673827020000",
+          "20881.55231984",
+          "20888.39452487",
+          "20881.26470079",
+          "20887.35235688",
+          "0",
+          "1673827079999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1673827080000",
+          "20885.45140450",
+          "20888.80000000",
+          "20883.94661746",
+          "20888.70000000",
+          "0",
+          "1673827139999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1673827140000",
+          "20888.70000000",
+          "20888.80000000",
+          "20883.68563942",
+          "20883.68563942",
+          "0",
+          "1673827199999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "csv_sha256": "f32a3cb12a0bd5c41c95f942f0cd60b777d2b8eb6144373ebd2ba8d32b8bfef7"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "mark_price_1m",
+    "path_type": "markPriceKlines",
+    "interval": "1m",
+    "symbol": "BTCUSD_PERP",
+    "date": "2024-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/markPriceKlines/BTCUSD_PERP/1m/BTCUSD_PERP-1m-2024-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 38909,
+    "checksum_valid": true,
+    "archive_sha256": "67c3aaad2e7d01720b0c95ed0356517c60dda7eacdb9780010f86a30840debfa",
+    "parsed": {
+      "member": "BTCUSD_PERP-1m-2024-07-15.csv",
+      "rows": 1440,
+      "columns": [
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "count",
+        "taker_buy_volume",
+        "taker_buy_quote_volume",
+        "ignore"
+      ],
+      "column_widths": [
+        12
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "open_time",
+        "symbol": null,
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close"
+      },
+      "native_median_interval_ms": 60000,
+      "timestamp_min_ms": 1721001600000,
+      "timestamp_max_ms": 1721087940000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "1721001600000",
+          "60777.95037930",
+          "60806.80000000",
+          "60764.10089333",
+          "60765.36182617",
+          "0",
+          "1721001659999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1721001660000",
+          "60765.36176381",
+          "60795.50000000",
+          "60765.36176381",
+          "60795.50000000",
+          "0",
+          "1721001719999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1721001720000",
+          "60795.50000000",
+          "60820",
+          "60795.50000000",
+          "60820",
+          "0",
+          "1721001779999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "last_rows": [
+        [
+          "1721087820000",
+          "64843.70000000",
+          "64882.26481770",
+          "64840",
+          "64852.85948574",
+          "0",
+          "1721087879999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1721087880000",
+          "64849.66633416",
+          "64919.54493901",
+          "64844.29510635",
+          "64844.29510635",
+          "0",
+          "1721087939999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1721087940000",
+          "64843.96715651",
+          "64843.96715651",
+          "64750.10000000",
+          "64757.90000000",
+          "0",
+          "1721087999999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "csv_sha256": "df5c446fa070d2805af85044f62864239208f09d4004b72992db2b3fa44a60fc"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "mark_price_1m",
+    "path_type": "markPriceKlines",
+    "interval": "1m",
+    "symbol": "BTCUSD_PERP",
+    "date": "2025-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/markPriceKlines/BTCUSD_PERP/1m/BTCUSD_PERP-1m-2025-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 37425,
+    "checksum_valid": true,
+    "archive_sha256": "1759e788a8da29d991bbb0ef526eaabea823b18858f684c388710a9395e9c59c",
+    "parsed": {
+      "member": "BTCUSD_PERP-1m-2025-07-15.csv",
+      "rows": 1440,
+      "columns": [
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "count",
+        "taker_buy_volume",
+        "taker_buy_quote_volume",
+        "ignore"
+      ],
+      "column_widths": [
+        12
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "open_time",
+        "symbol": null,
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close"
+      },
+      "native_median_interval_ms": 60000,
+      "timestamp_min_ms": 1752537600000,
+      "timestamp_max_ms": 1752623940000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "1752537600000",
+          "119904",
+          "119904",
+          "119826.04916237",
+          "119828.84217491",
+          "0",
+          "1752537659999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1752537660000",
+          "119828.16088585",
+          "119877.39051614",
+          "119828.03132308",
+          "119877.36692414",
+          "0",
+          "1752537719999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1752537720000",
+          "119877.38054717",
+          "119906.82843614",
+          "119876.67715815",
+          "119882",
+          "0",
+          "1752537779999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "last_rows": [
+        [
+          "1752623820000",
+          "117766.82143721",
+          "117846.80000000",
+          "117752.55976969",
+          "117846.80000000",
+          "0",
+          "1752623879999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1752623880000",
+          "117846.80000000",
+          "117846.80000000",
+          "117822.95397264",
+          "117822.95397264",
+          "0",
+          "1752623939999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1752623940000",
+          "117822.66836151",
+          "117822.66836151",
+          "117802.21216696",
+          "117807.51406321",
+          "0",
+          "1752623999999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "csv_sha256": "8ecf3d9ed9d5c2b62217fcf1ea5489277a4687ebd7de238a59801a33a2ab697f"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "mark_price_1m",
+    "path_type": "markPriceKlines",
+    "interval": "1m",
+    "symbol": "BTCUSD_PERP",
+    "date": "2026-04-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/markPriceKlines/BTCUSD_PERP/1m/BTCUSD_PERP-1m-2026-04-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 36976,
+    "checksum_valid": true,
+    "archive_sha256": "3b5cec8e39e71988de77c0eb587a84a6b3662899c089049d8c5e7591889c8864",
+    "parsed": {
+      "member": "BTCUSD_PERP-1m-2026-04-15.csv",
+      "rows": 1440,
+      "columns": [
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "count",
+        "taker_buy_volume",
+        "taker_buy_quote_volume",
+        "ignore"
+      ],
+      "column_widths": [
+        12
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "open_time",
+        "symbol": null,
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close"
+      },
+      "native_median_interval_ms": 60000,
+      "timestamp_min_ms": 1776211200000,
+      "timestamp_max_ms": 1776297540000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "1776211200000",
+          "74147.22382228",
+          "74225",
+          "74124.50000000",
+          "74225",
+          "0",
+          "1776211259999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1776211260000",
+          "74230.12144475",
+          "74311",
+          "74230.12144475",
+          "74311",
+          "0",
+          "1776211319999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1776211320000",
+          "74311",
+          "74311.70000000",
+          "74280.50000000",
+          "74292.20000000",
+          "0",
+          "1776211379999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "last_rows": [
+        [
+          "1776297420000",
+          "74765.40000000",
+          "74792.70931700",
+          "74765.40000000",
+          "74771.20000000",
+          "0",
+          "1776297479999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1776297480000",
+          "74770",
+          "74788.30000000",
+          "74770",
+          "74786.40000000",
+          "0",
+          "1776297539999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1776297540000",
+          "74786.40000000",
+          "74788.06446571",
+          "74773.30000000",
+          "74788.06446571",
+          "0",
+          "1776297599999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "csv_sha256": "b1f75ec784ec14bc8b0c6d354133cf778912153e9ed552138104b9bb4e9d9fc5"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "metrics",
+    "path_type": "metrics",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2023-01-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/metrics/BTCUSD_PERP/BTCUSD_PERP-metrics-2023-01-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 6360,
+    "checksum_valid": true,
+    "archive_sha256": "156d9a4f8396d167b469ba74051ef01d5ab95a5aab1b87525df2b174915fb88e",
+    "parsed": {
+      "member": "BTCUSD_PERP-metrics-2023-01-15.csv",
+      "rows": 288,
+      "columns": [
+        "create_time",
+        "symbol",
+        "sum_open_interest",
+        "sum_open_interest_value",
+        "count_toptrader_long_short_ratio",
+        "sum_toptrader_long_short_ratio",
+        "count_long_short_ratio",
+        "sum_taker_long_short_vol_ratio"
+      ],
+      "column_widths": [
+        8
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "create_time",
+        "symbol": "symbol",
+        "open_interest": "sum_open_interest",
+        "open_interest_value": "sum_open_interest_value",
+        "taker_ratio": "sum_taker_long_short_vol_ratio"
+      },
+      "native_median_interval_ms": 300000,
+      "timestamp_min_ms": 1673740800000,
+      "timestamp_max_ms": 1673826900000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2023-01-15 00:00:00",
+          "BTCUSD_PERP",
+          "3567047.00000000",
+          "17019.93694374",
+          "",
+          "",
+          "",
+          "0.78399206"
+        ],
+        [
+          "2023-01-15 00:05:00",
+          "BTCUSD_PERP",
+          "3570908.00000000",
+          "17072.74859528",
+          "",
+          "",
+          "",
+          "0.90801559"
+        ],
+        [
+          "2023-01-15 00:10:00",
+          "BTCUSD_PERP",
+          "3566590.00000000",
+          "17001.92513442",
+          "",
+          "",
+          "",
+          "1.15082004"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2023-01-15 23:45:00",
+          "BTCUSD_PERP",
+          "3599756.00000000",
+          "17236.74356691",
+          "",
+          "",
+          "",
+          "1.04604317"
+        ],
+        [
+          "2023-01-15 23:50:00",
+          "BTCUSD_PERP",
+          "3598898.00000000",
+          "17249.40207727",
+          "",
+          "",
+          "",
+          "0.93024275"
+        ],
+        [
+          "2023-01-15 23:55:00",
+          "BTCUSD_PERP",
+          "3597327.00000000",
+          "17239.45579412",
+          "",
+          "",
+          "",
+          "0.74497877"
+        ]
+      ],
+      "csv_sha256": "101470ea0f29f410f7de5b48ed0e09b45a60eb340d6f589f34642c8e1b075959"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "metrics",
+    "path_type": "metrics",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2024-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/metrics/BTCUSD_PERP/BTCUSD_PERP-metrics-2024-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 6517,
+    "checksum_valid": true,
+    "archive_sha256": "d5e8c443a96def306a4c862ac6af49d2a160ac934dc56cf54214018c62f477c3",
+    "parsed": {
+      "member": "BTCUSD_PERP-metrics-2024-07-15.csv",
+      "rows": 288,
+      "columns": [
+        "create_time",
+        "symbol",
+        "sum_open_interest",
+        "sum_open_interest_value",
+        "count_toptrader_long_short_ratio",
+        "sum_toptrader_long_short_ratio",
+        "count_long_short_ratio",
+        "sum_taker_long_short_vol_ratio"
+      ],
+      "column_widths": [
+        8
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "create_time",
+        "symbol": "symbol",
+        "open_interest": "sum_open_interest",
+        "open_interest_value": "sum_open_interest_value",
+        "taker_ratio": "sum_taker_long_short_vol_ratio"
+      },
+      "native_median_interval_ms": 300000,
+      "timestamp_min_ms": 1721001600000,
+      "timestamp_max_ms": 1721087700000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2024-07-15 00:00:00",
+          "BTCUSD_PERP",
+          "16270161.00000000",
+          "26769.84152717",
+          "",
+          "",
+          "",
+          "0.41977568"
+        ],
+        [
+          "2024-07-15 00:05:00",
+          "BTCUSD_PERP",
+          "16262165.00000000",
+          "26726.12778275",
+          "",
+          "",
+          "",
+          "1.52403082"
+        ],
+        [
+          "2024-07-15 00:10:00",
+          "BTCUSD_PERP",
+          "16266374.00000000",
+          "26797.52863231",
+          "",
+          "",
+          "",
+          "0.36061727"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2024-07-15 23:45:00",
+          "BTCUSD_PERP",
+          "16253953.00000000",
+          "25102.67301666",
+          "",
+          "",
+          "",
+          "0.67778110"
+        ],
+        [
+          "2024-07-15 23:50:00",
+          "BTCUSD_PERP",
+          "16254298.00000000",
+          "25089.35901663",
+          "",
+          "",
+          "",
+          "0.56381082"
+        ],
+        [
+          "2024-07-15 23:55:00",
+          "BTCUSD_PERP",
+          "16258785.00000000",
+          "25088.43285356",
+          "",
+          "",
+          "",
+          "1.15950457"
+        ]
+      ],
+      "csv_sha256": "f53fd92e8d73fe07f3c9ff3551400e29a65adf4ea34ff1edd101363a7bd8ad81"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "metrics",
+    "path_type": "metrics",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2025-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/metrics/BTCUSD_PERP/BTCUSD_PERP-metrics-2025-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 6647,
+    "checksum_valid": true,
+    "archive_sha256": "efc750900d8173833a9b64d69b92a8c09573ba6b71c15c8c9b23e36e7e2c8add",
+    "parsed": {
+      "member": "BTCUSD_PERP-metrics-2025-07-15.csv",
+      "rows": 288,
+      "columns": [
+        "create_time",
+        "symbol",
+        "sum_open_interest",
+        "sum_open_interest_value",
+        "count_toptrader_long_short_ratio",
+        "sum_toptrader_long_short_ratio",
+        "count_long_short_ratio",
+        "sum_taker_long_short_vol_ratio"
+      ],
+      "column_widths": [
+        8
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "create_time",
+        "symbol": "symbol",
+        "open_interest": "sum_open_interest",
+        "open_interest_value": "sum_open_interest_value",
+        "taker_ratio": "sum_taker_long_short_vol_ratio"
+      },
+      "native_median_interval_ms": 300000,
+      "timestamp_min_ms": 1752537600000,
+      "timestamp_max_ms": 1752623700000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2025-07-15 00:00:00",
+          "BTCUSD_PERP",
+          "29179131.00000000",
+          "24335.41082866",
+          "",
+          "",
+          "",
+          "2.02545656"
+        ],
+        [
+          "2025-07-15 00:05:00",
+          "BTCUSD_PERP",
+          "29174161.00000000",
+          "24347.49019605",
+          "",
+          "",
+          "",
+          "0.35017649"
+        ],
+        [
+          "2025-07-15 00:10:00",
+          "BTCUSD_PERP",
+          "29171173.00000000",
+          "24358.25061853",
+          "",
+          "",
+          "",
+          "0.73487473"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2025-07-15 23:45:00",
+          "BTCUSD_PERP",
+          "31058941.00000000",
+          "26355.55500870",
+          "",
+          "",
+          "",
+          "2.54783788"
+        ],
+        [
+          "2025-07-15 23:50:00",
+          "BTCUSD_PERP",
+          "31056432.00000000",
+          "26372.68127088",
+          "",
+          "",
+          "",
+          "0.74564035"
+        ],
+        [
+          "2025-07-15 23:55:00",
+          "BTCUSD_PERP",
+          "31053955.00000000",
+          "26369.22487749",
+          "",
+          "",
+          "",
+          "1.30562771"
+        ]
+      ],
+      "csv_sha256": "5223b592449052e05dec580e7c2062de7e90a2e7fc11850345ac90914460c123"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "metrics",
+    "path_type": "metrics",
+    "interval": null,
+    "symbol": "BTCUSD_PERP",
+    "date": "2026-04-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/metrics/BTCUSD_PERP/BTCUSD_PERP-metrics-2026-04-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 6438,
+    "checksum_valid": true,
+    "archive_sha256": "84b6fe27575a740768f85f2433a1a46fd567383f11d738595bdc374da13cbc49",
+    "parsed": {
+      "member": "BTCUSD_PERP-metrics-2026-04-15.csv",
+      "rows": 288,
+      "columns": [
+        "create_time",
+        "symbol",
+        "sum_open_interest",
+        "sum_open_interest_value",
+        "count_toptrader_long_short_ratio",
+        "sum_toptrader_long_short_ratio",
+        "count_long_short_ratio",
+        "sum_taker_long_short_vol_ratio"
+      ],
+      "column_widths": [
+        8
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "create_time",
+        "symbol": "symbol",
+        "open_interest": "sum_open_interest",
+        "open_interest_value": "sum_open_interest_value",
+        "taker_ratio": "sum_taker_long_short_vol_ratio"
+      },
+      "native_median_interval_ms": 300000,
+      "timestamp_min_ms": 1776211200000,
+      "timestamp_max_ms": 1776297300000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2026-04-15 00:00:00",
+          "BTCUSD_PERP",
+          "12000921.00000000",
+          "16185.52720309",
+          "",
+          "",
+          "",
+          "2.19058984"
+        ],
+        [
+          "2026-04-15 00:05:00",
+          "BTCUSD_PERP",
+          "11999335.00000000",
+          "16094.91023908",
+          "",
+          "",
+          "",
+          "3.11743863"
+        ],
+        [
+          "2026-04-15 00:10:00",
+          "BTCUSD_PERP",
+          "11983238.00000000",
+          "16058.84418286",
+          "",
+          "",
+          "",
+          "1.25115754"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2026-04-15 23:45:00",
+          "BTCUSD_PERP",
+          "11962729.00000000",
+          "16027.92322286",
+          "",
+          "",
+          "",
+          "0.09400563"
+        ],
+        [
+          "2026-04-15 23:50:00",
+          "BTCUSD_PERP",
+          "11960672.00000000",
+          "16002.06619908",
+          "",
+          "",
+          "",
+          "1.01082586"
+        ],
+        [
+          "2026-04-15 23:55:00",
+          "BTCUSD_PERP",
+          "11954902.00000000",
+          "15984.81864336",
+          "",
+          "",
+          "",
+          "0.15321516"
+        ]
+      ],
+      "csv_sha256": "47827a772726b0937314ad7558a4459f0a3b3a62f82c5bc2054600196f65fc02"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_depth",
+    "path_type": "bookDepth",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2023-01-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookDepth/ETHUSD_PERP/ETHUSD_PERP-bookDepth-2023-01-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 821,
+    "checksum_valid": true,
+    "archive_sha256": "5b00f0097f01cd54391ff1f68bad8e98bebd8d2f76b9b537159ba1b16a086339",
+    "parsed": {
+      "member": "ETHUSD_PERP-bookDepth-2023-01-15.csv",
+      "rows": 50,
+      "columns": [
+        "timestamp",
+        "percentage",
+        "depth",
+        "notional"
+      ],
+      "column_widths": [
+        4
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "timestamp",
+        "symbol": null,
+        "percentage": "percentage",
+        "depth": "depth",
+        "notional": "notional",
+        "side": null,
+        "price": null,
+        "level": null
+      },
+      "native_median_interval_ms": 30000,
+      "timestamp_min_ms": 1673827050000,
+      "timestamp_max_ms": 1673827170000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2023-01-15 23:57:30",
+          "-5",
+          "2932378.00000000",
+          "19173.00000000"
+        ],
+        [
+          "2023-01-15 23:57:30",
+          "-4",
+          "2602220.00000000",
+          "16960.00000000"
+        ],
+        [
+          "2023-01-15 23:57:30",
+          "-3",
+          "2307264.00000000",
+          "15003.00000000"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2023-01-15 23:59:30",
+          "3",
+          "2314160.00000000",
+          "14645.00000000"
+        ],
+        [
+          "2023-01-15 23:59:30",
+          "4",
+          "2705659.00000000",
+          "17060.00000000"
+        ],
+        [
+          "2023-01-15 23:59:30",
+          "5",
+          "2891896.00000000",
+          "18195.00000000"
+        ]
+      ],
+      "csv_sha256": "27d3b68dcb6a58d2929666c972b9b30131caafee753159a38f47a13783001558"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_depth",
+    "path_type": "bookDepth",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2024-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookDepth/ETHUSD_PERP/ETHUSD_PERP-bookDepth-2024-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 300754,
+    "checksum_valid": true,
+    "archive_sha256": "2284977a3bf33a688633030b90a884ee0d7483ce0f7305975fa8e7734aee01b5",
+    "parsed": {
+      "member": "ETHUSD_PERP-bookDepth-2024-07-15.csv",
+      "rows": 28800,
+      "columns": [
+        "timestamp",
+        "percentage",
+        "depth",
+        "notional"
+      ],
+      "column_widths": [
+        4
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "timestamp",
+        "symbol": null,
+        "percentage": "percentage",
+        "depth": "depth",
+        "notional": "notional",
+        "side": null,
+        "price": null,
+        "level": null
+      },
+      "native_median_interval_ms": 30000,
+      "timestamp_min_ms": 1721001600000,
+      "timestamp_max_ms": 1721087970000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2024-07-15 00:00:00",
+          "-5",
+          "5493156.00000000",
+          "17068.00000000"
+        ],
+        [
+          "2024-07-15 00:00:00",
+          "-4",
+          "5008852.00000000",
+          "15535.00000000"
+        ],
+        [
+          "2024-07-15 00:00:00",
+          "-3",
+          "4411673.00000000",
+          "13661.00000000"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2024-07-15 23:59:30",
+          "3",
+          "5244271.00000000",
+          "14778.00000000"
+        ],
+        [
+          "2024-07-15 23:59:30",
+          "4",
+          "5458144.00000000",
+          "15342.00000000"
+        ],
+        [
+          "2024-07-15 23:59:30",
+          "5",
+          "5788485.00000000",
+          "16230.00000000"
+        ]
+      ],
+      "csv_sha256": "55d1041efeba5030e1226021039c0678922a26b75d651d0d06af3b24042d79f4"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_depth",
+    "path_type": "bookDepth",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2025-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookDepth/ETHUSD_PERP/ETHUSD_PERP-bookDepth-2025-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 314998,
+    "checksum_valid": true,
+    "archive_sha256": "c3eb61cd30e24c500645ead4a6572ffd73ca1ed2267b3e695e5690e6800d9cff",
+    "parsed": {
+      "member": "ETHUSD_PERP-bookDepth-2025-07-15.csv",
+      "rows": 28800,
+      "columns": [
+        "timestamp",
+        "percentage",
+        "depth",
+        "notional"
+      ],
+      "column_widths": [
+        4
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "timestamp",
+        "symbol": null,
+        "percentage": "percentage",
+        "depth": "depth",
+        "notional": "notional",
+        "side": null,
+        "price": null,
+        "level": null
+      },
+      "native_median_interval_ms": 30000,
+      "timestamp_min_ms": 1752537600000,
+      "timestamp_max_ms": 1752623970000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2025-07-15 00:00:00",
+          "-5",
+          "12887604.00000000",
+          "43419.00000000"
+        ],
+        [
+          "2025-07-15 00:00:00",
+          "-4",
+          "11230402.00000000",
+          "37691.00000000"
+        ],
+        [
+          "2025-07-15 00:00:00",
+          "-3",
+          "10369349.00000000",
+          "34764.00000000"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2025-07-15 23:59:30",
+          "3",
+          "6496216.00000000",
+          "20432.00000000"
+        ],
+        [
+          "2025-07-15 23:59:30",
+          "4",
+          "6806619.00000000",
+          "21358.00000000"
+        ],
+        [
+          "2025-07-15 23:59:30",
+          "5",
+          "7223840.00000000",
+          "22610.00000000"
+        ]
+      ],
+      "csv_sha256": "520dbfff2133d2fe99d3e16ccc96dcdae3c2c6c24280c9347dda9930bddc4ac1"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_depth",
+    "path_type": "bookDepth",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2026-04-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookDepth/ETHUSD_PERP/ETHUSD_PERP-bookDepth-2026-04-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 310451,
+    "checksum_valid": true,
+    "archive_sha256": "cea32dc5c44ed9509e9d00e7db795da28b1f91ca53119891fb03f4a41091e2e1",
+    "parsed": {
+      "member": "ETHUSD_PERP-bookDepth-2026-04-15.csv",
+      "rows": 28800,
+      "columns": [
+        "timestamp",
+        "percentage",
+        "depth",
+        "notional"
+      ],
+      "column_widths": [
+        4
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "timestamp",
+        "symbol": null,
+        "percentage": "percentage",
+        "depth": "depth",
+        "notional": "notional",
+        "side": null,
+        "price": null,
+        "level": null
+      },
+      "native_median_interval_ms": 30000,
+      "timestamp_min_ms": 1776211200000,
+      "timestamp_max_ms": 1776297570000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2026-04-15 00:00:00",
+          "-5.00",
+          "6687904.00000000",
+          "29036.00000000"
+        ],
+        [
+          "2026-04-15 00:00:00",
+          "-4.00",
+          "6551497.00000000",
+          "28442.00000000"
+        ],
+        [
+          "2026-04-15 00:00:00",
+          "-3.00",
+          "6413969.00000000",
+          "27843.00000000"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2026-04-15 23:59:30",
+          "3.00",
+          "6253929.00000000",
+          "26227.00000000"
+        ],
+        [
+          "2026-04-15 23:59:30",
+          "4.00",
+          "6383284.00000000",
+          "26739.00000000"
+        ],
+        [
+          "2026-04-15 23:59:30",
+          "5.00",
+          "6573596.00000000",
+          "27496.00000000"
+        ]
+      ],
+      "csv_sha256": "436fc8a4e27c010169889bbf45a34206dc856da9f2c8549a14cf9c50d3876f7a"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_ticker",
+    "path_type": "bookTicker",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2023-01-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookTicker/ETHUSD_PERP/ETHUSD_PERP-bookTicker-2023-01-15.zip",
+    "valid": false,
+    "checksum_status": 404,
+    "http_status": 404,
+    "bytes": 353,
+    "reason": "missing_archive_or_checksum"
+  },
+  {
+    "dataset": "book_ticker",
+    "path_type": "bookTicker",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2024-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookTicker/ETHUSD_PERP/ETHUSD_PERP-bookTicker-2024-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 54282564,
+    "checksum_valid": true,
+    "archive_sha256": "4378dfa6e583e6f8211c029f7cfa67d6ae22c196502967c62736da1989b5be95",
+    "parsed": {
+      "member": "ETHUSD_PERP-bookTicker-2024-07-15.csv",
+      "rows": 4426839,
+      "columns": [
+        "update_id",
+        "best_bid_price",
+        "best_bid_qty",
+        "best_ask_price",
+        "best_ask_qty",
+        "transaction_time",
+        "event_time"
+      ],
+      "column_widths": [
+        7
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "transaction_time",
+        "symbol": null,
+        "bid_price": "best_bid_price",
+        "bid_qty": "best_bid_qty",
+        "ask_price": "best_ask_price",
+        "ask_qty": "best_ask_qty"
+      },
+      "native_median_interval_ms": 4,
+      "timestamp_min_ms": 1721001600004,
+      "timestamp_max_ms": 1721087999954,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "988742954626",
+          "3243.99000000",
+          "6361.00000000",
+          "3244.00000000",
+          "13752.00000000",
+          "1721001600004",
+          "1721001600013"
+        ],
+        [
+          "988742954718",
+          "3243.99000000",
+          "6461.00000000",
+          "3244.00000000",
+          "13752.00000000",
+          "1721001600016",
+          "1721001600024"
+        ],
+        [
+          "988742954736",
+          "3243.99000000",
+          "6461.00000000",
+          "3244.00000000",
+          "13935.00000000",
+          "1721001600016",
+          "1721001600024"
+        ]
+      ],
+      "last_rows": [
+        [
+          "989413584792",
+          "3483.80000000",
+          "816.00000000",
+          "3483.81000000",
+          "19246.00000000",
+          "1721087999873",
+          "1721087999880"
+        ],
+        [
+          "989413584812",
+          "3483.80000000",
+          "816.00000000",
+          "3483.81000000",
+          "19279.00000000",
+          "1721087999881",
+          "1721087999888"
+        ],
+        [
+          "989413584960",
+          "3483.80000000",
+          "816.00000000",
+          "3483.81000000",
+          "19383.00000000",
+          "1721087999954",
+          "1721087999962"
+        ]
+      ],
+      "csv_sha256": "3245c45aacd01b6bab314dc6ed05227ec6371c3fef689c3a5524805b91e925a2"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "book_ticker",
+    "path_type": "bookTicker",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2025-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookTicker/ETHUSD_PERP/ETHUSD_PERP-bookTicker-2025-07-15.zip",
+    "valid": false,
+    "checksum_status": 404,
+    "http_status": 404,
+    "bytes": 373,
+    "reason": "missing_archive_or_checksum"
+  },
+  {
+    "dataset": "book_ticker",
+    "path_type": "bookTicker",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2026-04-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/bookTicker/ETHUSD_PERP/ETHUSD_PERP-bookTicker-2026-04-15.zip",
+    "valid": false,
+    "checksum_status": 404,
+    "http_status": 404,
+    "bytes": 353,
+    "reason": "missing_archive_or_checksum"
+  },
+  {
+    "dataset": "mark_price_1m",
+    "path_type": "markPriceKlines",
+    "interval": "1m",
+    "symbol": "ETHUSD_PERP",
+    "date": "2023-01-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/markPriceKlines/ETHUSD_PERP/1m/ETHUSD_PERP-1m-2023-01-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 34300,
+    "checksum_valid": true,
+    "archive_sha256": "dbffdec8dd08a44b0e883faa9ac765552f4f0c80c458ea82b383f653b7319aed",
+    "parsed": {
+      "member": "ETHUSD_PERP-1m-2023-01-15.csv",
+      "rows": 1440,
+      "columns": [
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "count",
+        "taker_buy_volume",
+        "taker_buy_quote_volume",
+        "ignore"
+      ],
+      "column_widths": [
+        12
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "open_time",
+        "symbol": null,
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close"
+      },
+      "native_median_interval_ms": 60000,
+      "timestamp_min_ms": 1673740800000,
+      "timestamp_max_ms": 1673827140000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "1673740800000",
+          "1550.40857583",
+          "1550.74571882",
+          "1549.98609840",
+          "1550.40972619",
+          "0",
+          "1673740859999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1673740860000",
+          "1550.39491200",
+          "1551.33555749",
+          "1550.29000000",
+          "1551.33555749",
+          "0",
+          "1673740919999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1673740920000",
+          "1551.32558897",
+          "1551.88000000",
+          "1551.08242885",
+          "1551.16078900",
+          "0",
+          "1673740979999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "last_rows": [
+        [
+          "1673827020000",
+          "1553.08201431",
+          "1553.71252166",
+          "1553.07712293",
+          "1553.52329756",
+          "0",
+          "1673827079999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1673827080000",
+          "1553.33404281",
+          "1553.47000000",
+          "1553.28208873",
+          "1553.46000000",
+          "0",
+          "1673827139999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1673827140000",
+          "1553.46000000",
+          "1553.46000000",
+          "1553.30000000",
+          "1553.31000000",
+          "0",
+          "1673827199999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "csv_sha256": "ba86e52d96cb98573ea07247ed3e210ed55a0f98ae5175931735379af4de70f8"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "mark_price_1m",
+    "path_type": "markPriceKlines",
+    "interval": "1m",
+    "symbol": "ETHUSD_PERP",
+    "date": "2024-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/markPriceKlines/ETHUSD_PERP/1m/ETHUSD_PERP-1m-2024-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 35865,
+    "checksum_valid": true,
+    "archive_sha256": "f5080568001496b87310eb2b9606731d9588ac34f94cc9f0cdafb9673259df65",
+    "parsed": {
+      "member": "ETHUSD_PERP-1m-2024-07-15.csv",
+      "rows": 1440,
+      "columns": [
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "count",
+        "taker_buy_volume",
+        "taker_buy_quote_volume",
+        "ignore"
+      ],
+      "column_widths": [
+        12
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "open_time",
+        "symbol": null,
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close"
+      },
+      "native_median_interval_ms": 60000,
+      "timestamp_min_ms": 1721001600000,
+      "timestamp_max_ms": 1721087940000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "1721001600000",
+          "3244.32920473",
+          "3246.34000000",
+          "3243.88339376",
+          "3244.29939275",
+          "0",
+          "1721001659999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1721001660000",
+          "3244.29189192",
+          "3244.90372893",
+          "3243.94600270",
+          "3244.40000000",
+          "0",
+          "1721001719999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1721001720000",
+          "3244.40000000",
+          "3246.82000000",
+          "3244.40000000",
+          "3246.21000000",
+          "0",
+          "1721001779999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "last_rows": [
+        [
+          "1721087820000",
+          "3488.31373299",
+          "3490.54075989",
+          "3488.30717971",
+          "3488.48990417",
+          "0",
+          "1721087879999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1721087880000",
+          "3488.46438731",
+          "3490.75000000",
+          "3487.63281961",
+          "3487.78112981",
+          "0",
+          "1721087939999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1721087940000",
+          "3487.64921971",
+          "3487.64921971",
+          "3483.95190555",
+          "3484.06112228",
+          "0",
+          "1721087999999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "csv_sha256": "caefca161c04459b59e291ab09b880d852f9a6a52c3499731f3b1ebfc350eca0"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "mark_price_1m",
+    "path_type": "markPriceKlines",
+    "interval": "1m",
+    "symbol": "ETHUSD_PERP",
+    "date": "2025-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/markPriceKlines/ETHUSD_PERP/1m/ETHUSD_PERP-1m-2025-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 36728,
+    "checksum_valid": true,
+    "archive_sha256": "64ada38bda4a3739ff962d05d8e29ecc21785466ee20507825e1c26242ac7836",
+    "parsed": {
+      "member": "ETHUSD_PERP-1m-2025-07-15.csv",
+      "rows": 1440,
+      "columns": [
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "count",
+        "taker_buy_volume",
+        "taker_buy_quote_volume",
+        "ignore"
+      ],
+      "column_widths": [
+        12
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "open_time",
+        "symbol": null,
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close"
+      },
+      "native_median_interval_ms": 60000,
+      "timestamp_min_ms": 1752537600000,
+      "timestamp_max_ms": 1752623940000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "1752537600000",
+          "3014.72466585",
+          "3014.72466585",
+          "3010.42707881",
+          "3010.65000000",
+          "0",
+          "1752537659999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1752537660000",
+          "3010.65000000",
+          "3011.38000000",
+          "3010.42000000",
+          "3011.13000000",
+          "0",
+          "1752537719999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1752537720000",
+          "3011.25000000",
+          "3012.09956078",
+          "3011.25000000",
+          "3011.40677889",
+          "0",
+          "1752537779999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "last_rows": [
+        [
+          "1752623820000",
+          "3137.35590250",
+          "3144.31735801",
+          "3136.68580007",
+          "3142.70000000",
+          "0",
+          "1752623879999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1752623880000",
+          "3142.60000000",
+          "3142.60000000",
+          "3139.03336254",
+          "3140.26204609",
+          "0",
+          "1752623939999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1752623940000",
+          "3140.30315828",
+          "3140.75904142",
+          "3139.49000000",
+          "3140.20000000",
+          "0",
+          "1752623999999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "csv_sha256": "5f16ad18c9edb337e749d687c8790c1e9c0776980ede1a51acf5fa03ed953bf3"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "mark_price_1m",
+    "path_type": "markPriceKlines",
+    "interval": "1m",
+    "symbol": "ETHUSD_PERP",
+    "date": "2026-04-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/markPriceKlines/ETHUSD_PERP/1m/ETHUSD_PERP-1m-2026-04-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 33780,
+    "checksum_valid": true,
+    "archive_sha256": "d91f3510cfce473669d1cfd3bbed2337a957f485ead23f697d68cbc6f49f3279",
+    "parsed": {
+      "member": "ETHUSD_PERP-1m-2026-04-15.csv",
+      "rows": 1440,
+      "columns": [
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "count",
+        "taker_buy_volume",
+        "taker_buy_quote_volume",
+        "ignore"
+      ],
+      "column_widths": [
+        12
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "open_time",
+        "symbol": null,
+        "open": "open",
+        "high": "high",
+        "low": "low",
+        "close": "close"
+      },
+      "native_median_interval_ms": 60000,
+      "timestamp_min_ms": 1776211200000,
+      "timestamp_max_ms": 1776297540000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "1776211200000",
+          "2322.45802105",
+          "2325.03000000",
+          "2321.69660038",
+          "2325.03000000",
+          "0",
+          "1776211259999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1776211260000",
+          "2325.03000000",
+          "2327.77000000",
+          "2325",
+          "2327.77000000",
+          "0",
+          "1776211319999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1776211320000",
+          "2327.77000000",
+          "2329.51000000",
+          "2327.66213734",
+          "2329.10000000",
+          "0",
+          "1776211379999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "last_rows": [
+        [
+          "1776297420000",
+          "2359.02000000",
+          "2359.54997840",
+          "2358.68359676",
+          "2358.68359676",
+          "0",
+          "1776297479999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1776297480000",
+          "2358.74526006",
+          "2358.82381058",
+          "2358.36000000",
+          "2358.59179778",
+          "0",
+          "1776297539999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "1776297540000",
+          "2358.59179778",
+          "2359.31000000",
+          "2358.43528601",
+          "2359.31000000",
+          "0",
+          "1776297599999",
+          "0",
+          "60",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "csv_sha256": "5ee92f9bbbf21d05cc56992d7f8c505b75c4da8a47c21e0633926fed2fba55a0"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "metrics",
+    "path_type": "metrics",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2023-01-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/metrics/ETHUSD_PERP/ETHUSD_PERP-metrics-2023-01-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 6713,
+    "checksum_valid": true,
+    "archive_sha256": "0f22d27696399361b5862968f1654957ddff2ce89fdf859b2411a877a19bbeac",
+    "parsed": {
+      "member": "ETHUSD_PERP-metrics-2023-01-15.csv",
+      "rows": 288,
+      "columns": [
+        "create_time",
+        "symbol",
+        "sum_open_interest",
+        "sum_open_interest_value",
+        "count_toptrader_long_short_ratio",
+        "sum_toptrader_long_short_ratio",
+        "count_long_short_ratio",
+        "sum_taker_long_short_vol_ratio"
+      ],
+      "column_widths": [
+        8
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "create_time",
+        "symbol": "symbol",
+        "open_interest": "sum_open_interest",
+        "open_interest_value": "sum_open_interest_value",
+        "taker_ratio": "sum_taker_long_short_vol_ratio"
+      },
+      "native_median_interval_ms": 300000,
+      "timestamp_min_ms": 1673740800000,
+      "timestamp_max_ms": 1673826900000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2023-01-15 00:00:00",
+          "ETHUSD_PERP",
+          "20916453.00000000",
+          "134909.29633695",
+          "",
+          "",
+          "",
+          "0.48872993"
+        ],
+        [
+          "2023-01-15 00:05:00",
+          "ETHUSD_PERP",
+          "20824153.00000000",
+          "134607.58059360",
+          "",
+          "",
+          "",
+          "0.57091368"
+        ],
+        [
+          "2023-01-15 00:10:00",
+          "ETHUSD_PERP",
+          "20811461.00000000",
+          "134250.48125259",
+          "",
+          "",
+          "",
+          "1.00555467"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2023-01-15 23:45:00",
+          "ETHUSD_PERP",
+          "21592695.00000000",
+          "138980.61503759",
+          "",
+          "",
+          "",
+          "2.43035311"
+        ],
+        [
+          "2023-01-15 23:50:00",
+          "ETHUSD_PERP",
+          "21580938.00000000",
+          "139073.04561887",
+          "",
+          "",
+          "",
+          "0.65278849"
+        ],
+        [
+          "2023-01-15 23:55:00",
+          "ETHUSD_PERP",
+          "21581237.00000000",
+          "139063.05013301",
+          "",
+          "",
+          "",
+          "0.77411523"
+        ]
+      ],
+      "csv_sha256": "13fa375c80ed73f2d7d3ff92472351c189eccdee0c8eb4644c6205e050ad86bd"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "metrics",
+    "path_type": "metrics",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2024-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/metrics/ETHUSD_PERP/ETHUSD_PERP-metrics-2024-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 6896,
+    "checksum_valid": true,
+    "archive_sha256": "6f99f341455d3fd6dee2ecf9ac3c701001ac1f824725a1f966c8cbb01fa0f30f",
+    "parsed": {
+      "member": "ETHUSD_PERP-metrics-2024-07-15.csv",
+      "rows": 288,
+      "columns": [
+        "create_time",
+        "symbol",
+        "sum_open_interest",
+        "sum_open_interest_value",
+        "count_toptrader_long_short_ratio",
+        "sum_toptrader_long_short_ratio",
+        "count_long_short_ratio",
+        "sum_taker_long_short_vol_ratio"
+      ],
+      "column_widths": [
+        8
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "create_time",
+        "symbol": "symbol",
+        "open_interest": "sum_open_interest",
+        "open_interest_value": "sum_open_interest_value",
+        "taker_ratio": "sum_taker_long_short_vol_ratio"
+      },
+      "native_median_interval_ms": 300000,
+      "timestamp_min_ms": 1721001600000,
+      "timestamp_max_ms": 1721087700000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2024-07-15 00:00:00",
+          "ETHUSD_PERP",
+          "106329790.00000000",
+          "327740.44583694",
+          "",
+          "",
+          "",
+          "0.28194155"
+        ],
+        [
+          "2024-07-15 00:05:00",
+          "ETHUSD_PERP",
+          "106283576.00000000",
+          "327506.35286574",
+          "",
+          "",
+          "",
+          "0.83947575"
+        ],
+        [
+          "2024-07-15 00:10:00",
+          "ETHUSD_PERP",
+          "106215678.00000000",
+          "328402.89891816",
+          "",
+          "",
+          "",
+          "0.57653477"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2024-07-15 23:45:00",
+          "ETHUSD_PERP",
+          "104255681.00000000",
+          "299035.07162123",
+          "",
+          "",
+          "",
+          "0.82284089"
+        ],
+        [
+          "2024-07-15 23:50:00",
+          "ETHUSD_PERP",
+          "104264147.00000000",
+          "299095.40748750",
+          "",
+          "",
+          "",
+          "1.16823908"
+        ],
+        [
+          "2024-07-15 23:55:00",
+          "ETHUSD_PERP",
+          "104234482.00000000",
+          "299025.99690172",
+          "",
+          "",
+          "",
+          "0.65033131"
+        ]
+      ],
+      "csv_sha256": "003248e3ce445330f41f98763b1a852febc278fe6d122eeb47b7bd402198ef27"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "metrics",
+    "path_type": "metrics",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2025-07-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/metrics/ETHUSD_PERP/ETHUSD_PERP-metrics-2025-07-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 6915,
+    "checksum_valid": true,
+    "archive_sha256": "772bd8753433f712e74092d569beeba888a93c353ba4678beaa13abbfa915363",
+    "parsed": {
+      "member": "ETHUSD_PERP-metrics-2025-07-15.csv",
+      "rows": 288,
+      "columns": [
+        "create_time",
+        "symbol",
+        "sum_open_interest",
+        "sum_open_interest_value",
+        "count_toptrader_long_short_ratio",
+        "sum_toptrader_long_short_ratio",
+        "count_long_short_ratio",
+        "sum_taker_long_short_vol_ratio"
+      ],
+      "column_widths": [
+        8
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "create_time",
+        "symbol": "symbol",
+        "open_interest": "sum_open_interest",
+        "open_interest_value": "sum_open_interest_value",
+        "taker_ratio": "sum_taker_long_short_vol_ratio"
+      },
+      "native_median_interval_ms": 300000,
+      "timestamp_min_ms": 1752537600000,
+      "timestamp_max_ms": 1752623700000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2025-07-15 00:00:00",
+          "ETHUSD_PERP",
+          "78589024.00000000",
+          "260698.46864171",
+          "",
+          "",
+          "",
+          "2.24766299"
+        ],
+        [
+          "2025-07-15 00:05:00",
+          "ETHUSD_PERP",
+          "78604836.00000000",
+          "261180.34290271",
+          "",
+          "",
+          "",
+          "1.10638437"
+        ],
+        [
+          "2025-07-15 00:10:00",
+          "ETHUSD_PERP",
+          "78664211.00000000",
+          "261274.32002896",
+          "",
+          "",
+          "",
+          "0.89269983"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2025-07-15 23:45:00",
+          "ETHUSD_PERP",
+          "74990844.00000000",
+          "239105.33078682",
+          "",
+          "",
+          "",
+          "1.15479648"
+        ],
+        [
+          "2025-07-15 23:50:00",
+          "ETHUSD_PERP",
+          "74961863.00000000",
+          "239046.68291495",
+          "",
+          "",
+          "",
+          "0.96272412"
+        ],
+        [
+          "2025-07-15 23:55:00",
+          "ETHUSD_PERP",
+          "74934805.00000000",
+          "239074.49916741",
+          "",
+          "",
+          "",
+          "0.85155669"
+        ]
+      ],
+      "csv_sha256": "10129e2f629dc697972072e56ab72232993099cf8202726896e7c1c614c66000"
+    },
+    "reason": "ok"
+  },
+  {
+    "dataset": "metrics",
+    "path_type": "metrics",
+    "interval": null,
+    "symbol": "ETHUSD_PERP",
+    "date": "2026-04-15",
+    "url": "https://data.binance.vision/data/futures/cm/daily/metrics/ETHUSD_PERP/ETHUSD_PERP-metrics-2026-04-15.zip",
+    "valid": true,
+    "checksum_status": 200,
+    "http_status": 200,
+    "bytes": 6838,
+    "checksum_valid": true,
+    "archive_sha256": "be6f9ac504d6dc6828e58e773f19c8ded3d802524abc3c193473bcb48748e16b",
+    "parsed": {
+      "member": "ETHUSD_PERP-metrics-2026-04-15.csv",
+      "rows": 288,
+      "columns": [
+        "create_time",
+        "symbol",
+        "sum_open_interest",
+        "sum_open_interest_value",
+        "count_toptrader_long_short_ratio",
+        "sum_toptrader_long_short_ratio",
+        "count_long_short_ratio",
+        "sum_taker_long_short_vol_ratio"
+      ],
+      "column_widths": [
+        8
+      ],
+      "has_header": true,
+      "semantics": {
+        "timestamp": "create_time",
+        "symbol": "symbol",
+        "open_interest": "sum_open_interest",
+        "open_interest_value": "sum_open_interest_value",
+        "taker_ratio": "sum_taker_long_short_vol_ratio"
+      },
+      "native_median_interval_ms": 300000,
+      "timestamp_min_ms": 1776211200000,
+      "timestamp_max_ms": 1776297300000,
+      "schema_executable": true,
+      "first_rows": [
+        [
+          "2026-04-15 00:00:00",
+          "ETHUSD_PERP",
+          "42198336.00000000",
+          "181691.25662324",
+          "",
+          "",
+          "",
+          "2.13868469"
+        ],
+        [
+          "2026-04-15 00:05:00",
+          "ETHUSD_PERP",
+          "42106518.00000000",
+          "180422.17469833",
+          "",
+          "",
+          "",
+          "0.60812145"
+        ],
+        [
+          "2026-04-15 00:10:00",
+          "ETHUSD_PERP",
+          "42100658.00000000",
+          "179788.28867734",
+          "",
+          "",
+          "",
+          "1.69610046"
+        ]
+      ],
+      "last_rows": [
+        [
+          "2026-04-15 23:45:00",
+          "ETHUSD_PERP",
+          "42783929.00000000",
+          "181817.88009111",
+          "",
+          "",
+          "",
+          "0.87407426"
+        ],
+        [
+          "2026-04-15 23:50:00",
+          "ETHUSD_PERP",
+          "42781348.00000000",
+          "181466.96403431",
+          "",
+          "",
+          "",
+          "2.66690265"
+        ],
+        [
+          "2026-04-15 23:55:00",
+          "ETHUSD_PERP",
+          "42676517.00000000",
+          "180847.25888949",
+          "",
+          "",
+          "",
+          "2.13897275"
+        ]
+      ],
+      "csv_sha256": "9414947bec1523b7e1edcacd270708fcef699cb36f53f21389d527713d4e7605"
+    },
+    "reason": "ok"
+  }
+]

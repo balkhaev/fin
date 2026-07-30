@@ -1,0 +1,108 @@
+{
+  "candidate": "V197_DEPTH_SCHEMA_COVERAGE",
+  "sample_dates": [
+    "2023-01-15",
+    "2024-07-15",
+    "2025-07-15",
+    "2026-04-15"
+  ],
+  "details": [
+    {
+      "symbol": "BTCUSD_PERP",
+      "dataset": "book_depth",
+      "attempted": 4,
+      "valid": 4,
+      "availability": 1.0,
+      "schema_executable_files": 4,
+      "schema_count": 1,
+      "row_count_min": 50,
+      "row_count_max": 28800,
+      "gate_passed": true
+    },
+    {
+      "symbol": "BTCUSD_PERP",
+      "dataset": "book_ticker",
+      "attempted": 4,
+      "valid": 1,
+      "availability": 0.25,
+      "schema_executable_files": 1,
+      "schema_count": 1,
+      "row_count_min": 4385466,
+      "row_count_max": 4385466,
+      "gate_passed": false
+    },
+    {
+      "symbol": "BTCUSD_PERP",
+      "dataset": "mark_price_1m",
+      "attempted": 4,
+      "valid": 4,
+      "availability": 1.0,
+      "schema_executable_files": 4,
+      "schema_count": 1,
+      "row_count_min": 1440,
+      "row_count_max": 1440,
+      "gate_passed": true
+    },
+    {
+      "symbol": "BTCUSD_PERP",
+      "dataset": "metrics",
+      "attempted": 4,
+      "valid": 4,
+      "availability": 1.0,
+      "schema_executable_files": 4,
+      "schema_count": 1,
+      "row_count_min": 288,
+      "row_count_max": 288,
+      "gate_passed": true
+    },
+    {
+      "symbol": "ETHUSD_PERP",
+      "dataset": "book_depth",
+      "attempted": 4,
+      "valid": 4,
+      "availability": 1.0,
+      "schema_executable_files": 4,
+      "schema_count": 1,
+      "row_count_min": 50,
+      "row_count_max": 28800,
+      "gate_passed": true
+    },
+    {
+      "symbol": "ETHUSD_PERP",
+      "dataset": "book_ticker",
+      "attempted": 4,
+      "valid": 1,
+      "availability": 0.25,
+      "schema_executable_files": 1,
+      "schema_count": 1,
+      "row_count_min": 4426839,
+      "row_count_max": 4426839,
+      "gate_passed": false
+    },
+    {
+      "symbol": "ETHUSD_PERP",
+      "dataset": "mark_price_1m",
+      "attempted": 4,
+      "valid": 4,
+      "availability": 1.0,
+      "schema_executable_files": 4,
+      "schema_count": 1,
+      "row_count_min": 1440,
+      "row_count_max": 1440,
+      "gate_passed": true
+    },
+    {
+      "symbol": "ETHUSD_PERP",
+      "dataset": "metrics",
+      "attempted": 4,
+      "valid": 4,
+      "availability": 1.0,
+      "schema_executable_files": 4,
+      "schema_count": 1,
+      "row_count_min": 288,
+      "row_count_max": 288,
+      "gate_passed": true
+    }
+  ],
+  "passed": false
+}
