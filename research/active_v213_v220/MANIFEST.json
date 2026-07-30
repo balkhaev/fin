@@ -1,0 +1,69 @@
+{
+  "candidate": "ACTIVE_V213_SPOT_PERP_LEAD_LAG",
+  "files": {
+    "LOW_LEVEL_TRIGGER.txt": {
+      "bytes": 82,
+      "sha256": "54ca7e7421b5ffa4254276fd0b329ea1ba5f1cae80cb42f887642c6affc99a2e"
+    },
+    "README.md": {
+      "bytes": 864,
+      "sha256": "40c927b3c13ef6531f8d72a515f436c5ca85e37f07b43f889b16453267310f97"
+    },
+    "RUN_TRIGGER.txt": {
+      "bytes": 95,
+      "sha256": "afb2613df351354f8415af1acb69761c6c21d25dfdc3926f2c14f890404b981c"
+    },
+    "V213_V220_DESIGN.json": {
+      "bytes": 1497,
+      "sha256": "fc542df482ed16307208c5a69978c695254f79d1b068304c9a7197ff0038479f"
+    },
+    "config.py": {
+      "bytes": 2504,
+      "sha256": "81a79574b7b57987bfbcaa019b7b12bc38897d682e7dc50c157295925b729582"
+    },
+    "data.py": {
+      "bytes": 9769,
+      "sha256": "e684530f8ac785e117897c95b11838c46dbdfa574b277491021af1df199a5a06"
+    },
+    "engine.py": {
+      "bytes": 20678,
+      "sha256": "28ebb80e581b9bac2dfdd18473a0eba74a7121e6fc1bdb63b2f11a1361c48d2f"
+    },
+    "requirements.txt": {
+      "bytes": 47,
+      "sha256": "e4b80ba1592a07b6c9bfcad04477c3ae8e131719c30f33fa2c52a5078c608199"
+    },
+    "results/FROZEN_DECISION.json": {
+      "bytes": 257,
+      "sha256": "ee7b1271af7371c86b65033d8986d38f16a2f1671fb6919503d2b7da412aec63"
+    },
+    "results/REPORT_RU.md": {
+      "bytes": 351,
+      "sha256": "f1cfc9e9b8121c2946bbfa84130c76c6131bfc0b147767b8d8bfa7238f990c8d"
+    },
+    "results/coverage_gate.json": {
+      "bytes": 2274,
+      "sha256": "f12bd973a09335d16e0cba6bec267a022ee9e535c7f3e29142c51c240d1eeb93"
+    },
+    "results/provenance.json": {
+      "bytes": 126695,
+      "sha256": "cc9b882f2e630a91701e2e151ef1dc8d77094d2c44ea23d35a400245259031f7"
+    },
+    "results/selection_proof_before_validation.json": {
+      "bytes": 3657,
+      "sha256": "a8dd2f3be92961be2f3090b8c13df245a26506a5c900ea19959337dfe66b2b75"
+    },
+    "results/selection_ranking_before_validation.csv": {
+      "bytes": 37500,
+      "sha256": "5a559a2bbad3bd84d9df9d8bed38a695121143f310734120662efffac2dbcd3a"
+    },
+    "results/summary.json": {
+      "bytes": 18946,
+      "sha256": "a110fdf071b4711818c7fdee780f569f61d3c2d96f912f8a4d5051438d865b91"
+    },
+    "run_research.py": {
+      "bytes": 20375,
+      "sha256": "d7c499bae4f783fc6b658677c84ed695ea6f74454319c214484000299c895d57"
+    }
+  }
+}
