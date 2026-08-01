@@ -4,7 +4,7 @@ import copy
 import json
 import math
 import unittest
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -77,37 +77,58 @@ def synthetic_histories(days: int = 820) -> list[dict[str, object]]:
 class Ds40180T50C3PaperTests(unittest.TestCase):
     def test_frozen_regression_and_exact_risk_limits(self) -> None:
         engine = build_engine(synthetic_histories(), [])
+        decision_index = engine["executionIndex"]
 
-        self.assertEqual(engine["dates"][-1], "2026-07-29")
-        self.assertAlmostEqual(engine["riskScale"][-1], 3.0, places=12)
-        self.assertFalse(engine["combinedBear"][-1])
-        target = dict(zip(engine["assets"], engine["target"][-1], strict=True))
+        self.assertEqual(engine["marketDates"][-1], "2026-07-29")
+        self.assertEqual(engine["executionDate"], "2026-07-30")
+        self.assertEqual(engine["dates"][decision_index], "2026-07-30")
+        self.assertAlmostEqual(engine["riskScale"][decision_index], 3.0, places=12)
+        self.assertFalse(engine["combinedBear"][decision_index])
+        target = dict(
+            zip(engine["assets"], engine["target"][decision_index], strict=True)
+        )
         self.assertAlmostEqual(target["BTC"], 0.30, places=12)
         self.assertAlmostEqual(target["LINK"], 0.30, places=12)
         self.assertAlmostEqual(target["XLM"], 0.30, places=12)
-        self.assertAlmostEqual(_gross(engine["target"][-1]), 0.90, places=12)
-        self.assertLessEqual(_gross(engine["target"][-1]), PAPER_GROSS_CAP)
+        self.assertAlmostEqual(_gross(engine["target"][decision_index]), 0.90, places=12)
+        self.assertLessEqual(_gross(engine["target"][decision_index]), PAPER_GROSS_CAP)
         self.assertTrue(
-            all(abs(weight) <= PAPER_ASSET_CAP for weight in engine["target"][-1])
+            all(
+                abs(weight) <= PAPER_ASSET_CAP
+                for weight in engine["target"][decision_index]
+            )
         )
 
-    def test_latest_close_cannot_change_already_executable_target(self) -> None:
+    def test_latest_close_changes_only_the_next_session_target(self) -> None:
         histories = synthetic_histories()
         baseline = build_engine(histories, [])
         changed = copy.deepcopy(histories)
         latest_date = max(changed[0]["bars"])
-        changed[0]["bars"][latest_date]["close"] = (
-            float(changed[0]["bars"][latest_date]["close"]) * 7.0
-        )
-        changed[0]["bars"][latest_date]["high"] = (
-            float(changed[0]["bars"][latest_date]["close"]) * 1.01
-        )
+        changed_close = float(changed[0]["bars"][latest_date]["close"]) * 0.01
+        changed[0]["bars"][latest_date]["close"] = changed_close
+        changed[0]["bars"][latest_date]["high"] = max(
+            float(changed[0]["bars"][latest_date]["open"]), changed_close
+        ) * 1.01
+        changed[0]["bars"][latest_date]["low"] = changed_close * 0.99
         changed_engine = build_engine(changed, [])
 
+        latest_market_index = baseline["latestMarketIndex"]
         for expected, actual in zip(
-            baseline["target"][-1], changed_engine["target"][-1], strict=True
+            baseline["target"][latest_market_index],
+            changed_engine["target"][latest_market_index],
+            strict=True,
         ):
             self.assertAlmostEqual(actual, expected, places=12)
+        self.assertTrue(
+            any(
+                abs(expected - actual) > 1e-9
+                for expected, actual in zip(
+                    baseline["target"][baseline["executionIndex"]],
+                    changed_engine["target"][changed_engine["executionIndex"]],
+                    strict=True,
+                )
+            )
+        )
 
     def test_new_paper_identity_uses_isolated_capital_and_realized_funding(self) -> None:
         histories = synthetic_histories()
@@ -119,17 +140,34 @@ class Ds40180T50C3PaperTests(unittest.TestCase):
             initial_nav_usd=10_000.0,
         )
 
+        expected_effective_date = (
+            date.fromisoformat(snapshot["asOf"]) + timedelta(days=1)
+        ).isoformat()
         self.assertEqual(snapshot["strategyId"], STRATEGY_ID)
         self.assertEqual(snapshot["identityKind"], "new_okx_paper_port")
         self.assertFalse(snapshot["historicalMetricsInherited"])
         self.assertEqual(snapshot["mode"], "paper")
+        self.assertEqual(snapshot["effectiveDate"], expected_effective_date)
+        self.assertEqual(
+            snapshot["paper"]["targetEffectiveDate"], expected_effective_date
+        )
         self.assertEqual(snapshot["paper"]["account"]["initialNavUsd"], 10_000.0)
+        self.assertEqual(
+            snapshot["paper"]["account"]["requestedResetDate"], reset_date
+        )
         self.assertGreater(snapshot["paper"]["totalExecutions"], 0)
         self.assertGreater(snapshot["funding"]["actualIntervals"], 0)
         self.assertEqual(snapshot["funding"]["fallbackIntervals"], 0)
+        self.assertGreaterEqual(snapshot["funding"]["liveActualIntervals"], 0)
         self.assertGreater(snapshot["paper"]["navUsd"], 0)
         self.assertTrue(math.isfinite(snapshot["paper"]["navUsd"]))
         self.assertLessEqual(snapshot["targetGross"], PAPER_GROSS_CAP)
+        self.assertTrue(
+            all(
+                execution["effectiveDate"] > execution["orderDate"]
+                for execution in snapshot["paper"]["executions"]
+            )
+        )
         self.assertFalse(snapshot["exchange_submission_available"])
         self.assertFalse(snapshot["live_ready"])
         self.assertFalse(snapshot["real_leverage_authorized"])
