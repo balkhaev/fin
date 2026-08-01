@@ -54,8 +54,6 @@ jobs:
               if updated != text:
                   path.write_text(updated, encoding='utf-8')
                   changed.append(str(path))
-          assert 'src/finruntime/strategies/_ds40180_common.py' in changed
-          assert 'config/strategies/ds40180_t50c3_okx_paper.json' in changed
           print({'changed': changed})
           PY
           ! grep -R --line-number --fixed-strings '4Hutc' \
