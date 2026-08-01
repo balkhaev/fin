@@ -56,7 +56,9 @@ jobs:
             tests/runtime/test_ds40180_t50c3_paper.py
 
       - name: Run deterministic strategy tests
-        run: python -m unittest tests.runtime.test_ds40180_t50c3_paper -v
+        run: >-
+          python -m unittest discover -s tests/runtime
+          -p 'test_ds40180_t50c3_paper.py' -v
 
       - name: Enforce paper-only surface
         run: |
