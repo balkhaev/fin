@@ -5,11 +5,13 @@ on:
     branches: [agent/backtest-audit-20260801]
     paths:
       - 'research/agent_backtest_audit_20260801.py'
+      - 'research/agent_backtest_ablations_20260801.py'
       - '.github/workflows/agent-backtest-audit.yml'
   pull_request:
     branches: [main]
     paths:
       - 'research/agent_backtest_audit_20260801.py'
+      - 'research/agent_backtest_ablations_20260801.py'
       - '.github/workflows/agent-backtest-audit.yml'
   workflow_dispatch:
 
@@ -80,5 +82,34 @@ jobs:
         with:
           name: agent-backtest-factors-20260801
           path: audit-results/factors.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  ablation-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile ablation harness
+        run: python -m compileall -q research/agent_backtest_ablations_20260801.py
+
+      - name: Run DYN-IV113 and DS-40/180 ablations
+        run: |
+          mkdir -p audit-results
+          python research/agent_backtest_ablations_20260801.py \
+            --output audit-results/ablations.json
+
+      - name: Upload ablation audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-backtest-ablations-20260801
+          path: audit-results/ablations.json
           if-no-files-found: warn
           retention-days: 14
