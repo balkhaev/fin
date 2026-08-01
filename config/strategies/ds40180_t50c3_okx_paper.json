@@ -13,7 +13,7 @@
     "instrument_type": "SWAP",
     "margin_currency": "USDT",
     "bar": "1Dutc",
-    "crisis_bar": "4Hutc",
+    "crisis_bar": "4H",
     "assets": [
       "ADA", "BCH", "BNB", "BTC", "DOGE", "DOT", "ETH",
       "LINK", "LTC", "TRX", "UNI", "XLM", "XRP"

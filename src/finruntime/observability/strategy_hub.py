@@ -323,7 +323,7 @@ STRATEGY_GUIDES: dict[str, dict[str, Any]] = {
             "Реальные ордера и authenticated exchange client отсутствуют."
         ],
         "data_scope": (
-            "Публичные OKX USDT perpetuals: закрытые 1Dutc и 4Hutc свечи, "
+            "Публичные OKX USDT perpetuals: закрытые 1Dutc и 4H свечи, "
             "mark price, ticker bid/ask, funding history и current funding."
         ),
     },
@@ -928,7 +928,7 @@ def _ds40180_strategy(
         "open_positions": len(positions),
         "closed_positions": int(_number(paper.get("totalExecutions"))),
         "market": "OKX USDT swaps · 13 assets",
-        "timeframe": "1Dutc core · 4Hutc crisis",
+        "timeframe": "1Dutc core · 4H crisis",
         "updated_at_ms": (
             int(updated_at_datetime.timestamp() * 1000)
             if updated_at_datetime is not None
