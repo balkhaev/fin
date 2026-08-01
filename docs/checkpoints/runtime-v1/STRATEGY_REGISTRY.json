@@ -2,6 +2,25 @@
   "registry_version": "runtime-v1",
   "live_execution_available": false,
   "strategies": {
+    "ds40180_t50c3_okx_paper": {
+      "role": "turbo_paper",
+      "allowed_modes": ["paper", "shadow"],
+      "live_ready": false,
+      "real_leverage_authorized": false,
+      "parameters": {
+        "profile": "DS-40/180 T50-C3",
+        "venue": "okx",
+        "instrument_type": "SWAP",
+        "target_volatility": 0.5,
+        "risk_scale_floor": 1.0,
+        "risk_scale_cap": 3.0,
+        "paper_gross_cap": 1.25,
+        "paper_asset_cap": 0.3,
+        "forward_clock_reset": true,
+        "historical_metrics_inherited": false,
+        "exchange_submission_available": false
+      }
+    },
     "atlas_nx_r1": {
       "role": "primary_reconstruction",
       "allowed_modes": ["paper", "shadow"],
