@@ -103,13 +103,14 @@ class Ds40180T50C3PaperTests(unittest.TestCase):
         histories = synthetic_histories()
         baseline = build_engine(histories, [])
         changed = copy.deepcopy(histories)
-        latest_date = max(changed[0]["bars"])
-        changed_close = float(changed[0]["bars"][latest_date]["close"]) * 0.01
-        changed[0]["bars"][latest_date]["close"] = changed_close
-        changed[0]["bars"][latest_date]["high"] = max(
-            float(changed[0]["bars"][latest_date]["open"]), changed_close
-        ) * 1.01
-        changed[0]["bars"][latest_date]["low"] = changed_close * 0.99
+        for history in changed:
+            latest_date = max(history["bars"])
+            changed_close = float(history["bars"][latest_date]["close"]) * 0.01
+            history["bars"][latest_date]["close"] = changed_close
+            history["bars"][latest_date]["high"] = max(
+                float(history["bars"][latest_date]["open"]), changed_close
+            ) * 1.01
+            history["bars"][latest_date]["low"] = changed_close * 0.99
         changed_engine = build_engine(changed, [])
 
         latest_market_index = baseline["latestMarketIndex"]
