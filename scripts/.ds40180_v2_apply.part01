@@ -1,4 +1,4 @@
-_ds = '''\n\ndef read_ds40180_snapshot(
+    read_ds = '''\n\ndef read_ds40180_snapshot(
     path: Path, *, stale_after_seconds: float = DS40180_STALE_AFTER_SECONDS
 ) -> tuple[dict[str, Any] | None, str | None, bool]:
     if not path.is_file():
