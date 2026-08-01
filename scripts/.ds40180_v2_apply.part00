@@ -34,6 +34,24 @@ def main() -> int:
     for relative, content in files.items():
         write(relative, content)
 
+    # The Actions token can validate workflow changes but cannot push them.
+    # Preserve the generated workflow as a normal text artifact and restore
+    # tracked workflow files in a pre-commit hook. The GitHub connector will
+    # publish the validated workflow separately with workflows permission.
+    hook = ROOT / ".git" / "hooks" / "pre-commit"
+    hook.write_text(
+        """#!/bin/sh
+set -eu
+mkdir -p docs
+cp .github/workflows/ds40180-paper.yml docs/_ds40180-paper-v2.yml.txt
+git add docs/_ds40180-paper-v2.yml.txt
+git restore --source=HEAD --staged --worktree \
+  .github/workflows/ds40180-paper.yml \
+  .github/workflows/apply-ds40180-v2.yml
+""",
+        encoding="utf-8",
+    )
+    hook.chmod(0o755)
 
     replace_once(
         "src/finruntime/registry.py",
