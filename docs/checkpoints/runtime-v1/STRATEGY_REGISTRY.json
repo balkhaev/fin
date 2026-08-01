@@ -3,27 +3,44 @@
   "live_execution_available": false,
   "strategies": {
     "ds40180_t50c3_okx_paper": {
+      "strategy_id": "ds40180_t50c3_okx_paper",
       "role": "turbo_paper",
-      "allowed_modes": ["paper", "shadow"],
+      "allowed_modes": [
+        "paper",
+        "shadow"
+      ],
       "live_ready": false,
       "real_leverage_authorized": false,
       "parameters": {
-        "profile": "DS-40/180 T50-C3",
+        "strategy_version": "okx-paper-v2",
+        "profile": "DS-40/180 T50-C3 v2",
         "venue": "okx",
         "instrument_type": "SWAP",
         "target_volatility": 0.5,
         "risk_scale_floor": 1.0,
         "risk_scale_cap": 3.0,
-        "paper_gross_cap": 1.25,
-        "paper_asset_cap": 0.3,
+        "paper_gross_cap": 1.5,
+        "paper_gross_cap_stress": 0.75,
+        "paper_gross_cap_base": 1.25,
+        "paper_gross_cap_calm": 1.5,
+        "paper_asset_cap": 0.25,
+        "funding_aware_sizing": true,
+        "covariance_stress_control": true,
+        "crisis_4h_gross_cap": 0.15,
+        "no_trade_min_band": 0.005,
+        "persistent_append_only_ledger": true,
         "forward_clock_reset": true,
         "historical_metrics_inherited": false,
         "exchange_submission_available": false
       }
     },
     "atlas_nx_r1": {
+      "strategy_id": "atlas_nx_r1",
       "role": "primary_reconstruction",
-      "allowed_modes": ["paper", "shadow"],
+      "allowed_modes": [
+        "paper",
+        "shadow"
+      ],
       "live_ready": false,
       "real_leverage_authorized": false,
       "parameters": {
@@ -34,8 +51,12 @@
       }
     },
     "v75_atlas_nx": {
+      "strategy_id": "v75_atlas_nx",
       "role": "primary",
-      "allowed_modes": ["paper", "shadow"],
+      "allowed_modes": [
+        "paper",
+        "shadow"
+      ],
       "live_ready": false,
       "real_leverage_authorized": false,
       "parameters": {
@@ -44,8 +65,12 @@
       }
     },
     "v28_growth_control": {
+      "strategy_id": "v28_growth_control",
       "role": "control",
-      "allowed_modes": ["paper", "shadow"],
+      "allowed_modes": [
+        "paper",
+        "shadow"
+      ],
       "live_ready": false,
       "real_leverage_authorized": false,
       "parameters": {
@@ -54,8 +79,11 @@
       }
     },
     "v136_execution_shadow": {
+      "strategy_id": "v136_execution_shadow",
       "role": "shadow",
-      "allowed_modes": ["shadow"],
+      "allowed_modes": [
+        "shadow"
+      ],
       "live_ready": false,
       "real_leverage_authorized": false,
       "parameters": {
@@ -66,8 +94,11 @@
       }
     },
     "v517_tristate_guard_shadow": {
+      "strategy_id": "v517_tristate_guard_shadow",
       "role": "shadow",
-      "allowed_modes": ["shadow"],
+      "allowed_modes": [
+        "shadow"
+      ],
       "live_ready": false,
       "real_leverage_authorized": false,
       "parameters": {

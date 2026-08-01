@@ -1,18 +1,19 @@
-name: DS-40/180 T50-C3 paper worker
+name: DS-40/180 T50-C3 v2 paper worker
 
 on:
   push:
-    branches: [main, agent/ds40180-paper-trading]
+    branches: [main, agent/ds40180-v2-improvements]
     paths:
       - 'src/finruntime/strategies/ds40180_t50c3_paper.py'
       - 'src/finruntime/strategies/_ds40180_*.py'
+      - 'src/finruntime/observability/strategy_hub.py'
+      - 'src/finruntime/observability/server.py'
       - 'src/finruntime/registry.py'
       - 'config/strategies/ds40180_t50c3_okx_paper.json'
       - 'docs/checkpoints/runtime-v1/STRATEGY_REGISTRY.json'
-      - 'scripts/run_paper_stack.py'
       - 'scripts/check_paper_stack.py'
-      - 'scripts/verify_runtime.py'
       - 'tests/runtime/test_ds40180_t50c3_paper.py'
+      - 'tests/runtime/test_strategy_hub.py'
       - 'docs/DS40180_T50C3_PAPER_RU.md'
       - '.github/workflows/ds40180-paper.yml'
   pull_request:
@@ -20,13 +21,14 @@ on:
     paths:
       - 'src/finruntime/strategies/ds40180_t50c3_paper.py'
       - 'src/finruntime/strategies/_ds40180_*.py'
+      - 'src/finruntime/observability/strategy_hub.py'
+      - 'src/finruntime/observability/server.py'
       - 'src/finruntime/registry.py'
       - 'config/strategies/ds40180_t50c3_okx_paper.json'
       - 'docs/checkpoints/runtime-v1/STRATEGY_REGISTRY.json'
-      - 'scripts/run_paper_stack.py'
       - 'scripts/check_paper_stack.py'
-      - 'scripts/verify_runtime.py'
       - 'tests/runtime/test_ds40180_t50c3_paper.py'
+      - 'tests/runtime/test_strategy_hub.py'
       - 'docs/DS40180_T50C3_PAPER_RU.md'
       - '.github/workflows/ds40180-paper.yml'
   workflow_dispatch:
@@ -45,33 +47,36 @@ jobs:
       PYTHONPATH: src
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Compile paper implementation
+      - name: Compile v2 implementation
         run: |
           python -m compileall -q \
             src/finruntime/strategies/ds40180_t50c3_paper.py \
             src/finruntime/strategies/_ds40180_*.py \
-            src/finruntime/registry.py \
-            scripts/run_paper_stack.py \
+            src/finruntime/observability/strategy_hub.py \
+            src/finruntime/observability/server.py \
             scripts/check_paper_stack.py \
-            tests/runtime/test_ds40180_t50c3_paper.py
+            tests/runtime/test_ds40180_t50c3_paper.py \
+            tests/runtime/test_strategy_hub.py
 
-      - name: Run deterministic strategy tests
-        run: >-
-          python -m unittest discover -s tests/runtime
-          -p 'test_ds40180_t50c3_paper.py' -v
+      - name: Run deterministic strategy and hub tests
+        run: |
+          python -m unittest discover -s tests/runtime -p 'test_ds40180_t50c3_paper.py' -v
+          python -m unittest tests.runtime.test_strategy_hub -v
 
       - name: Verify runtime registry contract
-        run: python scripts/verify_runtime.py --contracts-only
+        run: python scripts/verify_runtime.py --full
 
       - name: Enforce paper-only surface
         run: |
           set -euxo pipefail
           python -m finruntime.strategies.ds40180_t50c3_paper --help >/tmp/help.txt
-          grep -F -- '--snapshot' /tmp/help.txt
+          grep -F -- '--verify-journal' /tmp/help.txt
           ! grep -R -E 'submit_order|create_order|place_order|apiKey|secretKey' \
             src/finruntime/strategies/ds40180_t50c3_paper.py \
             src/finruntime/strategies/_ds40180_*.py
@@ -81,20 +86,19 @@ jobs:
           config = json.loads(
               Path('config/strategies/ds40180_t50c3_okx_paper.json').read_text()
           )
-          committed = json.loads(
-              Path('docs/checkpoints/runtime-v1/STRATEGY_REGISTRY.json').read_text()
-          )
+          assert config['strategy_version'] == 'okx-paper-v2'
           assert config['allowed_modes'] == ['paper', 'shadow']
           assert config['live_ready'] is False
           assert config['real_leverage_authorized'] is False
           assert config['exchange_submission_available'] is False
-          assert config['risk']['paper_gross_cap'] == 1.25
-          assert 'ds40180_t50c3_okx_paper' in committed['strategies']
+          assert config['risk']['paper_gross_cap_absolute'] == 1.50
+          assert config['execution']['persistent_append_only_ledger'] is True
+          assert config['market']['crisis_bar'] == '4H'
           PY
 
   okx-public-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
     env:
       PYTHONPATH: src
     steps:
@@ -103,11 +107,16 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Build one live public-data paper snapshot
+      - name: Build two consecutive live public-data snapshots
         run: |
           set -euxo pipefail
           snapshot="${RUNNER_TEMP}/ds40180-okx-paper.json"
-          timeout 420 python -m finruntime.strategies.ds40180_t50c3_paper \
+          timeout 480 python -m finruntime.strategies.ds40180_t50c3_paper \
+            --snapshot "${snapshot}" \
+            --reset-date 2026-07-31 \
+            --starting-cash 10000 \
+            --once
+          timeout 480 python -m finruntime.strategies.ds40180_t50c3_paper \
             --snapshot "${snapshot}" \
             --reset-date 2026-07-31 \
             --starting-cash 10000 \
@@ -119,13 +128,21 @@ jobs:
           from pathlib import Path
 
           snapshot = json.loads(Path(os.environ['SNAPSHOT_PATH']).read_text())
+          assert snapshot['schema_version'] == 2
           assert snapshot['strategyId'] == 'ds40180_t50c3_okx_paper'
+          assert snapshot['strategyVersion'] == 'okx-paper-v2'
           assert snapshot['status'] == 'ready'
           assert snapshot['mode'] == 'paper'
           assert len(snapshot['assets']) >= 8
           assert date.fromisoformat(snapshot['effectiveDate']) > date.fromisoformat(snapshot['asOf'])
-          assert snapshot['targetGross'] <= 1.25 + 1e-12
+          assert snapshot['targetGross'] <= snapshot['dynamicGrossCap'] + 1e-12
+          assert snapshot['dynamicGrossCap'] <= 1.50 + 1e-12
           assert snapshot['paper']['navUsd'] > 0
+          assert snapshot['persistence']['journal']['valid'] is True
+          assert snapshot['persistence']['journal']['events'] >= 1
+          assert Path(snapshot['persistence']['statePath']).is_file()
+          assert Path(snapshot['persistence']['journalPath']).is_file()
+          assert not any('4h fallback' in warning for warning in snapshot['warnings'])
           assert snapshot['exchange_submission_available'] is False
           assert snapshot['live_ready'] is False
           assert snapshot['real_leverage_authorized'] is False
@@ -136,9 +153,24 @@ jobs:
               'failedAssets': snapshot['failedAssets'],
               'targetGross': snapshot['targetGross'],
               'targetNet': snapshot['targetNet'],
+              'dynamicGrossCap': snapshot['dynamicGrossCap'],
+              'grossCapRegime': snapshot['grossCapRegime'],
               'riskScale': snapshot['riskScale'],
-              'bear': snapshot['regime']['combinedBear'],
+              'regime': snapshot['regime'],
+              'crisis4h': snapshot['overlays']['crisis4h'],
               'navUsd': snapshot['paper']['navUsd'],
+              'journalEvents': snapshot['persistence']['journal']['events'],
               'warnings': snapshot['warnings'],
           }, indent=2))
           PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ds40180-v2-okx-paper-smoke
+          path: |
+            ${{ runner.temp }}/ds40180-okx-paper.json
+            ${{ runner.temp }}/ds40180_t50c3_paper_state.json
+            ${{ runner.temp }}/ds40180_t50c3_paper_events.jsonl
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,43 +1,44 @@
-# DS-40/180 T50-C3 — OKX paper trading
+# DS-40/180 T50-C3 v2 — постоянная paper-торговля OKX
 
-## Что запускается
+Стратегия работает только с публичными данными OKX и не содержит API-ключей,
+authenticated-клиента или функций отправки ордеров.
 
-Корневой `scripts/run_paper_stack.py` автоматически поднимает отдельный worker
-`finruntime.strategies.ds40180_t50c3_paper`. Он использует только публичные
-данные OKX по USDT perpetual swaps:
+## Что изменилось в v2
 
-- закрытые дневные свечи `1Dutc`;
-- текущий mark price;
-- историю фактически начисленного funding (`realizedRate`, с fallback на
-  `fundingRate`).
+- paper-счёт больше не пересчитывается от reset date на каждом цикле;
+- состояние хранится атомарно, события записываются в append-only hash-chain journal;
+- исправлено противоречие между early-bear и медленным short-рукавом;
+- введены отдельные режимы `bull`, `early_bear`, `confirmed_bear`;
+- текущий adverse funding уменьшает только дорогую сторону позиции;
+- общий gross выбирается по covariance/stressed-correlation контроллеру: 0.75 / 1.25 / 1.50;
+- вес одного контракта ограничен 25% NAV;
+- добавлен ограниченный 4h crisis overlay с максимальным gross 15%;
+- малые увеличения риска удерживаются no-trade band, но выходы, sign flip и сокращения риска выполняются всегда;
+- paper fill использует публичный bid/ask OKX и дополнительный impact 2 bps.
 
-API-ключи не нужны. В модуле нет клиента размещения ордеров; поля
-`exchange_submission_available`, `live_ready` и `real_leverage_authorized`
-жёстко равны `false`.
-
-## Зафиксированная стратегия
-
-- три базовых рукава: Long-only, Light short hedge и Slow-bear specialist;
-- режим DS-40/180: медленный 180-дневный режим с гистерезисом и ранний
-  40-дневный триггер;
-- T50-C3: целевая волатильность 50%, weekly risk scale от `1.0x` до `3.0x`;
-- дополнительный paper-only safety cap: gross не выше `1.25x`, вес одного
-  инструмента не выше `30%` капитала;
-- новый независимый счёт $10 000 и новый forward clock; исторические метрики
-  исследовательского бэктеста не наследуются.
-
-## Файл состояния
-
-По умолчанию атомарный snapshot записывается сюда:
+## Файлы runtime
 
 ```text
 /data/runtime/ds40180_t50c3_paper_snapshot.json
+/data/runtime/ds40180_t50c3_paper_state.json
+/data/runtime/ds40180_t50c3_paper_events.jsonl
 ```
 
-В нём находятся текущие веса, long/short позиции, NAV, execution ledger,
-фактический/fallback funding, режим DS-40/180 и текущий risk scale.
+Snapshot можно пересоздать, но `state.json` и `events.jsonl` должны храниться на
+постоянном volume. Уже обработанные доходности не переписываются при поздней
+коррекции свечи OKX; вместо этого создаётся `data_revision_detected` event.
 
-## Настройки контейнера
+Проверка журнала:
+
+```bash
+python -m finruntime.strategies.ds40180_t50c3_paper \
+  --snapshot /data/runtime/ds40180_t50c3_paper_snapshot.json \
+  --verify-journal /data/runtime/ds40180_t50c3_paper_events.jsonl
+```
+
+## Запуск
+
+Корневой Docker stack запускает worker автоматически. Настройки:
 
 ```text
 FIN_DS40180_STARTING_CASH=10000
@@ -45,19 +46,26 @@ FIN_DS40180_RESET_DATE=2026-07-31
 FIN_DS40180_POLL_SECONDS=300
 ```
 
-Запуск одного диагностического цикла без всего стека:
+Standalone:
 
 ```bash
 python -m finruntime.strategies.ds40180_t50c3_paper \
-  --snapshot /tmp/ds40180.json \
+  --snapshot runtime/ds40180_t50c3_paper_snapshot.json \
   --reset-date 2026-07-31 \
   --starting-cash 10000 \
-  --once
+  --poll-seconds 300
 ```
 
-## Fail-closed поведение
+## Риск
 
-Для расчёта требуется BTC и минимум восемь контрактов с достаточной общей
-историей. При ошибке OKX, недостатке свечей или некорректных данных новый
-snapshot не заменяет последний корректный. Отсутствующий funding штрафуется
-консервативным годовым fallback 5% на соответствующий notional.
+`riskScale=3` не означает постоянный gross 3x. Итоговый портфель проходит
+asset-cap, funding guard, covariance stress и динамический gross-cap. Абсолютный
+paper-only потолок — 1.50x, стрессовый — 0.75x.
+
+Статус безопасности остаётся неизменным:
+
+```text
+exchange_submission_available = false
+live_ready                    = false
+real_leverage_authorized      = false
+```

@@ -39,8 +39,12 @@ def _check_ds40180_snapshot() -> None:
         raise RuntimeError(f"DS-40/180 snapshot is unreadable: {error}") from error
     if not isinstance(snapshot, dict):
         raise TypeError("DS-40/180 snapshot is not a JSON object")
+    if snapshot.get("schema_version") != 2:
+        raise RuntimeError("unexpected DS-40/180 snapshot schema")
     if snapshot.get("strategyId") != "ds40180_t50c3_okx_paper":
         raise RuntimeError("unexpected DS-40/180 paper identity")
+    if snapshot.get("strategyVersion") != "okx-paper-v2":
+         raise RuntimeError("unexpected DS-40/180 paper version")
     if snapshot.get("mode") != "paper" or snapshot.get("status") != "ready":
         raise RuntimeError(f"DS-40/180 paper worker is not ready: {snapshot.get('status')}")
     if snapshot.get("exchange_submission_available") is not False:
@@ -56,6 +60,23 @@ def _check_ds40180_snapshot() -> None:
     paper = snapshot.get("paper")
     if not isinstance(paper, dict) or not isinstance(paper.get("navUsd"), (int, float)):
         raise RuntimeError("DS-40/180 paper NAV is unavailable")
+    dynamic_cap = snapshot.get("dynamicGrossCap")
+    target_gross = snapshot.get("targetGross")
+    if not isinstance(dynamic_cap, (int, float)) or not isinstance(target_gross, (int, float)):
+        raise RuntimeError("DS-40/180 risk diagnostics are unavailable")
+    if target_gross > dynamic_cap + 1e-9 or dynamic_cap > 1.50 + 1e-9:
+        raise RuntimeError("DS-40/180 gross limits are inconsistent")
+    persistence = snapshot.get("persistence")
+    persistence = persistence if isinstance(persistence, dict) else {}
+    journal = persistence.get("journal")
+    if not isinstance(journal, dict) or journal.get("valid") is not True:
+        raise RuntimeError(f"DS-40/180 journal is invalid: {journal}")
+    if int(journal.get("events") or 0) < 1:
+        raise RuntimeError("DS-40/180 journal is empty")
+    for key in ("statePath", "journalPath"):
+        value = persistence.get(key)
+        if not isinstance(value, str) or not Path(value).is_file():
+            raise RuntimeError(f"DS-40/180 persistence file is unavailable: {key}")
 
 
 def main() -> int:
@@ -106,6 +127,9 @@ def main() -> int:
     atlas = strategies.get("atlas-nx")
     if not isinstance(atlas, dict) or atlas.get("status") != "running":
         raise RuntimeError(f"Atlas NX R1 paper worker is not healthy: {atlas}")
+    ds40180 = strategies.get("ds40180-t50c3")
+    if not isinstance(ds40180, dict) or ds40180.get("status") != "running":
+        raise RuntimeError(f"DS-40/180 paper card is not healthy: {ds40180}")
     _check_ds40180_snapshot()
     return 0
 

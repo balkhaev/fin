@@ -11,6 +11,7 @@ from finruntime.observability.strategy_hub import (
     UpstreamSnapshotCache,
     _dyn_strategy,
     read_atlas_snapshot,
+    read_ds40180_snapshot,
     read_dyn_snapshot,
 )
 from finruntime.strategies.consensus_paper import (
@@ -148,6 +149,44 @@ class StrategyHubTests(unittest.TestCase):
             self.assertIn("identity", error or "")
             self.assertTrue(stale)
 
+
+    def test_reads_only_fresh_ds40180_v2_snapshot(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "ds40180.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 2,
+                        "strategyId": "ds40180_t50c3_okx_paper",
+                        "strategyVersion": "okx-paper-v2",
+                        "generatedAt": datetime.now(UTC).isoformat(),
+                        "status": "ready",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            snapshot, error, stale = read_ds40180_snapshot(
+                path, stale_after_seconds=60
+            )
+            self.assertEqual(snapshot["strategyVersion"], "okx-paper-v2")
+            self.assertIsNone(error)
+            self.assertFalse(stale)
+
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "strategyId": "ds40180_t50c3_okx_paper",
+                        "generatedAt": datetime.now(UTC).isoformat(),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            snapshot, error, stale = read_ds40180_snapshot(path)
+            self.assertIsNone(snapshot)
+            self.assertIn("schema", error or "")
+            self.assertTrue(stale)
+
     def test_normalizes_all_repository_strategies(self) -> None:
         dyn = {
             "status": "ready",
@@ -197,13 +236,13 @@ class StrategyHubTests(unittest.TestCase):
                 ],
             },
         )
-        self.assertEqual(snapshot["summary"]["strategy_count"], 4)
+        self.assertEqual(snapshot["summary"]["strategy_count"], 5)
         self.assertEqual(
             {item["repository"] for item in snapshot["strategies"]},
             {"fin", "trader", "fin2"},
         )
-        self.assertEqual(snapshot["summary"]["paper_equity_usdt"], 40_130)
-        self.assertEqual(snapshot["summary"]["paper_starting_balance_usdt"], 40_000)
+        self.assertEqual(snapshot["summary"]["paper_equity_usdt"], 50_130)
+        self.assertEqual(snapshot["summary"]["paper_starting_balance_usdt"], 50_000)
         self.assertTrue(
             all(
                 item["starting_balance_usdt"] == 10_000

@@ -169,6 +169,9 @@ class ControlRoomHTTPServer(ThreadingHTTPServer):
         self.strategy_hub = StrategyHub(
             dyn_snapshot_path=config.dyn_snapshot_path,
             atlas_snapshot_path=config.atlas_snapshot_path,
+            ds40180_snapshot_path=(
+                config.runtime_root / "ds40180_t50c3_paper_snapshot.json"
+            ),
         )
         self.started_monotonic = time.monotonic()
         super().__init__(address, ControlRoomHandler)
