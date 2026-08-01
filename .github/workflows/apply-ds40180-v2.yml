@@ -89,6 +89,7 @@ jobs:
 '''
           if 'ds40180_t50c3_paper_snapshot.json").write_text' not in text:
               text = text.replace(marker, fixture + marker)
+          assert 'ds40180_t50c3_paper_snapshot.json").write_text' in text
           path.write_text(text, encoding='utf-8')
           PY
       - name: Validate complete repository
