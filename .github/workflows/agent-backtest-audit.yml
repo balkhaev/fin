@@ -6,6 +6,11 @@ on:
     paths:
       - 'research/agent_backtest_audit_20260801.py'
       - '.github/workflows/agent-backtest-audit.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/agent_backtest_audit_20260801.py'
+      - '.github/workflows/agent-backtest-audit.yml'
   workflow_dispatch:
 
 permissions:
