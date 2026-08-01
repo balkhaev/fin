@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 import statistics
-from datetime import date
+from datetime import date, timedelta
 from typing import Any
 
 from ._ds40180_common import (
@@ -72,24 +72,33 @@ def build_engine(
     for asset in assets:
         asset_dates = set(history_by_asset[asset]["bars"])
         common_dates = asset_dates if common_dates is None else common_dates & asset_dates
-    dates = sorted(common_dates or ())[-HISTORY_LIMIT:]
-    if len(dates) < MINIMUM_COMMON_DAYS:
+    market_dates = sorted(common_dates or ())[-HISTORY_LIMIT:]
+    if len(market_dates) < MINIMUM_COMMON_DAYS:
         raise ValueError(
-            f"Only {len(dates)} common closed daily candles are available; "
+            f"Only {len(market_dates)} common closed daily candles are available; "
             f"at least {MINIMUM_COMMON_DAYS} are required"
         )
 
-    closes = [
+    execution_date = (
+        date.fromisoformat(market_dates[-1]) + timedelta(days=1)
+    ).isoformat()
+    dates = [*market_dates, execution_date]
+    market_closes = [
         [float(history_by_asset[asset]["bars"][date_text]["close"]) for asset in assets]
-        for date_text in dates
+        for date_text in market_dates
     ]
-    quote_volumes = [
+    market_quote_volumes = [
         [
             float(history_by_asset[asset]["bars"][date_text]["quoteVolume"])
             for asset in assets
         ]
-        for date_text in dates
+        for date_text in market_dates
     ]
+    # The terminal row is not a market observation. It is a zero-return execution
+    # row that turns the latest closed-bar information into the next session's
+    # target while preserving every lag used by the research implementation.
+    closes = [*market_closes, list(market_closes[-1])]
+    quote_volumes = [*market_quote_volumes, list(market_quote_volumes[-1])]
     returns = [_zero_row(len(assets))]
     for index in range(1, len(dates)):
         returns.append(
@@ -355,9 +364,15 @@ def build_engine(
         final_target.append(safe_target)
         gross_cap_applied.append(applied)
 
+    latest_market_index = len(market_dates) - 1
+    execution_index = len(dates) - 1
     return {
         "assets": assets,
         "dates": dates,
+        "marketDates": market_dates,
+        "executionDate": execution_date,
+        "latestMarketIndex": latest_market_index,
+        "executionIndex": execution_index,
         "closes": closes,
         "returns": returns,
         "eligible": eligible,
