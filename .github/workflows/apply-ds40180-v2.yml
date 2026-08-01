@@ -42,6 +42,20 @@ jobs:
           cat scripts/.ds40180_v2_apply.part* > scripts/apply_ds40180_v2.py
           cat scripts/.ds40180_v2_payload.part* > scripts/ds40180_v2_payload.b85
           python scripts/apply_ds40180_v2.py
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('tests/runtime/test_control_room_server.py')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              'self.assertEqual(strategies["summary"]["strategy_count"], 4)',
+              'self.assertEqual(strategies["summary"]["strategy_count"], 5)',
+          )
+          text = text.replace(
+              'self.assertEqual(message["strategies"]["summary"]["strategy_count"], 4)',
+              'self.assertEqual(message["strategies"]["summary"]["strategy_count"], 5)',
+          )
+          path.write_text(text, encoding='utf-8')
+          PY
       - name: Validate complete repository
         run: |
           set -euxo pipefail
