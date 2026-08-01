@@ -7,6 +7,12 @@ on:
       - 'scripts/.ds40180_v2_apply.part*'
       - 'scripts/.ds40180_v2_payload.part*'
       - '.github/workflows/apply-ds40180-v2.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/.ds40180_v2_apply.part*'
+      - 'scripts/.ds40180_v2_payload.part*'
+      - '.github/workflows/apply-ds40180-v2.yml'
 
 permissions:
   contents: write
@@ -17,6 +23,7 @@ concurrency:
 
 jobs:
   apply-and-commit:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
