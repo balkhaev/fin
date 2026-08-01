@@ -92,8 +92,10 @@ def compute_forward_state(
     if initial_nav_usd <= 0 or not math.isfinite(initial_nav_usd):
         raise ValueError("initial_nav_usd must be positive and finite")
     engine = build_engine(histories, failed_assets)
-    latest_index = len(engine["dates"]) - 1
-    latest_date = engine["dates"][latest_index]
+    latest_index = int(engine["latestMarketIndex"])
+    decision_index = int(engine["executionIndex"])
+    latest_date = engine["marketDates"][latest_index]
+    effective_date = engine["executionDate"]
     continuation = paper_continuation(
         engine,
         histories,
@@ -161,7 +163,7 @@ def compute_forward_state(
         if mark_times and max(mark_times) > 0
         else generated_at
     )
-    latest_allocation = engine["sleeveAllocations"][latest_index]
+    latest_allocation = engine["sleeveAllocations"][decision_index]
     return {
         "schema_version": 1,
         "strategyId": STRATEGY_ID,
@@ -174,8 +176,9 @@ def compute_forward_state(
         "generatedAt": generated_at,
         "marketDataAt": market_data_at,
         "asOf": latest_date,
+        "effectiveDate": effective_date,
         "snapshotDate": reset_date,
-        "inputSha256": _input_digest(histories, engine["dates"]),
+        "inputSha256": _input_digest(histories, engine["marketDates"]),
         "venue": "okx",
         "instrumentType": "SWAP",
         "bar": OKX_BAR,
@@ -185,16 +188,16 @@ def compute_forward_state(
         "eligibleAssets": [
             asset
             for asset, allowed in zip(
-                engine["assets"], engine["eligible"][latest_index], strict=True
+                engine["assets"], engine["eligible"][decision_index], strict=True
             )
             if allowed
         ],
         "regime": {
-            "mom180": engine["mom180"][latest_index],
-            "mom40": engine["mom40"][latest_index],
-            "re180Bear": bool(engine["re180Bear"][latest_index]),
-            "early40Bear": bool(engine["early40Bear"][latest_index]),
-            "combinedBear": bool(engine["combinedBear"][latest_index]),
+            "mom180": engine["mom180"][decision_index],
+            "mom40": engine["mom40"][decision_index],
+            "re180Bear": bool(engine["re180Bear"][decision_index]),
+            "early40Bear": bool(engine["early40Bear"][decision_index]),
+            "combinedBear": bool(engine["combinedBear"][decision_index]),
         },
         "sleeveAllocation": {
             "longOnly": latest_allocation[0],
@@ -204,12 +207,14 @@ def compute_forward_state(
         "targetVolatility": TARGET_VOLATILITY,
         "riskScaleFloor": RISK_SCALE_FLOOR,
         "riskScaleCap": RISK_SCALE_CAP,
-        "riskScale": engine["riskScale"][latest_index],
-        "rawRiskScale": engine["rawRiskScale"][latest_index],
-        "laggedRealizedVolatility": engine["laggedRealizedVolatility"][latest_index],
+        "riskScale": engine["riskScale"][decision_index],
+        "rawRiskScale": engine["rawRiskScale"][decision_index],
+        "laggedRealizedVolatility": engine["laggedRealizedVolatility"][
+            decision_index
+        ],
         "paperGrossCap": PAPER_GROSS_CAP,
         "paperAssetCap": PAPER_ASSET_CAP,
-        "safetyGrossCapApplied": engine["grossCapApplied"][latest_index],
+        "safetyGrossCapApplied": engine["grossCapApplied"][decision_index],
         "targetGross": target_gross,
         "targetNet": target_net,
         "targetWeights": dict(zip(engine["assets"], target, strict=True)),
@@ -220,7 +225,8 @@ def compute_forward_state(
         "paper": {
             "account": {
                 "initialNavUsd": initial_nav_usd,
-                "resetDate": reset_date,
+                "requestedResetDate": reset_date,
+                "actualResetDate": continuation["actualResetDate"],
                 "venue": "okx-public-paper",
             },
             "currentDrawdown": live["navUsd"] / peak_nav - 1.0,
@@ -232,12 +238,15 @@ def compute_forward_state(
             "navUsd": live["navUsd"],
             "pnlSinceSnapshotUsd": live["navUsd"] - initial_nav_usd,
             "returnSinceSnapshot": live["navUsd"] / initial_nav_usd - 1.0,
+            "targetEffectiveDate": continuation["targetEffectiveDate"],
             "totalExecutions": len(continuation["executions"]),
         },
         "funding": {
             "source": "OKX realizedRate; fundingRate fallback",
             "actualIntervals": continuation["fundingActualIntervals"],
             "fallbackIntervals": continuation["fundingFallbackIntervals"],
+            "liveActualIntervals": live["liveFundingEvents"],
+            "liveFundingPnlUsd": live["liveFundingPnlUsd"],
             "missingDataFallbackAnnual": MISSING_FUNDING_FALLBACK_ANNUAL,
         },
         "warnings": warnings,
@@ -320,6 +329,7 @@ def main(argv: list[str] | None = None) -> int:
                         "event": "ds40180_t50c3_paper_snapshot",
                         "status": snapshot["status"],
                         "as_of": snapshot["asOf"],
+                        "effective_date": snapshot["effectiveDate"],
                         "assets": len(snapshot["assets"]),
                         "nav_usd": round(float(snapshot["paper"]["navUsd"]), 4),
                         "target_gross": round(float(snapshot["targetGross"]), 6),
