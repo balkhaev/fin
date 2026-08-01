@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
@@ -23,6 +24,22 @@ from ._ds40180_common import (
     _timestamp_ms,
 )
 
+_REQUEST_LOCK = threading.Lock()
+_NEXT_REQUEST_AT = 0.0
+# The strictest public endpoint used here is budgeted below five requests/sec.
+# A process-wide slot protects all four loader threads from bursting the same IP.
+_MIN_REQUEST_INTERVAL_SECONDS = 0.22
+
+
+def _wait_for_request_slot() -> None:
+    global _NEXT_REQUEST_AT
+    with _REQUEST_LOCK:
+        now = time.monotonic()
+        delay = max(0.0, _NEXT_REQUEST_AT - now)
+        if delay:
+            time.sleep(delay)
+        _NEXT_REQUEST_AT = time.monotonic() + _MIN_REQUEST_INTERVAL_SECONDS
+
 
 def _fetch_okx(
     path: str,
@@ -38,6 +55,7 @@ def _fetch_okx(
     last_error: Exception | None = None
     for attempt in range(3):
         try:
+            _wait_for_request_slot()
             with urlopen(request, timeout=timeout_seconds) as response:
                 payload = json.load(response)
             if not isinstance(payload, dict):
@@ -53,7 +71,7 @@ def _fetch_okx(
         except (OSError, RuntimeError, TypeError, ValueError) as error:
             last_error = error
             if attempt < 2:
-                time.sleep(0.25 * (attempt + 1))
+                time.sleep(0.5 * (attempt + 1))
     raise RuntimeError(f"OKX request failed for {path}: {last_error}")
 
 
@@ -111,7 +129,6 @@ def _fetch_candles(instrument_id: str) -> list[dict[str, Any]]:
         after = str(oldest)
         if len(by_timestamp) >= HISTORY_LIMIT:
             break
-        time.sleep(0.05)
     candles = sorted(by_timestamp.values(), key=lambda item: item["openTime"])
     if len(candles) < MINIMUM_COMMON_DAYS:
         raise ValueError(
@@ -179,7 +196,6 @@ def _fetch_funding_history(
             break
         previous_oldest = oldest
         after = str(oldest)
-        time.sleep(0.05)
     return sorted(by_timestamp.values(), key=lambda item: item["fundingTime"])
 
 
