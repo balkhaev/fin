@@ -16,18 +16,19 @@ from ._ds40180_common import (
     ASSETS,
     HISTORY_LIMIT,
     INSTRUMENTS,
+    INTRADAY_HISTORY_LIMIT,
     MAX_CANDLE_PAGES,
     MAX_FUNDING_PAGES,
     MINIMUM_COMMON_DAYS,
     OKX_API_BASE,
     OKX_BAR,
+    OKX_INTRADAY_BAR,
     _timestamp_ms,
 )
 
 _REQUEST_LOCK = threading.Lock()
 _NEXT_REQUEST_AT = 0.0
-# The strictest public endpoint used here is budgeted below five requests/sec.
-# A process-wide slot protects all four loader threads from bursting the same IP.
+# Keep the whole process below five public REST requests per second.
 _MIN_REQUEST_INTERVAL_SECONDS = 0.22
 
 
@@ -50,7 +51,7 @@ def _fetch_okx(
     query = urlencode({key: str(value) for key, value in params.items() if value is not None})
     request = Request(
         f"{OKX_API_BASE}{path}?{query}",
-        headers={"Accept": "application/json", "User-Agent": "FIN-DS40180-PAPER/1.0"},
+        headers={"Accept": "application/json", "User-Agent": "FIN-DS40180-PAPER/2.0"},
     )
     last_error: Exception | None = None
     for attempt in range(3):
@@ -102,17 +103,24 @@ def _parse_candle(row: Any, instrument_id: str) -> dict[str, Any]:
     return candle
 
 
-def _fetch_candles(instrument_id: str) -> list[dict[str, Any]]:
+def _fetch_candle_series(
+    instrument_id: str,
+    *,
+    bar: str,
+    history_limit: int,
+    minimum: int,
+    max_pages: int,
+) -> list[dict[str, Any]]:
     by_timestamp: dict[int, dict[str, Any]] = {}
     after: str | None = None
     previous_oldest: int | None = None
-    for _page in range(MAX_CANDLE_PAGES):
+    for _page in range(max_pages):
         rows = _fetch_okx(
             "/api/v5/market/history-candles",
             {
                 "instId": instrument_id,
-                "bar": OKX_BAR,
-                "limit": 100,
+                "bar": bar,
+                "limit": min(300, history_limit),
                 "after": after,
             },
         )
@@ -127,15 +135,35 @@ def _fetch_candles(instrument_id: str) -> list[dict[str, Any]]:
             break
         previous_oldest = oldest
         after = str(oldest)
-        if len(by_timestamp) >= HISTORY_LIMIT:
+        if len(by_timestamp) >= history_limit:
             break
     candles = sorted(by_timestamp.values(), key=lambda item: item["openTime"])
-    if len(candles) < MINIMUM_COMMON_DAYS:
+    if len(candles) < minimum:
         raise ValueError(
-            f"{instrument_id} returned {len(candles)} closed daily candles; "
-            f"at least {MINIMUM_COMMON_DAYS} are required"
+            f"{instrument_id} returned {len(candles)} closed {bar} candles; "
+            f"at least {minimum} are required"
         )
-    return candles[-HISTORY_LIMIT:]
+    return candles[-history_limit:]
+
+
+def _fetch_candles(instrument_id: str) -> list[dict[str, Any]]:
+    return _fetch_candle_series(
+        instrument_id,
+        bar=OKX_BAR,
+        history_limit=HISTORY_LIMIT,
+        minimum=MINIMUM_COMMON_DAYS,
+        max_pages=MAX_CANDLE_PAGES,
+    )
+
+
+def _fetch_intraday_candles(instrument_id: str) -> list[dict[str, Any]]:
+    return _fetch_candle_series(
+        instrument_id,
+        bar=OKX_INTRADAY_BAR,
+        history_limit=INTRADAY_HISTORY_LIMIT,
+        minimum=110,
+        max_pages=2,
+    )
 
 
 def _fetch_mark(instrument_id: str, fallback: float) -> tuple[float, int]:
@@ -150,6 +178,28 @@ def _fetch_mark(instrument_id: str, fallback: float) -> tuple[float, int]:
     if not math.isfinite(price) or price <= 0:
         return fallback, observed_at_ms
     return price, observed_at_ms
+
+
+def _fetch_quote(instrument_id: str, fallback: float) -> dict[str, Any]:
+    rows = _fetch_okx("/api/v5/market/ticker", {"instId": instrument_id})
+    if not rows or not isinstance(rows[0], dict):
+        return {"bidPx": fallback, "askPx": fallback, "ts": int(time.time() * 1000)}
+    row = rows[0]
+    bid = float(row.get("bidPx") or fallback)
+    ask = float(row.get("askPx") or fallback)
+    if not math.isfinite(bid) or bid <= 0:
+        bid = fallback
+    if not math.isfinite(ask) or ask <= 0:
+        ask = fallback
+    if ask < bid:
+        bid = ask = fallback
+    return {
+        "bidPx": bid,
+        "askPx": ask,
+        "bidSz": row.get("bidSz"),
+        "askSz": row.get("askSz"),
+        "ts": int(row.get("ts") or time.time() * 1000),
+    }
 
 
 def _funding_rate(record: dict[str, Any]) -> float:
@@ -199,21 +249,57 @@ def _fetch_funding_history(
     return sorted(by_timestamp.values(), key=lambda item: item["fundingTime"])
 
 
+def _fetch_current_funding(instrument_id: str) -> dict[str, Any]:
+    rows = _fetch_okx("/api/v5/public/funding-rate", {"instId": instrument_id})
+    if not rows or not isinstance(rows[0], dict):
+        return {}
+    row = rows[0]
+    result: dict[str, Any] = {
+        "fundingTime": int(row.get("fundingTime") or 0),
+        "nextFundingTime": int(row.get("nextFundingTime") or 0),
+        "formulaType": row.get("formulaType"),
+        "method": row.get("method"),
+    }
+    for key in ("fundingRate", "nextFundingRate", "premium", "interestRate"):
+        raw = row.get(key)
+        if raw not in (None, ""):
+            value = float(raw)
+            if math.isfinite(value):
+                result[key] = value
+    return result
+
+
 def _load_asset_bundle(asset: str, reset_date: str) -> dict[str, Any]:
     instrument_id = INSTRUMENTS[asset]
     candles = _fetch_candles(instrument_id)
     warnings: list[str] = []
+    fallback = float(candles[-1]["close"])
     try:
-        mark_price, mark_time_ms = _fetch_mark(instrument_id, candles[-1]["close"])
+        mark_price, mark_time_ms = _fetch_mark(instrument_id, fallback)
     except (OSError, RuntimeError, TypeError, ValueError) as error:
-        mark_price = candles[-1]["close"]
+        mark_price = fallback
         mark_time_ms = int(time.time() * 1000)
         warnings.append(f"mark fallback: {type(error).__name__}: {error}")
+    try:
+        quote = _fetch_quote(instrument_id, mark_price)
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        quote = {"bidPx": mark_price, "askPx": mark_price, "ts": mark_time_ms}
+        warnings.append(f"quote fallback: {type(error).__name__}: {error}")
     try:
         funding = _fetch_funding_history(instrument_id, _timestamp_ms(reset_date))
     except (OSError, RuntimeError, TypeError, ValueError) as error:
         funding = []
         warnings.append(f"funding fallback: {type(error).__name__}: {error}")
+    try:
+        current_funding = _fetch_current_funding(instrument_id)
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        current_funding = {}
+        warnings.append(f"current funding fallback: {type(error).__name__}: {error}")
+    try:
+        bars4h = _fetch_intraday_candles(instrument_id)
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        bars4h = []
+        warnings.append(f"4h fallback: {type(error).__name__}: {error}")
     bars = {
         datetime.fromtimestamp(candle["openTime"] / 1000, UTC).date().isoformat(): candle
         for candle in candles
@@ -222,9 +308,12 @@ def _load_asset_bundle(asset: str, reset_date: str) -> dict[str, Any]:
         "asset": asset,
         "instrumentId": instrument_id,
         "bars": bars,
+        "bars4h": bars4h,
         "liveMark": mark_price,
         "markTimeMs": mark_time_ms,
+        "quote": quote,
         "funding": funding,
+        "currentFunding": current_funding,
         "warnings": warnings,
     }
 

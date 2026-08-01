@@ -1,7 +1,7 @@
 {
   "strategy_id": "ds40180_t50c3_okx_paper",
-  "strategy_version": "okx-paper-v1",
-  "research_profile": "DS-40/180 T50-C3",
+  "strategy_version": "okx-paper-v2",
+  "research_profile": "DS-40/180 T50-C3 v2",
   "role": "turbo_paper",
   "allowed_modes": ["paper", "shadow"],
   "starting_cash_usd": 10000,
@@ -13,29 +13,25 @@
     "instrument_type": "SWAP",
     "margin_currency": "USDT",
     "bar": "1Dutc",
+    "crisis_bar": "4Hutc",
     "assets": [
-      "ADA",
-      "BCH",
-      "BNB",
-      "BTC",
-      "DOGE",
-      "DOT",
-      "ETH",
-      "LINK",
-      "LTC",
-      "TRX",
-      "UNI",
-      "XLM",
-      "XRP"
+      "ADA", "BCH", "BNB", "BTC", "DOGE", "DOT", "ETH",
+      "LINK", "LTC", "TRX", "UNI", "XLM", "XRP"
     ]
   },
   "signal": {
-    "meta_regime": "DS-40/180",
+    "meta_regime": "DS-40/180 three-state",
     "slow_regime_enter_180d": 0.0,
     "slow_regime_exit_180d": 0.06,
     "early_regime_enter_40d": -0.15,
     "early_regime_exit_40d": 0.0,
-    "bear_slow_sleeve_weight": 0.60
+    "bull_sleeves": [0.25, 0.75, 0.0],
+    "early_bear_sleeves": [0.175, 0.525, 0.30],
+    "confirmed_bear_sleeves": [0.10, 0.30, 0.60],
+    "early_bear_slow_short_budget": 0.25,
+    "confirmed_bear_slow_short_budget": 0.50,
+    "crisis_4h_gross_cap": 0.15,
+    "crisis_4h_breadth_threshold": 0.70
   },
   "risk": {
     "target_volatility": 0.50,
@@ -44,12 +40,32 @@
     "risk_scale_lookback_days": 30,
     "risk_scale_ewm_span": 10,
     "risk_scale_rebalance_weekday_utc": 0,
-    "paper_gross_cap": 1.25,
-    "paper_asset_cap": 0.30
+    "paper_gross_cap_absolute": 1.50,
+    "paper_gross_cap_stress": 0.75,
+    "paper_gross_cap_base": 1.25,
+    "paper_gross_cap_calm_diversified": 1.50,
+    "paper_asset_cap": 0.25,
+    "covariance_lookback_days": 60,
+    "covariance_shrink": 0.50,
+    "stress_correlation": 0.80
+  },
+  "execution": {
+    "persistent_append_only_ledger": true,
+    "state_file": "ds40180_t50c3_paper_state.json",
+    "journal_file": "ds40180_t50c3_paper_events.jsonl",
+    "quote_source": "OKX public ticker bid/ask",
+    "no_trade_min_band": 0.005,
+    "no_trade_cost_multiplier": 4.0,
+    "risk_reductions_always_execute": true,
+    "data_revisions_rewrite_history": false
   },
   "costs": {
     "paper_one_way_execution_cost": 0.001,
-    "funding_source": "OKX realizedRate; fundingRate fallback",
+    "paper_market_impact_bps": 2.0,
+    "funding_source": "OKX realizedRate; current-rate sizing guard",
+    "funding_soft_annual": 0.05,
+    "funding_medium_annual": 0.12,
+    "funding_hard_annual": 0.20,
     "missing_funding_fallback_annual": 0.05
   },
   "live_ready": false,

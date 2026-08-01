@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Any, Iterable
 
 from ._ds40180_common import (
@@ -109,6 +110,19 @@ def _normalize_inverse_volatility(
     return [value / total if total > 0 else 0.0 for value in raw]
 
 
+def _budget_value(
+    series: Sequence[float] | None,
+    index: int,
+    *,
+    bear: Sequence[bool] | None,
+    bear_budget: float,
+    bull_budget: float,
+) -> float:
+    if series is not None:
+        return float(series[index])
+    return bear_budget if bear is not None and bear[index] else bull_budget
+
+
 def _run_sleeve(
     *,
     dates: list[str],
@@ -117,9 +131,11 @@ def _run_sleeve(
     inverse_volatility: list[list[float]],
     long_entries: list[list[bool]],
     short_entries: list[list[bool]],
-    bear: list[bool],
-    bear_long_budget: float,
-    bear_short_budget: float,
+    bear: list[bool] | None = None,
+    bear_long_budget: float = 1.0,
+    bear_short_budget: float = 0.0,
+    long_budget_by_day: Sequence[float] | None = None,
+    short_budget_by_day: Sequence[float] | None = None,
 ) -> dict[str, Any]:
     asset_count = len(returns[0])
     unscaled_weights: list[list[float]] = []
@@ -136,8 +152,20 @@ def _run_sleeve(
             short_entries[prior][asset_index] and eligible[date_index][asset_index]
             for asset_index in range(asset_count)
         ]
-        long_budget = bear_long_budget if bear[prior] else 1.0
-        short_budget = bear_short_budget if bear[prior] else 0.0
+        long_budget = _budget_value(
+            long_budget_by_day,
+            prior,
+            bear=bear,
+            bear_budget=bear_long_budget,
+            bull_budget=1.0,
+        )
+        short_budget = _budget_value(
+            short_budget_by_day,
+            prior,
+            bear=bear,
+            bear_budget=bear_short_budget,
+            bull_budget=0.0,
+        )
         long_weights = _normalize_inverse_volatility(
             long_signal, inverse_volatility[date_index]
         )
@@ -203,9 +231,14 @@ def _run_sleeve(
     }
 
 
-def _apply_target_safety(row: list[float]) -> tuple[list[float], bool]:
-    clipped = [_clamp(value, -PAPER_ASSET_CAP, PAPER_ASSET_CAP) for value in row]
+def _apply_target_safety(
+    row: list[float],
+    *,
+    gross_cap: float = PAPER_GROSS_CAP,
+    asset_cap: float = PAPER_ASSET_CAP,
+) -> tuple[list[float], bool]:
+    clipped = [_clamp(value, -asset_cap, asset_cap) for value in row]
     gross = _gross(clipped)
-    if gross <= PAPER_GROSS_CAP + EPSILON:
-        return clipped, False
-    return [value * PAPER_GROSS_CAP / gross for value in clipped], True
+    if gross <= gross_cap + EPSILON:
+        return clipped, clipped != row
+    return [value * gross_cap / gross for value in clipped], True

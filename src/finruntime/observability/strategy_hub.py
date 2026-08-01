@@ -17,6 +17,7 @@ UPSTREAM_CACHE_SECONDS = 10.0
 UPSTREAM_TIMEOUT_SECONDS = 4.0
 DYN_STALE_AFTER_SECONDS = 300.0
 ATLAS_STALE_AFTER_SECONDS = 300.0
+DS40180_STALE_AFTER_SECONDS = 900.0
 
 
 def _number(value: object, default: float = 0.0) -> float:
@@ -268,6 +269,64 @@ STRATEGY_GUIDES: dict[str, dict[str, Any]] = {
             "EOS, ETH, LTC и XRP; старые результаты V75 и его forward clock не наследуются."
         ),
     },
+    "ds40180-t50c3": {
+        "summary": (
+            "Направленная multi-asset trend-following paper-стратегия с long и "
+            "short рукавами, трёхступенчатым bear-режимом и контролируемым плечом."
+        ),
+        "steps": [
+            {
+                "title": "Строит три трендовых рукава",
+                "description": (
+                    "Long-only, light hedge и slow-bear используют причинные "
+                    "Donchian, momentum и EMA сигналы на закрытых OKX 1Dutc свечах."
+                ),
+            },
+            {
+                "title": "Различает ранний и подтверждённый bear",
+                "description": (
+                    "40-дневный триггер раньше подключает половинный short budget, "
+                    "а RE-180 включает полный slow-bear режим."
+                ),
+            },
+            {
+                "title": "Масштабирует только допустимый риск",
+                "description": (
+                    "Funding guard, covariance stress, корреляция и 4h crisis overlay "
+                    "формируют paper target с динамическим gross-cap."
+                ),
+            },
+            {
+                "title": "Фиксирует forward ledger",
+                "description": (
+                    "Уже обработанные дни не пересчитываются: state пишется атомарно, "
+                    "а события добавляются в hash-chain journal."
+                ),
+            },
+        ],
+        "entry_conditions": [
+            "Не менее восьми ликвидных OKX USDT swaps имеют достаточную историю.",
+            "Актив проходит Donchian/momentum/EMA фильтр соответствующего рукава.",
+            "Funding, covariance stress и контрактные лимиты разрешают размер позиции.",
+            "Изменение превышает no-trade band либо является выходом, sign flip или снижением риска.",
+        ],
+        "exit_conditions": [
+            "Трендовый сигнал соответствующего рукава выключился.",
+            "Режим рынка сократил long/short budget.",
+            "Funding guard, dynamic gross-cap либо crisis overlay потребовал уменьшить риск.",
+        ],
+        "risk_controls": [
+            "Абсолютный paper gross-cap 1.50×; stress/base/calm уровни 0.75×/1.25×/1.50×.",
+            "Один контракт ограничен 25% NAV; 4h crisis overlay — 15% gross.",
+            "Adverse funding выше 5/12/20% годовых последовательно уменьшает дорогую сторону.",
+            "Paper fills используют публичный OKX bid/ask, impact и no-trade band.",
+            "Реальные ордера и authenticated exchange client отсутствуют."
+        ],
+        "data_scope": (
+            "Публичные OKX USDT perpetuals: закрытые 1Dutc и 4Hutc свечи, "
+            "mark price, ticker bid/ask, funding history и current funding."
+        ),
+    },
     "atlas-nx-blocked": {
         "summary": (
             "Зарезервированный runtime исходного V75 ATLAS-NX. Он остаётся "
@@ -476,6 +535,28 @@ def read_atlas_snapshot(
     age_seconds = max(0.0, (datetime.now(UTC) - generated_at).total_seconds())
     if age_seconds > stale_after_seconds:
         return value, f"local Atlas NX R1 snapshot is stale ({age_seconds:.1f}s)", True
+    return value, None, False
+
+
+def read_ds40180_snapshot(
+    path: Path, *, stale_after_seconds: float = DS40180_STALE_AFTER_SECONDS
+) -> tuple[dict[str, Any] | None, str | None, bool]:
+    if not path.is_file():
+        return None, "local DS-40/180 snapshot is not available", True
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return None, f"{type(error).__name__}: {error}", True
+    if not isinstance(value, dict) or value.get("schema_version") != 2:
+        return None, "unsupported local DS-40/180 snapshot schema", True
+    if value.get("strategyId") != "ds40180_t50c3_okx_paper":
+        return None, "unexpected local DS-40/180 strategy identity", True
+    generated_at = _parse_timestamp(value.get("generatedAt"))
+    if generated_at is None:
+        return value, "local DS-40/180 snapshot has no valid generatedAt", True
+    age_seconds = max(0.0, (datetime.now(UTC) - generated_at).total_seconds())
+    if age_seconds > stale_after_seconds:
+        return value, f"local DS-40/180 snapshot is stale ({age_seconds:.1f}s)", True
     return value, None, False
 
 
@@ -769,6 +850,129 @@ def _atlas_reconstructed_strategy(
     }
 
 
+def _ds40180_strategy(
+    snapshot: dict[str, Any] | None, error: str | None, stale: bool
+) -> dict[str, Any]:
+    source = snapshot or {}
+    paper = source.get("paper") if isinstance(source, dict) else {}
+    paper = paper if isinstance(paper, dict) else {}
+    account = paper.get("account")
+    account = account if isinstance(account, dict) else {}
+    starting = _number(account.get("initialNavUsd"), 10_000.0)
+    equity = _number(paper.get("navUsd"), starting)
+    pnl = equity - starting
+    positions = source.get("positions")
+    positions = positions if isinstance(positions, list) else []
+    target_gross = _number(source.get("targetGross"))
+    target_net = _number(source.get("targetNet"))
+    dynamic_cap = _number(source.get("dynamicGrossCap"), 1.25)
+    risk_scale = _number(source.get("riskScale"), 1.0)
+    regime = source.get("regime")
+    regime = regime if isinstance(regime, dict) else {}
+    regime_state = str(regime.get("state") or "unknown")
+    overlays = source.get("overlays")
+    overlays = overlays if isinstance(overlays, dict) else {}
+    crisis = overlays.get("crisis4h")
+    crisis = crisis if isinstance(crisis, dict) else {}
+    persistence = source.get("persistence")
+    persistence = persistence if isinstance(persistence, dict) else {}
+    journal = persistence.get("journal")
+    journal = journal if isinstance(journal, dict) else {}
+    unavailable = snapshot is None or bool(error) or stale
+    status = "degraded" if unavailable else str(source.get("status", "starting"))
+    if status == "ready":
+        status = "running"
+    if unavailable:
+        why_now = (
+            "Локальный DS-40/180 snapshot отсутствует или устарел; последнее "
+            "состояние нельзя считать действующим paper-решением."
+        )
+        waiting_for = "Ждём свежий OKX public-data цикл и валидный hash-chain journal."
+    elif positions:
+        why_now = (
+            f"Открыто paper-позиций: {len(positions)}; target gross {target_gross:.2f}×, "
+            f"net {target_net:.2f}×, режим {regime_state}, dynamic cap {dynamic_cap:.2f}×."
+        )
+        waiting_for = (
+            "Ждём следующую закрытую 1Dutc свечу; funding, covariance stress и "
+            "4h crisis overlay продолжают переоцениваться внутри paper-контура."
+        )
+    else:
+        why_now = (
+            f"Стратегия без открытых позиций: режим {regime_state}, target gross "
+            f"{target_gross:.2f}× и dynamic cap {dynamic_cap:.2f}×."
+        )
+        waiting_for = "Ждём причинный трендовый сигнал, проходящий funding и risk guards."
+    updated_at = source.get("marketDataAt") or source.get("generatedAt")
+    updated_at_datetime = _parse_timestamp(updated_at)
+    return {
+        "id": "ds40180-t50c3",
+        "repository": "fin",
+        "name": "DS-40/180 T50-C3 v2",
+        "description": "OKX long/short trend paper с funding и covariance guards.",
+        "mode": "paper",
+        "status": status,
+        "status_label": (
+            "Нет данных"
+            if unavailable
+            else "Crisis short"
+            if crisis.get("active")
+            else "В рынке"
+            if positions
+            else "Режим CASH"
+        ),
+        "equity_usdt": equity,
+        "starting_balance_usdt": starting,
+        "pnl_usdt": pnl,
+        "return_percent": _percent(pnl, starting),
+        "open_positions": len(positions),
+        "closed_positions": int(_number(paper.get("totalExecutions"))),
+        "market": "OKX USDT swaps · 13 assets",
+        "timeframe": "1Dutc core · 4Hutc crisis",
+        "updated_at_ms": (
+            int(updated_at_datetime.timestamp() * 1000)
+            if updated_at_datetime is not None
+            else None
+        ),
+        "updated_at": updated_at,
+        "positions": positions,
+        "candles": source.get("candles") or [],
+        "equity_history": paper.get("daily") or [],
+        "signals": [],
+        "detail": {
+            "strategy_id": source.get("strategyId", "ds40180_t50c3_okx_paper"),
+            "strategy_version": source.get("strategyVersion", "okx-paper-v2"),
+            "target_gross": target_gross,
+            "target_net": target_net,
+            "dynamic_gross_cap": dynamic_cap,
+            "gross_cap_regime": source.get("grossCapRegime"),
+            "risk_scale": risk_scale,
+            "regime": regime,
+            "crisis_4h": crisis,
+            "journal_valid": journal.get("valid"),
+            "journal_events": journal.get("events"),
+            "upstream_error": error,
+            "upstream_stale": stale,
+        },
+        "context": {
+            "how_it_works": (
+                "Объединяет long-only, light-hedge и slow-bear рукава; затем funding, "
+                "covariance stress, 4h crisis overlay и no-trade band формируют paper fills."
+            ),
+            "why_now": why_now,
+            "waiting_for": waiting_for,
+            "metrics": [
+                _metric("Режим", regime_state),
+                _metric("Target gross", f"{target_gross:.2f}×"),
+                _metric("Dynamic cap", f"{dynamic_cap:.2f}×"),
+                _metric("Risk scale", f"{risk_scale:.2f}×"),
+                _metric("Journal", str(journal.get("events") or 0)),
+            ],
+            "full_description": _full_description("ds40180-t50c3", why_now),
+        },
+    }
+
+
 def _consensus_strategy(snapshot: dict[str, Any]) -> dict[str, Any]:
     account = snapshot.get("paper")
     account = account if isinstance(account, dict) else {}
@@ -1002,8 +1206,10 @@ class StrategyHub:
         fin2_url: str | None = None,
         dyn_snapshot_path: Path | None = None,
         atlas_snapshot_path: Path | None = None,
+        ds40180_snapshot_path: Path | None = None,
         dyn_stale_after_seconds: float = DYN_STALE_AFTER_SECONDS,
         atlas_stale_after_seconds: float = ATLAS_STALE_AFTER_SECONDS,
+        ds40180_stale_after_seconds: float = DS40180_STALE_AFTER_SECONDS,
         cache: UpstreamSnapshotCache | None = None,
     ) -> None:
         self.fin2_url = fin2_url or os.environ.get(
@@ -1011,8 +1217,10 @@ class StrategyHub:
         )
         self.dyn_snapshot_path = dyn_snapshot_path
         self.atlas_snapshot_path = atlas_snapshot_path
+        self.ds40180_snapshot_path = ds40180_snapshot_path
         self.dyn_stale_after_seconds = dyn_stale_after_seconds
         self.atlas_stale_after_seconds = atlas_stale_after_seconds
+        self.ds40180_stale_after_seconds = ds40180_stale_after_seconds
         self.cache = cache or UpstreamSnapshotCache()
 
     def snapshot(
@@ -1039,10 +1247,20 @@ class StrategyHub:
             atlas = _atlas_reconstructed_strategy(
                 atlas_snapshot, atlas_error, atlas_stale
             )
+        if self.ds40180_snapshot_path is None:
+            ds40180_snapshot = None
+            ds40180_error = "local DS-40/180 snapshot path is not configured"
+            ds40180_stale = True
+        else:
+            ds40180_snapshot, ds40180_error, ds40180_stale = read_ds40180_snapshot(
+                self.ds40180_snapshot_path,
+                stale_after_seconds=self.ds40180_stale_after_seconds,
+            )
         strategies = [
             _funding_strategy(funding),
             _consensus_strategy(consensus),
             _dyn_strategy(dyn, dyn_error, dyn_stale),
+            _ds40180_strategy(ds40180_snapshot, ds40180_error, ds40180_stale),
             atlas,
         ]
         paper_strategies = [item for item in strategies if item["mode"] == "paper"]

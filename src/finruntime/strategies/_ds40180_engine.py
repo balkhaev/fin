@@ -94,9 +94,8 @@ def build_engine(
         ]
         for date_text in market_dates
     ]
-    # The terminal row is not a market observation. It is a zero-return execution
-    # row that turns the latest closed-bar information into the next session's
-    # target while preserving every lag used by the research implementation.
+    # The terminal row is a zero-return execution row: the latest closed daily
+    # bar determines the target for the following UTC session without look-ahead.
     closes = [*market_closes, list(market_closes[-1])]
     quote_volumes = [*market_quote_volumes, list(market_quote_volumes[-1])]
     returns = [_zero_row(len(assets))]
@@ -179,13 +178,10 @@ def build_engine(
     ]
     ema200_by_asset = [_ema(values, 200) for values in close_by_asset]
 
-    try:
-        btc_index = assets.index("BTC")
-    except ValueError as error:
-        raise ValueError("BTC-USDT-SWAP is required") from error
-    bear: list[bool] = []
+    btc_index = assets.index("BTC")
+    btc120_bear: list[bool] = []
     for index in range(len(dates)):
-        bear.append(
+        btc120_bear.append(
             index >= 120
             and closes[index][btc_index] / closes[index - 120][btc_index] - 1.0 < 0.0
         )
@@ -216,12 +212,13 @@ def build_engine(
             long_only_row.append(don_fast is not None and don_fast > 0.5)
             light_long_row.append(hybrid is not None and hybrid > 0.0)
             light_short_row.append(
-                bear[index] and ema_base is not None and ema_base < -0.5
+                btc120_bear[index] and ema_base is not None and ema_base < -0.5
             )
             slow_long_row.append(hybrid is not None and hybrid > 0.0)
+            # The early/confirmed meta regime now controls the budget. The signal
+            # itself is independent of the older BTC-120 filter.
             slow_short_row.append(
-                bear[index]
-                and mom_slow is not None
+                mom_slow is not None
                 and mom_slow < 0.0
                 and ema200 is not None
                 and closes[index][asset] < ema200
@@ -252,20 +249,9 @@ def build_engine(
         inverse_volatility=inverse_volatility,
         long_entries=light_long,
         short_entries=light_short,
-        bear=bear,
+        bear=btc120_bear,
         bear_long_budget=0.25,
         bear_short_budget=0.10,
-    )
-    slow = _run_sleeve(
-        dates=dates,
-        returns=returns,
-        eligible=eligible,
-        inverse_volatility=inverse_volatility,
-        long_entries=slow_long,
-        short_entries=slow_short,
-        bear=bear,
-        bear_long_budget=0.0,
-        bear_short_budget=0.50,
     )
     risk_parity = _run_sleeve(
         dates=dates,
@@ -299,15 +285,29 @@ def build_engine(
         )
     re180_bear = _hysteresis(mom180, 0.0, 0.06)
     early40_bear = _hysteresis(mom40, -0.15, 0.0)
-    combined_bear = [
-        max(left, right)
-        for left, right in zip(re180_bear, early40_bear, strict=True)
+    regime_state = [
+        2 if confirmed else 1 if early else 0
+        for early, confirmed in zip(early40_bear, re180_bear, strict=True)
     ]
+    combined_bear = [state > 0 for state in regime_state]
+    slow_long_budget = [1.0 if state == 0 else 0.25 if state == 1 else 0.0 for state in regime_state]
+    slow_short_budget = [0.0 if state == 0 else 0.25 if state == 1 else 0.50 for state in regime_state]
+    slow = _run_sleeve(
+        dates=dates,
+        returns=returns,
+        eligible=eligible,
+        inverse_volatility=inverse_volatility,
+        long_entries=slow_long,
+        short_entries=slow_short,
+        long_budget_by_day=slow_long_budget,
+        short_budget_by_day=slow_short_budget,
+    )
+
     sleeve_allocations: list[list[float]] = []
     base_returns: list[float] = []
     previous_allocation = [0.25, 0.75, 0.0]
-    for index, state in enumerate(combined_bear):
-        slow_weight = 0.60 * state
+    for index, state in enumerate(regime_state):
+        slow_weight = 0.0 if state == 0 else 0.30 if state == 1 else 0.60
         allocation = [
             0.25 * (1.0 - slow_weight),
             0.75 * (1.0 - slow_weight),
@@ -348,6 +348,7 @@ def build_engine(
     smooth_scale = _ewm_adjust_false(raw_scale, RISK_SCALE_EWM_SPAN)
     risk_scale = _weekly_hold(smooth_scale, dates, initial=1.0)
 
+    raw_target: list[list[float]] = []
     final_target: list[list[float]] = []
     gross_cap_applied: list[bool] = []
     for index in range(len(dates)):
@@ -360,6 +361,7 @@ def build_engine(
             )
             for asset in range(len(assets))
         ]
+        raw_target.append(combined)
         safe_target, applied = _apply_target_safety(combined)
         final_target.append(safe_target)
         gross_cap_applied.append(applied)
@@ -376,6 +378,7 @@ def build_engine(
         "closes": closes,
         "returns": returns,
         "eligible": eligible,
+        "rawTarget": raw_target,
         "target": final_target,
         "riskScale": risk_scale,
         "rawRiskScale": raw_scale,
@@ -385,6 +388,9 @@ def build_engine(
         "re180Bear": re180_bear,
         "early40Bear": early40_bear,
         "combinedBear": combined_bear,
+        "regimeState": regime_state,
+        "slowLongBudget": slow_long_budget,
+        "slowShortBudget": slow_short_budget,
         "sleeveAllocations": sleeve_allocations,
         "grossCapApplied": gross_cap_applied,
         "benchmarkReturns": risk_parity["returns"],
