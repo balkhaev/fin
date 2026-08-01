@@ -1,0 +1,80 @@
+name: Correct DS-40/180 OKX 4H interval
+
+on:
+  push:
+    branches: [agent/ds40180-v2-improvements]
+    paths:
+      - '.github/workflows/fix-ds40180-4h.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ds40180-v2-improvements
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Correct OKX interval contract
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          paths = [
+              Path('src/finruntime/strategies/_ds40180_common.py'),
+              Path('src/finruntime/observability/strategy_hub.py'),
+              Path('config/strategies/ds40180_t50c3_okx_paper.json'),
+              Path('docs/DS40180_T50C3_PAPER_RU.md'),
+              Path('tests/runtime/test_ds40180_t50c3_paper.py'),
+              Path('tests/runtime/test_strategy_hub.py'),
+          ]
+          changed = []
+          for path in paths:
+              text = path.read_text(encoding='utf-8')
+              updated = text.replace('4Hutc', '4H')
+              if updated != text:
+                  path.write_text(updated, encoding='utf-8')
+                  changed.append(str(path))
+          assert 'src/finruntime/strategies/_ds40180_common.py' in changed
+          assert 'config/strategies/ds40180_t50c3_okx_paper.json' in changed
+          print({'changed': changed})
+          PY
+          ! grep -R --line-number --fixed-strings '4Hutc' \
+            src/finruntime/strategies \
+            src/finruntime/observability \
+            config/strategies \
+            docs/DS40180_T50C3_PAPER_RU.md \
+            tests/runtime/test_ds40180_t50c3_paper.py \
+            tests/runtime/test_strategy_hub.py
+      - name: Validate corrected implementation
+        run: |
+          set -euxo pipefail
+          python -m compileall -q src/finruntime tests/runtime
+          python -m unittest discover -s tests/runtime -p 'test_ds40180_t50c3_paper.py' -v
+          python -m unittest tests.runtime.test_strategy_hub -v
+          python scripts/verify_runtime.py --full
+      - name: Commit source correction
+        run: |
+          set -euxo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            src/finruntime/strategies/_ds40180_common.py \
+            src/finruntime/observability/strategy_hub.py \
+            config/strategies/ds40180_t50c3_okx_paper.json \
+            docs/DS40180_T50C3_PAPER_RU.md \
+            tests/runtime/test_ds40180_t50c3_paper.py \
+            tests/runtime/test_strategy_hub.py
+          git diff --cached --stat
+          git commit -m 'Fix OKX 4H crisis data interval'
+          git push origin HEAD:agent/ds40180-v2-improvements
