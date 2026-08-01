@@ -1,0 +1,79 @@
+name: Agent isolated backtest audit
+
+on:
+  push:
+    branches: [agent/backtest-audit-20260801]
+    paths:
+      - 'research/agent_backtest_audit_20260801.py'
+      - '.github/workflows/agent-backtest-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  core-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile audit and strategy modules
+        run: |
+          python -m compileall -q \
+            research/agent_backtest_audit_20260801.py \
+            src/finruntime/observability \
+            src/finruntime/strategies
+
+      - name: Run relevant deterministic tests
+        run: |
+          python -m unittest discover -s tests/runtime -p 'test_backtests.py' -v
+          python -m unittest discover -s tests/runtime -p 'test_ds40180_t50c3_paper.py' -v
+
+      - name: Run Atlas, DYN-IV113 and DS-40/180 audits
+        run: |
+          mkdir -p audit-results
+          python research/agent_backtest_audit_20260801.py \
+            --suite core \
+            --output audit-results/core.json
+
+      - name: Upload core audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-backtest-core-20260801
+          path: audit-results/core.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  factor-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run public factor replays
+        run: |
+          mkdir -p audit-results
+          python research/agent_backtest_audit_20260801.py \
+            --suite factors \
+            --output audit-results/factors.json
+
+      - name: Upload factor audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-backtest-factors-20260801
+          path: audit-results/factors.json
+          if-no-files-found: warn
+          retention-days: 14
