@@ -160,6 +160,37 @@ class ControlRoomServerTests(unittest.TestCase):
             ),
             encoding="utf-8",
         )
+        (root / "runtime" / "ds40180_t50c3_paper_snapshot.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 2,
+                    "strategyId": "ds40180_t50c3_okx_paper",
+                    "strategyVersion": "okx-paper-v2",
+                    "status": "ready",
+                    "generatedAt": datetime.now(UTC).isoformat(),
+                    "marketDataAt": datetime.now(UTC).isoformat(),
+                    "paper": {
+                        "account": {"initialNavUsd": 10_000.0},
+                        "navUsd": 10_000.0,
+                        "daily": [],
+                        "totalExecutions": 0,
+                    },
+                    "positions": [],
+                    "candles": [],
+                    "targetGross": 0.0,
+                    "targetNet": 0.0,
+                    "dynamicGrossCap": 1.25,
+                    "grossCapRegime": "base",
+                    "riskScale": 1.0,
+                    "regime": {"state": "bull"},
+                    "overlays": {"crisis4h": {"active": False}},
+                    "persistence": {
+                        "journal": {"valid": True, "events": 1}
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
         self.backtest_calls: list[str] = []
 
         def run_backtest(strategy_id: str) -> dict[str, object]:
@@ -226,10 +257,13 @@ class ControlRoomServerTests(unittest.TestCase):
         self.assertEqual(paper["health"], "healthy")
         self.assertTrue(health["paper"]["available"])
         strategies = self.json_get("/api/v1/strategies")
-        self.assertEqual(strategies["summary"]["strategy_count"], 4)
+        self.assertEqual(strategies["summary"]["strategy_count"], 5)
         self.assertFalse(strategies["exchange_submission_available"])
         self.assertEqual(health["strategies"]["dyn-iv113"]["status"], "running")
         self.assertEqual(health["strategies"]["atlas-nx"]["status"], "running")
+        self.assertEqual(
+            health["strategies"]["ds40180-t50c3"]["status"], "running"
+        )
         self.assertEqual(health["status"], "healthy")
 
     def test_post_is_rejected(self) -> None:
@@ -351,7 +385,7 @@ class ControlRoomServerTests(unittest.TestCase):
 
         self.assertEqual(message["type"], "snapshot")
         self.assertEqual(message["paper"]["mode"], "paper")
-        self.assertEqual(message["strategies"]["summary"]["strategy_count"], 4)
+        self.assertEqual(message["strategies"]["summary"]["strategy_count"], 5)
         self.assertFalse(message["strategies"]["exchange_submission_available"])
 
 
