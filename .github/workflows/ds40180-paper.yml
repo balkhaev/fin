@@ -91,3 +91,54 @@ jobs:
           assert config['risk']['paper_gross_cap'] == 1.25
           assert 'ds40180_t50c3_okx_paper' in committed['strategies']
           PY
+
+  okx-public-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build one live public-data paper snapshot
+        run: |
+          set -euxo pipefail
+          snapshot="${RUNNER_TEMP}/ds40180-okx-paper.json"
+          timeout 420 python -m finruntime.strategies.ds40180_t50c3_paper \
+            --snapshot "${snapshot}" \
+            --reset-date 2026-07-31 \
+            --starting-cash 10000 \
+            --once
+          SNAPSHOT_PATH="${snapshot}" python - <<'PY'
+          import json
+          import os
+          from datetime import date
+          from pathlib import Path
+
+          snapshot = json.loads(Path(os.environ['SNAPSHOT_PATH']).read_text())
+          assert snapshot['strategyId'] == 'ds40180_t50c3_okx_paper'
+          assert snapshot['status'] == 'ready'
+          assert snapshot['mode'] == 'paper'
+          assert len(snapshot['assets']) >= 8
+          assert date.fromisoformat(snapshot['effectiveDate']) > date.fromisoformat(snapshot['asOf'])
+          assert snapshot['targetGross'] <= 1.25 + 1e-12
+          assert snapshot['paper']['navUsd'] > 0
+          assert snapshot['exchange_submission_available'] is False
+          assert snapshot['live_ready'] is False
+          assert snapshot['real_leverage_authorized'] is False
+          print(json.dumps({
+              'asOf': snapshot['asOf'],
+              'effectiveDate': snapshot['effectiveDate'],
+              'assets': snapshot['assets'],
+              'failedAssets': snapshot['failedAssets'],
+              'targetGross': snapshot['targetGross'],
+              'targetNet': snapshot['targetNet'],
+              'riskScale': snapshot['riskScale'],
+              'bear': snapshot['regime']['combinedBear'],
+              'navUsd': snapshot['paper']['navUsd'],
+              'warnings': snapshot['warnings'],
+          }, indent=2))
+          PY
