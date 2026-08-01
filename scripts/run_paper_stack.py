@@ -15,6 +15,9 @@ from types import FrameType
 RUNTIME_ROOT = Path(os.environ.get("FIN_RUNTIME_ROOT", "/data/runtime"))
 STRATEGY_ID = os.environ.get("FIN_PAPER_STRATEGY", "v75_atlas_nx")
 STARTING_CASH = os.environ.get("FIN_PAPER_STARTING_CASH", "10000")
+DS40180_STARTING_CASH = os.environ.get("FIN_DS40180_STARTING_CASH", "10000")
+DS40180_RESET_DATE = os.environ.get("FIN_DS40180_RESET_DATE", "2026-07-31")
+DS40180_POLL_SECONDS = os.environ.get("FIN_DS40180_POLL_SECONDS", "300")
 TERMINATION_TIMEOUT_SECONDS = 10.0
 
 
@@ -67,6 +70,7 @@ def main() -> int:
     consensus_snapshot = RUNTIME_ROOT / "consensus_paper_snapshot.json"
     dyn_snapshot = RUNTIME_ROOT / "dyn_paper_snapshot.json"
     atlas_snapshot = RUNTIME_ROOT / "atlas_nx_r1_paper_snapshot.json"
+    ds40180_snapshot = RUNTIME_ROOT / "ds40180_t50c3_paper_snapshot.json"
     funding_environment = dict(os.environ)
     funding_environment.update(
         {
@@ -122,6 +126,22 @@ def main() -> int:
                 "60",
                 "--starting-cash",
                 "10000",
+            ],
+            None,
+        ),
+        (
+            [
+                sys.executable,
+                "-m",
+                "finruntime.strategies.ds40180_t50c3_paper",
+                "--snapshot",
+                str(ds40180_snapshot),
+                "--poll-seconds",
+                DS40180_POLL_SECONDS,
+                "--reset-date",
+                DS40180_RESET_DATE,
+                "--starting-cash",
+                DS40180_STARTING_CASH,
             ],
             None,
         ),
