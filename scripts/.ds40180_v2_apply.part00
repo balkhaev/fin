@@ -1,0 +1,169 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import base64
+import compileall
+import importlib
+import json
+import sys
+import zlib
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+def write(relative: str, content: str) -> None:
+    path = ROOT / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+    print(f"wrote {relative}")
+
+
+def replace_once(relative: str, old: str, new: str) -> None:
+    path = ROOT / relative
+    text = path.read_text(encoding="utf-8")
+    if old not in text:
+        raise SystemExit(f"patch marker not found in {relative}: {old[:100]!r}")
+    path.write_text(text.replace(old, new, 1), encoding="utf-8")
+    print(f"patched {relative}")
+
+
+def main() -> int:
+    payload_path = ROOT / "scripts" / "ds40180_v2_payload.b85"
+    packed = base64.b85decode(payload_path.read_bytes())
+    files = json.loads(zlib.decompress(packed).decode("utf-8"))
+    for relative, content in files.items():
+        write(relative, content)
+
+
+    replace_once(
+        "src/finruntime/registry.py",
+        '''    "ds40180_t50c3_okx_paper": FrozenStrategy(
+        strategy_id="ds40180_t50c3_okx_paper",
+        role="turbo_paper",
+        allowed_modes=("paper", "shadow"),
+        live_ready=False,
+        real_leverage_authorized=False,
+        parameters={
+            "profile": "DS-40/180 T50-C3",
+            "venue": "okx",
+            "instrument_type": "SWAP",
+            "target_volatility": 0.50,
+            "risk_scale_floor": 1.0,
+            "risk_scale_cap": 3.0,
+            "paper_gross_cap": 1.25,
+            "paper_asset_cap": 0.30,
+            "forward_clock_reset": True,
+            "historical_metrics_inherited": False,
+            "exchange_submission_available": False,
+        },
+    ),
+''',
+        '''    "ds40180_t50c3_okx_paper": FrozenStrategy(
+        strategy_id="ds40180_t50c3_okx_paper",
+        role="turbo_paper",
+        allowed_modes=("paper", "shadow"),
+        live_ready=False,
+        real_leverage_authorized=False,
+        parameters={
+            "strategy_version": "okx-paper-v2",
+            "profile": "DS-40/180 T50-C3 v2",
+            "venue": "okx",
+            "instrument_type": "SWAP",
+            "target_volatility": 0.50,
+            "risk_scale_floor": 1.0,
+            "risk_scale_cap": 3.0,
+            "paper_gross_cap": 1.50,
+            "paper_gross_cap_stress": 0.75,
+            "paper_gross_cap_base": 1.25,
+            "paper_gross_cap_calm": 1.50,
+            "paper_asset_cap": 0.25,
+            "funding_aware_sizing": True,
+            "covariance_stress_control": True,
+            "crisis_4h_gross_cap": 0.15,
+            "no_trade_min_band": 0.005,
+            "persistent_append_only_ledger": True,
+            "forward_clock_reset": True,
+            "historical_metrics_inherited": False,
+            "exchange_submission_available": False,
+        },
+    ),
+''',
+    )
+
+    replace_once(
+        "src/finruntime/observability/strategy_hub.py",
+        '''DYN_STALE_AFTER_SECONDS = 300.0
+ATLAS_STALE_AFTER_SECONDS = 300.0
+''',
+        '''DYN_STALE_AFTER_SECONDS = 300.0
+ATLAS_STALE_AFTER_SECONDS = 300.0
+DS40180_STALE_AFTER_SECONDS = 900.0
+''',
+    )
+
+    ds_guide = '''    "ds40180-t50c3": {
+        "summary": (
+            "Направленная multi-asset trend-following paper-стратегия с long и "
+            "short рукавами, трёхступенчатым bear-режимом и контролируемым плечом."
+        ),
+        "steps": [
+            {
+                "title": "Строит три трендовых рукава",
+                "description": (
+                    "Long-only, light hedge и slow-bear используют причинные "
+                    "Donchian, momentum и EMA сигналы на закрытых OKX 1Dutc свечах."
+                ),
+            },
+            {
+                "title": "Различает ранний и подтверждённый bear",
+                "description": (
+                    "40-дневный триггер раньше подключает половинный short budget, "
+                    "а RE-180 включает полный slow-bear режим."
+                ),
+            },
+            {
+                "title": "Масштабирует только допустимый риск",
+                "description": (
+                    "Funding guard, covariance stress, корреляция и 4h crisis overlay "
+                    "формируют paper target с динамическим gross-cap."
+                ),
+            },
+            {
+                "title": "Фиксирует forward ledger",
+                "description": (
+                    "Уже обработанные дни не пересчитываются: state пишется атомарно, "
+                    "а события добавляются в hash-chain journal."
+                ),
+            },
+        ],
+        "entry_conditions": [
+            "Не менее восьми ликвидных OKX USDT swaps имеют достаточную историю.",
+            "Актив проходит Donchian/momentum/EMA фильтр соответствующего рукава.",
+            "Funding, covariance stress и контрактные лимиты разрешают размер позиции.",
+            "Изменение превышает no-trade band либо является выходом, sign flip или снижением риска.",
+        ],
+        "exit_conditions": [
+            "Трендовый сигнал соответствующего рукава выключился.",
+            "Режим рынка сократил long/short budget.",
+            "Funding guard, dynamic gross-cap либо crisis overlay потребовал уменьшить риск.",
+        ],
+        "risk_controls": [
+            "Абсолютный paper gross-cap 1.50×; stress/base/calm уровни 0.75×/1.25×/1.50×.",
+            "Один контракт ограничен 25% NAV; 4h crisis overlay — 15% gross.",
+            "Adverse funding выше 5/12/20% годовых последовательно уменьшает дорогую сторону.",
+            "Paper fills используют публичный OKX bid/ask, impact и no-trade band.",
+            "Реальные ордера и authenticated exchange client отсутствуют."
+        ],
+        "data_scope": (
+            "Публичные OKX USDT perpetuals: закрытые 1Dutc и 4Hutc свечи, "
+            "mark price, ticker bid/ask, funding history и current funding."
+        ),
+    },
+'''
+    replace_once(
+        "src/finruntime/observability/strategy_hub.py",
+        '    "atlas-nx-blocked": {\n',
+        ds_guide + '    "atlas-nx-blocked": {\n',
+    )
+
+    read 
