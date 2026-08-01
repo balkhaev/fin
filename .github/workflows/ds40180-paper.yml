@@ -8,8 +8,10 @@ on:
       - 'src/finruntime/strategies/_ds40180_*.py'
       - 'src/finruntime/registry.py'
       - 'config/strategies/ds40180_t50c3_okx_paper.json'
+      - 'docs/checkpoints/runtime-v1/STRATEGY_REGISTRY.json'
       - 'scripts/run_paper_stack.py'
       - 'scripts/check_paper_stack.py'
+      - 'scripts/verify_runtime.py'
       - 'tests/runtime/test_ds40180_t50c3_paper.py'
       - 'docs/DS40180_T50C3_PAPER_RU.md'
       - '.github/workflows/ds40180-paper.yml'
@@ -20,8 +22,10 @@ on:
       - 'src/finruntime/strategies/_ds40180_*.py'
       - 'src/finruntime/registry.py'
       - 'config/strategies/ds40180_t50c3_okx_paper.json'
+      - 'docs/checkpoints/runtime-v1/STRATEGY_REGISTRY.json'
       - 'scripts/run_paper_stack.py'
       - 'scripts/check_paper_stack.py'
+      - 'scripts/verify_runtime.py'
       - 'tests/runtime/test_ds40180_t50c3_paper.py'
       - 'docs/DS40180_T50C3_PAPER_RU.md'
       - '.github/workflows/ds40180-paper.yml'
@@ -60,6 +64,9 @@ jobs:
           python -m unittest discover -s tests/runtime
           -p 'test_ds40180_t50c3_paper.py' -v
 
+      - name: Verify runtime registry contract
+        run: python scripts/verify_runtime.py --contracts-only
+
       - name: Enforce paper-only surface
         run: |
           set -euxo pipefail
@@ -74,9 +81,13 @@ jobs:
           config = json.loads(
               Path('config/strategies/ds40180_t50c3_okx_paper.json').read_text()
           )
+          committed = json.loads(
+              Path('docs/checkpoints/runtime-v1/STRATEGY_REGISTRY.json').read_text()
+          )
           assert config['allowed_modes'] == ['paper', 'shadow']
           assert config['live_ready'] is False
           assert config['real_leverage_authorized'] is False
           assert config['exchange_submission_available'] is False
           assert config['risk']['paper_gross_cap'] == 1.25
+          assert 'ds40180_t50c3_okx_paper' in committed['strategies']
           PY
