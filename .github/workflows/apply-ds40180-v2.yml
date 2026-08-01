@@ -54,6 +54,41 @@ jobs:
               'self.assertEqual(message["strategies"]["summary"]["strategy_count"], 4)',
               'self.assertEqual(message["strategies"]["summary"]["strategy_count"], 5)',
           )
+          marker = '        self.backtest_calls: list[str] = []\n'
+          fixture = '''        (root / "runtime" / "ds40180_t50c3_paper_snapshot.json").write_text(
+              json.dumps(
+                  {
+                      "schema_version": 2,
+                      "strategyId": "ds40180_t50c3_okx_paper",
+                      "strategyVersion": "okx-paper-v2",
+                      "status": "ready",
+                      "generatedAt": datetime.now(UTC).isoformat(),
+                      "marketDataAt": datetime.now(UTC).isoformat(),
+                      "paper": {
+                          "account": {"initialNavUsd": 10_000.0},
+                          "navUsd": 10_000.0,
+                          "daily": [],
+                          "totalExecutions": 0,
+                      },
+                      "positions": [],
+                      "candles": [],
+                      "targetGross": 0.0,
+                      "targetNet": 0.0,
+                      "dynamicGrossCap": 1.25,
+                      "grossCapRegime": "base",
+                      "riskScale": 1.0,
+                      "regime": {"state": "bull"},
+                      "overlays": {"crisis4h": {"active": False}},
+                      "persistence": {
+                          "journal": {"valid": True, "events": 1}
+                      },
+                  }
+              ),
+              encoding="utf-8",
+          )
+'''
+          if 'ds40180_t50c3_paper_snapshot.json").write_text' not in text:
+              text = text.replace(marker, fixture + marker)
           path.write_text(text, encoding='utf-8')
           PY
       - name: Validate complete repository
