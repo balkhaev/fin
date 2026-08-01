@@ -1,0 +1,58 @@
+{
+  "strategy_id": "ds40180_t50c3_okx_paper",
+  "strategy_version": "okx-paper-v1",
+  "research_profile": "DS-40/180 T50-C3",
+  "role": "turbo_paper",
+  "allowed_modes": ["paper", "shadow"],
+  "starting_cash_usd": 10000,
+  "forward_clock_reset": true,
+  "reset_date": "2026-07-31",
+  "historical_metrics_inherited": false,
+  "market": {
+    "venue": "okx",
+    "instrument_type": "SWAP",
+    "margin_currency": "USDT",
+    "bar": "1Dutc",
+    "assets": [
+      "ADA",
+      "BCH",
+      "BNB",
+      "BTC",
+      "DOGE",
+      "DOT",
+      "ETH",
+      "LINK",
+      "LTC",
+      "TRX",
+      "UNI",
+      "XLM",
+      "XRP"
+    ]
+  },
+  "signal": {
+    "meta_regime": "DS-40/180",
+    "slow_regime_enter_180d": 0.0,
+    "slow_regime_exit_180d": 0.06,
+    "early_regime_enter_40d": -0.15,
+    "early_regime_exit_40d": 0.0,
+    "bear_slow_sleeve_weight": 0.60
+  },
+  "risk": {
+    "target_volatility": 0.50,
+    "risk_scale_floor": 1.0,
+    "risk_scale_cap": 3.0,
+    "risk_scale_lookback_days": 30,
+    "risk_scale_ewm_span": 10,
+    "risk_scale_rebalance_weekday_utc": 0,
+    "paper_gross_cap": 1.25,
+    "paper_asset_cap": 0.30
+  },
+  "costs": {
+    "paper_one_way_execution_cost": 0.001,
+    "funding_source": "OKX realizedRate; fundingRate fallback",
+    "missing_funding_fallback_annual": 0.05
+  },
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "exchange_submission_available": false
+}
