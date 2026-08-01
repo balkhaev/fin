@@ -18,16 +18,22 @@ from ._ds40180_common import (
 )
 
 
+def _funding_rates_between(
+    history: dict[str, Any], start_ms: int, end_ms: int
+) -> list[float]:
+    return [
+        float(item["rate"])
+        for item in history.get("funding", [])
+        if start_ms < int(item["fundingTime"]) <= end_ms
+    ]
+
+
 def _funding_rates_for_candle(
     history: dict[str, Any], date_text: str
 ) -> tuple[list[float], bool]:
     start_ms = _timestamp_ms(f"{date_text}T00:00:00+00:00")
     end_ms = _candle_close_ms(date_text)
-    rates = [
-        float(item["rate"])
-        for item in history.get("funding", [])
-        if start_ms < int(item["fundingTime"]) <= end_ms
-    ]
+    rates = _funding_rates_between(history, start_ms, end_ms)
     return rates, bool(rates)
 
 
@@ -145,7 +151,9 @@ def paper_continuation(
     initial_nav_usd: float,
 ) -> dict[str, Any]:
     indexes = [
-        index for index, date_text in enumerate(engine["dates"]) if date_text <= reset_date
+        index
+        for index, date_text in enumerate(engine["marketDates"])
+        if date_text <= reset_date
     ]
     if not indexes:
         raise ValueError("The OKX market window does not include the paper reset date")
@@ -158,8 +166,10 @@ def paper_continuation(
     funding_actual_intervals = 0
     funding_fallback_intervals = 0
 
-    initial_date = engine["dates"][reset_index]
-    target = list(engine["target"][reset_index])
+    initial_date = engine["marketDates"][reset_index]
+    initial_target_index = reset_index + 1
+    target = list(engine["target"][initial_target_index])
+    target_effective_date = engine["dates"][initial_target_index]
     initial_prices = list(engine["closes"][reset_index])
     quantities, initial_cost_usd, nav = _solve_rebalance(
         nav_before_cost=initial_nav_usd,
@@ -167,7 +177,6 @@ def paper_continuation(
         prices=initial_prices,
         current_quantities=_zero_row(asset_count),
     )
-    signal_date = engine["dates"][max(0, reset_index - 1)]
     for asset_index, quantity in enumerate(quantities):
         if abs(quantity) <= EPSILON:
             continue
@@ -188,13 +197,14 @@ def paper_continuation(
                 "costToNav": cost_usd / initial_nav_usd,
                 "deltaQuantity": quantity,
                 "deltaWeight": quantity * price / nav,
+                "effectiveDate": target_effective_date,
                 "id": f"paper-{initial_date.replace('-', '')}-{asset}-0",
                 "newWeight": quantity * price / nav,
                 "oldWeight": 0.0,
                 "orderDate": initial_date,
                 "price": price,
                 "side": "BUY" if quantity > 0 else "SELL",
-                "signalDate": signal_date,
+                "signalDate": initial_date,
             }
         )
     daily.append(
@@ -203,20 +213,25 @@ def paper_continuation(
             "fundingPnlUsd": 0.0,
             "fundingReturn": 0.0,
             "grossExposure": _gross(target),
+            "heldGrossExposure": 0.0,
             "navUsd": nav,
             "pricePnlUsd": 0.0,
             "priceReturn": 0.0,
             "return": nav / initial_nav_usd - 1.0,
+            "targetEffectiveDate": target_effective_date,
             "tradeCost": initial_cost_usd / initial_nav_usd,
             "tradeCostUsd": initial_cost_usd,
         }
     )
 
-    for date_index in range(reset_index + 1, len(engine["dates"])):
-        current_date = engine["dates"][date_index]
+    latest_market_index = int(engine["latestMarketIndex"])
+    execution_index = int(engine["executionIndex"])
+    for date_index in range(reset_index + 1, latest_market_index + 1):
+        current_date = engine["marketDates"][date_index]
         nav_before = nav
         previous_prices = engine["closes"][date_index - 1]
         current_prices = engine["closes"][date_index]
+        held_target = list(engine["target"][date_index])
         price_pnl_usd = sum(
             quantities[asset] * (current_prices[asset] - previous_prices[asset])
             for asset in range(asset_count)
@@ -232,7 +247,7 @@ def paper_continuation(
             previous_notional = quantity * previous_prices[asset_index]
             if actual:
                 asset_funding_pnl = -previous_notional * sum(rates)
-                funding_actual_intervals += 1
+                funding_actual_intervals += len(rates)
             else:
                 asset_funding_pnl = (
                     -abs(previous_notional)
@@ -250,14 +265,15 @@ def paper_continuation(
         nav_before_cost = nav_before + price_pnl_usd + funding_pnl_usd
         if nav_before_cost <= 0 or not math.isfinite(nav_before_cost):
             raise ValueError("DS-40/180 forward paper account exhausted its capital")
-        target = list(engine["target"][date_index])
+        next_target_index = min(date_index + 1, execution_index)
+        target = list(engine["target"][next_target_index])
+        target_effective_date = engine["dates"][next_target_index]
         desired_quantities, trade_cost_usd, nav = _solve_rebalance(
             nav_before_cost=nav_before_cost,
             target=target,
             prices=current_prices,
             current_quantities=quantities,
         )
-        signal_date = engine["dates"][date_index - 1]
         for asset_index, desired_quantity in enumerate(desired_quantities):
             old_quantity = quantities[asset_index]
             delta_quantity = desired_quantity - old_quantity
@@ -287,13 +303,14 @@ def paper_continuation(
                     "costToNav": cost_usd / nav_before_cost,
                     "deltaQuantity": delta_quantity,
                     "deltaWeight": new_weight - old_weight,
+                    "effectiveDate": target_effective_date,
                     "id": f"paper-{current_date.replace('-', '')}-{asset}-{len(executions)}",
                     "newWeight": new_weight,
                     "oldWeight": old_weight,
                     "orderDate": current_date,
                     "price": price,
                     "side": "BUY" if delta_quantity > 0 else "SELL",
-                    "signalDate": signal_date,
+                    "signalDate": current_date,
                 }
             )
         quantities = desired_quantities
@@ -304,16 +321,19 @@ def paper_continuation(
                 "fundingPnlUsd": funding_pnl_usd,
                 "fundingReturn": funding_pnl_usd / nav_before,
                 "grossExposure": _gross(target),
+                "heldGrossExposure": _gross(held_target),
                 "navUsd": nav,
                 "pricePnlUsd": price_pnl_usd,
                 "priceReturn": price_pnl_usd / nav_before,
                 "return": net_return,
+                "targetEffectiveDate": target_effective_date,
                 "tradeCost": trade_cost_usd / nav_before,
                 "tradeCostUsd": trade_cost_usd,
             }
         )
 
     return {
+        "actualResetDate": initial_date,
         "daily": daily,
         "executions": executions,
         "fundingActualIntervals": funding_actual_intervals,
@@ -322,6 +342,7 @@ def paper_continuation(
         "positionTrackers": trackers,
         "quantities": quantities,
         "target": target,
+        "targetEffectiveDate": target_effective_date,
     }
 
 
@@ -330,24 +351,35 @@ def _mark_portfolio_to_live(
     histories: list[dict[str, Any]],
     continuation: dict[str, Any],
 ) -> dict[str, Any]:
-    latest_index = len(engine["dates"]) - 1
+    latest_index = int(engine["latestMarketIndex"])
+    latest_market_date = engine["marketDates"][latest_index]
+    latest_close_ms = _candle_close_ms(latest_market_date)
     history_by_asset = {history["asset"]: history for history in histories}
     nav_usd = float(continuation["nav"])
     positions: list[dict[str, Any]] = []
+    live_funding_pnl_usd = 0.0
+    live_funding_events = 0
     for asset, tracker in continuation["positionTrackers"].items():
         asset_index = engine["assets"].index(asset)
         closed_price = engine["closes"][latest_index][asset_index]
-        live_price = float(history_by_asset[asset].get("liveMark") or closed_price)
+        history = history_by_asset[asset]
+        live_price = float(history.get("liveMark") or closed_price)
+        mark_time_ms = int(history.get("markTimeMs") or latest_close_ms)
         quantity = float(tracker["quantity"])
         live_increment = quantity * (live_price - closed_price)
-        nav_usd += live_increment
+        live_rates = _funding_rates_between(history, latest_close_ms, mark_time_ms)
+        asset_live_funding = -quantity * live_price * sum(live_rates)
+        live_funding_events += len(live_rates)
+        live_funding_pnl_usd += asset_live_funding
+        nav_usd += live_increment + asset_live_funding
         signed_notional = quantity * live_price
         direction = math.copysign(1.0, quantity)
         unrealized = quantity * (live_price - float(tracker["averageEntryPrice"]))
+        total_funding = float(tracker["fundingPnlUsd"]) + asset_live_funding
         net_pnl = (
             float(tracker["realizedPnlUsd"])
             + unrealized
-            + float(tracker["fundingPnlUsd"])
+            + total_funding
             - float(tracker["tradingCostsUsd"])
         )
         positions.append(
@@ -356,6 +388,9 @@ def _mark_portfolio_to_live(
                 "instrumentId": INSTRUMENTS[asset],
                 **tracker,
                 "direction": "long" if quantity > 0 else "short",
+                "fundingPnlUsd": total_funding,
+                "liveFundingEvents": len(live_rates),
+                "liveFundingPnlUsd": asset_live_funding,
                 "markPrice": live_price,
                 "netPnlUsd": net_pnl,
                 "notionalUsd": abs(signed_notional),
@@ -376,5 +411,7 @@ def _mark_portfolio_to_live(
         "navUsd": nav_usd,
         "netExposure": sum(float(item["weight"]) for item in positions),
         "grossExposure": sum(abs(float(item["weight"])) for item in positions),
+        "liveFundingEvents": live_funding_events,
+        "liveFundingPnlUsd": live_funding_pnl_usd,
         "positions": positions,
     }
