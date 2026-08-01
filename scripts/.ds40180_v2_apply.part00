@@ -166,4 +166,3 @@ DS40180_STALE_AFTER_SECONDS = 900.0
         ds_guide + '    "atlas-nx-blocked": {\n',
     )
 
-    read 
