@@ -1,0 +1,58 @@
+name: Apply DS-40/180 v2 implementation
+
+on:
+  push:
+    branches: [agent/ds40180-v2-improvements]
+    paths:
+      - 'scripts/.ds40180_v2_apply.part*'
+      - 'scripts/.ds40180_v2_payload.part*'
+      - '.github/workflows/apply-ds40180-v2.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-ds40180-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apply-and-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ds40180-v2-improvements
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reconstruct and apply v2 patch
+        run: |
+          set -euxo pipefail
+          cat scripts/.ds40180_v2_apply.part* > scripts/apply_ds40180_v2.py
+          cat scripts/.ds40180_v2_payload.part* > scripts/ds40180_v2_payload.b85
+          python scripts/apply_ds40180_v2.py
+      - name: Validate complete repository
+        run: |
+          set -euxo pipefail
+          python -m unittest discover -s tests/runtime -p 'test_*.py' -v
+          python -m unittest discover -s tests/frontend -p 'test_*.py' -v
+          python scripts/verify_runtime.py --full
+          python -m finruntime.strategies.ds40180_t50c3_paper --help | grep -F -- '--verify-journal'
+      - name: Commit implementation and remove staging files
+        run: |
+          set -euxo pipefail
+          rm -f scripts/.ds40180_v2_apply.part* scripts/.ds40180_v2_payload.part*
+          rm -f scripts/apply_ds40180_v2.py scripts/ds40180_v2_payload.b85
+          rm -f .github/workflows/apply-ds40180-v2.yml
+          find . -type d -name '__pycache__' -prune -exec rm -rf {} +
+          find . -type f -name '*.pyc' -delete
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --stat
+          git commit -m 'Improve DS-40/180 paper strategy'
+          git push origin HEAD:agent/ds40180-v2-improvements
