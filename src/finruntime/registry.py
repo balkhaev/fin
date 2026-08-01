@@ -17,6 +17,26 @@ class FrozenStrategy:
 
 
 STRATEGIES: dict[str, FrozenStrategy] = {
+    "ds40180_t50c3_okx_paper": FrozenStrategy(
+        strategy_id="ds40180_t50c3_okx_paper",
+        role="turbo_paper",
+        allowed_modes=("paper", "shadow"),
+        live_ready=False,
+        real_leverage_authorized=False,
+        parameters={
+            "profile": "DS-40/180 T50-C3",
+            "venue": "okx",
+            "instrument_type": "SWAP",
+            "target_volatility": 0.50,
+            "risk_scale_floor": 1.0,
+            "risk_scale_cap": 3.0,
+            "paper_gross_cap": 1.25,
+            "paper_asset_cap": 0.30,
+            "forward_clock_reset": True,
+            "historical_metrics_inherited": False,
+            "exchange_submission_available": False,
+        },
+    ),
     "atlas_nx_r1": FrozenStrategy(
         strategy_id="atlas_nx_r1",
         role="primary_reconstruction",

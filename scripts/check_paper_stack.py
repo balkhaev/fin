@@ -1,20 +1,61 @@
 #!/usr/bin/env python3
-"""Fail the container healthcheck unless the paper scheduler is current."""
+"""Fail the container healthcheck unless every paper worker is current."""
 
 from __future__ import annotations
 
 import json
+import os
+from datetime import UTC, datetime
+from pathlib import Path
 from urllib.request import urlopen
 
 BASE_URL = "http://127.0.0.1:8000"
+RUNTIME_ROOT = Path(os.environ.get("FIN_RUNTIME_ROOT", "/data/runtime"))
+DS40180_SNAPSHOT = RUNTIME_ROOT / "ds40180_t50c3_paper_snapshot.json"
 MAX_SCHEDULER_AGE_SECONDS = 20.0
 MAX_CONSENSUS_AGE_SECONDS = 180.0
+MAX_DS40180_AGE_SECONDS = 900.0
 HEALTHY_SCHEDULER_STATES = {"idle", "running"}
 
 
 def _get_json(path: str) -> dict[str, object]:
     with urlopen(f"{BASE_URL}{path}", timeout=3) as response:
         return json.load(response)
+
+
+def _timestamp(value: object) -> datetime:
+    if not isinstance(value, str):
+        raise TypeError("snapshot timestamp is not a string")
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return parsed.astimezone(UTC) if parsed.tzinfo else parsed.replace(tzinfo=UTC)
+
+
+def _check_ds40180_snapshot() -> None:
+    if not DS40180_SNAPSHOT.is_file():
+        raise RuntimeError("DS-40/180 T50-C3 snapshot is unavailable")
+    try:
+        snapshot = json.loads(DS40180_SNAPSHOT.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"DS-40/180 snapshot is unreadable: {error}") from error
+    if not isinstance(snapshot, dict):
+        raise TypeError("DS-40/180 snapshot is not a JSON object")
+    if snapshot.get("strategyId") != "ds40180_t50c3_okx_paper":
+        raise RuntimeError("unexpected DS-40/180 paper identity")
+    if snapshot.get("mode") != "paper" or snapshot.get("status") != "ready":
+        raise RuntimeError(f"DS-40/180 paper worker is not ready: {snapshot.get('status')}")
+    if snapshot.get("exchange_submission_available") is not False:
+        raise RuntimeError("DS-40/180 unexpectedly exposes exchange submission")
+    if snapshot.get("live_ready") is not False:
+        raise RuntimeError("DS-40/180 unexpectedly reports live readiness")
+    age_seconds = max(
+        0.0,
+        (datetime.now(UTC) - _timestamp(snapshot.get("generatedAt"))).total_seconds(),
+    )
+    if age_seconds > MAX_DS40180_AGE_SECONDS:
+        raise RuntimeError(f"DS-40/180 paper snapshot is stale: {age_seconds:.1f}s")
+    paper = snapshot.get("paper")
+    if not isinstance(paper, dict) or not isinstance(paper.get("navUsd"), (int, float)):
+        raise RuntimeError("DS-40/180 paper NAV is unavailable")
 
 
 def main() -> int:
@@ -65,6 +106,7 @@ def main() -> int:
     atlas = strategies.get("atlas-nx")
     if not isinstance(atlas, dict) or atlas.get("status") != "running":
         raise RuntimeError(f"Atlas NX R1 paper worker is not healthy: {atlas}")
+    _check_ds40180_snapshot()
     return 0
 
 
