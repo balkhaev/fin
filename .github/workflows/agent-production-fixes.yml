@@ -6,11 +6,6 @@ on:
     paths:
       - 'scripts/apply_agent_production_fixes.py'
       - '.github/workflows/agent-production-fixes.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'scripts/apply_agent_production_fixes.py'
-      - '.github/workflows/agent-production-fixes.yml'
   workflow_dispatch:
 
 permissions:
@@ -33,30 +28,48 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Apply marker-checked implementation patch
+      - name: Apply, validate and publish or persist diagnostics
+        shell: bash
         run: |
-          python scripts/apply_agent_production_fixes.py
-          rm scripts/apply_agent_production_fixes.py
-          rm .github/workflows/agent-production-fixes.yml
-          git diff --check
+          set +e
+          log=agent-production-validation.log
+          : >"$log"
 
-      - name: Compile changed Python surfaces
-        run: |
-          python -m compileall -q \
-            src/finruntime/observability \
-            src/finruntime/strategies \
-            scripts/run_paper_stack.py \
-            tests/runtime
+          run_check() {
+            title="$1"
+            shift
+            {
+              echo
+              echo "===== ${title} ====="
+              "$@"
+            } >>"$log" 2>&1
+            status=$?
+            echo "exit_status=${status}" >>"$log"
+            return $status
+          }
 
-      - name: Run full runtime unit suite
-        run: python -m unittest discover -s tests/runtime -v
-
-      - name: Verify runtime contracts and provenance
-        run: python scripts/verify_runtime.py --full
-
-      - name: Verify Bybit official endpoint failover
-        run: |
-          python - <<'PY'
+          status=0
+          run_check "apply patch" python scripts/apply_agent_production_fixes.py || status=$?
+          if [ "$status" -eq 0 ]; then
+            rm scripts/apply_agent_production_fixes.py
+            rm .github/workflows/agent-production-fixes.yml
+            run_check "git diff check" git diff --check || status=$?
+          fi
+          if [ "$status" -eq 0 ]; then
+            run_check "compile" python -m compileall -q \
+              src/finruntime/observability \
+              src/finruntime/strategies \
+              scripts/run_paper_stack.py \
+              tests/runtime || status=$?
+          fi
+          if [ "$status" -eq 0 ]; then
+            run_check "runtime tests" python -m unittest discover -s tests/runtime -v || status=$?
+          fi
+          if [ "$status" -eq 0 ]; then
+            run_check "runtime verification" python scripts/verify_runtime.py --full || status=$?
+          fi
+          if [ "$status" -eq 0 ]; then
+            run_check "Bybit endpoint failover" python - <<'PY'
           from finruntime.observability.factor_backtests import _fetch_bybit_json
           payload = _fetch_bybit_json(
               '/v5/market/funding/history',
@@ -66,10 +79,10 @@ jobs:
           assert payload.get('result', {}).get('list'), payload
           print('Bybit endpoint failover: ok')
           PY
-
-      - name: Reproduce recent-month Consensus archive fallback
-        run: |
-          python - <<'PY'
+            status=$?
+          fi
+          if [ "$status" -eq 0 ]; then
+            run_check "Consensus recent-month fallback" python - <<'PY'
           from datetime import date
           from finruntime.observability.factor_backtests import run_consensus_backtest
           result = run_consensus_backtest(date(2026, 6, 15), date(2026, 7, 31))
@@ -84,10 +97,10 @@ jobs:
               'trades': len(result['trades']),
           })
           PY
-
-      - name: Smoke funding replay through endpoint failover
-        run: |
-          python - <<'PY'
+            status=$?
+          fi
+          if [ "$status" -eq 0 ]; then
+            run_check "Funding replay smoke" python - <<'PY'
           from datetime import date
           from finruntime.observability.factor_backtests import run_funding_backtest
           result = run_funding_backtest(date(2026, 7, 25), date(2026, 7, 31))
@@ -98,12 +111,20 @@ jobs:
               'ending_nav': result['metrics']['ending_nav_usd'],
           })
           PY
+            status=$?
+          fi
 
-      - name: Commit validated implementation
-        run: |
           git config user.name 'OpenAI Agent'
           git config user.email 'openai-agent@users.noreply.github.com'
-          git status --short
-          git add -A
-          git commit -m 'Fix backtest identities and data resilience'
+          if [ "$status" -eq 0 ]; then
+            rm -f "$log"
+            git add -A
+            git commit -m 'Fix backtest identities and data resilience'
+          else
+            rm -f scripts/apply_agent_production_fixes.py
+            rm -f .github/workflows/agent-production-fixes.yml
+            git add -A "$log"
+            git commit -m 'Record production validation failure'
+          fi
           git push origin HEAD:agent/fix-backtests-dyn-profiles
+          exit "$status"
