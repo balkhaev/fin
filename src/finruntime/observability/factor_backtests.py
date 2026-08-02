@@ -695,6 +695,10 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
     oi_by_timestamp = {timestamp: value for timestamp, value in archived_oi_points}
     oi_by_timestamp.update(dict(recent_oi_points))
     oi_points = [(key, oi_by_timestamp[key]) for key in sorted(oi_by_timestamp)]
+    if preliminary and not oi_points:
+        raise DataUnavailableError(
+            "WIF open-interest history is unavailable from both archives and REST"
+        )
     wif_signals: list[dict[str, Any]] = []
     for signal in preliminary:
         oi_z = _oi_change_z(oi_points, int(signal["signal_time_ms"]))
@@ -916,15 +920,20 @@ def _recent_open_interest_points(
     )
     end_time = window_end_ms
     for _batch in range(8):
-        payload = _fetch_json(
-            f"{BINANCE_FUTURES_API}/futures/data/openInterestHist",
-            {
-                "symbol": "WIFUSDT",
-                "period": "5m",
-                "limit": "500",
-                "endTime": str(end_time),
-            },
-        )
+        try:
+            payload = _fetch_json(
+                f"{BINANCE_FUTURES_API}/futures/data/openInterestHist",
+                {
+                    "symbol": "WIFUSDT",
+                    "period": "5m",
+                    "limit": "500",
+                    "endTime": str(end_time),
+                },
+            )
+        except (HTTPError, OSError, RuntimeError, TypeError, ValueError):
+            # The daily metrics archive is canonical. REST only augments the
+            # newest tail and may be geo-blocked on hosted CI runners.
+            break
         if not isinstance(payload, list) or not payload:
             break
         payloads.append(payload)

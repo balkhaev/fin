@@ -48,6 +48,14 @@ class FactorBacktestResilienceTests(unittest.TestCase):
         self.assertEqual(result, {"retCode": 0})
         self.assertEqual(fetch.call_count, 2)
 
+    def test_recent_open_interest_rest_geo_block_is_optional(self) -> None:
+        error = HTTPError("https://fapi.binance.com", 451, "blocked", {}, None)
+        with patch.object(subject, "_fetch_json", side_effect=error):
+            points, audit = subject._recent_open_interest_points(date(2026, 7, 31))
+        self.assertEqual(points, [])
+        self.assertEqual(audit.request_count, 0)
+        self.assertEqual(len(audit.payload_sha256), 64)
+
     def test_incomplete_coverage_is_rejected(self) -> None:
         rows = [
             {
