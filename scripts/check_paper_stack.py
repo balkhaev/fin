@@ -77,6 +77,36 @@ def _check_ds40180_snapshot() -> None:
         value = persistence.get(key)
         if not isinstance(value, str) or not Path(value).is_file():
             raise RuntimeError(f"DS-40/180 persistence file is unavailable: {key}")
+    comparison = snapshot.get("comparison")
+    if comparison is not None:
+        if not isinstance(comparison, dict):
+            raise TypeError("DS-40/180 A/B comparison is not an object")
+        for key in (
+            "exchange_submission_available",
+            "live_ready",
+            "real_leverage_authorized",
+        ):
+            if comparison.get(key) is not False:
+                raise RuntimeError(f"DS-40/180 A/B safety flag is invalid: {key}")
+        if comparison.get("status") != "unavailable":
+            quality = comparison.get("quality")
+            if not isinstance(quality, dict) or quality.get("matched") is not True:
+                raise RuntimeError("DS-40/180 A/B arms are not matched")
+            ab_persistence = comparison.get("persistence")
+            ab_persistence = (
+                ab_persistence if isinstance(ab_persistence, dict) else {}
+            )
+            ab_journal = ab_persistence.get("journal")
+            if not isinstance(ab_journal, dict) or ab_journal.get("valid") is not True:
+                raise RuntimeError("DS-40/180 A/B journal is invalid")
+            if int(ab_journal.get("events") or 0) < 1:
+                raise RuntimeError("DS-40/180 A/B journal is empty")
+            for key in ("snapshotPath", "journalPath"):
+                value = ab_persistence.get(key)
+                if not isinstance(value, str) or not Path(value).is_file():
+                    raise RuntimeError(
+                        f"DS-40/180 A/B persistence file is unavailable: {key}"
+                    )
 
 
 def main() -> int:

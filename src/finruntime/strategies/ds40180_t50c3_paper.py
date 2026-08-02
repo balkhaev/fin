@@ -21,6 +21,7 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
+from ._ds40180_ab import AB_SCHEMA_VERSION, AB_STUDY_ID, build_ab_snapshot
 from ._ds40180_common import (
     EPSILON,
     MATERIAL_DELTA,
@@ -303,7 +304,13 @@ def _write_atomic(path: Path, value: dict[str, Any]) -> None:
 
 
 def run_once(
-    path: Path, *, reset_date: str, initial_nav_usd: float
+    path: Path,
+    *,
+    reset_date: str,
+    initial_nav_usd: float,
+    ab_snapshot_path: Path | None = None,
+    ab_journal_path: Path | None = None,
+    enable_ab: bool = True,
 ) -> dict[str, Any]:
     histories, failures = load_market_data(reset_date=reset_date)
     snapshot = compute_forward_state(
@@ -313,6 +320,53 @@ def run_once(
         reset_date=reset_date,
         initial_nav_usd=initial_nav_usd,
     )
+    if enable_ab:
+        ab_snapshot_path = ab_snapshot_path or (
+            path.parent / "ds40180_t50c3_ab_snapshot.json"
+        )
+        ab_journal_path = ab_journal_path or (
+            path.parent / "ds40180_t50c3_ab_events.jsonl"
+        )
+        try:
+            snapshot["comparison"] = build_ab_snapshot(
+                histories,
+                failures,
+                v2_snapshot=snapshot,
+                snapshot_path=ab_snapshot_path,
+                journal_path=ab_journal_path,
+                reset_date=reset_date,
+                initial_nav_usd=initial_nav_usd,
+            )
+        except (
+            OSError,
+            RuntimeError,
+            TypeError,
+            ValueError,
+            KeyError,
+            ArithmeticError,
+            json.JSONDecodeError,
+        ) as error:
+            error_text = f"{type(error).__name__}: {error}"
+            warnings = snapshot.setdefault("warnings", [])
+            if isinstance(warnings, list):
+                warnings.append(f"forward A/B unavailable: {error_text}")
+            snapshot["comparison"] = {
+                "schema_version": AB_SCHEMA_VERSION,
+                "studyId": AB_STUDY_ID,
+                "mode": "paper_observability",
+                "status": "unavailable",
+                "generatedAt": _utc_now(),
+                "forwardObservationDays": 0,
+                "quality": {"matched": False},
+                "error": error_text,
+                "persistence": {
+                    "snapshotPath": str(ab_snapshot_path),
+                    "journalPath": str(ab_journal_path),
+                },
+                "exchange_submission_available": False,
+                "live_ready": False,
+                "real_leverage_authorized": False,
+            }
     _write_atomic(path, snapshot)
     return snapshot
 
@@ -327,6 +381,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--poll-seconds", type=float, default=300.0)
     parser.add_argument("--reset-date", default=SNAPSHOT_DATE)
     parser.add_argument("--starting-cash", type=float, default=10_000.0)
+    parser.add_argument("--ab-snapshot", type=Path)
+    parser.add_argument("--ab-journal", type=Path)
+    parser.add_argument("--no-ab", action="store_true")
     parser.add_argument("--verify-journal", type=Path)
     parser.add_argument("--once", action="store_true")
     args = parser.parse_args(argv)
@@ -348,6 +405,9 @@ def main(argv: list[str] | None = None) -> int:
                 args.snapshot,
                 reset_date=args.reset_date,
                 initial_nav_usd=args.starting_cash,
+                ab_snapshot_path=args.ab_snapshot,
+                ab_journal_path=args.ab_journal,
+                enable_ab=not args.no_ab,
             )
             print(
                 json.dumps(
@@ -364,6 +424,10 @@ def main(argv: list[str] | None = None) -> int:
                         "risk_scale": round(float(snapshot["riskScale"]), 6),
                         "regime": snapshot["regime"]["state"],
                         "crisis": bool(snapshot["overlays"]["crisis4h"].get("active")),
+                        "ab_status": (snapshot.get("comparison") or {}).get("status"),
+                        "ab_observations": int(
+                            (snapshot.get("comparison") or {}).get("forwardObservationDays") or 0
+                        ),
                     },
                     separators=(",", ":"),
                 ),

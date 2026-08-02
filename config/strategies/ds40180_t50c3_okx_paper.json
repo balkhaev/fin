@@ -3,7 +3,10 @@
   "strategy_version": "okx-paper-v2",
   "research_profile": "DS-40/180 T50-C3 v2",
   "role": "turbo_paper",
-  "allowed_modes": ["paper", "shadow"],
+  "allowed_modes": [
+    "paper",
+    "shadow"
+  ],
   "starting_cash_usd": 10000,
   "forward_clock_reset": true,
   "reset_date": "2026-07-31",
@@ -15,8 +18,19 @@
     "bar": "1Dutc",
     "crisis_bar": "4H",
     "assets": [
-      "ADA", "BCH", "BNB", "BTC", "DOGE", "DOT", "ETH",
-      "LINK", "LTC", "TRX", "UNI", "XLM", "XRP"
+      "ADA",
+      "BCH",
+      "BNB",
+      "BTC",
+      "DOGE",
+      "DOT",
+      "ETH",
+      "LINK",
+      "LTC",
+      "TRX",
+      "UNI",
+      "XLM",
+      "XRP"
     ]
   },
   "signal": {
@@ -25,29 +39,41 @@
     "slow_regime_exit_180d": 0.06,
     "early_regime_enter_40d": -0.15,
     "early_regime_exit_40d": 0.0,
-    "bull_sleeves": [0.25, 0.75, 0.0],
-    "early_bear_sleeves": [0.175, 0.525, 0.30],
-    "confirmed_bear_sleeves": [0.10, 0.30, 0.60],
+    "bull_sleeves": [
+      0.25,
+      0.75,
+      0.0
+    ],
+    "early_bear_sleeves": [
+      0.175,
+      0.525,
+      0.3
+    ],
+    "confirmed_bear_sleeves": [
+      0.1,
+      0.3,
+      0.6
+    ],
     "early_bear_slow_short_budget": 0.25,
-    "confirmed_bear_slow_short_budget": 0.50,
+    "confirmed_bear_slow_short_budget": 0.5,
     "crisis_4h_gross_cap": 0.15,
-    "crisis_4h_breadth_threshold": 0.70
+    "crisis_4h_breadth_threshold": 0.7
   },
   "risk": {
-    "target_volatility": 0.50,
+    "target_volatility": 0.5,
     "risk_scale_floor": 1.0,
     "risk_scale_cap": 3.0,
     "risk_scale_lookback_days": 30,
     "risk_scale_ewm_span": 10,
     "risk_scale_rebalance_weekday_utc": 0,
-    "paper_gross_cap_absolute": 1.50,
+    "paper_gross_cap_absolute": 1.5,
     "paper_gross_cap_stress": 0.75,
     "paper_gross_cap_base": 1.25,
-    "paper_gross_cap_calm_diversified": 1.50,
+    "paper_gross_cap_calm_diversified": 1.5,
     "paper_asset_cap": 0.25,
     "covariance_lookback_days": 60,
-    "covariance_shrink": 0.50,
-    "stress_correlation": 0.80
+    "covariance_shrink": 0.5,
+    "stress_correlation": 0.8
   },
   "execution": {
     "persistent_append_only_ledger": true,
@@ -65,10 +91,23 @@
     "funding_source": "OKX realizedRate; current-rate sizing guard",
     "funding_soft_annual": 0.05,
     "funding_medium_annual": 0.12,
-    "funding_hard_annual": 0.20,
+    "funding_hard_annual": 0.2,
     "missing_funding_fallback_annual": 0.05
   },
   "live_ready": false,
   "real_leverage_authorized": false,
-  "exchange_submission_available": false
+  "exchange_submission_available": false,
+  "observability": {
+    "forward_ab": {
+      "enabled": true,
+      "study_id": "ds40180_v1_v2_forward_ab",
+      "legacy_reference_version": "okx-paper-v1",
+      "legacy_source_commit": "cb942798acdd0f27867b923476dc9b50eb67984f",
+      "legacy_source_blob": "dd573280ddec0e2ae50e33941d4f0154525d4809",
+      "minimum_review_days": 30,
+      "intermediate_review_days": 60,
+      "preferred_review_days": 90,
+      "automatic_winner_promotion": false
+    }
+  }
 }

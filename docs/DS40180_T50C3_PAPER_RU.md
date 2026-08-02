@@ -69,3 +69,34 @@ exchange_submission_available = false
 live_ready                    = false
 real_leverage_authorized      = false
 ```
+
+
+## Forward A/B: v1 reference против v2
+
+Каждый цикл v2 теперь параллельно пересчитывает **read-only** эталон старой
+`okx-paper-v1` логики из закреплённого commit
+`cb942798acdd0f27867b923476dc9b50eb67984f`. Исходный engine сохранён
+байт-в-байт с blob `dd573280ddec0e2ae50e33941d4f0154525d4809`.
+Эталон не регистрируется как активная стратегия и не влияет на позиции v2.
+
+Файлы наблюдения:
+
+```text
+/data/runtime/ds40180_t50c3_ab_snapshot.json
+/data/runtime/ds40180_t50c3_ab_events.jsonl
+```
+
+A/B journal добавляет не более одной пары на закрытый рыночный день. Повторные
+внутридневные циклы обновляют snapshot, но не увеличивают число forward-дней.
+Сравнение фиксирует NAV, return, maximum drawdown, realized volatility,
+downside volatility, turnover, trading costs, funding и число исполнений.
+
+Окна проверки:
+
+- 30 forward-дней — первичный review;
+- 60 дней — промежуточный review;
+- 90 дней — предпочтительное окно решения.
+
+Даже после 90 дней победитель автоматически не назначается: snapshot только
+помечает исследование как `eligible_for_decision`, после чего требуется ручной
+разбор качества данных, риска и исполнения.
