@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/finruntime/strategies/ds40180_t50c3_paper.py'
       - 'src/finruntime/strategies/_ds40180_*.py'
+      - 'src/finruntime/strategies/_ds40180_v1/**'
       - 'src/finruntime/observability/strategy_hub.py'
       - 'src/finruntime/observability/server.py'
       - 'src/finruntime/registry.py'
@@ -14,6 +15,7 @@ on:
       - 'scripts/check_paper_stack.py'
       - 'tests/runtime/test_ds40180_t50c3_paper.py'
       - 'tests/runtime/test_ds40180_ab.py'
+      - 'tests/runtime/test_ds40180_v1_closure.py'
       - 'tests/runtime/test_strategy_hub.py'
       - 'docs/DS40180_T50C3_PAPER_RU.md'
       - '.github/workflows/ds40180-paper.yml'
@@ -22,6 +24,7 @@ on:
     paths:
       - 'src/finruntime/strategies/ds40180_t50c3_paper.py'
       - 'src/finruntime/strategies/_ds40180_*.py'
+      - 'src/finruntime/strategies/_ds40180_v1/**'
       - 'src/finruntime/observability/strategy_hub.py'
       - 'src/finruntime/observability/server.py'
       - 'src/finruntime/registry.py'
@@ -30,6 +33,7 @@ on:
       - 'scripts/check_paper_stack.py'
       - 'tests/runtime/test_ds40180_t50c3_paper.py'
       - 'tests/runtime/test_ds40180_ab.py'
+      - 'tests/runtime/test_ds40180_v1_closure.py'
       - 'tests/runtime/test_strategy_hub.py'
       - 'docs/DS40180_T50C3_PAPER_RU.md'
       - '.github/workflows/ds40180-paper.yml'
@@ -60,17 +64,20 @@ jobs:
           python -m compileall -q \
             src/finruntime/strategies/ds40180_t50c3_paper.py \
             src/finruntime/strategies/_ds40180_*.py \
+            src/finruntime/strategies/_ds40180_v1 \
             src/finruntime/observability/strategy_hub.py \
             src/finruntime/observability/server.py \
             scripts/check_paper_stack.py \
             tests/runtime/test_ds40180_t50c3_paper.py \
             tests/runtime/test_ds40180_ab.py \
+            tests/runtime/test_ds40180_v1_closure.py \
             tests/runtime/test_strategy_hub.py
 
       - name: Run deterministic strategy, A-B and hub tests
         run: |
           python -m unittest discover -s tests/runtime -p 'test_ds40180_t50c3_paper.py' -v
           python -m unittest discover -s tests/runtime -p 'test_ds40180_ab.py' -v
+          python -m unittest discover -s tests/runtime -p 'test_ds40180_v1_closure.py' -v
           python -m unittest tests.runtime.test_strategy_hub -v
 
       - name: Verify runtime registry contract
@@ -85,7 +92,8 @@ jobs:
           grep -F -- '--ab-journal' /tmp/help.txt
           ! grep -R -E 'submit_order|create_order|place_order|apiKey|secretKey' \
             src/finruntime/strategies/ds40180_t50c3_paper.py \
-            src/finruntime/strategies/_ds40180_*.py
+            src/finruntime/strategies/_ds40180_*.py \
+            src/finruntime/strategies/_ds40180_v1
           python - <<'PY'
           import json
           from pathlib import Path
@@ -105,7 +113,12 @@ jobs:
           assert ab['study_id'] == 'ds40180_v1_v2_forward_ab'
           assert ab['legacy_reference_version'] == 'okx-paper-v1'
           assert ab['legacy_source_commit'] == 'cb942798acdd0f27867b923476dc9b50eb67984f'
-          assert ab['legacy_source_blob'] == 'dd573280ddec0e2ae50e33941d4f0154525d4809'
+          assert ab['legacy_source_blobs'] == {
+              'common': '3e0c9c43f92de98620a3819e162e086766587f36',
+              'signals': '018034baf84e1268c827213b597ba8fda8fb581b',
+              'engine': 'dd573280ddec0e2ae50e33941d4f0154525d4809',
+              'account': '04430d038f11aa4b57efb5f40d694b1cf8987269',
+          }
           assert ab['preferred_review_days'] == 90
           assert ab['automatic_winner_promotion'] is False
           PY
