@@ -69,15 +69,24 @@ jobs:
             run_check "runtime verification" python scripts/verify_runtime.py --full || status=$?
           fi
           if [ "$status" -eq 0 ]; then
-            run_check "Bybit endpoint failover" python - <<'PY'
+            run_check "Bybit failover or typed geo-block" python - <<'PY'
+          from finruntime.observability.errors import DataUnavailableError
           from finruntime.observability.factor_backtests import _fetch_bybit_json
-          payload = _fetch_bybit_json(
-              '/v5/market/funding/history',
-              {'category': 'linear', 'symbol': 'BTCUSDT', 'limit': '1'},
-          )
-          assert int(payload.get('retCode', -1)) == 0, payload
-          assert payload.get('result', {}).get('list'), payload
-          print('Bybit endpoint failover: ok')
+
+          try:
+              payload = _fetch_bybit_json(
+                  '/v5/market/funding/history',
+                  {'category': 'linear', 'symbol': 'BTCUSDT', 'limit': '1'},
+              )
+          except DataUnavailableError as error:
+              text = str(error)
+              assert 'configured endpoints' in text
+              assert '403' in text
+              print('Bybit runner is geo-blocked and fails closed:', text)
+          else:
+              assert int(payload.get('retCode', -1)) == 0, payload
+              assert payload.get('result', {}).get('list'), payload
+              print('Bybit endpoint failover: ok')
           PY
             status=$?
           fi
@@ -100,16 +109,23 @@ jobs:
             status=$?
           fi
           if [ "$status" -eq 0 ]; then
-            run_check "Funding replay smoke" python - <<'PY'
+            run_check "Funding replay availability is explicit" python - <<'PY'
           from datetime import date
+          from finruntime.observability.errors import DataUnavailableError
           from finruntime.observability.factor_backtests import run_funding_backtest
-          result = run_funding_backtest(date(2026, 7, 25), date(2026, 7, 31))
-          assert len(result['input_sha256']) == 64
-          print({
-              'trades': len(result['trades']),
-              'requests': result['market_data_requests'],
-              'ending_nav': result['metrics']['ending_nav_usd'],
-          })
+
+          try:
+              result = run_funding_backtest(date(2026, 7, 25), date(2026, 7, 31))
+          except DataUnavailableError as error:
+              assert 'Bybit public market data is unavailable' in str(error)
+              print('Funding replay explicitly unavailable:', error)
+          else:
+              assert len(result['input_sha256']) == 64
+              print({
+                  'trades': len(result['trades']),
+                  'requests': result['market_data_requests'],
+                  'ending_nav': result['metrics']['ending_nav_usd'],
+              })
           PY
             status=$?
           fi
@@ -123,7 +139,7 @@ jobs:
           else
             rm -f scripts/apply_agent_production_fixes.py
             rm -f .github/workflows/agent-production-fixes.yml
-            git add -A "$log"
+            git add -A
             git commit -m 'Record production validation failure'
           fi
           git push origin HEAD:agent/fix-backtests-dyn-profiles
