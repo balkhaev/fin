@@ -196,25 +196,25 @@ test_audit_evidence_matches_pinned_targets_and_diagnostics (test_v75_materializa
 test_registry_remains_fail_closed_after_recovery_audit (test_v75_materialization_audit.V75MaterializationAuditTests.test_registry_remains_fail_closed_after_recovery_audit) ... ok
 
 ----------------------------------------------------------------------
-Ran 184 tests in 13.502s
+Ran 184 tests in 14.200s
 
 OK
-[02/Aug/2026 23:28:14] 127.0.0.1 "GET /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
-[02/Aug/2026 23:28:14] 127.0.0.1 "GET /api/v1/backtests/atlas-nx HTTP/1.1" 200 -
-[02/Aug/2026 23:28:14] 127.0.0.1 "GET /api/v1/backtests/not-a-strategy HTTP/1.1" 404 -
-[02/Aug/2026 23:28:14] 127.0.0.1 "POST /api/v1/backtests/atlas-nx HTTP/1.1" 409 -
-[02/Aug/2026 23:28:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
-[02/Aug/2026 23:28:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
-[02/Aug/2026 23:28:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 400 -
-[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/dashboard HTTP/1.1" 200 -
-[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/health HTTP/1.1" 200 -
-[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/scheduler HTTP/1.1" 200 -
-[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/paper HTTP/1.1" 200 -
-[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/strategies HTTP/1.1" 200 -
-[02/Aug/2026 23:28:16] 127.0.0.1 "POST /api/v1/orders HTTP/1.1" 405 -
-[02/Aug/2026 23:28:16] 127.0.0.1 "GET /api/v1/events?once=1 HTTP/1.1" 200 -
-[02/Aug/2026 23:28:16] 127.0.0.1 "GET /%2e%2e/secret HTTP/1.1" 404 -
-[02/Aug/2026 23:28:17] 127.0.0.1 "GET /api/v1/ws HTTP/1.1" 101 -
+[02/Aug/2026 23:29:49] 127.0.0.1 "GET /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:29:49] 127.0.0.1 "GET /api/v1/backtests/atlas-nx HTTP/1.1" 200 -
+[02/Aug/2026 23:29:49] 127.0.0.1 "GET /api/v1/backtests/not-a-strategy HTTP/1.1" 404 -
+[02/Aug/2026 23:29:50] 127.0.0.1 "POST /api/v1/backtests/atlas-nx HTTP/1.1" 409 -
+[02/Aug/2026 23:29:50] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:29:50] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:29:50] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 400 -
+[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/dashboard HTTP/1.1" 200 -
+[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/health HTTP/1.1" 200 -
+[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/scheduler HTTP/1.1" 200 -
+[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/paper HTTP/1.1" 200 -
+[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/strategies HTTP/1.1" 200 -
+[02/Aug/2026 23:29:51] 127.0.0.1 "POST /api/v1/orders HTTP/1.1" 405 -
+[02/Aug/2026 23:29:52] 127.0.0.1 "GET /api/v1/events?once=1 HTTP/1.1" 200 -
+[02/Aug/2026 23:29:52] 127.0.0.1 "GET /%2e%2e/secret HTTP/1.1" 404 -
+[02/Aug/2026 23:29:52] 127.0.0.1 "GET /api/v1/ws HTTP/1.1" 101 -
 exit_status=0
 
 ===== runtime verification =====
@@ -272,10 +272,38 @@ source hash integrity passed: v28_growth_control (incomplete)
 }
 exit_status=0
 
-===== Bybit endpoint failover =====
+===== Bybit failover or typed geo-block =====
+Bybit runner is geo-blocked and fails closed: Bybit public market data is unavailable across configured endpoints: https://api.bybit.com: HTTPError: HTTP Error 403: Forbidden; https://api.bytick.com: HTTPError: HTTP Error 403: Forbidden; https://api.bybit.kz: HTTPError: HTTP Error 403: Forbidden
+exit_status=0
+
+===== Consensus recent-month fallback =====
 Traceback (most recent call last):
-  File "<stdin>", line 2, in <module>
-  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 786, in _fetch_bybit_json
-    raise DataUnavailableError(
-finruntime.observability.errors.DataUnavailableError: Bybit public market data is unavailable across configured endpoints: https://api.bybit.com: HTTPError: HTTP Error 403: Forbidden; https://api.bytick.com: HTTPError: HTTP Error 403: Forbidden; https://api.bybit.kz: HTTPError: HTTP Error 403: Forbidden
+  File "<stdin>", line 3, in <module>
+  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 677, in run_consensus_backtest
+    api_rows, api_audit = _binance_api_klines(path, symbol, current_start, end)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 815, in _binance_api_klines
+    payload = _fetch_json(
+              ^^^^^^^^^^^^
+  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 773, in _fetch_json
+    with urlopen(request, timeout=timeout_seconds) as response:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/urllib/request.py", line 521, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/urllib/request.py", line 630, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/urllib/request.py", line 559, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/urllib/request.py", line 639, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 451: 
 exit_status=1

@@ -18,6 +18,11 @@ STARTING_CASH = os.environ.get("FIN_PAPER_STARTING_CASH", "10000")
 DS40180_STARTING_CASH = os.environ.get("FIN_DS40180_STARTING_CASH", "10000")
 DS40180_RESET_DATE = os.environ.get("FIN_DS40180_RESET_DATE", "2026-07-31")
 DS40180_POLL_SECONDS = os.environ.get("FIN_DS40180_POLL_SECONDS", "300")
+DYN_SHADOW_PROFILES = tuple(
+    profile.strip()
+    for profile in os.environ.get("FIN_DYN_SHADOW_PROFILES", "").split(",")
+    if profile.strip()
+)
 TERMINATION_TIMEOUT_SECONDS = 10.0
 
 
@@ -180,6 +185,28 @@ def main() -> int:
             None,
         ),
     ]
+    shadow_specs: list[tuple[list[str], dict[str, str] | None]] = []
+    for profile in DYN_SHADOW_PROFILES:
+        snapshot = RUNTIME_ROOT / f"dyn_{profile}_snapshot.json"
+        shadow_specs.append(
+            (
+                [
+                    sys.executable,
+                    "-m",
+                    "finruntime.strategies.dyn_paper",
+                    "--snapshot",
+                    str(snapshot),
+                    "--poll-seconds",
+                    "60",
+                    "--starting-cash",
+                    "10000",
+                    "--profile",
+                    profile,
+                ],
+                None,
+            )
+        )
+    process_specs[3:3] = shadow_specs
     processes: list[subprocess.Popen[bytes]] = []
     stop_requested = False
 

@@ -10,11 +10,20 @@ from functools import lru_cache
 from importlib.resources import files
 from typing import Any
 
+from .atlas_v517_backtest import (
+    EXPECTED_FULL_CAGR,
+    EXPECTED_FULL_FINAL_EQUITY,
+    EXPECTED_FULL_MAX_DRAWDOWN,
+    EXPECTED_INPUT_SHA256,
+    EXPECTED_ROWS,
+)
+
 _STRATEGY_IDS = (
     "funding-neutral",
     "consensus-wif-dot",
     "dyn-iv113",
     "atlas-nx",
+    "atlas-v517-reference",
 )
 _CAGR_THRESHOLD_PERCENT = 50.0
 _DYN_WINDOW_START = "2024-07-26"
@@ -195,6 +204,62 @@ def _dyn_report() -> dict[str, Any]:
     }
 
 
+def _atlas_reference_report() -> dict[str, Any]:
+    """Return the pinned predecessor as an explicitly separate identity."""
+
+    return {
+        "schema_version": 1,
+        "strategy_id": "atlas-v517-reference",
+        "strategy_identity": "v517_v524_v75_tristate_guard",
+        "strategy_name": "Atlas V517 · historical reference",
+        "report_kind": "historical_reference",
+        "window": {
+            "requested_years": 2,
+            "start": "2021-01-01",
+            "end": "2026-06-30",
+            "label": "Pinned V517/V524 research period",
+            "trade_inclusion": "Account-level leverage episodes",
+        },
+        "evidence": {
+            "status": "verified",
+            "status_label": "Checksum-pinned predecessor",
+            "cagr_threshold_percent": _CAGR_THRESHOLD_PERCENT,
+            "cagr_threshold_passed": EXPECTED_FULL_CAGR * 100 >= _CAGR_THRESHOLD_PERCENT,
+            "headline": "V517 historical reference is verified separately from Atlas NX R1",
+            "summary": (
+                "The checksum-pinned V75 account stream can be replayed as V517/V524, "
+                "but these metrics do not belong to the active Atlas NX R1 identity."
+            ),
+        },
+        "metrics": {
+            "scope": "full_frozen_research",
+            "cagr_percent": EXPECTED_FULL_CAGR * 100,
+            "total_return_percent": (EXPECTED_FULL_FINAL_EQUITY / 10_000.0 - 1.0) * 100,
+            "sharpe": 1.4597904254441392,
+            "sortino": 2.5965329178472696,
+            "max_drawdown_percent": EXPECTED_FULL_MAX_DRAWDOWN * 100,
+            "starting_nav_usd": 10_000.0,
+            "ending_nav_usd": EXPECTED_FULL_FINAL_EQUITY,
+            "daily_observations": EXPECTED_ROWS,
+        },
+        "trade_count": 0,
+        "trades": [],
+        "blockers": [],
+        "limitations": [
+            "Parameters were informed by known history; this is not a pristine holdout.",
+            "The source is an account-level equity stream, not position-level fills.",
+            "Atlas NX R1 remains a distinct reconstructed paper identity.",
+        ],
+        "provenance": {
+            "source_repository": "balkhaev/fin",
+            "strategy_identity": "v517_v524_v75_tristate_guard",
+            "input_sha256": EXPECTED_INPUT_SHA256,
+            "is_current_paper_account": False,
+        },
+        "historical_reference": None,
+    }
+
+
 def _insufficient_report(strategy_id: str) -> dict[str, Any]:
     details: dict[str, dict[str, Any]] = {
         "funding-neutral": {
@@ -313,9 +378,10 @@ def backtest_report(strategy_id: str) -> dict[str, Any]:
 
     if strategy_id not in _STRATEGY_IDS:
         raise KeyError(strategy_id)
-    report = (
-        _dyn_report()
-        if strategy_id == "dyn-iv113"
-        else _insufficient_report(strategy_id)
-    )
+    if strategy_id == "dyn-iv113":
+        report = _dyn_report()
+    elif strategy_id == "atlas-v517-reference":
+        report = _atlas_reference_report()
+    else:
+        report = _insufficient_report(strategy_id)
     return copy.deepcopy(report)
