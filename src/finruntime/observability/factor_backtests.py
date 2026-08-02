@@ -101,13 +101,14 @@ def _archive_specs(
     specs: list[ArchiveSpec] = []
     cursor = _month_start(start)
     current_month = _month_start(datetime.now(UTC).date())
+    previous_month = _month_start(current_month - timedelta(days=1))
     while cursor <= end:
         covered_start = max(start, cursor)
         covered_end = min(end, _month_end(cursor))
-        if cursor >= current_month and kind != "metrics":
-            cursor = _next_month(cursor)
-            continue
-        use_daily = kind == "metrics"
+        # Monthly bundles are published asynchronously. Use immutable daily
+        # archives for the current and immediately preceding month so a replay
+        # never depends on a not-yet-published monthly ZIP or a geo-sensitive API.
+        use_daily = kind == "metrics" or cursor >= previous_month
         if use_daily:
             observed = covered_start
             while observed <= covered_end:
@@ -666,22 +667,9 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
         _archive_specs("dot_funding", "fundingRate", "DOTUSDT", None, start, end)
     )
     archive_rows, archive_audit = _download_archives(specs, allow_missing=True)
+    # Recent closed history is intentionally archive-only. Daily bundles make
+    # the replay deterministic and avoid Binance REST geo-policy differences.
     api_audits: list[DownloadAudit] = []
-    current_start = _recent_api_start(warmup_start)
-    if current_start <= end:
-        for group, path, symbol in (
-            ("wif", "/fapi/v1/klines", "WIFUSDT"),
-            ("premium", "/fapi/v1/premiumIndexKlines", "WIFUSDT"),
-            ("dot", "/fapi/v1/klines", "DOTUSDT"),
-        ):
-            api_rows, api_audit = _binance_api_klines(path, symbol, current_start, end)
-            archive_rows.setdefault(group, []).extend(api_rows)
-            api_audits.append(api_audit)
-        funding_rows, funding_audit = _binance_api_funding(
-            "DOTUSDT", current_start, end
-        )
-        archive_rows.setdefault("dot_funding", []).extend(funding_rows)
-        api_audits.append(funding_audit)
     wif_rows = _kline_rows(archive_rows.get("wif", []))
     premium_rows = _kline_rows(archive_rows.get("premium", []))
     dot_rows = _kline_rows(archive_rows.get("dot", []))

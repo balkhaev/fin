@@ -1,6 +1,6 @@
 
-===== apply patch =====
-production fixes applied
+===== apply archive-only patch =====
+archive-only fix applied
 exit_status=0
 
 ===== git diff check =====
@@ -67,7 +67,7 @@ test_unknown_profile_is_rejected (test_dyn_profiles.DynProfileTests.test_unknown
 test_bybit_uses_next_official_endpoint_after_403 (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_bybit_uses_next_official_endpoint_after_403) ... ok
 test_incomplete_coverage_is_rejected (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_incomplete_coverage_is_rejected) ... ok
 test_missing_archive_is_audited_when_fallback_is_allowed (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_missing_archive_is_audited_when_fallback_is_allowed) ... ok
-test_recent_api_window_covers_previous_month (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_recent_api_window_covers_previous_month) ... ok
+test_recent_months_use_daily_archives (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_recent_months_use_daily_archives) ... ok
 test_bybit_provenance_ignores_transport_server_time (test_factor_backtests.FactorBacktestTests.test_bybit_provenance_ignores_transport_server_time) ... ok
 test_consensus_intrabar_collision_is_stop_first (test_factor_backtests.FactorBacktestTests.test_consensus_intrabar_collision_is_stop_first) ... ok
 test_funding_candidate_uses_only_trailing_rates (test_factor_backtests.FactorBacktestTests.test_funding_candidate_uses_only_trailing_rates) ... ok
@@ -196,25 +196,25 @@ test_audit_evidence_matches_pinned_targets_and_diagnostics (test_v75_materializa
 test_registry_remains_fail_closed_after_recovery_audit (test_v75_materialization_audit.V75MaterializationAuditTests.test_registry_remains_fail_closed_after_recovery_audit) ... ok
 
 ----------------------------------------------------------------------
-Ran 184 tests in 14.200s
+Ran 184 tests in 16.083s
 
 OK
-[02/Aug/2026 23:29:49] 127.0.0.1 "GET /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
-[02/Aug/2026 23:29:49] 127.0.0.1 "GET /api/v1/backtests/atlas-nx HTTP/1.1" 200 -
-[02/Aug/2026 23:29:49] 127.0.0.1 "GET /api/v1/backtests/not-a-strategy HTTP/1.1" 404 -
-[02/Aug/2026 23:29:50] 127.0.0.1 "POST /api/v1/backtests/atlas-nx HTTP/1.1" 409 -
-[02/Aug/2026 23:29:50] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
-[02/Aug/2026 23:29:50] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
-[02/Aug/2026 23:29:50] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 400 -
-[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/dashboard HTTP/1.1" 200 -
-[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/health HTTP/1.1" 200 -
-[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/scheduler HTTP/1.1" 200 -
-[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/paper HTTP/1.1" 200 -
-[02/Aug/2026 23:29:51] 127.0.0.1 "GET /api/v1/strategies HTTP/1.1" 200 -
-[02/Aug/2026 23:29:51] 127.0.0.1 "POST /api/v1/orders HTTP/1.1" 405 -
-[02/Aug/2026 23:29:52] 127.0.0.1 "GET /api/v1/events?once=1 HTTP/1.1" 200 -
-[02/Aug/2026 23:29:52] 127.0.0.1 "GET /%2e%2e/secret HTTP/1.1" 404 -
-[02/Aug/2026 23:29:52] 127.0.0.1 "GET /api/v1/ws HTTP/1.1" 101 -
+[02/Aug/2026 23:32:14] 127.0.0.1 "GET /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:32:14] 127.0.0.1 "GET /api/v1/backtests/atlas-nx HTTP/1.1" 200 -
+[02/Aug/2026 23:32:14] 127.0.0.1 "GET /api/v1/backtests/not-a-strategy HTTP/1.1" 404 -
+[02/Aug/2026 23:32:14] 127.0.0.1 "POST /api/v1/backtests/atlas-nx HTTP/1.1" 409 -
+[02/Aug/2026 23:32:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:32:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:32:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 400 -
+[02/Aug/2026 23:32:15] 127.0.0.1 "GET /api/v1/dashboard HTTP/1.1" 200 -
+[02/Aug/2026 23:32:15] 127.0.0.1 "GET /api/v1/health HTTP/1.1" 200 -
+[02/Aug/2026 23:32:15] 127.0.0.1 "GET /api/v1/scheduler HTTP/1.1" 200 -
+[02/Aug/2026 23:32:15] 127.0.0.1 "GET /api/v1/paper HTTP/1.1" 200 -
+[02/Aug/2026 23:32:15] 127.0.0.1 "GET /api/v1/strategies HTTP/1.1" 200 -
+[02/Aug/2026 23:32:16] 127.0.0.1 "POST /api/v1/orders HTTP/1.1" 405 -
+[02/Aug/2026 23:32:16] 127.0.0.1 "GET /api/v1/events?once=1 HTTP/1.1" 200 -
+[02/Aug/2026 23:32:16] 127.0.0.1 "GET /%2e%2e/secret HTTP/1.1" 404 -
+[02/Aug/2026 23:32:17] 127.0.0.1 "GET /api/v1/ws HTTP/1.1" 101 -
 exit_status=0
 
 ===== runtime verification =====
@@ -272,20 +272,16 @@ source hash integrity passed: v28_growth_control (incomplete)
 }
 exit_status=0
 
-===== Bybit failover or typed geo-block =====
-Bybit runner is geo-blocked and fails closed: Bybit public market data is unavailable across configured endpoints: https://api.bybit.com: HTTPError: HTTP Error 403: Forbidden; https://api.bytick.com: HTTPError: HTTP Error 403: Forbidden; https://api.bybit.kz: HTTPError: HTTP Error 403: Forbidden
-exit_status=0
-
-===== Consensus recent-month fallback =====
+===== Consensus archive fallback =====
 Traceback (most recent call last):
-  File "<stdin>", line 3, in <module>
-  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 677, in run_consensus_backtest
-    api_rows, api_audit = _binance_api_klines(path, symbol, current_start, end)
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 815, in _binance_api_klines
+  File "<stdin>", line 4, in <module>
+  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 694, in run_consensus_backtest
+    recent_oi_points, recent_oi_audit = _recent_open_interest_points(end)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 919, in _recent_open_interest_points
     payload = _fetch_json(
               ^^^^^^^^^^^^
-  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 773, in _fetch_json
+  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 761, in _fetch_json
     with urlopen(request, timeout=timeout_seconds) as response:
          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/urllib/request.py", line 215, in urlopen
