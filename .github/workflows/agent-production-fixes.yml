@@ -6,6 +6,11 @@ on:
     paths:
       - 'scripts/apply_agent_production_fixes.py'
       - '.github/workflows/agent-production-fixes.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/apply_agent_production_fixes.py'
+      - '.github/workflows/agent-production-fixes.yml'
   workflow_dispatch:
 
 permissions:
