@@ -103,7 +103,12 @@
       "study_id": "ds40180_v1_v2_forward_ab",
       "legacy_reference_version": "okx-paper-v1",
       "legacy_source_commit": "cb942798acdd0f27867b923476dc9b50eb67984f",
-      "legacy_source_blob": "dd573280ddec0e2ae50e33941d4f0154525d4809",
+      "legacy_source_blobs": {
+        "common": "3e0c9c43f92de98620a3819e162e086766587f36",
+        "signals": "018034baf84e1268c827213b597ba8fda8fb581b",
+        "engine": "dd573280ddec0e2ae50e33941d4f0154525d4809",
+        "account": "04430d038f11aa4b57efb5f40d694b1cf8987269"
+      },
       "minimum_review_days": 30,
       "intermediate_review_days": 60,
       "preferred_review_days": 90,
