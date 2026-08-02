@@ -1,0 +1,281 @@
+
+===== apply patch =====
+production fixes applied
+exit_status=0
+
+===== git diff check =====
+exit_status=0
+
+===== compile =====
+exit_status=0
+
+===== runtime tests =====
+test_committed_regression_fixture (test_atlas_reconstructed_paper.AtlasNxR1PaperTests.test_committed_regression_fixture) ... ok
+test_delisted_asset_is_excluded_without_stopping_the_portfolio (test_atlas_reconstructed_paper.AtlasNxR1PaperTests.test_delisted_asset_is_excluded_without_stopping_the_portfolio) ... ok
+test_high_water_ratchet_is_irreversible (test_atlas_reconstructed_paper.AtlasNxR1PaperTests.test_high_water_ratchet_is_irreversible) ... ok
+test_latest_close_cannot_change_already_executable_target (test_atlas_reconstructed_paper.AtlasNxR1PaperTests.test_latest_close_cannot_change_already_executable_target) ... ok
+test_reconstructed_strategy_runs_with_its_own_identity_and_capital (test_atlas_reconstructed_paper.AtlasNxR1PaperTests.test_reconstructed_strategy_runs_with_its_own_identity_and_capital) ... ok
+test_stale_or_missing_onchain_data_fails_closed (test_atlas_reconstructed_paper.AtlasNxR1PaperTests.test_stale_or_missing_onchain_data_fails_closed) ... ok
+test_validated_migration_hashes_match_committed_sources (test_atlas_reconstructed_paper.AtlasNxR1PaperTests.test_validated_migration_hashes_match_committed_sources) ... ok
+test_conflicting_payload_for_same_source_is_rejected (test_availability.AvailabilityTests.test_conflicting_payload_for_same_source_is_rejected) ... ok
+test_future_available_source_is_rejected (test_availability.AvailabilityTests.test_future_available_source_is_rejected) ... ok
+test_missing_critical_source_blocks_risk_increase (test_availability.AvailabilityTests.test_missing_critical_source_blocks_risk_increase) ... ok
+test_stale_onchain_disables_accelerator_only (test_availability.AvailabilityTests.test_stale_onchain_disables_accelerator_only) ... ok
+test_atlas_predecessor_metric_is_not_attributed_to_successor (test_backtests.BacktestReportTests.test_atlas_predecessor_metric_is_not_attributed_to_successor) ... ok
+test_catalog_covers_every_active_strategy (test_backtests.BacktestReportTests.test_catalog_covers_every_active_strategy) ... ok
+test_click_atlas_nx_does_not_replay_predecessor_metrics (test_backtests.BacktestReportTests.test_click_atlas_nx_does_not_replay_predecessor_metrics) ... ok
+test_click_run_executes_factor_strategies_without_ohlc_approximation (test_backtests.BacktestReportTests.test_click_run_executes_factor_strategies_without_ohlc_approximation) ... ok
+test_click_run_recomputes_atlas_v517_and_keeps_paper_identity_separate (test_backtests.BacktestReportTests.test_click_run_recomputes_atlas_v517_and_keeps_paper_identity_separate) ... ok
+test_click_run_recomputes_dyn_with_current_engine_and_fresh_run_id (test_backtests.BacktestReportTests.test_click_run_recomputes_dyn_with_current_engine_and_fresh_run_id) ... ok
+test_click_run_supports_preregistered_dyn_shadow_profiles (test_backtests.BacktestReportTests.test_click_run_supports_preregistered_dyn_shadow_profiles) ... ok
+test_dyn_report_verifies_archive_and_exposes_two_year_trades (test_backtests.BacktestReportTests.test_dyn_report_verifies_archive_and_exposes_two_year_trades) ... ok
+test_unknown_strategy_is_rejected (test_backtests.BacktestReportTests.test_unknown_strategy_is_rejected) ... ok
+test_unproven_strategies_never_receive_fabricated_metrics (test_backtests.BacktestReportTests.test_unproven_strategies_never_receive_fabricated_metrics) ... ok
+test_canonical_key_order_is_stable (test_contracts.ContractTests.test_canonical_key_order_is_stable) ... ok
+test_execution_plan_requires_reductions_first (test_contracts.ContractTests.test_execution_plan_requires_reductions_first) ... ok
+test_live_mode_is_rejected (test_contracts.ContractTests.test_live_mode_is_rejected) ... ok
+test_portfolio_high_water_cannot_decrease_below_equity (test_contracts.ContractTests.test_portfolio_high_water_cannot_decrease_below_equity) ... ok
+test_snapshot_hash_is_deterministic (test_contracts.ContractTests.test_snapshot_hash_is_deterministic) ... ok
+test_snapshot_hash_mismatch_fails (test_contracts.ContractTests.test_snapshot_hash_mismatch_fails) ... ok
+test_strategy_target_hash_is_deterministic (test_contracts.ContractTests.test_strategy_target_hash_is_deterministic) ... ok
+test_clean_runtime_is_healthy (test_control_room_observability.TelemetryTests.test_clean_runtime_is_healthy) ... ok
+test_integrity_failure_halts (test_control_room_observability.TelemetryTests.test_integrity_failure_halts) ... ok
+test_optional_runtime_context_is_loaded (test_control_room_observability.TelemetryTests.test_optional_runtime_context_is_loaded) ... ok
+test_scheduler_status_is_exposed_and_affects_health (test_control_room_observability.TelemetryTests.test_scheduler_status_is_exposed_and_affects_health) ... ok
+test_strict_schema_and_duplicate_key (test_control_room_observability.TelemetryTests.test_strict_schema_and_duplicate_key) ... ok
+test_backtest_endpoint_is_read_only_and_identity_safe (test_control_room_server.ControlRoomServerTests.test_backtest_endpoint_is_read_only_and_identity_safe) ... ok
+test_backtest_post_has_a_global_single_flight_guard (test_control_room_server.ControlRoomServerTests.test_backtest_post_has_a_global_single_flight_guard) ... ok
+test_backtest_post_runs_fresh_server_side_job_without_settings (test_control_room_server.ControlRoomServerTests.test_backtest_post_runs_fresh_server_side_job_without_settings) ... ok
+test_dashboard_and_health_endpoints (test_control_room_server.ControlRoomServerTests.test_dashboard_and_health_endpoints) ... ok
+test_post_is_rejected (test_control_room_server.ControlRoomServerTests.test_post_is_rejected) ... ok
+test_sse_once_and_path_traversal (test_control_room_server.ControlRoomServerTests.test_sse_once_and_path_traversal) ... ok
+test_websocket_pushes_complete_paper_snapshot (test_control_room_server.ControlRoomServerTests.test_websocket_pushes_complete_paper_snapshot) ... ok
+test_adverse_funding_reduces_only_the_expensive_side (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_adverse_funding_reduces_only_the_expensive_side) ... ok
+test_atomic_snapshot_is_valid_json (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_atomic_snapshot_is_valid_json) ... ok
+test_early_and_confirmed_bear_have_distinct_slow_budgets (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_early_and_confirmed_bear_have_distinct_slow_budgets) ... ok
+test_forward_snapshot_exposes_v2_overlays_and_journal (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_forward_snapshot_exposes_v2_overlays_and_journal) ... ok
+test_frozen_regression_and_exact_absolute_risk_limits (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_frozen_regression_and_exact_absolute_risk_limits) ... ok
+test_latest_close_changes_only_the_next_session_target (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_latest_close_changes_only_the_next_session_target) ... ok
+test_no_trade_band_keeps_small_risk_increase_but_allows_reduction (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_no_trade_band_keeps_small_risk_increase_but_allows_reduction) ... ok
+test_persistent_state_never_rewrites_processed_history (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_persistent_state_never_rewrites_processed_history) ... ok
+test_registry_remains_paper_only (test_ds40180_t50c3_paper.Ds40180T50C3PaperTests.test_registry_remains_paper_only) ... ok
+test_bullish_synthetic_market_opens_paper_positions (test_dyn_paper.DynPaperTests.test_bullish_synthetic_market_opens_paper_positions) ... ok
+test_percentile_ranks_match_fin2_average_tie_ranking (test_dyn_paper.DynPaperTests.test_percentile_ranks_match_fin2_average_tie_ranking) ... ok
+test_deadband_holds_small_changes_but_executes_exit_and_flip (test_dyn_profiles.DynProfileTests.test_deadband_holds_small_changes_but_executes_exit_and_flip) ... ok
+test_profiles_are_distinct_and_baseline_is_unchanged (test_dyn_profiles.DynProfileTests.test_profiles_are_distinct_and_baseline_is_unchanged) ... ok
+test_unknown_profile_is_rejected (test_dyn_profiles.DynProfileTests.test_unknown_profile_is_rejected) ... ok
+test_bybit_uses_next_official_endpoint_after_403 (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_bybit_uses_next_official_endpoint_after_403) ... ok
+test_incomplete_coverage_is_rejected (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_incomplete_coverage_is_rejected) ... ok
+test_missing_archive_is_audited_when_fallback_is_allowed (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_missing_archive_is_audited_when_fallback_is_allowed) ... ok
+test_recent_api_window_covers_previous_month (test_factor_backtest_resilience.FactorBacktestResilienceTests.test_recent_api_window_covers_previous_month) ... ok
+test_bybit_provenance_ignores_transport_server_time (test_factor_backtests.FactorBacktestTests.test_bybit_provenance_ignores_transport_server_time) ... ok
+test_consensus_intrabar_collision_is_stop_first (test_factor_backtests.FactorBacktestTests.test_consensus_intrabar_collision_is_stop_first) ... ok
+test_funding_candidate_uses_only_trailing_rates (test_factor_backtests.FactorBacktestTests.test_funding_candidate_uses_only_trailing_rates) ... ok
+test_funding_exit_matches_live_spread_and_max_hold_contract (test_factor_backtests.FactorBacktestTests.test_funding_exit_matches_live_spread_and_max_hold_contract) ... ok
+test_recent_open_interest_provenance_excludes_future_tail (test_factor_backtests.FactorBacktestTests.test_recent_open_interest_provenance_excludes_future_tail) ... ok
+test_batch_append_is_atomic_and_idempotent (test_journal.JournalTests.test_batch_append_is_atomic_and_idempotent) ... ok
+test_conflicting_singleton_event_is_rejected (test_journal.JournalTests.test_conflicting_singleton_event_is_rejected) ... ok
+test_corruption_fails_closed (test_journal.JournalTests.test_corruption_fails_closed) ... ok
+test_hash_chain_and_idempotent_append (test_journal.JournalTests.test_hash_chain_and_idempotent_append) ... ok
+test_runtime_phase_requires_predecessors (test_journal.JournalTests.test_runtime_phase_requires_predecessors) ... ok
+test_same_phase_fill_times_may_arrive_out_of_order (test_journal.JournalTests.test_same_phase_fill_times_may_arrive_out_of_order) ... ok
+test_semantic_regressions_fail_before_append (test_journal.JournalTests.test_semantic_regressions_fail_before_append) ... ok
+test_live_mode_fails_closed_without_external_evidence (test_live_preflight.LivePreflightTests.test_live_mode_fails_closed_without_external_evidence) ... ok
+test_shadow_mode_is_ready_and_never_attempts_submission (test_live_preflight.LivePreflightTests.test_shadow_mode_is_ready_and_never_attempts_submission) ... ok
+test_structurally_valid_but_unverified_evidence_still_fails (test_live_preflight.LivePreflightTests.test_structurally_valid_but_unverified_evidence_still_fails) ... ok
+test_templates_are_rejected_as_evidence (test_live_preflight.LivePreflightTests.test_templates_are_rejected_as_evidence) ... ok
+test_committed_cycle_restores_missing_state_and_telemetry (test_operations.OperationsTests.test_committed_cycle_restores_missing_state_and_telemetry) ... ok
+test_concurrent_retry_commits_only_once (test_operations.OperationsTests.test_concurrent_retry_commits_only_once) ... ok
+test_conflicting_telemetry_primary_key_fails (test_operations.OperationsTests.test_conflicting_telemetry_primary_key_fails) ... ok
+test_cycle_identity_is_bound_to_starting_account (test_operations.OperationsTests.test_cycle_identity_is_bound_to_starting_account) ... ok
+test_divergent_global_account_blocks_restore (test_operations.OperationsTests.test_divergent_global_account_blocks_restore) ... ok
+test_end_to_end_cycle_materializes_state_journal_and_telemetry (test_operations.OperationsTests.test_end_to_end_cycle_materializes_state_journal_and_telemetry) ... ok
+test_same_cycle_is_idempotent (test_operations.OperationsTests.test_same_cycle_is_idempotent) ... ok
+test_stale_market_records_halt_without_risk_increase (test_operations.OperationsTests.test_stale_market_records_halt_without_risk_increase) ... ok
+test_stale_quality_sets_telemetry_stale_without_caller_flag (test_operations.OperationsTests.test_stale_quality_sets_telemetry_stale_without_caller_flag) ... ok
+test_status_reports_latest_runtime_state (test_operations.OperationsTests.test_status_reports_latest_runtime_state) ... ok
+test_tampered_commit_marker_blocks_restore (test_operations.OperationsTests.test_tampered_commit_marker_blocks_restore) ... ok
+test_tampered_cycle_artifact_blocks_restore (test_operations.OperationsTests.test_tampered_cycle_artifact_blocks_restore) ... ok
+test_forward_telemetry_row_matches_v429_contract (test_paper_ledger.PaperLedgerTests.test_forward_telemetry_row_matches_v429_contract) ... ok
+test_funding_long_pays_positive_rate_idempotently (test_paper_ledger.PaperLedgerTests.test_funding_long_pays_positive_rate_idempotently) ... ok
+test_liquidity_cap_creates_partial_fill (test_paper_ledger.PaperLedgerTests.test_liquidity_cap_creates_partial_fill) ... ok
+test_maximum_slippage_rejects_fill (test_paper_ledger.PaperLedgerTests.test_maximum_slippage_rejects_fill) ... ok
+test_outage_rejects_without_changing_position (test_paper_ledger.PaperLedgerTests.test_outage_rejects_without_changing_position) ... ok
+test_paper_account_rejects_reduce_only_cross_through_zero (test_paper_ledger.PaperLedgerTests.test_paper_account_rejects_reduce_only_cross_through_zero) ... ok
+test_partial_fill_reconciliation_warns (test_paper_ledger.PaperLedgerTests.test_partial_fill_reconciliation_warns) ... ok
+test_partial_sign_flip_close_blocks_child_open (test_paper_ledger.PaperLedgerTests.test_partial_sign_flip_close_blocks_child_open) ... ok
+test_perpetual_reduction_realizes_pnl (test_paper_ledger.PaperLedgerTests.test_perpetual_reduction_realizes_pnl) ... ok
+test_source_hash_mismatch_halts_reconciliation (test_paper_ledger.PaperLedgerTests.test_source_hash_mismatch_halts_reconciliation) ... ok
+test_spot_buy_fill_updates_cash_position_and_equity (test_paper_ledger.PaperLedgerTests.test_spot_buy_fill_updates_cash_position_and_equity) ... ok
+test_successive_plans_activate_new_context (test_paper_ledger.PaperLedgerTests.test_successive_plans_activate_new_context) ... ok
+test_collateral_budget_scales_market_exposure (test_risk_planner.RiskPlannerTests.test_collateral_budget_scales_market_exposure) ... ok
+test_declared_gross_mismatch_fails (test_risk_planner.RiskPlannerTests.test_declared_gross_mismatch_fails) ... ok
+test_different_pending_plan_fails_closed (test_risk_planner.RiskPlannerTests.test_different_pending_plan_fails_closed) ... ok
+test_gross_cap_scales_pro_rata (test_risk_planner.RiskPlannerTests.test_gross_cap_scales_pro_rata) ... ok
+test_missing_reference_price_halts_planning (test_risk_planner.RiskPlannerTests.test_missing_reference_price_halts_planning) ... ok
+test_perpetual_sign_flip_is_split_close_then_open (test_risk_planner.RiskPlannerTests.test_perpetual_sign_flip_is_split_close_then_open) ... ok
+test_planner_is_deterministic_and_uses_base_quantity (test_risk_planner.RiskPlannerTests.test_planner_is_deterministic_and_uses_base_quantity) ... ok
+test_risk_reductions_precede_increases (test_risk_planner.RiskPlannerTests.test_risk_reductions_precede_increases) ... ok
+test_stale_context_generates_reduction_only_plan (test_risk_planner.RiskPlannerTests.test_stale_context_generates_reduction_only_plan) ... ok
+test_stale_critical_source_blocks_instrument_risk_increase (test_risk_planner.RiskPlannerTests.test_stale_critical_source_blocks_instrument_risk_increase) ... ok
+test_stale_source_sign_flip_becomes_close_only (test_risk_planner.RiskPlannerTests.test_stale_source_sign_flip_becomes_close_only) ... ok
+test_stale_source_still_allows_reduction (test_risk_planner.RiskPlannerTests.test_stale_source_still_allows_reduction) ... ok
+test_strategy_identity_mismatch_fails (test_risk_planner.RiskPlannerTests.test_strategy_identity_mismatch_fails) ... ok
+test_v136_defaults_to_shadow_mode (test_risk_planner.RiskPlannerTests.test_v136_defaults_to_shadow_mode) ... ok
+test_create_rejects_non_boolean_values (test_runtime_composition_integrity.MigrationBuilderStrictTypeTests.test_create_rejects_non_boolean_values) ... ok
+test_create_rejects_non_string_json_fields (test_runtime_composition_integrity.MigrationBuilderStrictTypeTests.test_create_rejects_non_string_json_fields) ... ok
+test_sign_flip_intents_share_one_quote_capacity (test_runtime_composition_integrity.SharedQuoteLiquidityTests.test_sign_flip_intents_share_one_quote_capacity) ... ok
+test_future_source_timestamp_is_rejected_by_snapshot_contract (test_runtime_integrity.AvailabilityIntegrityTests.test_future_source_timestamp_is_rejected_by_snapshot_contract) ... ok
+test_same_payload_with_different_metadata_is_rejected (test_runtime_integrity.AvailabilityIntegrityTests.test_same_payload_with_different_metadata_is_rejected) ... ok
+test_legacy_schema_1_0_hash_and_serialization_remain_valid (test_runtime_integrity.PaperAccountCompatibilityTests.test_legacy_schema_1_0_hash_and_serialization_remain_valid) ... ok
+test_partial_plan_resumes_without_overfill (test_runtime_integrity.PaperExecutionIntegrityTests.test_partial_plan_resumes_without_overfill) ... ok
+test_incomplete_registry_profiles_have_explicit_issues (test_runtime_integrity.ProvenanceIntegrityTests.test_incomplete_registry_profiles_have_explicit_issues) ... ok
+test_corrupt_envelope_is_rejected_fail_closed (test_scheduler.SchedulerTests.test_corrupt_envelope_is_rejected_fail_closed) ... ok
+test_duplicate_enqueue_after_completion_is_idempotent (test_scheduler.SchedulerTests.test_duplicate_enqueue_after_completion_is_idempotent) ... ok
+test_enqueued_cycle_executes_and_archives (test_scheduler.SchedulerTests.test_enqueued_cycle_executes_and_archives) ... ok
+test_envelope_seals_starting_account_and_execution_policies (test_scheduler.SchedulerTests.test_envelope_seals_starting_account_and_execution_policies) ... ok
+test_expired_request_is_rejected_without_account_change (test_scheduler.SchedulerTests.test_expired_request_is_rejected_without_account_change) ... ok
+test_future_account_request_remains_blocked (test_scheduler.SchedulerTests.test_future_account_request_remains_blocked) ... ok
+test_processing_request_is_recovered_after_scheduler_restart (test_scheduler.SchedulerTests.test_processing_request_is_recovered_after_scheduler_restart) ... ok
+test_rejected_raw_request_remains_verifiable (test_scheduler.SchedulerTests.test_rejected_raw_request_remains_verifiable) ... ok
+test_scheduler_recovers_archive_after_cycle_committed_first (test_scheduler.SchedulerTests.test_scheduler_recovers_archive_after_cycle_committed_first) ... ok
+test_source_hash_mismatch_halts_without_opening_position (test_scheduler.SchedulerTests.test_source_hash_mismatch_halts_without_opening_position) ... ok
+test_boost_mode_uses_source_risk_percentages (test_strategy_hub.ConsensusPaperTests.test_boost_mode_uses_source_risk_percentages) ... ok
+test_trader_risk_accelerator_matches_source_transitions (test_strategy_hub.ConsensusPaperTests.test_trader_risk_accelerator_matches_source_transitions) ... ok
+test_trader_signals_open_paper_positions (test_strategy_hub.ConsensusPaperTests.test_trader_signals_open_paper_positions) ... ok
+test_atlas_is_blocked_without_canonical_target_producer (test_strategy_hub.StrategyHubTests.test_atlas_is_blocked_without_canonical_target_producer) ... ok
+test_dyn_unavailable_is_not_reported_as_a_cash_decision (test_strategy_hub.StrategyHubTests.test_dyn_unavailable_is_not_reported_as_a_cash_decision) ... ok
+test_funding_context_explains_current_spread_gap (test_strategy_hub.StrategyHubTests.test_funding_context_explains_current_spread_gap) ... ok
+test_local_reconstructed_atlas_replaces_blocked_card (test_strategy_hub.StrategyHubTests.test_local_reconstructed_atlas_replaces_blocked_card) ... ok
+test_normalizes_all_repository_strategies (test_strategy_hub.StrategyHubTests.test_normalizes_all_repository_strategies) ... ok
+test_reads_fresh_local_dyn_snapshot_and_rejects_stale_file (test_strategy_hub.StrategyHubTests.test_reads_fresh_local_dyn_snapshot_and_rejects_stale_file) ... ok
+test_reads_only_fresh_ds40180_v2_snapshot (test_strategy_hub.StrategyHubTests.test_reads_only_fresh_ds40180_v2_snapshot) ... ok
+test_reads_only_fresh_reconstructed_atlas_identity (test_strategy_hub.StrategyHubTests.test_reads_only_fresh_reconstructed_atlas_identity) ... ok
+test_byte_identical_materialization_preserves_identity_and_manifest (test_strategy_migration.StrategyMigrationRecordTests.test_byte_identical_materialization_preserves_identity_and_manifest) ... ok
+test_cli_validates_record_and_reports_safety_state (test_strategy_migration.StrategyMigrationRecordTests.test_cli_validates_record_and_reports_safety_state) ... ok
+test_json_object_member_order_does_not_change_identity (test_strategy_migration.StrategyMigrationRecordTests.test_json_object_member_order_does_not_change_identity) ... ok
+test_migration_never_carries_live_or_capital_authorization (test_strategy_migration.StrategyMigrationRecordTests.test_migration_never_carries_live_or_capital_authorization) ... ok
+test_paths_parameters_and_hash_identity_are_strict (test_strategy_migration.StrategyMigrationRecordTests.test_paths_parameters_and_hash_identity_are_strict) ... ok
+test_planned_reconstruction_is_deterministic_and_canonical (test_strategy_migration.StrategyMigrationRecordTests.test_planned_reconstruction_is_deterministic_and_canonical) ... ok
+test_reconstruction_requires_new_identity_and_forward_reset (test_strategy_migration.StrategyMigrationRecordTests.test_reconstruction_requires_new_identity_and_forward_reset) ... ok
+test_schema_declares_required_safety_and_lifecycle_fields (test_strategy_migration.StrategyMigrationRecordTests.test_schema_declares_required_safety_and_lifecycle_fields) ... ok
+test_status_lifecycle_is_fail_closed (test_strategy_migration.StrategyMigrationRecordTests.test_status_lifecycle_is_fail_closed) ... ok
+test_hash_manifests_require_string_sha256_values (test_strategy_migration_types.StrategyMigrationStrictTypeTests.test_hash_manifests_require_string_sha256_values) ... ok
+test_identity_status_and_timestamp_require_strings (test_strategy_migration_types.StrategyMigrationStrictTypeTests.test_identity_status_and_timestamp_require_strings) ... ok
+test_json_numbers_cannot_substitute_for_booleans (test_strategy_migration_types.StrategyMigrationStrictTypeTests.test_json_numbers_cannot_substitute_for_booleans) ... ok
+test_parameter_sections_must_be_json_objects (test_strategy_migration_types.StrategyMigrationStrictTypeTests.test_parameter_sections_must_be_json_objects) ... ok
+test_frozen_policy_parameters (test_v136_execution.V136ExecutionTests.test_frozen_policy_parameters) ... ok
+test_global_zero_exit_is_immediate (test_v136_execution.V136ExecutionTests.test_global_zero_exit_is_immediate) ... ok
+test_half_step_policy_is_deterministic (test_v136_execution.V136ExecutionTests.test_half_step_policy_is_deterministic) ... ok
+test_l1_band_updates_full_target (test_v136_execution.V136ExecutionTests.test_l1_band_updates_full_target) ... ok
+test_maximum_age_forces_update (test_v136_execution.V136ExecutionTests.test_maximum_age_forces_update) ... ok
+test_negative_spot_target_rejected (test_v136_execution.V136ExecutionTests.test_negative_spot_target_rejected) ... ok
+test_perp_sign_change_is_immediate (test_v136_execution.V136ExecutionTests.test_perp_sign_change_is_immediate) ... ok
+test_shadow_snapshot_does_not_mutate_primary (test_v136_execution.V136ExecutionTests.test_shadow_snapshot_does_not_mutate_primary) ... ok
+test_small_change_inside_band_holds_target (test_v136_execution.V136ExecutionTests.test_small_change_inside_band_holds_target) ... ok
+test_strict_risk_reduction_buffer_boundary (test_v136_execution.V136ExecutionTests.test_strict_risk_reduction_buffer_boundary) ... ok
+test_uninitialized_state_takes_first_target (test_v136_execution.V136ExecutionTests.test_uninitialized_state_takes_first_target) ... ok
+test_zero_to_nonzero_perp_matches_frozen_research_semantics (test_v136_execution.V136ExecutionTests.test_zero_to_nonzero_perp_matches_frozen_research_semantics) ... ok
+test_audit_does_not_authorize_live_or_parameter_changes (test_v28_provenance_audit.V28ProvenanceClosureAuditTests.test_audit_does_not_authorize_live_or_parameter_changes) ... ok
+test_direct_archive_hashes_match_registry_and_repository_bytes (test_v28_provenance_audit.V28ProvenanceClosureAuditTests.test_direct_archive_hashes_match_registry_and_repository_bytes) ... ok
+test_missing_dependency_and_fixture_closure_stays_fail_closed (test_v28_provenance_audit.V28ProvenanceClosureAuditTests.test_missing_dependency_and_fixture_closure_stays_fail_closed) ... ok
+test_decision_hash_is_deterministic (test_v517_risk_budget.V517RiskBudgetTests.test_decision_hash_is_deterministic) ... ok
+test_frozen_policy_parameters (test_v517_risk_budget.V517RiskBudgetTests.test_frozen_policy_parameters) ... ok
+test_future_append_does_not_change_prior_decision (test_v517_risk_budget.V517RiskBudgetTests.test_future_append_does_not_change_prior_decision) ... ok
+test_guard_enters_and_caps_risk (test_v517_risk_budget.V517RiskBudgetTests.test_guard_enters_and_caps_risk) ... ok
+test_guard_exit_requires_hold_and_recovery (test_v517_risk_budget.V517RiskBudgetTests.test_guard_exit_requires_hold_and_recovery) ... ok
+test_inside_band_holds_until_schedule (test_v517_risk_budget.V517RiskBudgetTests.test_inside_band_holds_until_schedule) ... ok
+test_low_state_requires_three_confirmations (test_v517_risk_budget.V517RiskBudgetTests.test_low_state_requires_three_confirmations) ... ok
+test_non_v75_primary_rejected (test_v517_risk_budget.V517RiskBudgetTests.test_non_v75_primary_rejected) ... ok
+test_noncontiguous_or_future_history_fails_closed (test_v517_risk_budget.V517RiskBudgetTests.test_noncontiguous_or_future_history_fails_closed) ... ok
+test_runtime_cap_is_explicit (test_v517_risk_budget.V517RiskBudgetTests.test_runtime_cap_is_explicit) ... ok
+test_shadow_snapshot_scales_targets_and_preserves_primary (test_v517_risk_budget.V517RiskBudgetTests.test_shadow_snapshot_scales_targets_and_preserves_primary) ... ok
+test_sustained_growth_enters_high_state (test_v517_risk_budget.V517RiskBudgetTests.test_sustained_growth_enters_high_state) ... ok
+test_warmup_remains_base (test_v517_risk_budget.V517RiskBudgetTests.test_warmup_remains_base) ... ok
+test_audit_evidence_matches_pinned_targets_and_diagnostics (test_v75_materialization_audit.V75MaterializationAuditTests.test_audit_evidence_matches_pinned_targets_and_diagnostics) ... ok
+test_registry_remains_fail_closed_after_recovery_audit (test_v75_materialization_audit.V75MaterializationAuditTests.test_registry_remains_fail_closed_after_recovery_audit) ... ok
+
+----------------------------------------------------------------------
+Ran 184 tests in 13.502s
+
+OK
+[02/Aug/2026 23:28:14] 127.0.0.1 "GET /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:28:14] 127.0.0.1 "GET /api/v1/backtests/atlas-nx HTTP/1.1" 200 -
+[02/Aug/2026 23:28:14] 127.0.0.1 "GET /api/v1/backtests/not-a-strategy HTTP/1.1" 404 -
+[02/Aug/2026 23:28:14] 127.0.0.1 "POST /api/v1/backtests/atlas-nx HTTP/1.1" 409 -
+[02/Aug/2026 23:28:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:28:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 200 -
+[02/Aug/2026 23:28:15] 127.0.0.1 "POST /api/v1/backtests/dyn-iv113 HTTP/1.1" 400 -
+[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/dashboard HTTP/1.1" 200 -
+[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/health HTTP/1.1" 200 -
+[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/scheduler HTTP/1.1" 200 -
+[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/paper HTTP/1.1" 200 -
+[02/Aug/2026 23:28:15] 127.0.0.1 "GET /api/v1/strategies HTTP/1.1" 200 -
+[02/Aug/2026 23:28:16] 127.0.0.1 "POST /api/v1/orders HTTP/1.1" 405 -
+[02/Aug/2026 23:28:16] 127.0.0.1 "GET /api/v1/events?once=1 HTTP/1.1" 200 -
+[02/Aug/2026 23:28:16] 127.0.0.1 "GET /%2e%2e/secret HTTP/1.1" 404 -
+[02/Aug/2026 23:28:17] 127.0.0.1 "GET /api/v1/ws HTTP/1.1" 101 -
+exit_status=0
+
+===== runtime verification =====
+source hash integrity passed: atlas_nx_r1 (complete)
+source hash integrity passed: v75_atlas_nx (incomplete)
+source hash integrity passed: v136_execution_shadow (complete)
+source hash integrity passed: v28_growth_control (incomplete)
+{
+  "provenance": "source_hashes_passed_incomplete",
+  "profile": null,
+  "profile_statuses": {
+    "atlas_nx_r1": {
+      "source_hash_integrity": "passed",
+      "provenance_complete": true,
+      "issues": [],
+      "runtime_blocker": null
+    },
+    "v75_atlas_nx": {
+      "source_hash_integrity": "passed",
+      "provenance_complete": false,
+      "issues": [
+        "provenance_complete=false",
+        "unmaterialized requirement:annual_returns_fixture:not_recoverable_from_current_repository_history",
+        "unmaterialized requirement:canonical_engine:not_recoverable_from_current_repository_history",
+        "unmaterialized requirement:full_regression_equity:not_recoverable_from_current_repository_history"
+      ],
+      "runtime_blocker": "exact V75 source and regression fixtures are absent from current repository history; M2 requires an external retained artifact matching the pinned hashes or a new strategy identity with an explicit migration record"
+    },
+    "v136_execution_shadow": {
+      "source_hash_integrity": "passed",
+      "provenance_complete": true,
+      "issues": [],
+      "runtime_blocker": "requires exact V75 target stream before historical shadow regression"
+    },
+    "v28_growth_control": {
+      "source_hash_integrity": "passed",
+      "provenance_complete": false,
+      "issues": [
+        "provenance_complete=false",
+        "unmaterialized requirement:cash_carry_module:absent_from_current_repository_history",
+        "unmaterialized requirement:exact8h_audit_module:absent_from_current_repository_history",
+        "unmaterialized requirement:exact8h_fast_module:absent_from_current_repository_history",
+        "unmaterialized requirement:exact_daily_target_fixture:absent_from_current_repository_history",
+        "unmaterialized requirement:execution_policy_module:absent_from_current_repository_history",
+        "unmaterialized requirement:funding_carry_module:absent_from_current_repository_history",
+        "unmaterialized requirement:raw_market_inputs:not_materialized_in_repository",
+        "unmaterialized requirement:research_helper_identity:multiple_candidates_exist_but_exact_v28_identity_not_pinned",
+        "unmaterialized requirement:v8_module_identity:candidate_files_exist_but_exact_v28_identity_not_pinned"
+      ],
+      "runtime_blocker": "V28 direct source is preserved, but its exact imported module/data identity and daily target fixture are incomplete; M3 requires a retained dependency package plus sealed inputs/targets or a new strategy identity with an explicit migration record"
+    }
+  },
+  "contracts": "passed",
+  "live_execution_available": false
+}
+exit_status=0
+
+===== Bybit endpoint failover =====
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "/home/runner/work/fin/fin/src/finruntime/observability/factor_backtests.py", line 786, in _fetch_bybit_json
+    raise DataUnavailableError(
+finruntime.observability.errors.DataUnavailableError: Bybit public market data is unavailable across configured endpoints: https://api.bybit.com: HTTPError: HTTP Error 403: Forbidden; https://api.bytick.com: HTTPError: HTTP Error 403: Forbidden; https://api.bybit.kz: HTTPError: HTTP Error 403: Forbidden
+exit_status=1
