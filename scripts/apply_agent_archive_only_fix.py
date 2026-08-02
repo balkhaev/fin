@@ -76,11 +76,14 @@ replace_once(
         )
 ''',
     '''    def test_recent_months_use_daily_archives(self) -> None:
-        with patch.object(subject, "datetime") as mocked_datetime:
-            mocked_datetime.now.return_value = subject.datetime(
-                2026, 8, 3, tzinfo=subject.UTC
-            )
-            mocked_datetime.fromtimestamp.side_effect = subject.datetime.fromtimestamp
+        real_datetime = subject.datetime
+
+        class FrozenDateTime(real_datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return cls(2026, 8, 3, tzinfo=tz)
+
+        with patch.object(subject, "datetime", FrozenDateTime):
             specs = subject._archive_specs(
                 "wif", "klines", "WIFUSDT", "15m",
                 date(2026, 7, 1), date(2026, 7, 2),
