@@ -5,6 +5,15 @@ on:
     branches: [agent/ds40180-forward-ab]
     paths:
       - '.github/workflows/apply-ds40180-ab.yml'
+      - 'scripts/apply_ds40180_ab.py'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-ds40180-ab.yml'
+      - 'scripts/apply_ds40180_ab.py'
+      - 'src/finruntime/strategies/_ds40180_ab.py'
+      - 'src/finruntime/strategies/_ds40180_v1_*.py'
+      - 'tests/runtime/test_ds40180_ab.py'
   workflow_dispatch:
 
 permissions:
@@ -16,6 +25,7 @@ concurrency:
 
 jobs:
   apply-and-commit:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -29,341 +39,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Materialize frozen v1 reference and integrate A-B
+      - name: Apply forward A-B integration
         run: |
           set -euxo pipefail
-          python - <<'PY'
-          from __future__ import annotations
-
-          import json
-          import subprocess
-          from pathlib import Path
-
-          root = Path('.')
-          source_commit = 'cb942798acdd0f27867b923476dc9b50eb67984f'
-
-          legacy = subprocess.check_output(
-              [
-                  'git',
-                  'show',
-                  f'{source_commit}:src/finruntime/strategies/_ds40180_engine.py',
-              ],
-              text=True,
-          )
-          legacy = legacy.replace(
-              '"""Causal DS-40/180 regime and T50-C3 target builder."""',
-              '"""Pinned legacy DS-40/180 v1 target builder for read-only A/B use."""',
-              1,
-          )
-          constants = '''
-
-V1_REFERENCE_STRATEGY_ID = "ds40180_t50c3_okx_paper_v1_reference"
-V1_REFERENCE_VERSION = "okx-paper-v1"
-V1_REFERENCE_PROFILE = "DS-40/180 T50-C3 v1 frozen reference"
-V1_REFERENCE_SOURCE_COMMIT = "cb942798acdd0f27867b923476dc9b50eb67984f"
-V1_PAPER_GROSS_CAP = 1.25
-V1_PAPER_ASSET_CAP = 0.30
-'''
-          legacy = legacy.replace(
-              '\n\ndef build_engine(\n',
-              constants + '\n\ndef build_v1_reference_engine(\n',
-              1,
-          )
-          legacy = legacy.replace(
-              'safe_target, applied = _apply_target_safety(combined)',
-              'safe_target, applied = _apply_target_safety(\n'
-              '            combined,\n'
-              '            gross_cap=V1_PAPER_GROSS_CAP,\n'
-              '            asset_cap=V1_PAPER_ASSET_CAP,\n'
-              '        )',
-              1,
-          )
-          legacy = legacy.replace(
-              '    return {\n        "assets": assets,\n',
-              '    return {\n'
-              '        "reference": {\n'
-              '            "strategyId": V1_REFERENCE_STRATEGY_ID,\n'
-              '            "strategyVersion": V1_REFERENCE_VERSION,\n'
-              '            "profile": V1_REFERENCE_PROFILE,\n'
-              '            "sourceCommit": V1_REFERENCE_SOURCE_COMMIT,\n'
-              '            "paperGrossCap": V1_PAPER_GROSS_CAP,\n'
-              '            "paperAssetCap": V1_PAPER_ASSET_CAP,\n'
-              '        },\n'
-              '        "assets": assets,\n',
-              1,
-          )
-          assert 'def build_v1_reference_engine(' in legacy
-          assert 'gross_cap=V1_PAPER_GROSS_CAP' in legacy
-          assert '"reference": {' in legacy
-          (root / 'src/finruntime/strategies/_ds40180_v1_reference.py').write_text(
-              legacy, encoding='utf-8'
-          )
-
-          main_path = root / 'src/finruntime/strategies/ds40180_t50c3_paper.py'
-          text = main_path.read_text(encoding='utf-8')
-          import_marker = 'from ._ds40180_common import (\n'
-          ab_import = (
-              'from ._ds40180_ab import AB_SCHEMA_VERSION, AB_STUDY_ID, build_ab_snapshot\n'
-          )
-          if ab_import not in text:
-              text = text.replace(import_marker, ab_import + import_marker, 1)
-
-          start = text.index('def run_once(\n')
-          end = text.index('\n\ndef main(', start)
-          run_once = '''def run_once(
-    path: Path,
-    *,
-    reset_date: str,
-    initial_nav_usd: float,
-    ab_snapshot_path: Path | None = None,
-    ab_journal_path: Path | None = None,
-    enable_ab: bool = True,
-) -> dict[str, Any]:
-    histories, failures = load_market_data(reset_date=reset_date)
-    snapshot = compute_forward_state(
-        histories,
-        failures,
-        snapshot_path=path,
-        reset_date=reset_date,
-        initial_nav_usd=initial_nav_usd,
-    )
-    if enable_ab:
-        ab_snapshot_path = ab_snapshot_path or (
-            path.parent / "ds40180_t50c3_ab_snapshot.json"
-        )
-        ab_journal_path = ab_journal_path or (
-            path.parent / "ds40180_t50c3_ab_events.jsonl"
-        )
-        try:
-            snapshot["comparison"] = build_ab_snapshot(
-                histories,
-                failures,
-                v2_snapshot=snapshot,
-                snapshot_path=ab_snapshot_path,
-                journal_path=ab_journal_path,
-                reset_date=reset_date,
-                initial_nav_usd=initial_nav_usd,
-            )
-        except (
-            OSError,
-            RuntimeError,
-            TypeError,
-            ValueError,
-            KeyError,
-            ArithmeticError,
-            json.JSONDecodeError,
-        ) as error:
-            error_text = f"{type(error).__name__}: {error}"
-            warnings = snapshot.setdefault("warnings", [])
-            if isinstance(warnings, list):
-                warnings.append(f"forward A/B unavailable: {error_text}")
-            snapshot["comparison"] = {
-                "schema_version": AB_SCHEMA_VERSION,
-                "studyId": AB_STUDY_ID,
-                "mode": "paper_observability",
-                "status": "unavailable",
-                "generatedAt": _utc_now(),
-                "forwardObservationDays": 0,
-                "quality": {"matched": False},
-                "error": error_text,
-                "persistence": {
-                    "snapshotPath": str(ab_snapshot_path),
-                    "journalPath": str(ab_journal_path),
-                },
-                "exchange_submission_available": False,
-                "live_ready": False,
-                "real_leverage_authorized": False,
-            }
-    _write_atomic(path, snapshot)
-    return snapshot
-'''
-          text = text[:start] + run_once + text[end:]
-
-          parser_marker = (
-              '    parser.add_argument("--starting-cash", type=float, default=10_000.0)\n'
-              '    parser.add_argument("--verify-journal", type=Path)\n'
-          )
-          parser_replacement = (
-              '    parser.add_argument("--starting-cash", type=float, default=10_000.0)\n'
-              '    parser.add_argument("--ab-snapshot", type=Path)\n'
-              '    parser.add_argument("--ab-journal", type=Path)\n'
-              '    parser.add_argument("--no-ab", action="store_true")\n'
-              '    parser.add_argument("--verify-journal", type=Path)\n'
-          )
-          assert parser_marker in text
-          text = text.replace(parser_marker, parser_replacement, 1)
-
-          call_marker = '''            snapshot = run_once(
-                args.snapshot,
-                reset_date=args.reset_date,
-                initial_nav_usd=args.starting_cash,
-            )
-'''
-          call_replacement = '''            snapshot = run_once(
-                args.snapshot,
-                reset_date=args.reset_date,
-                initial_nav_usd=args.starting_cash,
-                ab_snapshot_path=args.ab_snapshot,
-                ab_journal_path=args.ab_journal,
-                enable_ab=not args.no_ab,
-            )
-'''
-          assert call_marker in text
-          text = text.replace(call_marker, call_replacement, 1)
-
-          print_marker = (
-              '                        "crisis": bool(snapshot["overlays"]["crisis4h"].get("active")),\n'
-          )
-          print_replacement = print_marker + (
-              '                        "ab_status": (snapshot.get("comparison") or {}).get("status"),\n'
-              '                        "ab_observations": int(\n'
-              '                            (snapshot.get("comparison") or {}).get("forwardObservationDays") or 0\n'
-              '                        ),\n'
-          )
-          assert print_marker in text
-          text = text.replace(print_marker, print_replacement, 1)
-          main_path.write_text(text, encoding='utf-8')
-
-          hub_path = root / 'src/finruntime/observability/strategy_hub.py'
-          hub = hub_path.read_text(encoding='utf-8')
-          hub_marker = '''    journal = persistence.get("journal")
-    journal = journal if isinstance(journal, dict) else {}
-    unavailable = snapshot is None or bool(error) or stale
-'''
-          hub_replacement = '''    journal = persistence.get("journal")
-    journal = journal if isinstance(journal, dict) else {}
-    comparison = source.get("comparison")
-    comparison = comparison if isinstance(comparison, dict) else {}
-    ab_observations = int(_number(comparison.get("forwardObservationDays")))
-    ab_deltas = comparison.get("deltasV2MinusV1")
-    ab_deltas = ab_deltas if isinstance(ab_deltas, dict) else {}
-    unavailable = snapshot is None or bool(error) or stale
-'''
-          assert hub_marker in hub
-          hub = hub.replace(hub_marker, hub_replacement, 1)
-          detail_marker = '''            "journal_valid": journal.get("valid"),
-            "journal_events": journal.get("events"),
-            "upstream_error": error,
-'''
-          detail_replacement = '''            "journal_valid": journal.get("valid"),
-            "journal_events": journal.get("events"),
-            "forward_ab": comparison,
-            "forward_ab_status": comparison.get("status"),
-            "forward_ab_observations": ab_observations,
-            "forward_ab_return_delta": ab_deltas.get("returnSinceReset"),
-            "upstream_error": error,
-'''
-          assert detail_marker in hub
-          hub = hub.replace(detail_marker, detail_replacement, 1)
-          metrics_marker = '''                _metric("Risk scale", f"{risk_scale:.2f}×"),
-                _metric("Journal", str(journal.get("events") or 0)),
-'''
-          metrics_replacement = '''                _metric("Risk scale", f"{risk_scale:.2f}×"),
-                _metric("A/B forward", f"{ab_observations}/90"),
-                _metric("Journal", str(journal.get("events") or 0)),
-'''
-          assert metrics_marker in hub
-          hub = hub.replace(metrics_marker, metrics_replacement, 1)
-          hub_path.write_text(hub, encoding='utf-8')
-
-          health_path = root / 'scripts/check_paper_stack.py'
-          health = health_path.read_text(encoding='utf-8')
-          health_marker = '''    for key in ("statePath", "journalPath"):
-        value = persistence.get(key)
-        if not isinstance(value, str) or not Path(value).is_file():
-            raise RuntimeError(f"DS-40/180 persistence file is unavailable: {key}")
-'''
-          health_replacement = health_marker + '''    comparison = snapshot.get("comparison")
-    if comparison is not None:
-        if not isinstance(comparison, dict):
-            raise TypeError("DS-40/180 A/B comparison is not an object")
-        for key in (
-            "exchange_submission_available",
-            "live_ready",
-            "real_leverage_authorized",
-        ):
-            if comparison.get(key) is not False:
-                raise RuntimeError(f"DS-40/180 A/B safety flag is invalid: {key}")
-        if comparison.get("status") != "unavailable":
-            quality = comparison.get("quality")
-            if not isinstance(quality, dict) or quality.get("matched") is not True:
-                raise RuntimeError("DS-40/180 A/B arms are not matched")
-            ab_persistence = comparison.get("persistence")
-            ab_persistence = (
-                ab_persistence if isinstance(ab_persistence, dict) else {}
-            )
-            ab_journal = ab_persistence.get("journal")
-            if not isinstance(ab_journal, dict) or ab_journal.get("valid") is not True:
-                raise RuntimeError("DS-40/180 A/B journal is invalid")
-            if int(ab_journal.get("events") or 0) < 1:
-                raise RuntimeError("DS-40/180 A/B journal is empty")
-            for key in ("snapshotPath", "journalPath"):
-                value = ab_persistence.get(key)
-                if not isinstance(value, str) or not Path(value).is_file():
-                    raise RuntimeError(
-                        f"DS-40/180 A/B persistence file is unavailable: {key}"
-                    )
-'''
-          assert health_marker in health
-          health = health.replace(health_marker, health_replacement, 1)
-          health_path.write_text(health, encoding='utf-8')
-
-          config_path = root / 'config/strategies/ds40180_t50c3_okx_paper.json'
-          config = json.loads(config_path.read_text(encoding='utf-8'))
-          config['observability'] = {
-              'forward_ab': {
-                  'enabled': True,
-                  'study_id': 'ds40180_v1_v2_forward_ab',
-                  'legacy_reference_version': 'okx-paper-v1',
-                  'legacy_source_commit': source_commit,
-                  'minimum_review_days': 30,
-                  'intermediate_review_days': 60,
-                  'preferred_review_days': 90,
-                  'automatic_winner_promotion': False,
-              }
-          }
-          config_path.write_text(
-              json.dumps(config, ensure_ascii=False, indent=2) + '\n',
-              encoding='utf-8',
-          )
-
-          docs_path = root / 'docs/DS40180_T50C3_PAPER_RU.md'
-          docs = docs_path.read_text(encoding='utf-8')
-          section = '''
-
-## Forward A/B: v1 reference против v2
-
-Каждый цикл v2 теперь параллельно пересчитывает **read-only** эталон старой
-`okx-paper-v1` логики из закреплённого commit
-`cb942798acdd0f27867b923476dc9b50eb67984f`. Эталон не регистрируется как
-активная стратегия и не может влиять на позиции v2.
-
-Файлы наблюдения:
-
-```text
-/data/runtime/ds40180_t50c3_ab_snapshot.json
-/data/runtime/ds40180_t50c3_ab_events.jsonl
-```
-
-A/B journal добавляет не более одной пары на закрытый рыночный день. Повторные
-внутридневные циклы обновляют snapshot, но не увеличивают число forward-дней.
-Сравнение фиксирует NAV, return, maximum drawdown, realized volatility,
-downside volatility, turnover, trading costs, funding и число исполнений.
-
-Окна проверки:
-
-- 30 forward-дней — первичный review;
-- 60 дней — промежуточный review;
-- 90 дней — предпочтительное окно решения.
-
-Даже после 90 дней победитель автоматически не назначается: snapshot только
-помечает исследование как `eligible_for_decision`, после чего требуется ручной
-разбор качества данных, риска и исполнения.
-'''
-          if '## Forward A/B: v1 reference против v2' not in docs:
-              docs += section
-          docs_path.write_text(docs, encoding='utf-8')
-          PY
+          python scripts/apply_ds40180_ab.py
 
       - name: Validate complete repository
         run: |
@@ -375,7 +54,7 @@ downside volatility, turnover, trading costs, funding и число исполн
           python scripts/verify_runtime.py --full
           python -m finruntime.strategies.ds40180_t50c3_paper --help | grep -F -- '--ab-snapshot'
 
-      - name: Commit implementation
+      - name: Commit integrated source
         run: |
           set -euxo pipefail
           find . -type d -name '__pycache__' -prune -exec rm -rf {} +
@@ -383,14 +62,15 @@ downside volatility, turnover, trading costs, funding и число исполн
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
-            src/finruntime/strategies/_ds40180_v1_reference.py \
-            src/finruntime/strategies/_ds40180_ab.py \
             src/finruntime/strategies/ds40180_t50c3_paper.py \
             src/finruntime/observability/strategy_hub.py \
-            tests/runtime/test_ds40180_ab.py \
             scripts/check_paper_stack.py \
             config/strategies/ds40180_t50c3_okx_paper.json \
             docs/DS40180_T50C3_PAPER_RU.md
-          git diff --cached --stat
-          git commit -m 'Add DS-40/180 forward A-B observatory'
-          git push origin HEAD:agent/ds40180-forward-ab
+          if git diff --cached --quiet; then
+            echo 'DS-40/180 A-B source is already integrated'
+          else
+            git diff --cached --stat
+            git commit -m 'Integrate DS-40/180 forward A-B observatory'
+            git push origin HEAD:agent/ds40180-forward-ab
+          fi
