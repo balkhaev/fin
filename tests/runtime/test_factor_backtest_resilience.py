@@ -56,6 +56,12 @@ class FactorBacktestResilienceTests(unittest.TestCase):
         self.assertEqual(audit.request_count, 0)
         self.assertEqual(len(audit.payload_sha256), 64)
 
+    def test_missing_funding_history_is_rejected(self) -> None:
+        with self.assertRaises(DataUnavailableError):
+            subject._require_funding_coverage(
+                "DOT funding", [], date(2026, 7, 1), date(2026, 7, 31)
+            )
+
     def test_incomplete_coverage_is_rejected(self) -> None:
         rows = [
             {

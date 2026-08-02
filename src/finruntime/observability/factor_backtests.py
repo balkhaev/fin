@@ -651,6 +651,26 @@ def _require_kline_coverage(
         )
 
 
+def _require_funding_coverage(
+    name: str,
+    rows: list[dict[str, str]],
+    start: date,
+    end: date,
+) -> None:
+    if not rows:
+        raise DataUnavailableError(f"{name} returned no usable funding history")
+    observed = sorted(
+        datetime.fromtimestamp(int(row["calc_time"]) / 1000, UTC).date()
+        for row in rows
+    )
+    if observed[0] > start + timedelta(days=1) or observed[-1] < end:
+        raise DataUnavailableError(
+            f"{name} coverage is incomplete: "
+            f"{observed[0].isoformat()}..{observed[-1].isoformat()}, "
+            f"required {start.isoformat()}..{end.isoformat()}"
+        )
+
+
 def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
     """Replay current WIF/DOT rules from Binance's official public archives."""
 
@@ -676,6 +696,8 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
     _require_kline_coverage("WIF klines", wif_rows, warmup_start, end)
     _require_kline_coverage("WIF premium", premium_rows, warmup_start, end)
     _require_kline_coverage("DOT klines", dot_rows, warmup_start, end)
+    dot_funding_rows = archive_rows.get("dot_funding", [])
+    _require_funding_coverage("DOT funding", dot_funding_rows, start, end)
     preliminary = _preliminary_wif_signals(wif_rows, premium_rows)
 
     metric_dates: set[date] = set()
@@ -709,7 +731,7 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
         )
         if math.isfinite(oi_z) and oi_z <= -1 and strength >= 3.5:
             wif_signals.append({**signal, "oi_z": oi_z, "strength": strength})
-    dot_signals = _dot_signals(archive_rows.get("dot_funding", []), dot_rows)
+    dot_signals = _dot_signals(dot_funding_rows, dot_rows)
     signals = sorted(
         [*wif_signals, *dot_signals], key=lambda item: int(item["entry_time_ms"])
     )
