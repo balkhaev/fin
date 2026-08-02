@@ -12,6 +12,7 @@ import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
 
+from finruntime.observability.errors import DataUnavailableError
 from finruntime.observability.server import create_server
 from finruntime.operations.cycle import TELEMETRY_FIELDS
 
@@ -192,9 +193,12 @@ class ControlRoomServerTests(unittest.TestCase):
             encoding="utf-8",
         )
         self.backtest_calls: list[str] = []
+        self.backtest_error: Exception | None = None
 
         def run_backtest(strategy_id: str) -> dict[str, object]:
             self.backtest_calls.append(strategy_id)
+            if self.backtest_error is not None:
+                raise self.backtest_error
             return {
                 "schema_version": 1,
                 "strategy_id": strategy_id,
@@ -314,6 +318,18 @@ class ControlRoomServerTests(unittest.TestCase):
         self.assertEqual(
             json.loads(captured.exception.read())["error"], "settings_not_allowed"
         )
+
+    def test_backtest_data_outage_returns_retryable_503(self) -> None:
+        self.backtest_error = DataUnavailableError("public archive unavailable")
+        request = urllib.request.Request(
+            self.base + "/api/v1/backtests/consensus-wif-dot", method="POST"
+        )
+        with self.assertRaises(urllib.error.HTTPError) as captured:
+            urllib.request.urlopen(request, timeout=5)
+        self.assertEqual(captured.exception.code, 503)
+        body = json.loads(captured.exception.read())
+        self.assertEqual(body["error"], "data_unavailable")
+        self.assertTrue(body["retryable"])
 
     def test_backtest_post_has_a_global_single_flight_guard(self) -> None:
         self.server.backtest_lock.acquire()

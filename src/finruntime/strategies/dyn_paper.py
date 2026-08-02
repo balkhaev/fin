@@ -10,6 +10,7 @@ import statistics
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
@@ -49,6 +50,57 @@ MARKET_SYMBOLS = (
     "ZECUSDT",
 )
 ASSETS = tuple(symbol.removesuffix("USDT") for symbol in MARKET_SYMBOLS)
+
+
+@dataclass(frozen=True, slots=True)
+class DynProfile:
+    name: str
+    strategy_id: str
+    label: str
+    target_volatility: float
+    maximum_gross: float
+    asset_cap: float
+    target_deadband: float = 0.0
+    mode: str = "shadow"
+
+
+DYN_PROFILES = {
+    "baseline": DynProfile(
+        name="baseline",
+        strategy_id=STRATEGY_ID,
+        label="DYN-IV113",
+        target_volatility=TARGET_VOLATILITY,
+        maximum_gross=MAXIMUM_GROSS,
+        asset_cap=ASSET_CAP,
+        mode="paper",
+    ),
+    "risk50": DynProfile(
+        name="risk50",
+        strategy_id="DYN-IV113-RISK50",
+        label="DYN-IV113 · target vol 50%",
+        target_volatility=0.50,
+        maximum_gross=MAXIMUM_GROSS,
+        asset_cap=ASSET_CAP,
+    ),
+    "band2": DynProfile(
+        name="band2",
+        strategy_id="DYN-IV113-BAND2",
+        label="DYN-IV113 · target deadband 2%",
+        target_volatility=TARGET_VOLATILITY,
+        maximum_gross=MAXIMUM_GROSS,
+        asset_cap=ASSET_CAP,
+        target_deadband=0.02,
+    ),
+}
+
+
+def get_profile(profile: str | DynProfile = "baseline") -> DynProfile:
+    if isinstance(profile, DynProfile):
+        return profile
+    try:
+        return DYN_PROFILES[profile]
+    except KeyError as error:
+        raise ValueError(f"unknown DYN profile: {profile}") from error
 
 
 def _clamp(value: float, minimum: float, maximum: float) -> float:
@@ -346,7 +398,12 @@ def load_asset_histories() -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
 
 
 def build_engine(
-    histories: list[dict[str, Any]], failed_symbols: list[dict[str, str]]
+    histories: list[dict[str, Any]],
+    failed_symbols: list[dict[str, str]],
+    *,
+    target_volatility: float = TARGET_VOLATILITY,
+    maximum_gross: float = MAXIMUM_GROSS,
+    asset_cap: float = ASSET_CAP,
 ) -> dict[str, Any]:
     history_by_asset = {history["asset"]: history for history in histories}
     assets = [asset for asset in ASSETS if asset in history_by_asset]
@@ -609,14 +666,14 @@ def build_engine(
             realized_volatility[date_index - 1] if date_index > 0 else None
         )
         leverage.append(
-            _clamp(TARGET_VOLATILITY / previous_volatility, 0, MAXIMUM_GROSS)
+            _clamp(target_volatility / previous_volatility, 0, maximum_gross)
             if previous_volatility
             and previous_volatility > 0
             and _row_gross(base_target) > 0
             else 0.0
         )
     target = [
-        [_clamp(weight * leverage[index], -ASSET_CAP, ASSET_CAP) for weight in row]
+        [_clamp(weight * leverage[index], -asset_cap, asset_cap) for weight in row]
         for index, row in enumerate(base_targets)
     ]
     return {
@@ -633,6 +690,56 @@ def build_engine(
         "returns": returns,
         "target": target,
     }
+
+
+def _apply_target_deadband(
+    targets: list[list[float]], threshold: float
+) -> list[list[float]]:
+    if threshold <= 0 or not targets:
+        return [list(row) for row in targets]
+    held = _zero_row(len(targets[0]))
+    output: list[list[float]] = []
+    for row in targets:
+        next_row: list[float] = []
+        for old, new in zip(held, row, strict=True):
+            sign_flip = old * new < -EPSILON
+            exit_required = abs(old) > EPSILON and abs(new) <= EPSILON
+            if sign_flip or exit_required or abs(new - old) >= threshold:
+                next_row.append(float(new))
+            else:
+                next_row.append(float(old))
+        held = next_row
+        output.append(list(held))
+    return output
+
+
+def build_profile_engine(
+    histories: list[dict[str, Any]],
+    failed_symbols: list[dict[str, str]],
+    profile: str | DynProfile = "baseline",
+) -> dict[str, Any]:
+    config = get_profile(profile)
+    engine = build_engine(
+        histories,
+        failed_symbols,
+        target_volatility=config.target_volatility,
+        maximum_gross=config.maximum_gross,
+        asset_cap=config.asset_cap,
+    )
+    engine["target"] = _apply_target_deadband(
+        engine["target"], config.target_deadband
+    )
+    engine["profile"] = {
+        "name": config.name,
+        "strategyId": config.strategy_id,
+        "label": config.label,
+        "mode": config.mode,
+        "targetVolatility": config.target_volatility,
+        "maximumGross": config.maximum_gross,
+        "assetCap": config.asset_cap,
+        "targetDeadband": config.target_deadband,
+    }
+    return engine
 
 
 def _elapsed_days(previous: str, current: str) -> int:
@@ -877,14 +984,16 @@ def compute_forward_state(
     *,
     reset_date: str = SNAPSHOT_DATE,
     initial_nav_usd: float = 10_000.0,
+    profile: str | DynProfile = "baseline",
 ) -> dict[str, Any]:
     generated_at = _utc_now()
+    profile_config = get_profile(profile)
     if len(histories) < MINIMUM_ASSETS:
         raise ValueError(
             f"Only {len(histories)} DYN assets returned usable daily history; "
             f"at least {MINIMUM_ASSETS} are required"
         )
-    engine = build_engine(histories, failed_symbols)
+    engine = build_profile_engine(histories, failed_symbols, profile_config)
     latest_index = len(engine["dates"]) - 1
     latest_date = engine["dates"][latest_index]
     continuation = paper_continuation(
@@ -938,6 +1047,8 @@ def compute_forward_state(
         )
     return {
         "schema_version": 1,
+        "mode": profile_config.mode,
+        "profile": engine["profile"],
         "absFamilyWeight": engine["absWeight"][latest_index],
         "asOf": latest_date,
         "borrowedWeight": live_portfolio["borrowedWeight"],
@@ -977,7 +1088,7 @@ def compute_forward_state(
         "positions": live_portfolio["positions"],
         "snapshotDate": SNAPSHOT_DATE,
         "status": "ready",
-        "strategyId": STRATEGY_ID,
+        "strategyId": profile_config.strategy_id,
         "targetGross": target_gross,
         "warnings": [
             f"{failure['symbol']}: {failure['reason']}" for failure in failed_symbols
@@ -1010,13 +1121,20 @@ def _write_atomic(path: Path, value: dict[str, Any]) -> None:
             pass
 
 
-def run_once(path: Path, *, reset_date: str, initial_nav_usd: float) -> dict[str, Any]:
+def run_once(
+    path: Path,
+    *,
+    reset_date: str,
+    initial_nav_usd: float,
+    profile: str | DynProfile = "baseline",
+) -> dict[str, Any]:
     histories, failed_symbols = load_asset_histories()
     snapshot = compute_forward_state(
         histories,
         failed_symbols,
         reset_date=reset_date,
         initial_nav_usd=initial_nav_usd,
+        profile=profile,
     )
     _write_atomic(path, snapshot)
     return snapshot
@@ -1030,6 +1148,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--poll-seconds", type=float, default=60.0)
     parser.add_argument("--reset-date", default=SNAPSHOT_DATE)
     parser.add_argument("--starting-cash", type=float, default=10_000.0)
+    parser.add_argument(
+        "--profile", choices=tuple(DYN_PROFILES), default="baseline"
+    )
     parser.add_argument("--once", action="store_true")
     args = parser.parse_args(argv)
     if args.poll_seconds < 10:
@@ -1041,11 +1162,13 @@ def main(argv: list[str] | None = None) -> int:
                 args.snapshot,
                 reset_date=args.reset_date,
                 initial_nav_usd=args.starting_cash,
+                profile=args.profile,
             )
             print(
                 json.dumps(
                     {
                         "event": "dyn_paper_snapshot",
+                        "profile": args.profile,
                         "status": snapshot["status"],
                         "as_of": snapshot["asOf"],
                         "assets": snapshot["dataAssetCount"],

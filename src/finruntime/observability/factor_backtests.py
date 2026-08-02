@@ -7,6 +7,7 @@ import hashlib
 import io
 import json
 import math
+import os
 import statistics
 import time
 import zipfile
@@ -22,10 +23,21 @@ from urllib.request import Request, urlopen
 
 from finruntime.strategies import consensus_paper
 
+from .errors import DataUnavailableError
+
 INITIAL_NAV_USD = 10_000.0
 BINANCE_ARCHIVE_ROOT = "https://data.binance.vision/data/futures/um"
 BINANCE_FUTURES_API = "https://fapi.binance.com"
-BYBIT_API = "https://api.bybit.com"
+BYBIT_API_BASES = tuple(
+    dict.fromkeys(
+        item.strip().rstrip("/")
+        for item in os.environ.get(
+            "FIN_BYBIT_API_BASES",
+            "https://api.bybit.com,https://api.bytick.com,https://api.bybit.kz",
+        ).split(",")
+        if item.strip()
+    )
+)
 FIFTEEN_MINUTES_MS = 15 * 60 * 1000
 TROPICAL_YEAR_DAYS = 365.2425
 MAX_DOWNLOAD_WORKERS = 16
@@ -45,6 +57,7 @@ class DownloadAudit:
     request_count: int = 0
     byte_count: int = 0
     payload_sha256: str = ""
+    missing_urls: tuple[str, ...] = ()
 
 
 def _month_start(value: date) -> date:
@@ -57,6 +70,14 @@ def _next_month(value: date) -> date:
 
 def _month_end(value: date) -> date:
     return _next_month(value) - timedelta(days=1)
+
+
+def _recent_api_start(start: date, *, today: date | None = None) -> date:
+    """Cover current and previous month while monthly archives may be delayed."""
+
+    current_month = _month_start(today or datetime.now(UTC).date())
+    previous_month = _month_start(current_month - timedelta(days=1))
+    return max(start, previous_month)
 
 
 def _archive_name(kind: str, symbol: str, interval: str | None, token: str) -> str:
@@ -80,13 +101,14 @@ def _archive_specs(
     specs: list[ArchiveSpec] = []
     cursor = _month_start(start)
     current_month = _month_start(datetime.now(UTC).date())
+    previous_month = _month_start(current_month - timedelta(days=1))
     while cursor <= end:
         covered_start = max(start, cursor)
         covered_end = min(end, _month_end(cursor))
-        if cursor >= current_month and kind != "metrics":
-            cursor = _next_month(cursor)
-            continue
-        use_daily = kind == "metrics"
+        # Monthly bundles are published asynchronously. Use immutable daily
+        # archives for the current and immediately preceding month so a replay
+        # never depends on a not-yet-published monthly ZIP or a geo-sensitive API.
+        use_daily = kind == "metrics" or cursor >= previous_month
         if use_daily:
             observed = covered_start
             while observed <= covered_end:
@@ -172,6 +194,7 @@ def _download_archives(
         request_count=len(payloads) + len(missing),
         byte_count=total_bytes,
         payload_sha256=digest.hexdigest(),
+        missing_urls=tuple(sorted(missing)),
     )
     return dict(rows_by_group), audit
 
@@ -611,6 +634,43 @@ def _simulate_consensus(
     )
 
 
+def _require_kline_coverage(
+    name: str,
+    rows: list[dict[str, float | int]],
+    start: date,
+    end: date,
+) -> None:
+    if not rows:
+        raise DataUnavailableError(f"{name} returned no usable klines")
+    first = datetime.fromtimestamp(int(rows[0]["timestamp_ms"]) / 1000, UTC).date()
+    last = datetime.fromtimestamp(int(rows[-1]["close_time_ms"]) / 1000, UTC).date()
+    if first > start + timedelta(days=1) or last < end:
+        raise DataUnavailableError(
+            f"{name} coverage is incomplete: {first.isoformat()}..{last.isoformat()}, "
+            f"required {start.isoformat()}..{end.isoformat()}"
+        )
+
+
+def _require_funding_coverage(
+    name: str,
+    rows: list[dict[str, str]],
+    start: date,
+    end: date,
+) -> None:
+    if not rows:
+        raise DataUnavailableError(f"{name} returned no usable funding history")
+    observed = sorted(
+        datetime.fromtimestamp(int(row["calc_time"]) / 1000, UTC).date()
+        for row in rows
+    )
+    if observed[0] > start + timedelta(days=1) or observed[-1] < end:
+        raise DataUnavailableError(
+            f"{name} coverage is incomplete: "
+            f"{observed[0].isoformat()}..{observed[-1].isoformat()}, "
+            f"required {start.isoformat()}..{end.isoformat()}"
+        )
+
+
 def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
     """Replay current WIF/DOT rules from Binance's official public archives."""
 
@@ -626,26 +686,18 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
     specs.extend(
         _archive_specs("dot_funding", "fundingRate", "DOTUSDT", None, start, end)
     )
-    archive_rows, archive_audit = _download_archives(specs)
+    archive_rows, archive_audit = _download_archives(specs, allow_missing=True)
+    # Recent closed history is intentionally archive-only. Daily bundles make
+    # the replay deterministic and avoid Binance REST geo-policy differences.
     api_audits: list[DownloadAudit] = []
-    current_start = max(warmup_start, _month_start(datetime.now(UTC).date()))
-    if current_start <= end:
-        for group, path, symbol in (
-            ("wif", "/fapi/v1/klines", "WIFUSDT"),
-            ("premium", "/fapi/v1/premiumIndexKlines", "WIFUSDT"),
-            ("dot", "/fapi/v1/klines", "DOTUSDT"),
-        ):
-            api_rows, api_audit = _binance_api_klines(path, symbol, current_start, end)
-            archive_rows.setdefault(group, []).extend(api_rows)
-            api_audits.append(api_audit)
-        funding_rows, funding_audit = _binance_api_funding(
-            "DOTUSDT", current_start, end
-        )
-        archive_rows.setdefault("dot_funding", []).extend(funding_rows)
-        api_audits.append(funding_audit)
     wif_rows = _kline_rows(archive_rows.get("wif", []))
     premium_rows = _kline_rows(archive_rows.get("premium", []))
     dot_rows = _kline_rows(archive_rows.get("dot", []))
+    _require_kline_coverage("WIF klines", wif_rows, warmup_start, end)
+    _require_kline_coverage("WIF premium", premium_rows, warmup_start, end)
+    _require_kline_coverage("DOT klines", dot_rows, warmup_start, end)
+    dot_funding_rows = archive_rows.get("dot_funding", [])
+    _require_funding_coverage("DOT funding", dot_funding_rows, start, end)
     preliminary = _preliminary_wif_signals(wif_rows, premium_rows)
 
     metric_dates: set[date] = set()
@@ -665,6 +717,10 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
     oi_by_timestamp = {timestamp: value for timestamp, value in archived_oi_points}
     oi_by_timestamp.update(dict(recent_oi_points))
     oi_points = [(key, oi_by_timestamp[key]) for key in sorted(oi_by_timestamp)]
+    if preliminary and not oi_points:
+        raise DataUnavailableError(
+            "WIF open-interest history is unavailable from both archives and REST"
+        )
     wif_signals: list[dict[str, Any]] = []
     for signal in preliminary:
         oi_z = _oi_change_z(oi_points, int(signal["signal_time_ms"]))
@@ -675,7 +731,7 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
         )
         if math.isfinite(oi_z) and oi_z <= -1 and strength >= 3.5:
             wif_signals.append({**signal, "oi_z": oi_z, "strength": strength})
-    dot_signals = _dot_signals(archive_rows.get("dot_funding", []), dot_rows)
+    dot_signals = _dot_signals(dot_funding_rows, dot_rows)
     signals = sorted(
         [*wif_signals, *dot_signals], key=lambda item: int(item["entry_time_ms"])
     )
@@ -711,6 +767,7 @@ def run_consensus_backtest(start: date, end: date) -> dict[str, Any]:
             + sum(audit.byte_count for audit in api_audits)
         ),
         "diagnostics": {
+            "archive_missing_urls": list(archive_audit.missing_urls),
             "wif_klines": len(wif_rows),
             "wif_premium_klines": len(premium_rows),
             "wif_preliminary_signals": len(preliminary),
@@ -729,6 +786,21 @@ def _fetch_json(url: str, params: dict[str, str], timeout_seconds: float = 30.0)
     )
     with urlopen(request, timeout=timeout_seconds) as response:
         return json.load(response)
+
+
+def _fetch_bybit_json(
+    path: str, params: dict[str, str], timeout_seconds: float = 30.0
+) -> Any:
+    errors: list[str] = []
+    for base in BYBIT_API_BASES:
+        try:
+            return _fetch_json(f"{base}{path}", params, timeout_seconds)
+        except (HTTPError, OSError, ValueError) as error:
+            errors.append(f"{base}: {type(error).__name__}: {error}")
+    raise DataUnavailableError(
+        "Bybit public market data is unavailable across configured endpoints: "
+        + "; ".join(errors)
+    )
 
 
 def _binance_api_klines(
@@ -870,15 +942,20 @@ def _recent_open_interest_points(
     )
     end_time = window_end_ms
     for _batch in range(8):
-        payload = _fetch_json(
-            f"{BINANCE_FUTURES_API}/futures/data/openInterestHist",
-            {
-                "symbol": "WIFUSDT",
-                "period": "5m",
-                "limit": "500",
-                "endTime": str(end_time),
-            },
-        )
+        try:
+            payload = _fetch_json(
+                f"{BINANCE_FUTURES_API}/futures/data/openInterestHist",
+                {
+                    "symbol": "WIFUSDT",
+                    "period": "5m",
+                    "limit": "500",
+                    "endTime": str(end_time),
+                },
+            )
+        except (HTTPError, OSError, RuntimeError, TypeError, ValueError):
+            # The daily metrics archive is canonical. REST only augments the
+            # newest tail and may be geo-blocked on hosted CI runners.
+            break
         if not isinstance(payload, list) or not payload:
             break
         payloads.append(payload)
@@ -922,8 +999,8 @@ def _bybit_funding(
     unique: dict[int, float] = {}
     payloads: list[Any] = []
     while cursor >= start_ms:
-        payload = _fetch_json(
-            f"{BYBIT_API}/v5/market/funding/history",
+        payload = _fetch_bybit_json(
+            "/v5/market/funding/history",
             {
                 "category": "linear",
                 "symbol": symbol,
@@ -982,8 +1059,8 @@ def _bybit_mark_klines(
     unique: dict[int, float] = {}
     payloads: list[Any] = []
     while cursor >= start_ms:
-        payload = _fetch_json(
-            f"{BYBIT_API}/v5/market/mark-price-kline",
+        payload = _fetch_bybit_json(
+            "/v5/market/mark-price-kline",
             {
                 "category": "linear",
                 "symbol": symbol,

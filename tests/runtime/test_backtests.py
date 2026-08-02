@@ -51,6 +51,7 @@ class BacktestReportTests(unittest.TestCase):
                 "consensus-wif-dot",
                 "dyn-iv113",
                 "atlas-nx",
+                "atlas-v517-reference",
             },
         )
 
@@ -128,6 +129,8 @@ class BacktestReportTests(unittest.TestCase):
         self.assertNotEqual(first["execution"]["run_id"], second["execution"]["run_id"])
         self.assertEqual(first["execution"]["status"], "completed")
         self.assertEqual(first["execution"]["trigger"], "user_click")
+        self.assertGreaterEqual(first["execution"]["duration_seconds"], 0.0)
+        self.assertLess(first["execution"]["duration_seconds"], 5.0)
         self.assertEqual(first["report_kind"], "on_demand_backtest")
         self.assertEqual(first["evidence"]["status"], "computed")
         self.assertEqual(first["window"]["start"], "2024-07-29")
@@ -159,7 +162,7 @@ class BacktestReportTests(unittest.TestCase):
             raise AssertionError("Atlas V517 must use its pinned V75 account stream")
 
         report = run_backtest(
-            "atlas-nx",
+            "atlas-v517-reference",
             now=datetime(2026, 7, 30, 12, tzinfo=UTC),
             history_loader=forbidden_loader,
         )
@@ -198,6 +201,33 @@ class BacktestReportTests(unittest.TestCase):
             - report["requested_window_metrics"]["starting_nav_usd"],
             places=6,
         )
+
+    def test_click_atlas_nx_does_not_replay_predecessor_metrics(self) -> None:
+        report = run_backtest(
+            "atlas-nx", now=datetime(2026, 7, 30, 12, tzinfo=UTC)
+        )
+
+        self.assertEqual(report["strategy_identity"], "atlas_nx_r1")
+        self.assertEqual(report["execution"]["status"], "not_available")
+        self.assertIsNone(report["metrics"])
+        self.assertFalse(
+            report["historical_reference"]["belongs_to_active_strategy"]
+        )
+        self.assertLess(report["execution"]["duration_seconds"], 5.0)
+
+    def test_click_run_supports_preregistered_dyn_shadow_profiles(self) -> None:
+        now = datetime(2026, 7, 30, 12, tzinfo=UTC)
+        risk50 = run_backtest(
+            "dyn-iv113-risk50", now=now, history_loader=synthetic_history_loader
+        )
+        band2 = run_backtest(
+            "dyn-iv113-band2", now=now, history_loader=synthetic_history_loader
+        )
+
+        self.assertEqual(risk50["strategy_identity"], "DYN-IV113-RISK50")
+        self.assertEqual(band2["strategy_identity"], "DYN-IV113-BAND2")
+        self.assertEqual(risk50["report_kind"], "on_demand_backtest")
+        self.assertEqual(band2["report_kind"], "on_demand_backtest")
 
     def test_click_run_executes_factor_strategies_without_ohlc_approximation(
         self,

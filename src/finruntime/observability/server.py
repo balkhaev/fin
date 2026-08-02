@@ -22,6 +22,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 from .backtest_runner import run_backtest
 from .backtests import backtest_report
 from .control_room import build_runtime_snapshot, snapshot_digest
+from .errors import DataUnavailableError
 from .strategy_hub import StrategyHub, read_consensus_snapshot
 
 WEBSOCKET_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
@@ -653,6 +654,16 @@ class ControlRoomHandler(BaseHTTPRequestHandler):
                 self._send_json(
                     {"error": "unknown_strategy", "strategy_id": strategy_id},
                     status=HTTPStatus.NOT_FOUND,
+                )
+            except DataUnavailableError as error:
+                self.log_error("backtest data unavailable for %s: %s", strategy_id, error)
+                self._send_json(
+                    {
+                        "error": "data_unavailable",
+                        "detail": str(error),
+                        "retryable": True,
+                    },
+                    status=HTTPStatus.SERVICE_UNAVAILABLE,
                 )
             except (OSError, RuntimeError, TypeError, ValueError) as error:
                 self.log_error("backtest failed for %s: %s", strategy_id, error)

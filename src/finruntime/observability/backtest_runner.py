@@ -20,6 +20,7 @@ from uuid import uuid4
 from finruntime.strategies import dyn_paper
 
 from .atlas_v517_backtest import run_atlas_v517_replay
+from .backtests import backtest_report
 from .factor_backtests import run_consensus_backtest, run_funding_backtest
 
 INITIAL_NAV_USD = 10_000.0
@@ -622,12 +623,16 @@ def run_backtest(
         "funding-neutral",
         "consensus-wif-dot",
         "dyn-iv113",
+        "dyn-iv113-risk50",
+        "dyn-iv113-band2",
         "atlas-nx",
+        "atlas-v517-reference",
     }:
         raise KeyError(strategy_id)
-    started = (now or datetime.now(UTC)).astimezone(UTC)
+    started = datetime.now(UTC)
+    window_anchor = (now or started).astimezone(UTC)
     run_id = str(uuid4())
-    window_end = started.date() - timedelta(days=1)
+    window_end = window_anchor.date() - timedelta(days=1)
     window_start = _two_years_before(window_end)
     if strategy_id in {"funding-neutral", "consensus-wif-dot"}:
         replay = factor_runner(strategy_id, window_start, window_end)
@@ -640,15 +645,35 @@ def run_backtest(
             run_id=run_id,
         )
     if strategy_id == "atlas-nx":
+        completed = datetime.now(UTC)
+        report = backtest_report("atlas-nx")
+        report["report_kind"] = "on_demand_unavailable"
+        report["execution"] = {
+            "status": "not_available",
+            "run_id": run_id,
+            "trigger": "user_click",
+            "started_at_utc": _utc_iso(started),
+            "completed_at_utc": _utc_iso(completed),
+            "duration_seconds": round((completed - started).total_seconds(), 3),
+        }
+        return report
+    if strategy_id == "atlas-v517-reference":
         return _atlas_v517_report(
             started=started,
             run_id=run_id,
         )
 
+    dyn_profile_name = {
+        "dyn-iv113": "baseline",
+        "dyn-iv113-risk50": "risk50",
+        "dyn-iv113-band2": "band2",
+    }[strategy_id]
+    profile = dyn_paper.get_profile(dyn_profile_name)
     history_start = window_start - timedelta(days=WARMUP_DAYS)
     strategy_module = dyn_paper
     engine_module = "dyn_paper"
-    strategy_identity = dyn_paper.STRATEGY_ID
+    strategy_identity = profile.strategy_id
+    strategy_name = profile.label
     execution_cost = dyn_paper.EXECUTION_COST
     reset_date = (window_start - timedelta(days=1)).isoformat()
 
@@ -660,7 +685,7 @@ def run_backtest(
             f"Only {len(histories)} of {len(strategy_module.MARKET_SYMBOLS)} "
             "market histories were usable"
         )
-    engine = strategy_module.build_engine(histories, failures)
+    engine = strategy_module.build_profile_engine(histories, failures, profile)
     if window_end.isoformat() not in engine["dates"]:
         raise ValueError("The latest closed UTC day is missing from the market history")
     continuation = strategy_module.paper_continuation(
@@ -688,7 +713,7 @@ def run_backtest(
         "schema_version": 1,
         "strategy_id": strategy_id,
         "strategy_identity": strategy_identity,
-        "strategy_name": strategy_identity,
+        "strategy_name": strategy_name,
         "report_kind": "on_demand_backtest",
         "execution": {
             "status": "completed",
