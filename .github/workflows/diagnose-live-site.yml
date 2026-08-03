@@ -5,6 +5,10 @@ on:
     branches: [agent/diagnose-live-deployment]
     paths:
       - '.github/workflows/diagnose-live-site.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/diagnose-live-site.yml'
   workflow_dispatch:
 
 permissions:
