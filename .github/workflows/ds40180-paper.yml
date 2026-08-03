@@ -2,10 +2,11 @@ name: DS-40/180 T50-C3 v2 paper worker
 
 on:
   push:
-    branches: [main, agent/ds40180-v2-improvements]
+    branches: [main, agent/ds40180-forward-ab]
     paths:
       - 'src/finruntime/strategies/ds40180_t50c3_paper.py'
       - 'src/finruntime/strategies/_ds40180_*.py'
+      - 'src/finruntime/strategies/_ds40180_v1/**'
       - 'src/finruntime/observability/strategy_hub.py'
       - 'src/finruntime/observability/server.py'
       - 'src/finruntime/registry.py'
@@ -13,6 +14,8 @@ on:
       - 'docs/checkpoints/runtime-v1/STRATEGY_REGISTRY.json'
       - 'scripts/check_paper_stack.py'
       - 'tests/runtime/test_ds40180_t50c3_paper.py'
+      - 'tests/runtime/test_ds40180_ab.py'
+      - 'tests/runtime/test_ds40180_v1_closure.py'
       - 'tests/runtime/test_strategy_hub.py'
       - 'docs/DS40180_T50C3_PAPER_RU.md'
       - '.github/workflows/ds40180-paper.yml'
@@ -21,6 +24,7 @@ on:
     paths:
       - 'src/finruntime/strategies/ds40180_t50c3_paper.py'
       - 'src/finruntime/strategies/_ds40180_*.py'
+      - 'src/finruntime/strategies/_ds40180_v1/**'
       - 'src/finruntime/observability/strategy_hub.py'
       - 'src/finruntime/observability/server.py'
       - 'src/finruntime/registry.py'
@@ -28,6 +32,8 @@ on:
       - 'docs/checkpoints/runtime-v1/STRATEGY_REGISTRY.json'
       - 'scripts/check_paper_stack.py'
       - 'tests/runtime/test_ds40180_t50c3_paper.py'
+      - 'tests/runtime/test_ds40180_ab.py'
+      - 'tests/runtime/test_ds40180_v1_closure.py'
       - 'tests/runtime/test_strategy_hub.py'
       - 'docs/DS40180_T50C3_PAPER_RU.md'
       - '.github/workflows/ds40180-paper.yml'
@@ -53,20 +59,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Compile v2 implementation
+      - name: Compile v2 and A-B implementation
         run: |
           python -m compileall -q \
             src/finruntime/strategies/ds40180_t50c3_paper.py \
             src/finruntime/strategies/_ds40180_*.py \
+            src/finruntime/strategies/_ds40180_v1 \
             src/finruntime/observability/strategy_hub.py \
             src/finruntime/observability/server.py \
             scripts/check_paper_stack.py \
             tests/runtime/test_ds40180_t50c3_paper.py \
+            tests/runtime/test_ds40180_ab.py \
+            tests/runtime/test_ds40180_v1_closure.py \
             tests/runtime/test_strategy_hub.py
 
-      - name: Run deterministic strategy and hub tests
+      - name: Run deterministic strategy, A-B and hub tests
         run: |
           python -m unittest discover -s tests/runtime -p 'test_ds40180_t50c3_paper.py' -v
+          python -m unittest discover -s tests/runtime -p 'test_ds40180_ab.py' -v
+          python -m unittest discover -s tests/runtime -p 'test_ds40180_v1_closure.py' -v
           python -m unittest tests.runtime.test_strategy_hub -v
 
       - name: Verify runtime registry contract
@@ -77,9 +88,12 @@ jobs:
           set -euxo pipefail
           python -m finruntime.strategies.ds40180_t50c3_paper --help >/tmp/help.txt
           grep -F -- '--verify-journal' /tmp/help.txt
+          grep -F -- '--ab-snapshot' /tmp/help.txt
+          grep -F -- '--ab-journal' /tmp/help.txt
           ! grep -R -E 'submit_order|create_order|place_order|apiKey|secretKey' \
             src/finruntime/strategies/ds40180_t50c3_paper.py \
-            src/finruntime/strategies/_ds40180_*.py
+            src/finruntime/strategies/_ds40180_*.py \
+            src/finruntime/strategies/_ds40180_v1
           python - <<'PY'
           import json
           from pathlib import Path
@@ -94,11 +108,24 @@ jobs:
           assert config['risk']['paper_gross_cap_absolute'] == 1.50
           assert config['execution']['persistent_append_only_ledger'] is True
           assert config['market']['crisis_bar'] == '4H'
+          ab = config['observability']['forward_ab']
+          assert ab['enabled'] is True
+          assert ab['study_id'] == 'ds40180_v1_v2_forward_ab'
+          assert ab['legacy_reference_version'] == 'okx-paper-v1'
+          assert ab['legacy_source_commit'] == 'cb942798acdd0f27867b923476dc9b50eb67984f'
+          assert ab['legacy_source_blobs'] == {
+              'common': '3e0c9c43f92de98620a3819e162e086766587f36',
+              'signals': '018034baf84e1268c827213b597ba8fda8fb581b',
+              'engine': 'dd573280ddec0e2ae50e33941d4f0154525d4809',
+              'account': '04430d038f11aa4b57efb5f40d694b1cf8987269',
+          }
+          assert ab['preferred_review_days'] == 90
+          assert ab['automatic_winner_promotion'] is False
           PY
 
   okx-public-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 18
     env:
       PYTHONPATH: src
     steps:
@@ -111,12 +138,12 @@ jobs:
         run: |
           set -euxo pipefail
           snapshot="${RUNNER_TEMP}/ds40180-okx-paper.json"
-          timeout 480 python -m finruntime.strategies.ds40180_t50c3_paper \
+          timeout 540 python -m finruntime.strategies.ds40180_t50c3_paper \
             --snapshot "${snapshot}" \
             --reset-date 2026-07-31 \
             --starting-cash 10000 \
             --once
-          timeout 480 python -m finruntime.strategies.ds40180_t50c3_paper \
+          timeout 540 python -m finruntime.strategies.ds40180_t50c3_paper \
             --snapshot "${snapshot}" \
             --reset-date 2026-07-31 \
             --starting-cash 10000 \
@@ -143,6 +170,31 @@ jobs:
           assert Path(snapshot['persistence']['statePath']).is_file()
           assert Path(snapshot['persistence']['journalPath']).is_file()
           assert not any('4h fallback' in warning for warning in snapshot['warnings'])
+
+          comparison = snapshot['comparison']
+          assert comparison['schema_version'] == 1
+          assert comparison['studyId'] == 'ds40180_v1_v2_forward_ab'
+          assert comparison['mode'] == 'paper_observability'
+          assert comparison['status'] == 'collecting'
+          assert comparison['quality']['matched'] is True
+          assert comparison['quality']['v1SourcePinned'] is True
+          assert comparison['quality']['v2Persistent'] is True
+          assert comparison['forwardObservationDays'] == 1
+          assert comparison['minimumReviewDays'] == 30
+          assert comparison['preferredReviewDays'] == 90
+          assert comparison['matchedHistoricalPoints'] >= 1
+          assert comparison['interpretation']['winnerDeclared'] is False
+          assert comparison['arms']['legacyV1Reference']['strategyVersion'] == 'okx-paper-v1'
+          assert comparison['arms']['legacyV1Reference']['sourceCommit'] == 'cb942798acdd0f27867b923476dc9b50eb67984f'
+          assert comparison['arms']['forwardV2']['strategyVersion'] == 'okx-paper-v2'
+          assert comparison['persistence']['journal']['valid'] is True
+          assert comparison['persistence']['journal']['events'] == 1
+          assert Path(comparison['persistence']['snapshotPath']).is_file()
+          assert Path(comparison['persistence']['journalPath']).is_file()
+          assert comparison['exchange_submission_available'] is False
+          assert comparison['live_ready'] is False
+          assert comparison['real_leverage_authorized'] is False
+
           assert snapshot['exchange_submission_available'] is False
           assert snapshot['live_ready'] is False
           assert snapshot['real_leverage_authorized'] is False
@@ -161,16 +213,27 @@ jobs:
               'navUsd': snapshot['paper']['navUsd'],
               'journalEvents': snapshot['persistence']['journal']['events'],
               'warnings': snapshot['warnings'],
+              'forwardAB': {
+                  'status': comparison['status'],
+                  'observations': comparison['forwardObservationDays'],
+                  'matchedHistoricalPoints': comparison['matchedHistoricalPoints'],
+                  'v1': comparison['arms']['legacyV1Reference'],
+                  'v2': comparison['arms']['forwardV2'],
+                  'deltasV2MinusV1': comparison['deltasV2MinusV1'],
+                  'journal': comparison['persistence']['journal'],
+              },
           }, indent=2))
           PY
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ds40180-v2-okx-paper-smoke
+          name: ds40180-v2-forward-ab-okx-smoke
           path: |
             ${{ runner.temp }}/ds40180-okx-paper.json
             ${{ runner.temp }}/ds40180_t50c3_paper_state.json
             ${{ runner.temp }}/ds40180_t50c3_paper_events.jsonl
+            ${{ runner.temp }}/ds40180_t50c3_ab_snapshot.json
+            ${{ runner.temp }}/ds40180_t50c3_ab_events.jsonl
           if-no-files-found: warn
           retention-days: 14

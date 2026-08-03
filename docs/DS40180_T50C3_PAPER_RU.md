@@ -69,3 +69,49 @@ exchange_submission_available = false
 live_ready                    = false
 real_leverage_authorized      = false
 ```
+
+## Forward A/B: v1 reference против v2
+
+Каждый цикл v2 параллельно рассчитывает **read-only** эталон прежней
+`okx-paper-v1` логики на тех же публичных OKX histories. Минимальный dependency
+closure эталона сохранён неизменённым из commit
+`cb942798acdd0f27867b923476dc9b50eb67984f` в каталоге
+`src/finruntime/strategies/_ds40180_v1/`:
+
+```text
+common   3e0c9c43f92de98620a3819e162e086766587f36
+signals  018034baf84e1268c827213b597ba8fda8fb581b
+engine   dd573280ddec0e2ae50e33941d4f0154525d4809
+account  04430d038f11aa4b57efb5f40d694b1cf8987269
+```
+
+Это Git blob SHA-1, а не хэш произвольного текстового экспорта. CI пересчитывает
+Git blob identity каждого файла. Активный `_ds40180_account.py` также обязан
+оставаться байт-в-байт равным frozen v1 account; при его будущем изменении тест
+потребует либо отдельного frozen account adapter, либо явной миграции A/B.
+
+V1 reference не регистрируется как активная стратегия, не имеет отдельного
+капитала, scheduler route или exchange surface и не влияет на позиции v2.
+Прежние лимиты эталона остаются `gross 1.25x` и `asset 30%`.
+
+Файлы наблюдения:
+
+```text
+/data/runtime/ds40180_t50c3_ab_snapshot.json
+/data/runtime/ds40180_t50c3_ab_events.jsonl
+```
+
+A/B journal добавляет не более одной пары на закрытый рыночный день. Повторные
+внутридневные циклы обновляют snapshot, но не увеличивают число forward-дней.
+Сравнение фиксирует NAV, return, maximum drawdown, realized volatility,
+downside volatility, turnover, trading costs, funding и число исполнений.
+
+Окна проверки:
+
+- 30 forward-дней — первичный review;
+- 60 дней — промежуточный review;
+- 90 дней — предпочтительное окно решения.
+
+Даже после 90 дней победитель автоматически не назначается: snapshot только
+помечает исследование как `eligible_for_decision`, после чего требуется ручной
+разбор качества данных, риска и исполнения.

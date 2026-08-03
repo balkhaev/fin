@@ -878,6 +878,11 @@ def _ds40180_strategy(
     persistence = persistence if isinstance(persistence, dict) else {}
     journal = persistence.get("journal")
     journal = journal if isinstance(journal, dict) else {}
+    comparison = source.get("comparison")
+    comparison = comparison if isinstance(comparison, dict) else {}
+    ab_observations = int(_number(comparison.get("forwardObservationDays")))
+    ab_deltas = comparison.get("deltasV2MinusV1")
+    ab_deltas = ab_deltas if isinstance(ab_deltas, dict) else {}
     unavailable = snapshot is None or bool(error) or stale
     status = "degraded" if unavailable else str(source.get("status", "starting"))
     if status == "ready":
@@ -951,6 +956,10 @@ def _ds40180_strategy(
             "crisis_4h": crisis,
             "journal_valid": journal.get("valid"),
             "journal_events": journal.get("events"),
+            "forward_ab": comparison,
+            "forward_ab_status": comparison.get("status"),
+            "forward_ab_observations": ab_observations,
+            "forward_ab_return_delta": ab_deltas.get("returnSinceReset"),
             "upstream_error": error,
             "upstream_stale": stale,
         },
@@ -966,6 +975,7 @@ def _ds40180_strategy(
                 _metric("Target gross", f"{target_gross:.2f}×"),
                 _metric("Dynamic cap", f"{dynamic_cap:.2f}×"),
                 _metric("Risk scale", f"{risk_scale:.2f}×"),
+                _metric("A/B forward", f"{ab_observations}/90"),
                 _metric("Journal", str(journal.get("events") or 0)),
             ],
             "full_description": _full_description("ds40180-t50c3", why_now),
