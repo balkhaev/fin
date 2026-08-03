@@ -1,0 +1,80 @@
+name: Discover FIN production host
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/discover-self-hosted-deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: self-hosted
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Read-only production discovery
+        shell: bash
+        run: |
+          set +e
+          mkdir -p /tmp/fin-deploy-discovery
+          exec > >(tee /tmp/fin-deploy-discovery/discovery.txt) 2>&1
+
+          echo '=== identity ==='
+          date -u --iso-8601=seconds
+          hostname -f || hostname
+          id
+          pwd
+          uname -a
+
+          echo '=== listeners ==='
+          ss -ltnp 2>/dev/null || netstat -ltnp 2>/dev/null || true
+
+          echo '=== relevant processes ==='
+          ps -eo pid,lstart,user,args | grep -E '[f]in-control-room|[r]un_paper_stack|[c]addy|[d]ocker|[p]odman' || true
+
+          echo '=== services ==='
+          systemctl --no-pager --plain --type=service --all 2>/dev/null \
+            | grep -Ei 'fin|caddy|docker|podman' || true
+          systemctl cat fin-control-room 2>/dev/null || true
+          systemctl cat caddy 2>/dev/null || true
+
+          echo '=== containers ==='
+          docker ps --no-trunc --format '{{json .}}' 2>/dev/null || true
+          docker compose ls 2>/dev/null || true
+          podman ps --no-trunc --format json 2>/dev/null || true
+
+          echo '=== candidate repositories ==='
+          find /opt /srv /var/www /home /root -maxdepth 5 -type d -name .git -print 2>/dev/null \
+            | sort -u > /tmp/fin-deploy-discovery/gitdirs.txt
+          while IFS= read -r gitdir; do
+            worktree=${gitdir%/.git}
+            remote=$(git -C "$worktree" remote get-url origin 2>/dev/null)
+            case "$remote" in
+              *balkhaev/fin*)
+                echo "WORKTREE=$worktree"
+                echo "REMOTE=$remote"
+                git -C "$worktree" rev-parse HEAD 2>/dev/null
+                git -C "$worktree" branch --show-current 2>/dev/null
+                git -C "$worktree" status --short --branch 2>/dev/null
+                ;;
+            esac
+          done < /tmp/fin-deploy-discovery/gitdirs.txt
+
+          echo '=== likely configs ==='
+          find /opt /srv /etc/systemd/system /etc/caddy /var/www -maxdepth 4 \
+            \( -iname '*fin*' -o -iname 'Caddyfile' -o -iname 'compose.y*ml' -o -iname 'docker-compose.y*ml' \) \
+            -print 2>/dev/null | sort -u | head -300
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fin-self-hosted-deploy-discovery
+          path: /tmp/fin-deploy-discovery
+          if-no-files-found: warn
+          retention-days: 3
