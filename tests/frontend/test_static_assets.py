@@ -29,11 +29,11 @@ class StaticAssetTests(unittest.TestCase):
             self.assertTrue(path.is_file(), relative)
             self.assertGreater(path.stat().st_size, 100, relative)
 
-    def test_historical_html_remains_accessible(self) -> None:
+    def test_root_entry_opens_realtime_strategy_hub(self) -> None:
         html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-        self.assertIn("<main>", html)
-        self.assertIn("aria-label", html)
-        self.assertIn('id="telemetry-file"', html)
+        self.assertIn("FIN Strategy Hub — realtime entrypoint", html)
+        self.assertIn("./live.html?v=frontend-root-live-20260804", html)
+        self.assertIn("window.location.replace", html)
         self.assertNotIn("http://cdn", html)
         self.assertNotIn("https://cdn", html)
 
@@ -62,6 +62,8 @@ class StaticAssetTests(unittest.TestCase):
         self.assertIn('href="./backtest-profiles.css"', html)
         self.assertIn('id="backtest-trade-eyebrow"', html)
         self.assertIn('id="backtest-trade-title"', html)
+        self.assertIn('id="strategy-ab-panel"', html)
+        self.assertIn('id="strategy-ab-progress"', html)
         self.assertIn("/api/v1/ws", script)
         self.assertIn("renderChart", script)
         self.assertIn("renderChartInspector", script)
@@ -82,6 +84,8 @@ class StaticAssetTests(unittest.TestCase):
         self.assertIn("renderBacktestReport", script)
         self.assertIn("requested_window_metrics", script)
         self.assertIn("account_leverage_episodes", script)
+        self.assertIn("renderForwardAb", script)
+        self.assertIn("strategy?.detail?.forward_ab", script)
         self.assertIn("dyn-iv113-risk50", profile_script)
         self.assertIn("dyn-iv113-band2", profile_script)
         self.assertIn("atlas-v517-reference", profile_script)
