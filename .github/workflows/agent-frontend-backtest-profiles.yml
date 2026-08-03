@@ -39,13 +39,12 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Apply, validate and publish clean frontend diff
+      - name: Apply, validate and publish frontend diff
         shell: bash
         run: |
           set -euxo pipefail
           python scripts/apply_frontend_backtest_profiles.py
           rm scripts/apply_frontend_backtest_profiles.py
-          rm .github/workflows/agent-frontend-backtest-profiles.yml
           git diff --check
           python -m unittest discover -s tests/frontend -p 'test_*.py' -v
           node --check frontend/live.js
