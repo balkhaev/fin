@@ -75,10 +75,12 @@
     const activeId = selectedProfileId(baseStrategyId);
     const active = definitions.find((item) => item.id === activeId) || definitions[0];
     note.textContent = active.detail;
+    const loading = Boolean(backtestButton()?.disabled);
 
     for (const definition of definitions) {
       const button = document.createElement("button");
       button.type = "button";
+      button.disabled = loading;
       button.className = `backtest-profile${definition.id === active.id ? " active" : ""}`;
       button.setAttribute("role", "tab");
       button.setAttribute(
@@ -128,10 +130,10 @@
     if (!url.pathname.startsWith(prefix)) return originalFetch(input, init);
 
     const baseStrategyId = decodeURIComponent(url.pathname.slice(prefix.length));
-    if (!profileDefinitions[baseStrategyId]) return originalFetch(input, init);
-
     currentBaseStrategyId = baseStrategyId;
     renderProfiles(baseStrategyId);
+    if (!profileDefinitions[baseStrategyId]) return originalFetch(input, init);
+
     const requestedId = selectedProfileId(baseStrategyId);
     url.pathname = `${prefix}${encodeURIComponent(requestedId)}`;
     const requestUrl =
