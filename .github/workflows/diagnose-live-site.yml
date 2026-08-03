@@ -1,0 +1,83 @@
+name: Diagnose deployed FIN frontend
+
+on:
+  push:
+    branches: [agent/diagnose-live-deployment]
+    paths:
+      - '.github/workflows/diagnose-live-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe DNS, TLS, frontend and API
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p /tmp/fin-live-probe
+
+          echo '=== repository ==='
+          git rev-parse HEAD
+          sha256sum frontend/index.html frontend/live.html frontend/live.js frontend/live.css || true
+
+          echo '=== DNS ==='
+          command -v dig >/dev/null && {
+            dig +noall +answer fin.balkhaev.com A || true
+            dig +noall +answer fin.balkhaev.com AAAA || true
+            dig +noall +answer fin.balkhaev.com CNAME || true
+          }
+          getent ahosts fin.balkhaev.com || true
+
+          echo '=== TLS ==='
+          timeout 20 openssl s_client -connect fin.balkhaev.com:443 -servername fin.balkhaev.com </dev/null 2>/tmp/fin-live-probe/tls.stderr \
+            | openssl x509 -noout -subject -issuer -dates -fingerprint -sha256 || true
+          cat /tmp/fin-live-probe/tls.stderr || true
+
+          probe() {
+            local name="$1"
+            local url="$2"
+            echo "=== ${name}: ${url} ==="
+            curl --connect-timeout 15 --max-time 45 --compressed -sS \
+              -D "/tmp/fin-live-probe/${name}.headers" \
+              -o "/tmp/fin-live-probe/${name}.body" \
+              "$url" || true
+            cat "/tmp/fin-live-probe/${name}.headers" 2>/dev/null || true
+            echo '-- body sha/size --'
+            sha256sum "/tmp/fin-live-probe/${name}.body" 2>/dev/null || true
+            wc -c "/tmp/fin-live-probe/${name}.body" 2>/dev/null || true
+            echo '-- marker scan --'
+            grep -nE 'strategy-ab-panel|Forward A/B|forward_ab|frontend-root-live|backtest-profiles|FIN Strategy Hub|FIN Control Room' \
+              "/tmp/fin-live-probe/${name}.body" 2>/dev/null | head -80 || true
+            echo '-- first lines --'
+            sed -n '1,30p' "/tmp/fin-live-probe/${name}.body" 2>/dev/null || true
+          }
+
+          probe root https://fin.balkhaev.com/
+          probe live_html https://fin.balkhaev.com/live.html
+          probe live_js https://fin.balkhaev.com/live.js
+          probe live_css https://fin.balkhaev.com/live.css
+          probe health https://fin.balkhaev.com/api/v1/health
+          probe strategies https://fin.balkhaev.com/api/v1/strategies
+
+          echo '=== deployed vs repository sha256 ==='
+          for pair in 'live_html frontend/live.html' 'live_js frontend/live.js' 'live_css frontend/live.css'; do
+            set -- $pair
+            printf '%-12s deployed=' "$1"
+            sha256sum "/tmp/fin-live-probe/$1.body" 2>/dev/null | awk '{print $1}' || true
+            printf '%-12s repo=    ' "$1"
+            sha256sum "$2" 2>/dev/null | awk '{print $1}' || true
+          done
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fin-live-deployment-probe
+          path: /tmp/fin-live-probe
+          if-no-files-found: warn
+          retention-days: 7
