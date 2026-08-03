@@ -17,6 +17,8 @@ class StaticAssetTests(unittest.TestCase):
             "frontend/live.html",
             "frontend/live.css",
             "frontend/live.js",
+            "frontend/backtest-profiles.js",
+            "frontend/backtest-profiles.css",
             "frontend/data/dashboard.json",
             "scripts/run_control_room.py",
             "src/finruntime/observability/control_room.py",
@@ -38,6 +40,8 @@ class StaticAssetTests(unittest.TestCase):
     def test_live_page_uses_realtime_paper_api(self) -> None:
         html = (ROOT / "frontend/live.html").read_text(encoding="utf-8")
         script = (ROOT / "frontend/live.js").read_text(encoding="utf-8")
+        profile_script = (ROOT / "frontend/backtest-profiles.js").read_text(encoding="utf-8")
+        profile_style = (ROOT / "frontend/backtest-profiles.css").read_text(encoding="utf-8")
         self.assertIn('id="candle-chart"', html)
         self.assertIn('id="chart-window-tabs"', html)
         self.assertIn('id="chart-inspector"', html)
@@ -52,6 +56,10 @@ class StaticAssetTests(unittest.TestCase):
         self.assertIn('id="backtest-dialog"', html)
         self.assertIn('aria-labelledby="backtest-dialog-title"', html)
         self.assertIn('id="backtest-trades"', html)
+        self.assertIn('id="backtest-profile-section"', html)
+        self.assertIn('id="backtest-profiles"', html)
+        self.assertIn('src="./backtest-profiles.js"', html)
+        self.assertIn('href="./backtest-profiles.css"', html)
         self.assertIn('id="backtest-trade-eyebrow"', html)
         self.assertIn('id="backtest-trade-title"', html)
         self.assertIn("/api/v1/ws", script)
@@ -74,6 +82,12 @@ class StaticAssetTests(unittest.TestCase):
         self.assertIn("renderBacktestReport", script)
         self.assertIn("requested_window_metrics", script)
         self.assertIn("account_leverage_episodes", script)
+        self.assertIn("dyn-iv113-risk50", profile_script)
+        self.assertIn("dyn-iv113-band2", profile_script)
+        self.assertIn("atlas-v517-reference", profile_script)
+        self.assertIn("window.fetch = async", profile_script)
+        self.assertIn("backtest-profile.active", profile_style)
+        self.assertNotIn("/api/v1/orders", profile_script)
         self.assertNotIn("backtest-settings", html)
         self.assertIn("WebSocket", script)
         self.assertNotIn("EventSource", script)
