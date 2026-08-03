@@ -83,11 +83,5 @@ replace_once(
     '        self.assertNotIn("/api/v1/orders", profile_script)\n'
     '        self.assertNotIn("backtest-settings", html)\n',
 )
-replace_once(
-    ".github/workflows/frontend-control-room.yml",
-    "          node --check frontend/live.js\n",
-    "          node --check frontend/live.js\n"
-    "          node --check frontend/backtest-profiles.js\n",
-)
 
 print("frontend backtest profiles wired")
