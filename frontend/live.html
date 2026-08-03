@@ -118,6 +118,43 @@
           </div>
         </div>
         <div id="strategy-facts" class="strategy-facts"></div>
+        <section
+          id="strategy-ab-panel"
+          class="strategy-ab-panel"
+          aria-labelledby="strategy-ab-title"
+          hidden
+        >
+          <header class="strategy-ab-head">
+            <div>
+              <span class="eyebrow">Forward A/B</span>
+              <h3 id="strategy-ab-title">v2 против frozen v1</h3>
+            </div>
+            <span id="strategy-ab-status" class="strategy-ab-status">—</span>
+          </header>
+          <div
+            id="strategy-ab-progress"
+            class="strategy-ab-progress"
+            role="progressbar"
+            aria-label="Накопление forward A/B наблюдений"
+            aria-valuemin="0"
+            aria-valuemax="90"
+            aria-valuenow="0"
+          >
+            <div class="strategy-ab-progress-track"><i id="strategy-ab-progress-fill"></i></div>
+            <span id="strategy-ab-progress-label">0 / 90 дней</span>
+          </div>
+          <dl class="strategy-ab-metrics">
+            <div><dt>V2 NAV</dt><dd id="strategy-ab-v2-nav">—</dd></div>
+            <div><dt>Frozen V1 NAV</dt><dd id="strategy-ab-v1-nav">—</dd></div>
+            <div><dt>Δ NAV</dt><dd id="strategy-ab-nav-delta">—</dd></div>
+            <div><dt>Δ доходности</dt><dd id="strategy-ab-return-delta">—</dd></div>
+            <div><dt>Δ просадки</dt><dd id="strategy-ab-drawdown-delta">—</dd></div>
+            <div><dt>Δ turnover</dt><dd id="strategy-ab-turnover-delta">—</dd></div>
+            <div><dt>Δ funding</dt><dd id="strategy-ab-funding-delta">—</dd></div>
+            <div><dt>Gross v2 / v1</dt><dd id="strategy-ab-gross">—</dd></div>
+          </dl>
+          <p id="strategy-ab-note" class="strategy-ab-note">Победитель автоматически не назначается.</p>
+        </section>
         <div id="position-body" class="position-body"></div>
       </aside>
     </section>
