@@ -1,0 +1,63 @@
+name: Apply realtime frontend root entry
+
+on:
+  push:
+    branches: [agent/frontend-root-live-entry]
+    paths:
+      - 'scripts/apply_frontend_root_live.py'
+      - '.github/workflows/apply-frontend-root-live.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-frontend-root-live-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apply-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/frontend-root-live-entry
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Apply root entry and asset cache busting
+        run: python scripts/apply_frontend_root_live.py
+
+      - name: Validate frontend and runtime contracts
+        run: |
+          set -euxo pipefail
+          node --check frontend/live.js
+          python -m unittest discover -s tests/frontend -p 'test_*.py' -v
+          python scripts/verify_runtime.py --full
+          grep -F 'FIN Strategy Hub — realtime entrypoint' frontend/index.html
+          grep -F 'frontend-root-live-20260804' frontend/live.html
+          grep -F 'id="strategy-ab-panel"' frontend/live.html
+
+      - name: Commit generated frontend entrypoint
+        run: |
+          set -euxo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            frontend/index.html \
+            frontend/archive.html \
+            frontend/live.html \
+            tests/frontend/test_frontend_root_entry.py
+          if git diff --cached --quiet; then
+            echo 'frontend root entry is already current'
+          else
+            git diff --cached --stat
+            git commit -m 'Make realtime Strategy Hub the frontend root'
+            git push origin HEAD:agent/frontend-root-live-entry
+          fi
