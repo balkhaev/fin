@@ -489,6 +489,129 @@
     container.append(chart, meta);
   };
 
+  const forwardAbStatusMeta = (value) => {
+    const states = {
+      collecting: ["Сбор данных", "collecting"],
+      initial_review: ["Первичный review", "review"],
+      intermediate_review: ["Промежуточный review", "review"],
+      eligible_for_decision: ["Готово к разбору", "ready"],
+      invalid_pair: ["Пара не совпала", "error"],
+      unavailable: ["Нет данных", "error"],
+    };
+    return states[value] || [String(value || "Нет данных"), "error"];
+  };
+
+  const formatSignedBps = (value) => {
+    const numeric = asNumber(value, Number.NaN);
+    if (!Number.isFinite(numeric)) return "—";
+    const bps = numeric * 10_000;
+    return `${bps > 0 ? "+" : ""}${formatNumber(bps, 2)} bps`;
+  };
+
+  const formatSignedMultiple = (value) => {
+    const numeric = asNumber(value, Number.NaN);
+    if (!Number.isFinite(numeric)) return "—";
+    return `${numeric > 0 ? "+" : ""}${formatNumber(numeric, 3)}×`;
+  };
+
+  const setForwardAbMetric = (selector, value, className = "") => {
+    const element = $(selector);
+    element.textContent = value;
+    element.className = className;
+  };
+
+  const renderForwardAb = (strategy) => {
+    const panel = $("#strategy-ab-panel");
+    const comparison = strategy?.detail?.forward_ab;
+    const available =
+      strategy?.id === "ds40180-t50c3" &&
+      comparison &&
+      typeof comparison === "object";
+    panel.hidden = !available;
+    if (!available) return;
+
+    const statusValue = String(comparison.status || "unavailable");
+    const [statusLabel, statusClass] = forwardAbStatusMeta(statusValue);
+    const status = $("#strategy-ab-status");
+    status.textContent = statusLabel;
+    status.className = `strategy-ab-status ${statusClass}`;
+
+    const observations = Math.max(
+      0,
+      Math.round(asNumber(comparison.forwardObservationDays)),
+    );
+    const preferredDays = Math.max(
+      1,
+      Math.round(asNumber(comparison.preferredReviewDays, 90)),
+    );
+    const progressValue = Math.min(observations, preferredDays);
+    const progressPercent = Math.min(100, (observations / preferredDays) * 100);
+    const progress = $("#strategy-ab-progress");
+    progress.setAttribute("aria-valuemax", String(preferredDays));
+    progress.setAttribute("aria-valuenow", String(progressValue));
+    $("#strategy-ab-progress-fill").style.width = `${progressPercent}%`;
+    $("#strategy-ab-progress-label").textContent = `${observations} / ${preferredDays} дней`;
+
+    const arms = comparison.arms || {};
+    const v1 = arms.legacyV1Reference || {};
+    const v2 = arms.forwardV2 || {};
+    const deltas = comparison.deltasV2MinusV1 || {};
+    const navDelta = asNumber(deltas.navUsd, Number.NaN);
+    const returnDelta = asNumber(deltas.returnSinceReset, Number.NaN);
+    const drawdownDelta = asNumber(deltas.maximumDrawdown, Number.NaN);
+    const turnoverDelta = asNumber(deltas.turnoverToNav, Number.NaN);
+    const fundingDelta = asNumber(deltas.fundingPnlUsd, Number.NaN);
+
+    setForwardAbMetric("#strategy-ab-v2-nav", formatUsd(v2.navUsd));
+    setForwardAbMetric("#strategy-ab-v1-nav", formatUsd(v1.navUsd));
+    setForwardAbMetric(
+      "#strategy-ab-nav-delta",
+      formatUsd(navDelta, true),
+      tone(navDelta),
+    );
+    setForwardAbMetric(
+      "#strategy-ab-return-delta",
+      formatSignedBps(returnDelta),
+      tone(returnDelta),
+    );
+    setForwardAbMetric(
+      "#strategy-ab-drawdown-delta",
+      formatSignedBps(drawdownDelta),
+      tone(drawdownDelta),
+    );
+    setForwardAbMetric(
+      "#strategy-ab-turnover-delta",
+      formatSignedMultiple(turnoverDelta),
+      tone(-turnoverDelta),
+    );
+    setForwardAbMetric(
+      "#strategy-ab-funding-delta",
+      formatUsd(fundingDelta, true),
+      tone(fundingDelta),
+    );
+    setForwardAbMetric(
+      "#strategy-ab-gross",
+      `${formatNumber(v2.targetGross, 3)}× / ${formatNumber(v1.targetGross, 3)}×`,
+    );
+
+    const matched = comparison.quality?.matched === true;
+    const initialDays = Math.max(
+      1,
+      Math.round(asNumber(comparison.minimumReviewDays, 30)),
+    );
+    let note;
+    if (!matched) {
+      note = "Наблюдение исключено: даты, reset или стартовый капитал двух arms не совпали.";
+    } else if (statusValue === "eligible_for_decision") {
+      note = "Предпочтительное окно накоплено. Победитель не назначается автоматически — нужен ручной разбор риска и исполнения.";
+    } else if (observations >= initialDays) {
+      note = `Первичный review доступен; до предпочтительного окна осталось ${Math.max(0, preferredDays - observations)} дней.`;
+    } else {
+      note = `До первичного review осталось ${Math.max(0, initialDays - observations)} дней. Победитель автоматически не назначается.`;
+    }
+    $("#strategy-ab-note").textContent = note;
+  };
+
   const renderSelected = () => {
     const strategy = selectedStrategy();
     if (!strategy) return;
@@ -522,6 +645,8 @@
       fact.append(create("span", "", label), create("strong", "", value));
       facts.append(fact);
     }
+
+    renderForwardAb(strategy);
 
     const body = $("#position-body");
     body.replaceChildren();
