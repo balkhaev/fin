@@ -1,0 +1,66 @@
+name: Apply DS-40/180 frontend A-B panel
+
+on:
+  push:
+    branches: [agent/ds40180-frontend-ab-panel]
+    paths:
+      - 'scripts/apply_ds40180_frontend_ab.py'
+      - '.github/workflows/apply-ds40180-frontend-ab.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-ds40180-frontend-ab-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apply-test-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ds40180-frontend-ab-panel
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Apply first-class A-B panel
+        run: |
+          set -euxo pipefail
+          python scripts/apply_ds40180_frontend_ab.py
+
+      - name: Validate frontend and Strategy Hub contract
+        run: |
+          set -euxo pipefail
+          node --check frontend/live.js
+          python -m unittest discover -s tests/frontend -v
+          python -m unittest tests.runtime.test_strategy_hub -v
+          python scripts/verify_runtime.py --full
+          grep -F 'id="strategy-ab-panel"' frontend/live.html
+          grep -F 'strategy?.detail?.forward_ab' frontend/live.js
+          grep -F '.strategy-ab-progress-track i' frontend/live.css
+
+      - name: Commit integrated frontend
+        run: |
+          set -euxo pipefail
+          find . -type d -name '__pycache__' -prune -exec rm -rf {} +
+          find . -type f -name '*.pyc' -delete
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            frontend/live.html \
+            frontend/live.js \
+            frontend/live.css \
+            tests/frontend/test_ds40180_ab_panel.py
+          git diff --cached --stat
+          git commit -m 'Show DS-40/180 forward A-B on frontend'
+          git push origin HEAD:agent/ds40180-frontend-ab-panel
