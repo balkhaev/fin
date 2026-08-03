@@ -38,6 +38,12 @@
   background: rgba(66, 214, 155, 0.09);
 }
 
+.backtest-profile:disabled {
+  cursor: progress;
+  opacity: 0.58;
+  transform: none;
+}
+
 .backtest-profile strong {
   font-size: 12px;
 }
