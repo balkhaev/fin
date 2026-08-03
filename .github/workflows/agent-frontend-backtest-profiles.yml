@@ -8,6 +8,13 @@ on:
       - 'frontend/backtest-profiles.css'
       - 'scripts/apply_frontend_backtest_profiles.py'
       - '.github/workflows/agent-frontend-backtest-profiles.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/backtest-profiles.js'
+      - 'frontend/backtest-profiles.css'
+      - 'scripts/apply_frontend_backtest_profiles.py'
+      - '.github/workflows/agent-frontend-backtest-profiles.yml'
   workflow_dispatch:
 
 permissions:
