@@ -1,0 +1,37 @@
+.h4-research-widget {
+  position: relative;
+  overflow: hidden;
+  margin: 0 0 22px;
+  padding: 20px;
+  border: 1px solid rgba(102, 242, 177, .22);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(142, 216, 255, .11), transparent 24rem),
+    linear-gradient(135deg, rgba(16, 39, 31, .98), rgba(10, 22, 19, .98));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+}
+.h4-widget-loading { color: #8fa69d; font-size: 13px; }
+.h4-widget-head { display: flex; align-items: start; justify-content: space-between; gap: 18px; }
+.h4-widget-kicker { color: #66f2b1; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.h4-widget-title { margin: 5px 0 7px; font-size: clamp(22px, 3vw, 32px); letter-spacing: -.035em; }
+.h4-widget-copy { margin: 0; color: #8fa69d; font-size: 13px; line-height: 1.5; max-width: 720px; }
+.h4-widget-link {
+  flex: none; display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px;
+  border: 1px solid rgba(102, 242, 177, .3); border-radius: 999px;
+  color: #66f2b1; text-decoration: none; font-size: 12px; font-weight: 700;
+  background: rgba(102, 242, 177, .06);
+}
+.h4-widget-link:hover { background: rgba(102, 242, 177, .12); }
+.h4-widget-metrics { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 9px; margin-top: 17px; }
+.h4-widget-metric { padding: 12px; border: 1px solid rgba(180, 255, 220, .1); border-radius: 13px; background: rgba(255,255,255,.025); }
+.h4-widget-metric span { display: block; color: #8fa69d; font-size: 10px; }
+.h4-widget-metric strong { display: block; margin-top: 8px; color: #edf8f3; font-size: 20px; letter-spacing: -.02em; }
+.h4-widget-metric.primary strong { color: #66f2b1; }
+.h4-widget-foot { display: flex; justify-content: space-between; gap: 14px; margin-top: 13px; color: #8fa69d; font-size: 10px; }
+@media (max-width: 1000px) { .h4-widget-metrics { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 650px) {
+  .h4-widget-head { display: block; }
+  .h4-widget-link { margin-top: 14px; }
+  .h4-widget-metrics { grid-template-columns: 1fr 1fr; }
+  .h4-widget-foot { display: grid; }
+}
