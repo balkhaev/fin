@@ -19,7 +19,9 @@ class H4ResearchFrontendTests(unittest.TestCase):
             "h4.js",
             "h4-widget.css",
             "h4-widget.js",
-            "data/h4-cagr50.json",
+            "data/h4-summary.json",
+            "data/h4-trades-1.json",
+            "data/h4-trades-2.json",
         ):
             self.assertTrue((FRONTEND / name).is_file(), name)
 
@@ -33,7 +35,7 @@ class H4ResearchFrontendTests(unittest.TestCase):
 
     def test_h4_evidence_passes_committed_contract(self) -> None:
         payload = json.loads(
-            (FRONTEND / "data" / "h4-cagr50.json").read_text(encoding="utf-8")
+            (FRONTEND / "data" / "h4-summary.json").read_text(encoding="utf-8")
         )
         columns = payload["scenario_columns"]
         severe_row = next(item for item in payload["scenarios"] if item[0] == "severe")
@@ -45,7 +47,12 @@ class H4ResearchFrontendTests(unittest.TestCase):
         self.assertGreater(severe["profit_factor"], 1.0)
         self.assertEqual(severe["opened_sleeves"], 120)
         self.assertAlmostEqual(severe["independent_entries_per_day"], 120 / 365, places=6)
-        self.assertEqual(len(payload["trades"]), 120)
+        trades = []
+        for name in ("h4-trades-1.json", "h4-trades-2.json"):
+            part = json.loads((FRONTEND / "data" / name).read_text(encoding="utf-8"))
+            self.assertEqual(part["v"], 1)
+            trades.extend(part["trades"])
+        self.assertEqual(len(trades), 120)
         self.assertEqual(len(payload["curves"]["severe"]), 53)
 
     def test_strategy_hub_profile_script_mounts_h4_widget(self) -> None:
