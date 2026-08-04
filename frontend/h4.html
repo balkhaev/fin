@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07120f">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="FIN H4 CAGR50 — research OOS dashboard, paper only.">
+  <title>H4 CAGR50 · FIN Research</title>
+  <link rel="stylesheet" href="./h4.css">
+  <script src="./h4.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./live.html" aria-label="Вернуться в FIN Strategy Hub">
+      <span class="brand-mark">F</span>
+      <span><strong>FIN</strong><small>H4 RESEARCH</small></span>
+    </a>
+    <div class="topbar-actions">
+      <span class="badge">RESEARCH · PAPER ONLY</span>
+      <a class="ghost-link" href="./live.html">← Strategy Hub</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">BTCUSDT · Binance USD-M · 1h</p>
+        <h1 id="page-title">H4 CAGR50 Frequency</h1>
+        <p class="hero-copy">Frozen research-профиль с top‑1 router, high-confidence core и tiny-risk satellite. Биржевые ордера отключены.</p>
+      </div>
+      <div class="hero-status">
+        <span id="data-status" class="status loading"><i></i>Загрузка evidence</span>
+        <small id="generated-at">—</small>
+      </div>
+    </section>
+
+    <section class="warning" role="note">
+      <strong>Не live-ready.</strong>
+      <span>2025 уже изучался в прошлых циклах проекта: это research OOS, не pristine holdout и не обещание будущей доходности.</span>
+    </section>
+
+    <section id="headline-metrics" class="metrics-grid" aria-label="Ключевые показатели"></section>
+
+    <section class="layout-grid">
+      <article class="panel chart-panel">
+        <header class="panel-head">
+          <div>
+            <p class="eyebrow">Кривая капитала</p>
+            <h2>Equity и drawdown</h2>
+          </div>
+          <div id="scenario-tabs" class="scenario-tabs" role="tablist" aria-label="Сценарий исполнения"></div>
+        </header>
+        <div class="chart-legend">
+          <span><i class="equity-key"></i>Equity</span>
+          <span><i class="drawdown-key"></i>Drawdown</span>
+        </div>
+        <svg id="equity-chart" viewBox="0 0 960 390" role="img" aria-label="Кривая капитала и просадка"></svg>
+        <footer class="chart-footer">
+          <span id="chart-window">—</span>
+          <span id="chart-ending">—</span>
+        </footer>
+      </article>
+
+      <aside class="panel profile-panel">
+        <header class="panel-head">
+          <div>
+            <p class="eyebrow">Frozen specification</p>
+            <h2>Как устроен H4</h2>
+          </div>
+          <span class="badge compact">NO ORDERS</span>
+        </header>
+        <dl id="profile-facts" class="facts"></dl>
+        <div class="profile-block">
+          <h3>Forward-test лимиты</h3>
+          <dl id="forward-facts" class="facts compact-facts"></dl>
+        </div>
+      </aside>
+    </section>
+
+    <section class="panel scenario-panel">
+      <header class="panel-head">
+        <div>
+          <p class="eyebrow">Execution stress</p>
+          <h2>Сценарии исполнения</h2>
+        </div>
+        <span class="muted">CAGR, PF и просадка после modeled costs</span>
+      </header>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Сценарий</th><th>CAGR</th><th>PF</th><th>WR</th><th>Max DD</th><th>Плечо max</th><th>Сделки/день</th></tr>
+          </thead>
+          <tbody id="scenario-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="two-column">
+      <article class="panel">
+        <header class="panel-head">
+          <div><p class="eyebrow">Режимная устойчивость</p><h2>Помесячно · severe</h2></div>
+          <span id="positive-months" class="score">—</span>
+        </header>
+        <div id="monthly-bars" class="monthly-bars"></div>
+      </article>
+      <article class="panel">
+        <header class="panel-head">
+          <div><p class="eyebrow">Атрибуция</p><h2>Core против satellite</h2></div>
+          <span class="muted">Satellite имеет tiny-risk</span>
+        </header>
+        <div id="attribution-cards" class="attribution-cards"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <header class="panel-head">
+        <div><p class="eyebrow">История входов</p><h2>Последние research-сделки</h2></div>
+        <span id="trade-count" class="score">—</span>
+      </header>
+      <div class="table-scroll trades-scroll">
+        <table>
+          <thead>
+            <tr><th>Вход</th><th>Сторона</th><th>Tier</th><th>Meta p</th><th>Плечо позиции</th><th>Выход</th><th>Часы</th><th>Net PnL</th></tr>
+          </thead>
+          <tbody id="trade-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="safety-grid">
+      <article>
+        <h2>Что работает</h2>
+        <p>Страница читает committed JSON evidence, строит графики, переключает стресс-сценарии и показывает все 120 research-входов без внешних библиотек.</p>
+      </article>
+      <article>
+        <h2>Что не включено</h2>
+        <p>Нет exchange adapter, API-ключей, order endpoints, автоматического повышения плеча или утверждения реального капитала.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>FIN H4 · frozen research evidence</span>
+    <span>Historical result ≠ future return</span>
+  </footer>
+</body>
+</html>
