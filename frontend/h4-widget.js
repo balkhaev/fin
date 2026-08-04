@@ -10,7 +10,7 @@
   const fixed = (value, digits = 2) => number(value).toLocaleString("ru-RU", { minimumFractionDigits: digits, maximumFractionDigits: digits });
   const metric = (label, value, primary = false) => `<div class="h4-widget-metric${primary ? " primary" : ""}"><span>${label}</span><strong>${value}</strong></div>`;
 
-  fetch("./data/h4-cagr50.json", { cache: "no-store" })
+  fetch("./data/h4-summary.json", { cache: "no-store" })
     .then((response) => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.json();
