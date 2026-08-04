@@ -156,4 +156,41 @@
       if (currentBaseStrategyId) renderProfiles(currentBaseStrategyId);
     }).observe(button, { attributes: true, attributeFilter: ["disabled"] });
   }
+
+  const mountH4ResearchWidget = () => {
+    const errorBanner = document.querySelector("#error-banner");
+    if (!errorBanner || document.querySelector("#h4-research-widget")) return;
+
+    if (!document.querySelector('link[data-h4-widget="true"]')) {
+      const stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = "./h4-widget.css";
+      stylesheet.dataset.h4Widget = "true";
+      document.head.append(stylesheet);
+    }
+
+    const section = document.createElement("section");
+    section.id = "h4-research-widget";
+    section.className = "h4-research-widget";
+    section.setAttribute("aria-label", "H4 CAGR50 research profile");
+    const loading = document.createElement("div");
+    loading.className = "h4-widget-loading";
+    loading.textContent = "Загружаем H4 research evidence…";
+    section.append(loading);
+    errorBanner.insertAdjacentElement("afterend", section);
+
+    if (!document.querySelector('script[data-h4-widget="true"]')) {
+      const script = document.createElement("script");
+      script.src = "./h4-widget.js";
+      script.defer = true;
+      script.dataset.h4Widget = "true";
+      document.head.append(script);
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", mountH4ResearchWidget, { once: true });
+  } else {
+    mountH4ResearchWidget();
+  }
 })();
