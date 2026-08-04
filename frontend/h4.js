@@ -1,7 +1,8 @@
 (() => {
   "use strict";
 
-  const DATA_URL = "./data/h4-cagr50.json";
+  const SUMMARY_URL = "./data/h4-summary.json";
+  const TRADE_URLS = ["./data/h4-trades-1.json", "./data/h4-trades-2.json"];
   const state = { data: null, scenario: "severe" };
   const $ = (selector) => document.querySelector(selector);
   const create = (tag, className, text) => {
@@ -33,7 +34,7 @@
   const expandRows = (columns, rows) =>
     (rows || []).map((row) => Object.fromEntries(columns.map((column, index) => [column, row[index]])));
 
-  const decodeBundle = (raw) => ({
+  const decodeBundle = (raw, tradeParts) => ({
     schema_version: raw.v,
     generated_at: raw.generated,
     exchange_submission_available: raw.orders,
@@ -45,7 +46,7 @@
     leverage_sensitivity: expandRows(raw.leverage_columns, raw.leverage),
     periodic_returns: expandRows(raw.period_columns, raw.periods).map((item) => ({ ...item, scenario: "severe" })),
     bootstrap: expandRows(raw.bootstrap_columns, raw.bootstrap),
-    trades: expandRows(raw.trade_columns, raw.trades).map((item) => ({
+    trades: tradeParts.flatMap((part) => expandRows(part.trade_columns, part.trades)).map((item) => ({
       ...item,
       side: item.side === "S" ? "SHORT" : "LONG",
       tier: item.tier === "C" ? "CORE" : "SATELLITE",
@@ -314,19 +315,17 @@
 
   const load = async () => {
     try {
-      const embedded = $("#h4-data");
-      let raw;
-      if (embedded) {
-        raw = JSON.parse(embedded.textContent);
-      } else {
-        const response = await fetch(DATA_URL, { cache: "no-store" });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        raw = await response.json();
-      }
+      const responses = await Promise.all([SUMMARY_URL, ...TRADE_URLS].map((url) =>
+        fetch(url, { cache: "no-store" })
+      ));
+      const failed = responses.find((response) => !response.ok);
+      if (failed) throw new Error(`HTTP ${failed.status}`);
+      const [raw, ...tradeParts] = await Promise.all(responses.map((response) => response.json()));
       if (raw.v !== 1 || raw.orders !== false || raw.live !== false) {
         throw new Error("unsafe or unsupported H4 evidence");
       }
-      state.data = decodeBundle(raw);
+      if (tradeParts.some((part) => part.v !== 1)) throw new Error("unsupported H4 trade evidence");
+      state.data = decodeBundle(raw, tradeParts);
       $("#data-status").className = "status ready";
       $("#data-status").lastChild.textContent = "Evidence загружен";
       $("#generated-at").textContent = `Собрано ${state.data.generated_at || "—"}`;
