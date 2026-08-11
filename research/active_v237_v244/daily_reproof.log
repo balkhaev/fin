@@ -1,0 +1,267 @@
+probed 100/605 daily archives
+probed 200/605 daily archives
+probed 300/605 daily archives
+probed 400/605 daily archives
+probed 500/605 daily archives
+probed 600/605 daily archives
+{
+  "candidate": "ACTIVE_V237_FUNDING_SETTLEMENT_PREMIUM_COMPRESSION",
+  "status": "daily_reproof_failed",
+  "daily_reproof_gate": {
+    "candidate": "V238_DAILY_PREMIUM_SETTLEMENT_REPROOF",
+    "reconstructed_months": {
+      "BTC": [
+        "2026-06"
+      ],
+      "ETH": [
+        "2026-06"
+      ],
+      "SOL": [
+        "2021-01",
+        "2026-06"
+      ]
+    },
+    "minimum_daily_availability": 0.95,
+    "details": [
+      {
+        "asset": "BTC",
+        "dataset": "premium_index_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "BTC",
+        "dataset": "mark_price_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "BTC",
+        "dataset": "index_price_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "BTC",
+        "dataset": "perpetual_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "BTC",
+        "dataset": "funding",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 0,
+        "availability": 0.0,
+        "schema_widths": [],
+        "gate_passed": false
+      },
+      {
+        "asset": "ETH",
+        "dataset": "premium_index_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "ETH",
+        "dataset": "mark_price_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "ETH",
+        "dataset": "index_price_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "ETH",
+        "dataset": "perpetual_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "ETH",
+        "dataset": "funding",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 0,
+        "availability": 0.0,
+        "schema_widths": [],
+        "gate_passed": false
+      },
+      {
+        "asset": "SOL",
+        "dataset": "premium_index_5m",
+        "month": "2021-01",
+        "attempted_days": 31,
+        "valid_days": 24,
+        "availability": 0.7741935483870968,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": false
+      },
+      {
+        "asset": "SOL",
+        "dataset": "premium_index_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "SOL",
+        "dataset": "mark_price_5m",
+        "month": "2021-01",
+        "attempted_days": 31,
+        "valid_days": 17,
+        "availability": 0.5483870967741935,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": false
+      },
+      {
+        "asset": "SOL",
+        "dataset": "mark_price_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "SOL",
+        "dataset": "index_price_5m",
+        "month": "2021-01",
+        "attempted_days": 31,
+        "valid_days": 17,
+        "availability": 0.5483870967741935,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": false
+      },
+      {
+        "asset": "SOL",
+        "dataset": "index_price_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "SOL",
+        "dataset": "perpetual_5m",
+        "month": "2021-01",
+        "attempted_days": 31,
+        "valid_days": 31,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "SOL",
+        "dataset": "perpetual_5m",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 30,
+        "availability": 1.0,
+        "schema_widths": [
+          12
+        ],
+        "gate_passed": true
+      },
+      {
+        "asset": "SOL",
+        "dataset": "funding",
+        "month": "2021-01",
+        "attempted_days": 31,
+        "valid_days": 0,
+        "availability": 0.0,
+        "schema_widths": [],
+        "gate_passed": false
+      },
+      {
+        "asset": "SOL",
+        "dataset": "funding",
+        "month": "2026-06",
+        "attempted_days": 30,
+        "valid_days": 0,
+        "availability": 0.0,
+        "schema_widths": [],
+        "gate_passed": false
+      }
+    ],
+    "passed": false
+  },
+  "selection_run": false,
+  "full_backtest_run": false,
+  "integration_permitted": false,
+  "live_ready": false,
+  "real_leverage_authorized": false,
+  "profitability_proven": false
+}
