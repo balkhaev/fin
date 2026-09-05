@@ -1,4 +1,4 @@
-"""Public spot data only. No credentials, downloads outside the fixed manifest, or orders."""
+"""Public spot data only. Complete daily archives may cover an unavailable month."""
 from concurrent.futures import ThreadPoolExecutor
 import datetime as dt
 import hashlib
@@ -16,8 +16,11 @@ END='2026-09-01'
 COLS=['time','open','high','low','close','volume','end','quote_volume','count','buy_volume','buy_quote','ignore']
 
 
-def periods():
-    return [str(x.date())[:7] for x in pd.date_range(START,END,freq='MS',inclusive='left')]
+def periods():return [str(x.date())[:7] for x in pd.date_range(START,END,freq='MS',inclusive='left')]
+
+def days(month):
+    start=pd.Timestamp(month+'-01')
+    return [str(x.date()) for x in pd.date_range(start,start+pd.offsets.MonthBegin(1),freq='D',inclusive='left')]
 
 
 def get(url):
@@ -34,23 +37,34 @@ def get(url):
 
 def download(root):
     root=Path(root);root.mkdir(parents=True,exist_ok=False)
+    def archive(period,frequency):
+        name=f'BTCUSDT-1h-{period}.zip'
+        url=f'https://data.binance.vision/data/spot/{frequency}/klines/BTCUSDT/1h/{name}'
+        expected=get(url+'.CHECKSUM').decode().split()[0].lower()
+        raw=get(url);h=hashlib.sha256(raw).hexdigest()
+        if h!=expected:raise ValueError('Published checksum mismatch')
+        (root/name).write_bytes(raw)
+        return dict(filename=name,url=url,sha256=h,bytes=len(raw),status='verified')
     def one(month):
-        name=f'BTCUSDT-1h-{month}.zip'
-        url=f'https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/{name}'
-        r=dict(month=month,filename=name,url=url)
+        r=dict(month=month)
         try:
-            expected=get(url+'.CHECKSUM').decode().split()[0].lower()
-            raw=get(url);h=hashlib.sha256(raw).hexdigest()
-            if h!=expected:raise ValueError('Published checksum mismatch')
-            (root/name).write_bytes(raw)
-            r.update(sha256=h,bytes=len(raw),status='verified')
+            try:r.update(archive(month,'monthly'),frequency='monthly')
+            except OSError as first:
+                if getattr(first,'code',None)!=404:raise
+                r['monthly_error']=str(first);r['frequency']='daily'
+                # All same-resolution, same-market days required. No shortened test.
+                parts=[]
+                for day in days(month):parts.append(archive(day,'daily'))
+                r.update(parts=parts,status='verified')
         except Exception as e:r.update(status='unavailable',error=str(e))
         return r
     with ThreadPoolExecutor(max_workers=4) as p:rows=list(p.map(one,periods()))
-    manifest=dict(schema='btc-spot-hourly-v1',start=START,end_exclusive=END,files=rows,
+    manifest=dict(schema='btc-spot-hourly-v2',start=START,end_exclusive=END,files=rows,
                   acquired_utc=dt.datetime.now(dt.timezone.utc).isoformat(),orders_sent=0)
     (root/'manifest.json').write_text(json.dumps(manifest,indent=2))
-    if any(r['status']!='verified' for r in rows):raise RuntimeError('Incomplete acquisition; see retained manifest')
+    if any(r['status']!='verified' for r in rows):
+        print('ACQUISITION_ERRORS',json.dumps([r for r in rows if r['status']!='verified']),flush=True)
+        raise RuntimeError('Incomplete acquisition; see retained manifest')
     return manifest
 
 
@@ -64,34 +78,49 @@ def timestamps(values):
     return a
 
 
+def files_for_month(row):
+    month=row['month']
+    if row.get('frequency','monthly')=='monthly':
+        expected={f'BTCUSDT-1h-{month}.zip'};parts=[row]
+    elif row['frequency']=='daily':
+        expected={f'BTCUSDT-1h-{day}.zip' for day in days(month)};parts=row['parts']
+    else:raise ValueError('Unknown archive frequency')
+    if len(parts)!=len(expected) or {x['filename'] for x in parts}!=expected:raise ValueError('Daily/monthly coverage incomplete')
+    return parts
+
+
 def load(root):
     root=Path(root);m=json.loads((root/'manifest.json').read_text());rows=m['files']
     if len(rows)!=len(periods()) or {r['month'] for r in rows}!=set(periods()):raise ValueError('Manifest identity mismatch')
-    parts=[]
+    parts=[];file_count=0;fallback=[]
     for r in rows:
-        name=f"BTCUSDT-1h-{r['month']}.zip";raw=(root/name).read_bytes()
-        if r['status']!='verified' or hashlib.sha256(raw).hexdigest()!=r['sha256']:raise ValueError('Archive hash mismatch')
-        with zipfile.ZipFile(io.BytesIO(raw)) as z:
-            if len(z.namelist())!=1:raise ValueError('One CSV expected')
-            with z.open(z.namelist()[0]) as stream:d=pd.read_csv(stream,names=COLS,header=None,dtype=str)
-        bad=pd.to_numeric(d.time,errors='coerce').isna()
-        if bad.any():
-            if bad.sum()!=1 or not bad.iloc[0]:raise ValueError('Malformed timestamp row')
-            d=d.iloc[1:]
-        d=d.apply(pd.to_numeric,errors='raise');d['time']=timestamps(d.time)
-        begin=pd.Timestamp(r['month']+'-01',tz='UTC');end=begin+pd.offsets.MonthBegin(1)
-        if not ((d.time>=begin.timestamp()*1000)&(d.time<end.timestamp()*1000)).all():raise ValueError('Wrong archive month')
-        needed=d[['open','high','low','close','volume']].to_numpy(float)
-        if not np.isfinite(needed).all() or (needed[:,:4]<=0).any() or (needed[:,4]<0).any():raise ValueError('Nonfinite prices or volume')
-        if ((d.high<d[['open','close','low']].max(axis=1))|(d.low>d[['open','close','high']].min(axis=1))).any():raise ValueError('Inconsistent OHLC')
-        parts.append(d[['time','open','high','low','close','volume']])
+        if r['status']!='verified':raise ValueError('Unverified month')
+        if r.get('frequency')=='daily':fallback.append(r['month'])
+        for item in files_for_month(r):
+            raw=(root/item['filename']).read_bytes()
+            if item['status']!='verified' or hashlib.sha256(raw).hexdigest()!=item['sha256']:raise ValueError('Archive hash mismatch')
+            with zipfile.ZipFile(io.BytesIO(raw)) as z:
+                if len(z.namelist())!=1:raise ValueError('One CSV expected')
+                with z.open(z.namelist()[0]) as stream:d=pd.read_csv(stream,names=COLS,header=None,dtype=str)
+            bad=pd.to_numeric(d.time,errors='coerce').isna()
+            if bad.any():
+                if bad.sum()!=1 or not bad.iloc[0]:raise ValueError('Malformed timestamp row')
+                d=d.iloc[1:]
+            d=d.apply(pd.to_numeric,errors='raise');d['time']=timestamps(d.time)
+            begin=pd.Timestamp(r['month']+'-01',tz='UTC');end=begin+pd.offsets.MonthBegin(1)
+            if not ((d.time>=begin.timestamp()*1000)&(d.time<end.timestamp()*1000)).all():raise ValueError('Wrong archive month')
+            needed=d[['open','high','low','close','volume']].to_numpy(float)
+            if not np.isfinite(needed).all() or (needed[:,:4]<=0).any() or (needed[:,4]<0).any():raise ValueError('Nonfinite prices or volume')
+            if ((d.high<d[['open','close','low']].max(axis=1))|(d.low>d[['open','close','high']].min(axis=1))).any():raise ValueError('Inconsistent OHLC')
+            parts.append(d[['time','open','high','low','close','volume']]);file_count+=1
     data=pd.concat(parts).sort_values('time')
     if data.time.duplicated().any():raise ValueError('Duplicate hourly bar')
     data.index=pd.to_datetime(data.pop('time'),unit='ms',utc=True)
     idx=pd.date_range(START,END,freq='h',inclusive='left',tz='UTC')
     data=data.reindex(idx);data['observed']=data.close.notna()
     missing=[str(t) for t in idx[~data.observed]]
-    audit=dict(verified_files=len(rows),hours=len(idx),observed_hours=int(data.observed.sum()),
-       missing_hours=len(missing),missing_open_times=missing,price_forward_filled=False,
-       start=START,end_exclusive=END,manifest_sha256=hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest())
+    audit=dict(covered_months=len(rows),verified_files=file_count,daily_fallback_months=fallback,
+       hours=len(idx),observed_hours=int(data.observed.sum()),missing_hours=len(missing),missing_open_times=missing,
+       price_forward_filled=False,start=START,end_exclusive=END,
+       manifest_sha256=hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest())
     return data,audit
