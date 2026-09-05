@@ -1,0 +1,14 @@
+{
+  "initial_run":33994142427,
+  "initial_tested_commit":"6ac67cee0e0a60476bfaea96877503ac2631b636",
+  "initial_results_sha256":"dd8569eee0229f8d804577ad888e39fcc5d3be9ae1b8d79ae42b71ad122edd82",
+  "later_period":"2025-01-01 through 2026-08-31, 608 continuous days",
+  "first_findings":{"fixed_primary_ensemble_return_pct":-0.5249043664603104,"ema_4h_24_120_return_pct":6.249640183692318,"ema_1d_10_50_return_pct":4.882415870082912,"channel_4h_55_20_return_pct":5.7510660173412775,"momentum_1d_63_200_return_pct":3.034656219704668,"buy_hold_return_pct":-16.274901312322797},
+  "challenger_selection":"NONE met original complete-history development requirements. Historical data gaps while holding made the long-history calculations unusable for selecting an approved challenger. This gate is not lowered.",
+  "followup_status":"POST-RESULT exploratory extension, not a new holdout or preselected winner. Initial primary remains primary and lost money. Do not relabel a positive comparator as having passed original selection.",
+  "followup":"Run the same already predeclared cost/delay/allocation/7% stop comparators for ALL TEN policies and buy-and-hold, not just positive policies. Add combined quarter allocation with doubled costs and with24h delay to see the risk/cost tradeoff. No signal thresholds, periods, entry rules or stop rules are tuned.",
+  "report":"All positive and negative outcomes, annual reset2024/2025/2026, duration, fees, drawdown, missing exposure, bootstrap uncertainty. Original results must reproduce before using any followup table.",
+  "acceptance":"Positive past net returns identify research candidates only. No guarantee, no live readiness, no claim that500% annual was achieved. Reporting an ex-post candidate is not statistical validation.",
+  "model_files_unchanged":["data.py","signals.py","engine.py","study.py"],
+  "no_leverage_or_real_orders":true
+}
