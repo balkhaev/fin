@@ -1,0 +1,52 @@
+{
+  "id": "btc-pressure-feed-health-20260905",
+  "protocol_commit": "159d84f62b430b9b62130c62b044da177bd6d7bf",
+  "tested_code_commit": "9fd447315599ae56d81507f942bc60c1c30288d9",
+  "verified_ci_run": 33959696210,
+  "source_files": 48,
+  "source_records": 62287066,
+  "source_compressed_bytes": 965914446,
+  "raw_signals": 189,
+  "valid_frames": 456367,
+  "sample_days": 6,
+  "continuous_days": 1,
+  "policies": ["original", "quote_witnessed_hold"],
+  "execution_scenarios": ["base", "joint_stress"],
+  "total_replays": 24,
+  "unchanged_original_model_files": ["strategy.py", "paper.py", "event_study.py", "account_study.py"],
+  "model_sha256": "5413b705d76213b96ea6410c8b953eeea9ea94f88ca6df17506c4cd166219862",
+  "base_sessions": [
+    {"date":"2025-09-01","raw_signals":47,"original_return_pct":-0.21403200589100724,"new_return_pct":-0.26874572389948836,"original_orders":13,"new_orders":12,"completed_trades_each":2,"accounting_complete":true,"original_net_fully_priced":-2.1403200589099645,"new_net_fully_priced":-2.6874572389948024,"retained_positions":2,"retained_clock_frames":6},
+    {"date":"2026-03-01","raw_signals":47,"original_return_pct":-0.4683882308129217,"new_return_pct":-0.40696833043699643,"original_orders":8,"new_orders":8,"completed_trades_each":6,"accounting_complete":true,"original_net_fully_priced":-4.683882308129614,"new_net_fully_priced":-4.069683304370422,"retained_positions":1,"retained_clock_frames":1},
+    {"date":"2026-04-01","raw_signals":30,"original_return_pct":null,"new_return_pct":null,"original_orders":1,"new_orders":1,"completed_trades_each":1,"accounting_complete":false,"original_net_fully_priced":null,"new_net_fully_priced":null,"retained_positions":0,"retained_clock_frames":0},
+    {"date":"2026-07-01","raw_signals":29,"original_return_pct":-0.37854431594095406,"new_return_pct":-0.26086786947294716,"original_orders":8,"new_orders":8,"completed_trades_each":4,"accounting_complete":true,"original_net_fully_priced":-3.7854431594096494,"new_net_fully_priced":-2.6086786947295644,"retained_positions":1,"retained_clock_frames":20},
+    {"date":"2026-08-01","raw_signals":9,"original_return_pct":0.0,"new_return_pct":0.0,"original_orders":4,"new_orders":4,"completed_trades_each":0,"accounting_complete":true,"original_net_fully_priced":0,"new_net_fully_priced":0,"retained_positions":0,"retained_clock_frames":0},
+    {"date":"2026-09-01","raw_signals":27,"original_return_pct":-0.06214878783202815,"new_return_pct":-0.029857810557176734,"original_orders":13,"new_orders":13,"completed_trades_each":2,"accounting_complete":true,"original_net_fully_priced":-0.6214878783201137,"new_net_fully_priced":-0.2985781055715476,"retained_positions":1,"retained_clock_frames":6}
+  ],
+  "aggregate": [
+    {"scenario":"base","policy":"original","independent_session_count":6,"fully_priced_sessions":5,"unpriced_dates":["2026-04-01"],"net_sum_fully_priced_independent_accounts":-11.231133404769341,"gross_sum_fully_priced":-2.65706223000084,"fees_sum_fully_priced":8.574071174768502,"trades_fully_priced":14,"trades_including_unpriced":15,"orders":47,"wins_fully_priced":1,"all_accounting_complete":false,"positive_fully_priced_days":0,"same_fills_double_commission_net_fully_priced":-19.805204579537843},
+    {"scenario":"base","policy":"quote_witnessed_hold","independent_session_count":6,"fully_priced_sessions":5,"unpriced_dates":["2026-04-01"],"net_sum_fully_priced_independent_accounts":-9.664397343666337,"gross_sum_fully_priced":-1.091372080000336,"fees_sum_fully_priced":8.573025263666,"trades_fully_priced":14,"trades_including_unpriced":15,"orders":46,"wins_fully_priced":2,"all_accounting_complete":false,"positive_fully_priced_days":0,"same_fills_double_commission_net_fully_priced":-18.237422607332334},
+    {"scenario":"joint_stress","policy":"original","independent_session_count":6,"fully_priced_sessions":6,"unpriced_dates":[],"net_sum_fully_priced_independent_accounts":-2.8684723719719694,"gross_sum_fully_priced":-0.5780726399999694,"fees_sum_fully_priced":2.290399731972,"trades_fully_priced":5,"trades_including_unpriced":5,"orders":8,"wins_fully_priced":1,"all_accounting_complete":true,"positive_fully_priced_days":0,"same_fills_double_commission_net_fully_priced":-5.15887210394397},
+    {"scenario":"joint_stress","policy":"quote_witnessed_hold","independent_session_count":6,"fully_priced_sessions":6,"unpriced_dates":[],"net_sum_fully_priced_independent_accounts":-2.8684723719719694,"gross_sum_fully_priced":-0.5780726399999694,"fees_sum_fully_priced":2.290399731972,"trades_fully_priced":5,"trades_including_unpriced":5,"orders":8,"wins_fully_priced":1,"all_accounting_complete":true,"positive_fully_priced_days":0,"same_fills_double_commission_net_fully_priced":-5.15887210394397}
+  ],
+  "prior_control_ledger_checks": [
+    {"date":"2025-09-01","orders_and_fills_exactly_equal":true},
+    {"date":"2026-03-01","orders_and_fills_exactly_equal":true},
+    {"date":"2026-08-01","orders_and_fills_exactly_equal":true},
+    {"date":"2026-09-01","orders_and_fills_exactly_equal":true}
+  ],
+  "verification": {"pressure_tests":159,"root_tests":410,"subtests":46,"failures":0,"errors":0,"skipped":0,"full_reports_identical":24},
+  "annual_return_pct": null,
+  "cagr_pct": null,
+  "target_achieved": false,
+  "live_ready": false,
+  "mainnet_orders_sent": 0,
+  "limitations": [
+    "Six nonconsecutive dates cannot establish annual returns.",
+    "April base session lacks realized funding; known cash flow is not a fully priced return.",
+    "Quotes attest recent quote observations, not completeness of the trade subscription.",
+    "Same-fills double commissions is arithmetic sensitivity, not an independently executable account.",
+    "Fee/contract/latency/queue assumptions remain unverified for a real account.",
+    "New event dates overlap previously seen candle history."
+  ]
+}

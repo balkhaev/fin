@@ -1,0 +1,23 @@
+{
+  "run_id": 33959696210,
+  "tested_code_commit": "9fd447315599ae56d81507f942bc60c1c30288d9",
+  "pressure_tests": 159,
+  "root_tests": 410,
+  "root_subtests": 46,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "all_24_policy_reports_identical": true,
+  "verified_artifacts": [
+    {"date":"2025-09-01","artifact_id":9967575870,"artifact_sha256":"cd385b17d69da870d90b55135c2bfe2b68ce5ad5a7718773407699a654b86936","full_policy_reports_identical":true,"source_audits_identical_except_enclosing_manifest":true,"canonical_report_sha256":{"base_original":"4e3a82b3abc6916261ff04ffd8755d72bc4f46c41cfb5531f0d8ad6d5862bd6b","base_quote_witnessed_hold":"d77c48a24db66878015e9d1fb50964a76d7827fab3cfc3cef458987271264ba2","joint_stress_original":"4aacb65431cb50309ad50a22e53e06f58b286c8348267a1b8fce45b5f3a9c07e","joint_stress_quote_witnessed_hold":"4edad874a5abaa54134df880719cde5f094e9cf949a885a0f3bbb40d03f10be5"}},
+    {"date":"2026-03-01","artifact_id":9967581663,"artifact_sha256":"02aa25fba2532a8c455258f1183148a420c2fc7c1a4e7caa34f10141d1a4320f","full_policy_reports_identical":true,"source_audits_identical_except_enclosing_manifest":true,"canonical_report_sha256":{"base_original":"3d2d5d589e672fd0463eb02d445d06c6956d2e8be6597a302b773582b31bdb4e","base_quote_witnessed_hold":"9dd4dab12d3d6d80f7c272fc2b04665051270d8dfa8e455b0e5d25c3b1c8c14e","joint_stress_original":"2f995109ce69a7475d54d944d6f52f64f223e5bcf84d2651cbe5fd1994e3708f","joint_stress_quote_witnessed_hold":"d2baf4ca73844546c747d1c07f7bb71817b44eb9591e60fbeb0d823d5bac5d21"}},
+    {"date":"2026-08-01","artifact_id":9967560206,"artifact_sha256":"09ce808ba6cf0591e62d20d7633fccbdb3cb7f5d101c21c8c5c3dbc796eadc21","full_policy_reports_identical":true,"source_audits_identical_except_enclosing_manifest":true,"canonical_report_sha256":{"base_original":"1145bfd165d532552b52e59b8a8c1536e58eb6e50f005e2589d4422bf8c55407","base_quote_witnessed_hold":"5cfe271523c86f04e58a919fa681992222d2d8b14350f8fb2bed206e1fe873cd","joint_stress_original":"313f16e2a905bc9a00fde57a61d5773d89481bfdd5d8731534ecef9e4c798064","joint_stress_quote_witnessed_hold":"25700c496a29c000adb2ada06957cae14534a3c89e5ee8642f61089e8a4570d9"}},
+    {"date":"2026-09-01","artifact_id":9967595156,"artifact_sha256":"dba77a5b29aac922509e7df88e9a03d68b4a2156532db367b07c82d258244cd4","full_policy_reports_identical":true,"source_audits_identical_except_enclosing_manifest":true,"canonical_report_sha256":{"base_original":"1b697daef15bb1f25c3cd840d7496e92bbad0b158cbe572da1a26b0ab6e32c8b","base_quote_witnessed_hold":"3b3c2767e4c15efcee465452b10ff763e5b6ae83ddfc53c0bc47519af03492d3","joint_stress_original":"690d319d35d848f7137aaa77f53581cc3b6d057ac4c02be7ca63559b31916c82","joint_stress_quote_witnessed_hold":"39c28058c46b20715492f59b1ba9376064cbf7ee49fe5d00ba772276dc99a86c"}},
+    {"date":"2026-04-01","artifact_id":9967599657,"artifact_sha256":"a18d379e1a29c4ab5c0aa5698c51c9b19f618aee55f56a17a69129b51e8dfa73","full_policy_reports_identical":true,"source_audits_identical_except_enclosing_manifest":true,"canonical_report_sha256":{"base_original":"655ec1c6b94cf109b0ee4deb3bb649bde705feb1a5bcc542353d96632c014a06","base_quote_witnessed_hold":"c7c6b1a3b9f9b35b990541aa45df7a615ae95187713d64a542e89fd5744138da","joint_stress_original":"6980701922366eeb6934a57644979dc548a5dd2ce5cc2595d66e63a4c345f27e","joint_stress_quote_witnessed_hold":"ab9c89c21ecba508bf4d465a57835876d357577a01ce14ba30252e6dfedb5bb3"}},
+    {"date":"2026-07-01","artifact_id":9967618912,"artifact_sha256":"710548b8c1de27cfee780fa029c007152b3c6214d033f46f30519cd1c8b9a743","full_policy_reports_identical":true,"source_audits_identical_except_enclosing_manifest":true,"canonical_report_sha256":{"base_original":"29cf9d7a831c732f524311e417ff116cdab243c26f6c43e6acc415edb0998ae8","base_quote_witnessed_hold":"4f6f73799b6c835f64bb6f90e5f498010e73737e98dbe74509cc078b2a502d3c","joint_stress_original":"09ea3daae7c9819d1ce2e8445c2294b6ecef0d92edc00d936c60cdeb890890d8","joint_stress_quote_witnessed_hold":"5c848a1dd0c0611c6b4b406a787f7d5924870d35b23ad26a72d88831a14b8474"}}
+  ],
+  "tests_artifact_id": 9967536606,
+  "tests_artifact_sha256": "71e822ef50a3ac9dc18e4988ba0b3ad974395370053cf42409414d32af2b74c7",
+  "performance_proven": false,
+  "annual_return_pct": null
+}

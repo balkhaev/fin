@@ -1,0 +1,25 @@
+date,health_policy,execution_scenario,raw_signals,submitted_orders,completed_trade_count,session_net_return_pct,known_cash_component_net,gross_closed,fees_closed,accounting_complete,max_marked_drawdown_pct,retained_position_count,retained_clock_count,known_cash_same_fills_double_commission,exit_reasons,return_status,fully_priced_net
+2025-09-01,original,base,47,13,2,-0.2140320058910072,-2.1403200589099645,-0.5103239999999641,1.6299960589100002,True,0.2331254915355129,0,0,-3.7703161178199647,{'feature_quality_lost': 2},modeled_session_accounting_complete,-2.1403200589099645
+2025-09-01,quote_witnessed_hold,base,47,12,2,-0.2687457238994883,-2.6874572389948024,-1.0573450999998022,1.630112138995,True,0.2723268924594735,2,6,-4.317569377989802,{'flow_invalidated': 2},modeled_session_accounting_complete,-2.6874572389948024
+2025-09-01,original,joint_stress,47,0,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2025-09-01,quote_witnessed_hold,joint_stress,47,0,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-03-01,original,base,47,8,6,-0.4683882308129217,-4.683882308129614,-1.427255680000613,3.256626628129,True,0.7667838676354455,0,0,-7.940508936258614,"{'target': 1, 'flow_invalidated': 4, 'feature_quality_lost': 1}",modeled_session_accounting_complete,-4.683882308129614
+2026-03-01,quote_witnessed_hold,base,47,8,6,-0.4069683304369964,-4.069683304370422,-0.8133943000004217,3.25628900437,True,0.705548104037379,1,1,-7.325972308740422,"{'target': 1, 'flow_invalidated': 5}",modeled_session_accounting_complete,-4.069683304370422
+2026-03-01,original,joint_stress,47,6,4,-0.2603400084932872,-2.603400084933013,-0.7604600200000131,1.842940064933,True,0.5526304945568716,0,0,-4.446340149866013,"{'target': 1, 'flow_invalidated': 3}",modeled_session_accounting_complete,-2.603400084933013
+2026-03-01,quote_witnessed_hold,joint_stress,47,6,4,-0.2603400084932872,-2.603400084933013,-0.7604600200000131,1.842940064933,True,0.5526304945568716,0,0,-4.446340149866013,"{'target': 1, 'flow_invalidated': 3}",modeled_session_accounting_complete,-2.603400084933013
+2026-08-01,original,base,9,4,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-08-01,quote_witnessed_hold,base,9,4,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-08-01,original,joint_stress,9,0,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-08-01,quote_witnessed_hold,joint_stress,9,0,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-09-01,original,base,27,13,2,-0.0621487878320281,-0.6214878783201137,0.7178575999998865,1.3393454783200005,True,0.1749911919999958,0,0,-1.960833356640114,"{'flow_invalidated': 1, 'feature_quality_lost': 1}",modeled_session_accounting_complete,-0.6214878783201137
+2026-09-01,quote_witnessed_hold,base,27,13,2,-0.0298578105571767,-0.2985781055715476,1.0405898699999525,1.3391679755715002,True,0.1749911919999958,1,6,-1.6377460811430478,{'flow_invalidated': 2},modeled_session_accounting_complete,-0.2985781055715476
+2026-09-01,original,joint_stress,27,1,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-09-01,quote_witnessed_hold,joint_stress,27,1,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-04-01,original,base,30,1,1,,-0.0616866704069652,0.2473992600000347,0.309085930407,False,0.0675423299999922,0,0,-0.3707726008139653,{'funding_not_verified': 1},UNPRICED_REALIZED_FUNDING,
+2026-04-01,quote_witnessed_hold,base,30,1,1,,-0.0616866704069652,0.2473992600000347,0.309085930407,False,0.0675423299999922,0,0,-0.3707726008139653,{'funding_not_verified': 1},UNPRICED_REALIZED_FUNDING,
+2026-04-01,original,joint_stress,30,0,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-04-01,quote_witnessed_hold,joint_stress,30,0,0,0.0,0.0,0.0,0.0,True,0.0,0,0,0.0,{},modeled_session_accounting_complete,0.0
+2026-07-01,original,base,29,8,4,-0.378544315940954,-3.78544315940965,-1.4373401500001497,2.3481030094095003,True,0.418710350971474,0,0,-6.13354616881915,"{'flow_invalidated': 2, 'feature_quality_lost': 1, 'stop': 1}",modeled_session_accounting_complete,-3.78544315940965
+2026-07-01,quote_witnessed_hold,base,29,8,4,-0.2608678694729471,-2.6086786947295644,-0.2612225500000643,2.3474561447295,True,0.3111444203307889,1,20,-4.9561348394590645,"{'flow_invalidated': 3, 'stop': 1}",modeled_session_accounting_complete,-2.6086786947295644
+2026-07-01,original,joint_stress,29,1,1,-0.0265072287038981,-0.2650722870389562,0.1823873800000438,0.447459667039,True,0.1044569327240507,0,0,-0.7125319540779562,{'flow_invalidated': 1},modeled_session_accounting_complete,-0.2650722870389562
+2026-07-01,quote_witnessed_hold,joint_stress,29,1,1,-0.0265072287038981,-0.2650722870389562,0.1823873800000438,0.447459667039,True,0.1044569327240507,0,0,-0.7125319540779562,{'flow_invalidated': 1},modeled_session_accounting_complete,-0.2650722870389562
