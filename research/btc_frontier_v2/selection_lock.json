@@ -1,0 +1,18 @@
+{
+  "protocol_commit": "2b4be34a82049f804d796c26eb5df68128ce83dc",
+  "selection_sha256": "51af296b59ca7a49c627ef782fdde27d5d5120e93acf44d5ebb63736ceeb9813",
+  "selected": {"family":"trend_channel","timeframe":240,"lookback":48,"profile":"fast"},
+  "admitted": false,
+  "family_configs": [
+    {"family":"breakout","timeframe":60,"lookback":48,"profile":"fast"},
+    {"family":"trend_pullback","timeframe":60,"lookback":12,"profile":"wide"},
+    {"family":"impulse_follow","timeframe":60,"lookback":48,"profile":"fast"},
+    {"family":"impulse_fade","timeframe":60,"lookback":48,"profile":"fast"},
+    {"family":"range_revert","timeframe":60,"lookback":48,"profile":"wide"},
+    {"family":"squeeze","timeframe":60,"lookback":12,"profile":"fast"},
+    {"family":"trend_channel","timeframe":240,"lookback":48,"profile":"fast"},
+    {"family":"funding_revert","timeframe":60,"lookback":12,"profile":"wide"}
+  ],
+  "fresh_data_used_for_selection": false,
+  "post_2024_used_for_selection": false
+}
