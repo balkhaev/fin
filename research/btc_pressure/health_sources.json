@@ -1,0 +1,31 @@
+{
+  "protocol_sha256": "0a045e8602c088c20dd93f470ce521efe6c229d5fd5fd1f0cf50bb0581b9d340",
+  "acquisition_run": 33959187381,
+  "acquisition_artifact": 9967369111,
+  "files": [
+    {"date":"2025-09-01","venue":"binance","kind":"book_snapshot_5","bytes":18125652,"sha256":"4054075bd0f5dcd171a22edd0fd675e39459a4c7116f6bf860357cb6b933c3bf"},
+    {"date":"2025-09-01","venue":"bybit-spot","kind":"book_snapshot_5","bytes":28693582,"sha256":"7e358992e0c7f060e878b562a0e0296c79eac6b1479f0e8d52fcf9b2e9eff39f"},
+    {"date":"2026-03-01","venue":"binance","kind":"book_snapshot_5","bytes":15460778,"sha256":"76b2f5c2fff6e640aacb19d327e9531095a10ba534d6b6289e594ee9d9c0c2b4"},
+    {"date":"2026-03-01","venue":"bybit-spot","kind":"book_snapshot_5","bytes":37424186,"sha256":"c0079b4ef3a5a5925f531f5f3537a826688d65fa2f746afd659f79e1ad8f04cb"},
+    {"date":"2026-08-01","venue":"binance","kind":"book_snapshot_5","bytes":7423094,"sha256":"81b1ab15e3f48bd20507593696119e4e8c3d5e0d04502e48c2eeb62d448bca55"},
+    {"date":"2026-08-01","venue":"bybit-spot","kind":"book_snapshot_5","bytes":14134557,"sha256":"999cedb9da907fd1a18e02f44be33c8b15cc44904697900158fceba051756ea1"},
+    {"date":"2026-09-01","venue":"binance","kind":"book_snapshot_5","bytes":13606964,"sha256":"b0aaf4f9398ca76569cf3879c2bc997a10fc1fe3b9551ff91e550d709ebad7d4"},
+    {"date":"2026-09-01","venue":"bybit-spot","kind":"book_snapshot_5","bytes":19049514,"sha256":"fbada90f028c0fa2c80e3783ac6848e3df9b8e4ebf7b3c8a9680dd3032954140"},
+    {"date":"2026-04-01","venue":"binance","kind":"book_snapshot_5","bytes":15490971,"sha256":"6e64a1f068430cdc3db025ef43a8831b765c35f22beae2e86da3c220c6fd1441"},
+    {"date":"2026-04-01","venue":"bybit-spot","kind":"book_snapshot_5","bytes":39576737,"sha256":"7d34acb841d1dee9497dfef833ff745b9d4e5674bc8136ab3d98230967f32474"},
+    {"date":"2026-07-01","venue":"binance","kind":"book_snapshot_5","bytes":15447377,"sha256":"aadf57108cee1ab651f2afacdfb91d6f41c3f63c0bb1828e02fc8ef148f3dc6f"},
+    {"date":"2026-07-01","venue":"bybit-spot","kind":"book_snapshot_5","bytes":30946487,"sha256":"66d794d3c4a8c8536431ba94b424cafba86f9da803045dad9ef3be8d3770abf8"},
+    {"date":"2026-04-01","venue":"bybit","kind":"trades","bytes":57353287,"sha256":"c92c5d78e475f128d4accdf085eedb6d4828b4a8ddb93491ed8a957608d64be2"},
+    {"date":"2026-04-01","venue":"bybit","kind":"book_snapshot_5","bytes":31596150,"sha256":"c789bcb1a89c0a6876a178da17689ec3a87eae27154467a6615d89e13bff0447"},
+    {"date":"2026-04-01","venue":"bybit","kind":"liquidations","bytes":15903,"sha256":"972d9fb2d80b179d9f0c6c084b38b5155018f9d4b51decb48254cf93970760b8"},
+    {"date":"2026-04-01","venue":"bybit","kind":"derivative_ticker","bytes":3492472,"sha256":"739cb75a82ea8fcb3157bbe73023e19c185bfc84de704bcf8fc4e17d04df8ea4"},
+    {"date":"2026-04-01","venue":"binance","kind":"trades","bytes":25054052,"sha256":"89c63587a140e815a5dd882e74fc61501e906a2a343a6b07ef8cb1da31f34eb1"},
+    {"date":"2026-04-01","venue":"bybit-spot","kind":"trades","bytes":9039631,"sha256":"0fa97b92f3dd3ee87fa05a6db08ebe991c830bf06e3a2e1f538cbbfe7ee05b15"},
+    {"date":"2026-07-01","venue":"bybit","kind":"trades","bytes":80661057,"sha256":"c94597b39417d4e5e009b1c708cc0bbd111232dc333c8476399309231d67cac2"},
+    {"date":"2026-07-01","venue":"bybit","kind":"book_snapshot_5","bytes":33566407,"sha256":"ea7311a4a89380c312adb9c0823143e3723d189d72bd92a531975feafdc7ee21"},
+    {"date":"2026-07-01","venue":"bybit","kind":"liquidations","bytes":28732,"sha256":"056f80e7b9823f5338e78fdcbb64984dd148db21bae3719f65b0751231b521a9"},
+    {"date":"2026-07-01","venue":"bybit","kind":"derivative_ticker","bytes":3675791,"sha256":"ac5913825c7940cd66dee45d2c2b3a401be6f6bd274a33125c3bf35f88f5f57f"},
+    {"date":"2026-07-01","venue":"binance","kind":"trades","bytes":27972950,"sha256":"f994c1852e8e5dac29bd2cd98c9022eb50a8dcb96fb44c80342e0b64279e586b"},
+    {"date":"2026-07-01","venue":"bybit-spot","kind":"trades","bytes":6722622,"sha256":"8d60518beceb66bf2f5e4e3619192b64d1ee664c131f2b6998a53dc9434046db"}
+  ]
+}
