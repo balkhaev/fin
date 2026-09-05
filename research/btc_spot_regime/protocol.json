@@ -1,0 +1,23 @@
+{
+  "id":"btc-spot-regime-20260906",
+  "base_commit":"73334cd02fd6bb9f92cbc4cf8dbccedbf573319d",
+  "user_objective":"Find >500% annual profit OR an actually profitable BTC candidate. Do not assert a guaranteed return.",
+  "scope":"NEW BTCUSDT spot long/cash research. No shorts, borrowed funds, perpetual contracts, funding payments or live orders. No claim that this is the original frequent BTC Pressure strategy.",
+  "data":{"venue":"Binance spot","interval":"1h","start":"2018-01-01","end_exclusive":"2026-09-01","source":"Official public monthly archives with published SHA256 checksums"},
+  "policies":["ema_1h_12_48","ema_4h_24_120","ema_1d_10_50","sma_1d_50_200","channel_1h_20_10","channel_4h_55_20","channel_1d_55_20","momentum_1d_63_200","dip_1d_rsi2_200","ensemble_1d"],
+  "definitions":{"ema":"Long when fast EMA > slow EMA and close > slow EMA. Otherwise cash.","sma":"Long when SMA50 > SMA200 and close > SMA200.","channel":"Enter on closed price exceeding prior lookback high, exit below prior shorter-lookback low. Keep state between events.","momentum":"Long if close > its value 63 days earlier and > SMA200.","dip":"In close>SMA200 regime, buy RSI2<10, exit RSI2>70 or after five daily bars, or loss of regime. This is a faster comparator, not tuned to results.","ensemble":"PRIMARY FIXED strategy: daily majority vote of EMA10/50, channel55/20 and momentum63/SMA200; at least two positive -> long, otherwise cash."},
+  "primary":"ensemble_1d; fixed before results, not selected on the evaluation period",
+  "challenger_selection":"Only 2020-01-01 to 2024-01-01: rank positive net CAGR divided by max(10%, absolute max drawdown), require >=12 completed trades, no execution incompleteness. Break ties by ID. Select exactly one challenger before opening 2024 and later returns. 2024 is validation, never rerank after validation or final results.",
+  "periods":{"development":"2020-2023","validation":"2024","later":"2025-01-01 through 2026-08-31, ONE continuous account","full_diagnostic":"2020-01-01 through 2026-08-31"},
+  "history_status":"History has been used by the wider research program, including August 2026. Every result is historical REUSED research, not pristine OOS or live forward. All ten later outcomes retained; any ex-post winner labeled exploratory.",
+  "capital":1000,
+  "execution":{"commission_each_side":0.001,"adverse_slippage_each_side":0.0005,"delay_hours_after_closed_signal":1,"position":"Buy fixed BTC quantity using at most allocation fraction of current cash when flat; sell all on exit; never average down or rebalance intraposition.","quantity_step":0.00001,"minimum_notional":10,"participation_cap":"0.1% of preceding complete hourly BTC volume; reject entries above cap, not optimistic partial filling","fees_paid_in":"quote currency modeled; no BNB discount assumed"},
+  "primary_risk":"No leverage, at most 100% spot purchase. This is NOT the old 0.25% per-trade /7% permanent-loss setup. Slow trend exits are not a 10% drawdown guarantee; actual drawdowns must be reported prominently.",
+  "risk_comparators":["25% cash allocation at entry, unchanged signal", "100% allocation with permanent 7% equity drawdown stop using previous closed-hour peak, no restart after halt"],
+  "cost_stresses":["double commission and slippage together, same signals but rerun sizing", "24-hour execution delay", "same-fills double-commission arithmetic, not a new executable strategy"],
+  "benchmark":"Buy-and-hold BTC spot and cash with the same interval, initial capital and fee/slippage convention; 25% buy-and-hold comparator too. Profit alone is not alpha.",
+  "gaps":"Do not synthesize candles. Retain missing-hour mask, reset multi-bar indicator history at gaps. Block new entries until complete support. Price/data gaps while exposed mark execution incompleteness; returns may be diagnostic but cannot count as a validated result. Whole incomplete aggregated bars invalid.",
+  "tests":["prefix causality","known synthetic returns and cashflow reconciliation","no borrowing or negative balances","one-hour delay","fees both sides","hardstop through gaps","no reentry after permanent halt","missing data blocks qualification","benchmark same prices","no annualizing less than 365 days","untuned primary and pre-final challenger lock"],
+  "annual500_evidence":"Report actual calendar-year returns and >=365-day CAGR separately. A cumulative multiyear return >500% is NOT +500% per year. At most an observed historical simulation, never future certainty.",
+  "publication":"Isolated research only; publish code, all outcomes, complete fills, equity series and CI evidence via PR to main. Existing research/runtime not modified. No secrets, purchases or live orders."
+}
