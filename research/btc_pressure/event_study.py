@@ -99,7 +99,7 @@ def confirmed_bars(trades,start_us):
     return bars
 
 
-def frames(trades,spots,book,liq,start_us):
+def frames(trades,spots,book,liq,start_us,observer=None):
     p=buckets(trades,start_us);flows=[buckets(x,start_us) for x in spots]
     l=buckets(liq,start_us);bars=confirmed_bars(trades,start_us)
     n=86400;times=start_us//1000+(np.arange(n)+1)*1000
@@ -125,6 +125,7 @@ def frames(trades,spots,book,liq,start_us):
         elif bi<60 or bi>=len(bars) or not np.isfinite(barvalues[bi]).all():reason='bar_warmup_or_gap'
         elif not np.isfinite([hi10[k],lo10[k],phi[k],plo[k]]).all():reason='thin_trade_history'
         if reason:
+            if observer is not None:observer(int(now),None,reason)
             counters[reason]+=1
             if reason not in ('flow_warmup','bar_warmup_or_gap'):machine.reset()
             continue
@@ -144,6 +145,7 @@ def frames(trades,spots,book,liq,start_us):
         depths.append((bdepth[j],adepth[j]));valid_frames+=1
         if f.consensus:counters['spot_consensus_seconds']+=1
         if f.liquidation_side:counters['liquidation_burst_seconds']+=1
+        if observer is not None:observer(int(now),f,'ready')
         proposal=machine.on_frame(f)
         if proposal:out.append(proposal)
     counters['valid_frames']=valid_frames

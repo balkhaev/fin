@@ -1,0 +1,50 @@
+{
+  "date": "2026-08-01",
+  "acquisition_run": 33957339156,
+  "acquisition_artifact": 9966783126,
+  "protocol_commit": "f64d0b4dead60342840bbdcd8a1c9e160d44ebc5",
+  "files": [
+    {
+      "date": "2026-08-01",
+      "venue": "bybit",
+      "kind": "trades",
+      "sha256": "b85d6c0a9f378b249c673215a1afdb383035059e4f0cf9b60b3f47e1ca75c6db",
+      "bytes": 14480418
+    },
+    {
+      "date": "2026-08-01",
+      "venue": "bybit",
+      "kind": "book_snapshot_5",
+      "sha256": "41fb790e56f31484faf24208b916457df045cbf07c30b715897a46f2f5bb381c",
+      "bytes": 13421048
+    },
+    {
+      "date": "2026-08-01",
+      "venue": "bybit",
+      "kind": "liquidations",
+      "sha256": "e9f05ee6d1b9f6a3b699002e0106747fd1b8e85f31fdfbe3d6e54688486115c2",
+      "bytes": 5407
+    },
+    {
+      "date": "2026-08-01",
+      "venue": "bybit",
+      "kind": "derivative_ticker",
+      "sha256": "f25ab55ce5c40a22e16aad40c880c66e2e35ee80302ed91b79647eba85612971",
+      "bytes": 1675529
+    },
+    {
+      "date": "2026-08-01",
+      "venue": "bybit-spot",
+      "kind": "trades",
+      "sha256": "0fff0317a4df5b18caab3e40be845f383eaa7003a6048bebc6277ef65b5a4494",
+      "bytes": 1812747
+    },
+    {
+      "date": "2026-08-01",
+      "venue": "binance",
+      "kind": "trades",
+      "sha256": "95e59ad8bccee8768fe0370bc0f3e18ab3f65262fbe0089dfc0575c439ec26a9",
+      "bytes": 6338707
+    }
+  ]
+}

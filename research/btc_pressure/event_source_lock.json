@@ -3,7 +3,7 @@
   "research/btc_pressure/strategy.py": "aad05c9acb191dbfb861946a81a0986da2aae33796e2bf662ddecbcea45549c3",
   "research/btc_pressure/paper.py": "637fb8a32a1a2de3ea4b5c4263e7a97182c2b0425f4925df592872b2256d6771",
   "research/btc_pressure/run.py": "2ed387748a3c9d363aa4a16a8dda769cf9ce3f2c4916ccc730098a459f638d2e",
-  "research/btc_pressure/event_study.py": "69cca347c02789a805e81155403b2233d4e8e6970271f7c357619efef5a745a5",
+  "research/btc_pressure/event_study.py": "b019623731846f393bdca62ac215b285543a3c87689ee7e74a964fba7961e120",
   "research/btc_pressure/download_event_samples.py": "aaeb466315c8d5b83d7dea7afbbaba8dd5e93c905ac39ae4eb10cdaa474bcca1",
   "tests/test_btc_pressure.py": "189c5fb43f2dc65837484b46700af908785809eb5c01df1be332c1f79eb40b12",
   "tests/test_btc_pressure_audit.py": "abed5ffec2134be97404377ed4b188666a2e49bfa3f4ad32e977947bd68a4ff4"
