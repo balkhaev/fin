@@ -1,0 +1,56 @@
+name: BTC Pressure health evidence
+on:
+  push:
+    branches: [research/btc-pressure-feed-health]
+    paths: [.github/workflows/btc-pressure-health-data.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch public archives and preserve provenance
+        run: |
+          python - <<'PY'
+          import concurrent.futures,datetime,gzip,hashlib,json,pathlib,urllib.request
+          root=pathlib.Path('health-evidence');root.mkdir()
+          protocol=pathlib.Path('research/btc_pressure/health_protocol.json')
+          spec=json.loads(protocol.read_text());dates=spec['reused_event_dates']+spec['additional_event_dates']
+          tasks=[(date,venue,'book_snapshot_5') for date in dates for venue in ('binance','bybit-spot')]
+          kinds={'bybit':['trades','book_snapshot_5','liquidations','derivative_ticker'],'binance':['trades'],'bybit-spot':['trades']}
+          tasks += [(d,v,k) for d in spec['additional_event_dates'] for v,ks in kinds.items() for k in ks]
+          def one(task):
+              day,venue,kind=task;name=f'{day}_{venue}_{kind}.csv.gz'
+              url=f'https://datasets.tardis.dev/v1/{venue}/{kind}/{day.replace("-","/")}/BTCUSDT.csv.gz'
+              row=dict(date=day,venue=venue,kind=kind,filename=name,url=url);p=root/name
+              try:
+                  count=0;digest=hashlib.sha256()
+                  with urllib.request.urlopen(url,timeout=60) as r,p.open('wb') as f:
+                      row.update(http_status=r.status,etag=r.headers.get('ETag'),last_modified=r.headers.get('Last-Modified'))
+                      while True:
+                          x=r.read(1048576)
+                          if not x:break
+                          count+=len(x)
+                          if count>250*1048576:raise ValueError('Per-file budget exceeded')
+                          digest.update(x);f.write(x)
+                  with gzip.open(p,'rt') as f:row['header']=f.readline().strip()
+                  row.update(status='downloaded',bytes=count,sha256=digest.hexdigest())
+              except Exception as e:
+                  p.unlink(missing_ok=True);row.update(status='unavailable',error=str(e))
+              return row
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:rows=list(pool.map(one,tasks))
+          result=dict(files=rows,protocol_sha256=hashlib.sha256(protocol.read_bytes()).hexdigest(),downloaded_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),purchases=False,api_key_used=False,live_orders=False)
+          (root/'manifest.json').write_text(json.dumps(result,indent=2))
+          print(json.dumps(result,indent=2))
+          if any(x['status']!='downloaded' for x in rows):raise SystemExit('Incomplete data: see manifest; no substitution')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-pressure-health-evidence
+          path: health-evidence/
+          compression-level: 0
+          retention-days: 7
