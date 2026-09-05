@@ -1,0 +1,20 @@
+{
+  "id": "btc-pressure-account-replay-20260905",
+  "base_commit": "ce37e28bfe89044427f662b46d7a63a6f1803193",
+  "objective": "Advance the BTC +500% annual objective by measuring actual modeled one-account trades, not overlapping markouts. No promised outcome.",
+  "reused_event_dates": ["2025-09-01", "2026-03-01", "2026-09-01"],
+  "additional_event_date": "2026-08-01",
+  "additional_date_status": "Preselected before reading this event tape. This date was previously seen at candle resolution, so not completely pristine market history.",
+  "signal_profile": "Reuse BTC Pressure event_study closed-receive-second features and the unchanged Mechanisms. Export frames through an observer without tuning thresholds. Clock/source semantics are those of the existing archive profile, not the raw-message live recorder.",
+  "execution": "Existing Broker, one position and one pending entry maximum. Merge actual Bybit trades, depth-five snapshots, ticker context and deterministic frame/timer events in provider receive order. No fill at a future quote before latency. Passive orders consume visible queue and opposing prints; exits consume only available displayed depth. Model constraints and defects are separately tested.",
+  "primary_settings": {"capital":1000,"risk":0.0025,"exposure":2,"maker_fee":0.0002,"taker_fee":0.00055,"slippage":0.0001,"latency_ms":250,"ttl_ms":15000,"participation":0.01},
+  "settings_origin": "Experimental assumptions retained for comparability, not personal account instructions or historical fee entitlements.",
+  "contract_scenario": {"qty_step":0.001,"min_qty":0.001,"min_notional":100,"tick":0.1,"historical_exchange_filters_verified":false},
+  "scenarios": ["original_passive", "double_slippage", "one_second_latency", "double_commission", "forced_taker_comparator"],
+  "selection": "None. All five settings reported on all available sessions. Primary is fixed original_passive, never chosen by later profit.",
+  "funding": "Ticker funding rate remains forecast. Preserve unresolved obligations and invalidate full-performance claims when any held settlement cannot be priced from authentic realized funding. Do not silently replace missing rates with zero.",
+  "session_boundary": "Each sampled day starts a separate account. Stop new entries and cancel pending entries 60 seconds before the observed day ends, request reduce-only close, and retain any unfilled residual as incomplete. This boundary liquidation is an explicit sampling rule, not the original multiday strategy.",
+  "stress_policy": "Same frozen raw signal tape across scenarios. Execution, cost gate, quantity and subsequent account state may differ. No martingale or leverage escalation.",
+  "validation": ["Existing unit tests", "prefix causality of frame export", "cash ledger and all fills reconcile", "single exposure, cancel races and depth consumption", "no valid annual claim on sparse dates", "compare independent CI when available"],
+  "annual_acceptance": "At least 365 continuously covered days after selection, >500% net return, fees/funding and risk constraints verified, out-of-selection and execution stress evidence. Sparse session profits are not annualized. No live trading."
+}
