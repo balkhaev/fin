@@ -1,0 +1,51 @@
+name: BTC Pressure account event data
+on:
+  push:
+    branches: [research/btc-pressure-account-replay]
+    paths: [.github/workflows/btc-pressure-account-data.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download one frozen public session
+        run: |
+          python - <<'PY'
+          import concurrent.futures,hashlib,json,pathlib,urllib.request,datetime
+          root=pathlib.Path('account-event-data');root.mkdir()
+          date='2026-08-01'
+          types={'bybit':['trades','book_snapshot_5','liquidations','derivative_ticker'],'bybit-spot':['trades'],'binance':['trades']}
+          def get(task):
+              venue,kind=task;name=f'{date}_{venue}_{kind}.csv.gz'
+              url=f'https://datasets.tardis.dev/v1/{venue}/{kind}/{date.replace("-","/")}/BTCUSDT.csv.gz'
+              row=dict(date=date,venue=venue,kind=kind,filename=name,url=url)
+              p=root/name
+              try:
+                  digest=hashlib.sha256();size=0
+                  with urllib.request.urlopen(url,timeout=60) as r,p.open('wb') as f:
+                      row['http_status']=r.status
+                      while True:
+                          chunk=r.read(1048576)
+                          if not chunk:break
+                          size+=len(chunk)
+                          if size>250*1048576:raise ValueError('250MiB file budget exceeded')
+                          digest.update(chunk);f.write(chunk)
+                  row.update(status='downloaded',sha256=digest.hexdigest(),bytes=size)
+              except Exception as e:
+                  p.unlink(missing_ok=True);row.update(status='unavailable',error=str(e))
+              return row
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+              rows=list(pool.map(get,[(v,k) for v,ks in types.items() for k in ks]))
+          m=dict(date=date,files=rows,downloaded_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),api_key_used=False,purchases=False)
+          (root/'manifest.json').write_text(json.dumps(m,indent=2));print(json.dumps(m,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-pressure-account-event-data
+          path: account-event-data/
+          compression-level: 0
+          retention-days: 14
