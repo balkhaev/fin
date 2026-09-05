@@ -1,0 +1,43 @@
+name: Inspect BTC Spot research evidence
+on:
+  push:
+    branches: [research/btc-spot-regime]
+    paths: [.github/workflows/btc-spot-inspect.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: balkhaev/fin
+          run-id: 33993851186
+          name: btc-spot-regime-evidence
+          path: evidence
+      - run: |
+          python - <<'PY'
+          import pathlib,json,zipfile,csv,io,datetime
+          root=pathlib.Path('evidence')
+          for name in ('research.log','all-tests.log'):
+              p=root/name
+              if p.exists():print(name,'\n'.join(p.read_text().splitlines()[-30:]))
+          bad=[];total=0
+          for p in sorted((root/'spot-data').glob('*.zip')):
+              with zipfile.ZipFile(p) as z:
+                  with z.open(z.namelist()[0]) as f:
+                      for row in csv.reader(io.TextIOWrapper(f)):
+                          try:a=int(row[0])
+                          except ValueError:continue
+                          total+=1
+                          t=a//1000 if a>10**14 else a
+                          if t%3600000:bad.append(dict(file=p.name,time=a,ms=t,utc=datetime.datetime.fromtimestamp(t/1000,datetime.timezone.utc).isoformat(),close_time=row[6]))
+          print('ALL_RAW_ROWS',total)
+          print('OFF_GRID_COUNT',len(bad))
+          print('OFF_GRID_ROWS',json.dumps(bad[:100]))
+          m=json.loads((root/'spot-data/manifest.json').read_text())
+          print('MONTHS',len(m['files']),'FAILURES',[r for r in m['files'] if r['status']!='verified'])
+          PY

@@ -1,0 +1,16 @@
+{
+  "inspection_run":33993981221,
+  "inspection_job":101381049098,
+  "failed_computation_run":33993851186,
+  "market_returns_computed_before_correction":false,
+  "raw_rows":75840,
+  "off_grid_rows":43,
+  "archive":"BTCUSDT-1h-2018-02.zip",
+  "first_off_grid_open_utc":"2018-02-09T09:28:14.789+00:00",
+  "last_off_grid_open_utc":"2018-02-11T03:28:14.789+00:00",
+  "resolution":"Retain original zip and exact timestamps in audit. Exclude off-grid observations from the UTC hourly grid WITHOUT rounding, backfilling or invented OHLC. Missing UTC hours remain NaN and reset indicator support.",
+  "scope":"Affected observations are in 2018 warmup, before the fixed 2020 development start. No return-based data exclusions or signal changes.",
+  "source_coverage":"104 month identities acquired successfully; August2026 consists of 31 verified daily1h spot archives following monthly404.",
+  "tests_before_correction":{"new_spot_tests":32,"full_root_tests":468,"subtests":46,"failures":0},
+  "not_a_profitability_result":true
+}

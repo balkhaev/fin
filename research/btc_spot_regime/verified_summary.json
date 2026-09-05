@@ -1,0 +1,72 @@
+{
+  "id":"btc-spot-regime-20260906",
+  "protocol_commit":"79d5c8081359436cd5e417c0239a5c3898e9bd13",
+  "tested_core_commit":"6ac67cee0e0a60476bfaea96877503ac2631b636",
+  "initial_run":33994142427,
+  "initial_result_sha256":"dd8569eee0229f8d804577ad888e39fcc5d3be9ae1b8d79ae42b71ad122edd82",
+  "followup_commit":"01fd8b74632a62031f292a8f2160d84431290751",
+  "followup_run":33994334050,
+  "followup_result_sha256":"b567d60148089dc48e37fcbb51aaa36897e581de638b955aada96c6a21f63563",
+  "followup_fill_ledger_sha256":"6814b68cf188768ff65cc0c624574c7d8a620f9107bdc163cd1f06ddecf665ed",
+  "scope":"BTCUSDT spot long/cash, fully funded. Historical simulation; no actual exchange fills or leverage.",
+  "later_period":{"start":"2025-01-01","end_exclusive":"2026-09-01","days":608,"capital":1000,"numeraire":"USDT"},
+  "selection":{"primary":"ensemble_1d","primary_return_pct":-0.5249043664603104,"qualified_challenger":null,"positive_comparators_are_exploratory":true,"history_previously_seen":true},
+  "later_base":[
+    {"policy":"ema_1h_12_48","return_pct":-78.78201130783762,"max_close_drawdown_pct":-83.31878523607381,"round_trips":393},
+    {"policy":"ema_4h_24_120","return_pct":6.249640183692318,"max_close_drawdown_pct":-30.11079451837244,"round_trips":45},
+    {"policy":"ema_1d_10_50","return_pct":4.882415870082912,"max_close_drawdown_pct":-28.577573251733956,"round_trips":13},
+    {"policy":"sma_1d_50_200","return_pct":-28.054324091258188,"max_close_drawdown_pct":-39.24063846055667,"round_trips":9},
+    {"policy":"channel_1h_20_10","return_pct":-53.71914231198394,"max_close_drawdown_pct":-62.83613725787105,"round_trips":219},
+    {"policy":"channel_4h_55_20","return_pct":5.7510660173412775,"max_close_drawdown_pct":-26.16027825877608,"round_trips":22},
+    {"policy":"channel_1d_55_20","return_pct":-11.742907298392314,"max_close_drawdown_pct":-33.62684997648549,"round_trips":7},
+    {"policy":"momentum_1d_63_200","return_pct":3.034656219704668,"max_close_drawdown_pct":-27.047489919571234,"round_trips":11},
+    {"policy":"dip_1d_rsi2_200","return_pct":-7.060224561285777,"max_close_drawdown_pct":-18.67139371263039,"round_trips":11},
+    {"policy":"ensemble_1d","return_pct":-0.5249043664603104,"max_close_drawdown_pct":-26.72513507216785,"round_trips":11},
+    {"policy":"buy_hold","return_pct":-16.274901312322797,"max_close_drawdown_pct":-53.7402275721133,"round_trips":1},
+    {"policy":"cash","return_pct":0,"max_close_drawdown_pct":0,"round_trips":0}
+  ],
+  "daily_ema_exploratory_candidate":{
+    "policy":"ema_1d_10_50",
+    "rule":"Daily EMA10>EMA50 AND close>EMA50 -> hold BTC; otherwise cash; execute one full hour after signal availability.",
+    "return_pct":4.882415870082912,"cagr_pct":2.9051078438048217,"final_equity":1048.8241587008291,
+    "max_close_drawdown_pct":-28.577573251733956,"round_trips":13,
+    "average_hold_hours":426.38461538461536,"profit_factor":1.168726906766131,
+    "fees":26.389516131372506,"statistically_proven_positive_expectancy":false,
+    "bootstrap_annualized_95pct_interval":[-24.41811410840211,44.79720362985695],
+    "bootstrap_is_selection_corrected":false,
+    "scenarios":[
+      {"name":"base","return_pct":4.882415870082912,"max_close_drawdown_pct":-28.577573251733956,"round_trips":13},
+      {"name":"double_costs","return_pct":0.8670572387347697,"max_close_drawdown_pct":-29.850315516764038,"round_trips":13},
+      {"name":"delay_24h","return_pct":3.665848773972913,"max_close_drawdown_pct":-29.997687123040173,"round_trips":13},
+      {"name":"allocation_25pct","return_pct":1.618048367933289,"max_close_drawdown_pct":-8.110997609020764,"round_trips":13},
+      {"name":"allocation_25pct_double_costs","return_pct":0.6282418656952338,"max_close_drawdown_pct":-8.5032336932649,"round_trips":13},
+      {"name":"allocation_25pct_delay_24h","return_pct":1.3388610868582784,"max_close_drawdown_pct":-8.45719457299785,"round_trips":13},
+      {"name":"permanent_stop_7pct","return_pct":0.4114223974452269,"max_close_drawdown_pct":-7.000000000000018,"round_trips":1,"halted_at":"2025-01-08 12:00:00+00:00"}
+    ],
+    "annual_reset":[
+      {"year":2024,"full_year":true,"return_pct":59.568292711012916,"round_trips":11},
+      {"year":2025,"full_year":true,"return_pct":-1.240736920604224,"round_trips":9},
+      {"year":2026,"full_year":false,"return_pct":6.202951066679097,"round_trips":4}
+    ]
+  },
+  "four_hour_ema_cost_checks":{"base_return_pct":6.249640183692318,"double_costs_return_pct":-7.177710888656352,"delay24h_return_pct":-8.391367105876736},
+  "data":{"covered_months":104,"verified_archives":134,"observed_utc_hours":75797,"missing_utc_hours":163,"off_grid_warmup_rows_excluded":43,"daily_replacement_month":"2026-08","no_price_forward_fill":true,"missing_hours_2024_and_later":0,"manifest_sha256":"0ce4a8eb23c2e925d678e55367df02277c524ff686d6b1c54825a870b7bcc8ed"},
+  "verification":{"new_tests":36,"full_root_tests":472,"subtests":46,"failures":0,"initial_result_exactly_reproduced_on_second_clean_runner":true,"local_execution":false,"followup_baselines_match":true,"followup_scenarios":77,"followup_all_fill_ledgers_reconciled":true,"followup_separately_reproduced":false},
+  "artifacts":[
+    {"id":9977552924,"name":"btc-spot-regime-evidence","sha256":"000cff56919a9004b90e3157c910b0b207c5ffd85c79a708e7776ee0933c572f"},
+    {"id":9977562349,"name":"btc-spot-regime-reproduced","sha256":"2ab798c720a7227f48ae53947bb3261e9b223d646f0bc9fea8e988be8716ac23"},
+    {"id":9977590927,"name":"btc-spot-all-policy-diagnostics","sha256":"4e6b61d65e3c849755d43546bff9a4e720dc39ac74fbff1f803bf1d017fbead1"}
+  ],
+  "observed_valid_full_calendar_years_above_500":[],
+  "annual_500_proven":false,"live_ready":false,"real_orders":0,
+  "limitations":[
+    "Primary failed. Positive comparators were identified after reading their results; not preselected validated winners.",
+    "No eligible challenger passed original development admission. Historical held data gaps remain invalid, not repaired using future prices.",
+    "All history is reused within a larger research program; no pristine holdout or live forward.",
+    "100% spot allocation does not satisfy old 0.25% trade-risk or10% drawdown target. Quarter-allocation buys fixed coins, not continuous rebalancing.",
+    "Returns are small versus historical drawdown; even positive doubled-cost results are not a safety guarantee.",
+    "Only13 later daily-EMA trades; bootstrap includes losses and is not corrected for repeated selection.",
+    "Hourly next-open execution with assumed costs is not certified real L2/queue execution or historical account-fee reconstruction.",
+    "USDT numeraire; taxes, infrastructure, counterparty, custody and depeg costs omitted. No forecast of future returns."
+  ]
+}
