@@ -1,0 +1,69 @@
+name: BTC Flow validation
+on:
+  push:
+    branches: [research/btc-pullback-flow-500]
+    paths:
+      - research/btc_flow/**
+      - tests/test_btc_flow.py
+      - .github/workflows/btc-flow-validation.yml
+  pull_request:
+    paths:
+      - research/btc_flow/**
+      - tests/test_btc_flow.py
+      - .github/workflows/btc-flow-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: btc-flow-validation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - name: Engineering regression tests
+        run: python -m pytest -q tests/test_btc_flow.py --junitxml=btc-flow-tests.xml
+      - name: Download checksum-verified historical archives
+        run: python -m research.btc_flow.download --out btc-evidence
+      - name: Reproduce frozen research without real orders
+        run: |
+          python -m research.btc_flow.study --data btc-evidence --out btc-flow-report
+          cp btc-evidence/manifest.json btc-flow-report/source_manifest.json
+      - name: Compare replay to committed evidence
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, math, pathlib
+          expected=json.loads(pathlib.Path('research/btc_flow/results/summary.json').read_text())
+          actual=json.loads(pathlib.Path('btc-flow-report/results.json').read_text())
+          assert actual['protocol_sha256']==expected['protocol_sha256']
+          assert actual['data']==expected['data']
+          assert actual['selection']['id']==expected['selected_diagnostic_id']
+          assert actual['selection']['admitted'] is False
+          assert all(row['score']<=0 for row in actual['training_ranking'])
+          for row in expected['annual_baseline']:
+              got=next(x for x in actual['annual'] if x['scenario']=='original_proxy_protected' and x['year']==row['year'])
+              assert got['trades']==row['trades']
+              assert math.isclose(got['return_pct'],row['return_pct'],abs_tol=1e-7)
+          for row in expected['oos']:
+              got=next(x for x in actual['oos'] if x['scenario']==row['scenario'])
+              for key,value in row.items():
+                  assert got[key]==value if isinstance(value,str) else math.isclose(got[key],value,abs_tol=1e-7)
+          assert actual['target_achieved'] is False and actual['live_ready'] is False
+          print('Frozen negative result reproduced; this is NOT a profitability gate pass.')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-flow-research-results
+          path: |
+            btc-flow-report/
+            btc-flow-tests.xml
+          retention-days: 90
