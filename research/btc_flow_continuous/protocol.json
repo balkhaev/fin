@@ -1,0 +1,27 @@
+{
+  "id": "btc-flow-continuous-20260905",
+  "base_commit": "8d1424e519724c85fd8ec767d3b3574f3f43b9a2",
+  "objective": "Investigate >500% annual net return with frequent BTC trading; do not manufacture or promise the outcome.",
+  "scope": "NEW minute-resolution same-venue Binance spot/perpetual flow hypotheses, NOT the second-resolution Bybit BTC Pressure strategy or its historical performance.",
+  "period": {"start": "2022-01-01", "end_exclusive": "2026-08-01"},
+  "source": "Binance public monthly BTCUSDT spot 1m, USD-M 1m trade and mark-price klines, realized fundingRate archives, SHA-256 CHECKSUM verified. Public REST exact funding mark requested if accessible; failures retained, no bypass.",
+  "data_integrity": "Do not invent missing spot candles. Align on UTC minutes, preserve spot validity mask, require full lookback support, block entries on gaps. Missing futures trade minutes fail the study. Missing mark at a held funding event invalidates fully priced return. Spot timestamps since 2025 may be microseconds; normalize explicitly.",
+  "families": ["confirmed_breakout", "spot_absorption", "perp_exhaustion"],
+  "grid": {"flow_window_minutes": [1,5,15], "flow_threshold": [0.10,0.25], "exit_profile": ["quick","intraday","runner"], "count":54},
+  "families_definition": {
+    "confirmed_breakout":"Spot and perp signed taker quote-volume imbalance agree beyond threshold; close breaks previous 20-minute range; spot 20-minute trend agrees.",
+    "spot_absorption":"Perp flow remains opposite, spot flow turns beyond threshold, price candle turns toward spot and lies on corresponding side of 60-minute volume-weighted price; trade the spot direction.",
+    "perp_exhaustion":"Perp impulse and flow strong, spot flow does not confirm, perp/spot log-basis beyond preceding 60-minute mean by 1.5 standard deviations; completed price candle turns against impulse; fade the prior impulse."
+  },
+  "exit_profiles": {"quick":{"stop_atr":1.5,"rr":2.0,"hold_minutes":15},"intraday":{"stop_atr":2.0,"rr":3.0,"hold_minutes":120},"runner":{"stop_atr":3.0,"rr":0.0,"hold_minutes":1440,"trailing":true}},
+  "execution": "Fully closed-bar signal, next minute open taker with adverse slippage. Single position, stop-first in ambiguous bars, unfavorable gaps honored. Trailing applies from the NEXT bar; signal-side ATR never future ATR. No entry on funding minute. Quantity rounded down to 0.001 BTC; min notional 100, max participation 0.1% previous minute volume. These contract filters are scenario assumptions.",
+  "risk": {"capital":1000,"per_trade":0.0025,"exposure_cap":2.0,"daily_halt":0.01,"permanent_drawdown_halt":0.07,"martingale":false},
+  "costs": {"fee_each_side":0.0005,"slippage_each_side":0.0001,"entry_gate":"target distance >=2 times round-trip primary costs; runner requires stop distance >=round-trip primary costs. Gate remains frozen across stress scenarios.","funding":"Realized historical rate. Exact settlement mark if accessible; otherwise mark-price candle OPEN explicitly labeled approximation; report adverse settlement-minute mark sensitivity separately. No assumed zero funding."},
+  "discovery": "2022-2023, same historical periods previously used in other experiments, therefore reused history. Rank minimum calendar-year protected net return, then total net then config id. Evaluate no final-period candidate selection.",
+  "validation": "2024. Freeze one per family from discovery. Admission requires discovery years and validation all positive, PF>=1.1, >=300 discovery closed trades and >=100 validation trades. Pick admitted highest validation return, otherwise best diagnostic rejected finalist. No lowering gates after results.",
+  "reused_evaluation": "2025-01-01 through 2026-07-31, continuous ONE account with no annual resets. Reused candle history, NOT pristine out-of-sample. Report 2025 full year and 2026 YTD separately as reset diagnostics too.",
+  "stresses": ["double slippage", "one extra minute entry latency", "double commission", "funding adverse minute mark", "zero fee/slippage ablation with funding retained"],
+  "control": "Explicit cash/no-trade control and prior BTC Pressure six-session results remain separate. Never append sparse sessions into a year or attribute new minute-model returns to the old strategy.",
+  "annual_gate": "Evidence requires >=365 continuous non-selection days, >500% NET, requested frequency reported, DD and execution stress verified, no missing cost/exposure. This reused minute model alone cannot establish live performance or future guarantees; live_ready=false.",
+  "publication": "Publish readable code, all tested configurations, result tables, data audits and test evidence in balkhaev/fin via PR. No live trading or scheduler changes."
+}
