@@ -1,0 +1,19 @@
+{
+  "id": "btc-pressure-feed-health-20260905",
+  "base_commit": "6f0f241845f6654d65be9d9ff1ab19e423b34451",
+  "objective": "Test a concrete obstacle to the >500% annual objective: do quiet spot tapes cause premature liquidation of otherwise protected positions? No promised profit.",
+  "reused_event_dates": ["2025-09-01", "2026-03-01", "2026-08-01", "2026-09-01"],
+  "additional_event_dates": ["2026-04-01", "2026-07-01"],
+  "independence": "Additional event tapes selected before their acquisition/results, but corresponding candle history was previously researched. Neither sparse dates nor repeated historical periods are pristine annual OOS.",
+  "additional_data": "Public normalized book_snapshot_5 for Binance Spot and Bybit Spot on all six dates; original six mandatory event types on the two additional dates. No keys, purchases or access-control bypass.",
+  "primary_policy": "quote_witnessed_hold: retain the exact original entry signals, costs, stops and position size. When a frame is unavailable solely because a spot trade is older than 5s, cancel pending entry and do not submit new orders/promotions. An existing position may remain under its unchanged protective stop/time/exposure/funding controls only when execution book and perpetual trades are fresh and each quiet spot source has its own valid quote observed <=5s ago; last spot trade must still be inside the existing shortest 60s spot-flow window. Do not create a replacement signal or extend the signal support beyond 60s. With no witness, expired support, stale execution book, or any other unavailable feature reason, use original protective exit. Never relax a stop or add quantity.",
+  "health_semantics": "A quote proves that a contemporaneous quote source was observed, not that the trade subscription was complete or collector clocks synchronized. Source unavailable and source inactive are separate states. No quotes fabricated from future data or from perpetual instead of spot.",
+  "control_policy": "original: prior five-second trade-age exit, unchanged Broker and Mechanisms",
+  "pairing": "Both policies on all six independent $1000 session accounts. No parameter search, no winner selection, no annualization. All outcomes and unfilled orders retained.",
+  "execution_scenarios": ["base latency 250ms and slippage 0.01% per side", "latency 1000ms and slippage 0.02% per side together"],
+  "costs": {"maker_fee": 0.0002, "taker_fee": 0.00055, "risk": 0.0025, "max_exposure": 2},
+  "cost_stress": "Additionally recompute each observed closed trade with double commissions while keeping the exact same fills: arithmetic sensitivity, NOT an independently executable alternate account. No favorable zero-trade stress conclusion.",
+  "testing": ["strictly prior quote selection", "wrong-source and stale witness rejection", "no new entries or increased risk during silence", "pending entry canceled", "hard stop remains active", "original replay reproduces published four-date baseline", "independent cash-flow/fee ledger reconciliation", "all source hashes pinned"],
+  "annual_evidence": "Only >=365 continuous non-selection days with actual costs/funding and independently verified execution could support observed annual net >500%; no finite historical result guarantees future returns. This sparse experiment alone cannot establish the annual objective.",
+  "live_orders": false
+}
