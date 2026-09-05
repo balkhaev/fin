@@ -11,8 +11,10 @@ COLS=['time','open','high','low','close','volume','close_time','quote_volume','c
 
 def normalize_time(x):
     a=np.asarray(x,dtype=np.int64)
-    if len(a) and np.all(a>10**14):a=a//1000
-    if np.any(a%60000):raise ValueError('Mixed units or non-minute timestamp')
+    micro=a>10**14
+    if len(a) and micro.any() and not micro.all():raise ValueError('Mixed timestamp units')
+    if len(a) and micro.all():a=a//1000
+    if np.any(a%60000):raise ValueError('Non-minute timestamp')
     return a
 
 
