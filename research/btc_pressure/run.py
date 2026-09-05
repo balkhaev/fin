@@ -11,7 +11,7 @@ import random
 from statistics import mean
 from .adapters import Event,Normalizer
 from .strategy import Features,Mechanisms
-from .paper import Broker,Settings
+from .paper import Broker,Settings,model_fingerprint
 
 
 def write(path,data):
@@ -59,7 +59,9 @@ def replay(root:Path,out:Path,mode='observe',venue='bybit_perp',calibration=None
     if lines!=manifest['records']:
         broker.incomplete=True;errors.append(dict(error='Manifest record count mismatch'))
     report=broker.report()
-    complete=frames>0 and not errors and not manifest.get('errors') and not report['execution_incomplete']
+    complete=(frames>0 and not errors and not manifest.get('errors') and not report['execution_incomplete']
+              and manifest.get('synthetic') is False and not report['open_position_at_end']
+              and not report['pending_entry'] and report['funding_time_drawdown_verified'])
     report['performance_evaluable']=bool(complete)
     report['strategy_return_pct']=report['marked_return_pct'] if complete else None
     report.update(schema='btc-pressure-result-v1',raw_sha256=manifest['raw_sha256'],
@@ -94,6 +96,8 @@ def fit_gate(reports,out:Path):
         if r.get('synthetic') is not False or r.get('mode')!='diagnostic' or r.get('execution_incomplete') or r.get('parse_errors') or r.get('source_errors'):
             raise ValueError('Training requires intact real diagnostic evidence')
         if r.get('open_position_at_end') or r.get('pending_entry'):raise ValueError('Unresolved exposure in training')
+        if r.get('model_sha256')!=model_fingerprint() or r.get('performance_evaluable') is not True:
+            raise ValueError('Training model or performance evidence is not current and complete')
         if (r['venue'],r['settings_sha256'])!=identity:raise ValueError('Mixed contract/cost identity')
         end=max(end,r['input_end_ms']);hashes.append(r['raw_sha256'])
         for t in r['closed_trades']:
@@ -107,7 +111,7 @@ def fit_gate(reports,out:Path):
         bootstrap=sorted(mean(rng.choices(means,k=len(means))) for _ in range(2000))
         cells[key]=dict(trades=sum(map(len,days.values())),days=len(days),
                         mean_daily_r=mean(means),lower_mean_daily_r=bootstrap[49])
-    result=dict(schema='btc-pressure-gate-v1',venue=identity[0],settings_sha256=identity[1],
+    result=dict(schema='btc-pressure-gate-v2',model_sha256=model_fingerprint(),venue=identity[0],settings_sha256=identity[1],
                 training_end_ms=end,source_hashes=hashes,synthetic=False,cells=cells,
                 statistic='2.5% bootstrap bound of day-mean net R; uncorrected exploratory estimate',
                 live_ready=False)

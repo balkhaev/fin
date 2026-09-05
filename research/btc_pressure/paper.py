@@ -5,6 +5,8 @@ from decimal import Decimal,ROUND_DOWN,ROUND_UP
 import hashlib
 import json
 import math
+from functools import lru_cache
+from pathlib import Path
 from .strategy import Proposal
 
 
@@ -39,17 +41,34 @@ def round_step(q,step,up=False):
     return float((Decimal(str(q))/Decimal(str(step))).to_integral_value(rounding=ROUND_UP if up else ROUND_DOWN)*Decimal(str(step)))
 
 
+@lru_cache(maxsize=1)
+def model_fingerprint():
+    """Bind empirical gates to the exact signal, normalization and fill model."""
+    root=Path(__file__).parent
+    digest=hashlib.sha256()
+    for name in ('adapters.py','strategy.py','paper.py','run.py'):
+        raw=(root/name).read_bytes()
+        digest.update(name.encode()+b'\0'+hashlib.sha256(raw).digest())
+    return digest.hexdigest()
+
+
 class Gate:
     """Pre-period empirical evidence, not an invented trade win probability."""
     def __init__(self,artifact=None):self.artifact=artifact
     def allows(self,proposal,venue,settings):
         a=self.artifact
         if not a:return False,'no_calibration'
+        if a.get('schema')!='btc-pressure-gate-v2' or a.get('model_sha256')!=model_fingerprint():
+            return False,'calibration_model_mismatch'
         if a.get('venue')!=venue or a.get('settings_sha256')!=settings.fingerprint():return False,'calibration_identity_mismatch'
-        if a.get('training_end_ms',math.inf)>=proposal.time:return False,'calibration_from_future'
+        end=a.get('training_end_ms')
+        if type(end) is not int or end>=proposal.time:return False,'calibration_from_future'
         if a.get('synthetic') is not False:return False,'synthetic_calibration'
         cell=a.get('cells',{}).get(f'{proposal.family}:{proposal.side}',{})
-        good=cell.get('trades',0)>=200 and cell.get('days',0)>=30 and cell.get('lower_mean_daily_r',-math.inf)>0
+        n,d,lower=cell.get('trades'),cell.get('days'),cell.get('lower_mean_daily_r')
+        valid=(type(n) is int and type(d) is int and type(lower) in (int,float)
+               and math.isfinite(lower))
+        good=valid and n>=200 and d>=30 and lower>0
         return good,'positive_prior_net_evidence' if good else 'insufficient_prior_net_evidence'
 
 
@@ -66,6 +85,11 @@ class Broker:
         self.book_serial=0;self.proposals=0;self.funding_seen=set();self.unresolved_funding=set()
         self.last_bad_flow=None;self.last_trailing_minute=-1
         self.depth_size={};self.depth_available={}
+        self.position_serial=0
+        self.exposure_history=[]  # (receive_ms, position_id, side, quantity) after each fill
+        self.funding_obligations={}
+        self.funding_values={}
+        self.funding_history_revised=False
 
     def log(self,kind,**data):self.events.append(dict(time=self.now,type=kind,**data))
     def fresh(self):return self.book is not None and 0<=self.now-self.book_time<=self.s.book_age_ms
@@ -80,7 +104,7 @@ class Broker:
         eq=self.equity()
         if eq is None:return 0.
         dd=1-eq/self.peak
-        return min(self.s.risk,.001) if dd>=.05 else self.s.risk/2 if dd>=.03 else self.s.risk
+        return min(self.s.risk/2,.001) if dd>=.05 else self.s.risk/2 if dd>=.03 else self.s.risk
 
     def circuit(self):
         eq=self.equity()
@@ -152,13 +176,15 @@ class Broker:
         order=self.pending;p=order['proposal'];fee=qty*price*fee_rate
         if self.position is None:
             self.last_bad_flow=None;self.last_trailing_minute=-1
-            self.position=dict(side=p.side,qty=0.,entry=0.,stop=p.stop,target=p.target,
+            self.position_serial+=1
+            self.position=dict(position_id=self.position_serial,side=p.side,qty=0.,entry=0.,stop=p.stop,target=p.target,
                 family=p.family,initial_family=p.family,opened=self.now,expires=self.now+p.hold_ms,
                 gross=0.,fees=0.,funding=0.,total_qty=0.,risk_budget=order['risk_budget'])
         pos=self.position
         pos['entry']=(pos['entry']*pos['qty']+price*qty)/(pos['qty']+qty)
         pos['qty']+=qty;pos['total_qty']+=qty;pos['fees']+=fee
         self.cash-=fee;order['remaining']=max(0.,order['remaining']-qty)
+        self.exposure_history.append((self.now,pos['position_id'],pos['side'],pos['qty']))
         self.log('entry_fill',quantity=qty,price=price,fee=fee)
         if order['remaining']<self.instrument['qty_step']/2:self.pending=None
 
@@ -166,10 +192,11 @@ class Broker:
         pos=self.position;qty=min(qty,pos['qty']);fee=qty*price*self.s.taker_fee
         gross=pos['side']*qty*(price-pos['entry'])
         self.cash+=gross-fee;pos['gross']+=gross;pos['fees']+=fee;pos['qty']-=qty
+        self.exposure_history.append((self.now,pos['position_id'],pos['side'],max(0.,pos['qty'])))
         self.log('exit_fill',quantity=qty,price=price,fee=fee,reason=self.exit_order['reason'])
         if pos['qty']<1e-10:
             net=pos['gross']-pos['fees']-pos['funding']
-            self.trades.append(dict(entry_ms=pos['opened'],exit_ms=self.now,side=pos['side'],
+            self.trades.append(dict(position_id=pos['position_id'],risk_budget=pos['risk_budget'],entry_ms=pos['opened'],exit_ms=self.now,side=pos['side'],
                 family=pos['initial_family'],final_family=pos['family'],quantity=pos['total_qty'],
                 gross=pos['gross'],fees=pos['fees'],funding=pos['funding'],net=net,
                 net_r=net/pos['risk_budget'],reason=self.exit_order['reason']))
@@ -217,8 +244,12 @@ class Broker:
     def on_event(self,e):
         if e.received<self.now:raise ValueError('Broker receipt clock reversed')
         self.now=e.received
+        self.capture_funding_obligation()
         if self.pending:
-            if self.now>=self.pending['expires']:self.cancel('ttl')
+            if self.now>=self.pending['expires']:
+                deadline=self.pending['expires']+self.s.latency_ms
+                previous=self.pending.get('cancel_at')
+                self.pending['cancel_at']=deadline if previous is None else min(previous,deadline)
             if self.pending.get('cancel_at') is not None and self.now>=self.pending['cancel_at']:
                 self.pending=None;self.log('cancel_ack')
         if e.source!=self.venue:
@@ -227,16 +258,9 @@ class Broker:
         if e.kind=='instrument':self.instrument=dict(data)
         elif e.kind=='context':
             if 'next_funding' in data:
-                if self.position and self.next_funding and self.next_funding<=self.now and self.next_funding not in self.funding_seen:
-                    self.unresolved_funding.add(int(self.next_funding))
                 self.next_funding=int(data['next_funding'])
         elif e.kind=='funding':
-            self.funding_seen.add(e.occurred);self.unresolved_funding.discard(e.occurred)
-            if self.position:
-                if e.occurred<self.position['opened'] or self.now-e.occurred>5000:
-                    self.incomplete=True;self.log('late_funding_accounting_unverified')
-                cost=self.position['side']*self.position['qty']*data['mark']*data['rate']
-                self.cash-=cost;self.position['funding']+=cost;self.log('funding_paid',cost=cost)
+            self.apply_funding(e)
         elif e.kind=='gap':
             self.book=None;self.cancel('data_gap')
             if self.position:self.incomplete=True;self.request_exit('data_gap')
@@ -262,13 +286,67 @@ class Broker:
         self.maintenance()
         self.circuit()
 
+    def exposure_at(self, timestamp):
+        # Strictly before settlement; fills at identical millisecond have unknown
+        # exchange ordering and must not create a certified funding calculation.
+        snapshot=None
+        for time,pid,side,quantity in reversed(self.exposure_history):
+            if time<timestamp:
+                snapshot=(pid,side,quantity)
+                break
+        return snapshot if snapshot and snapshot[2]>1e-12 else None
+
+    def capture_funding_obligation(self):
+        t=self.next_funding
+        if t is None or t>self.now or t in self.funding_seen or t in self.funding_obligations:
+            return
+        exposure=self.exposure_at(t)
+        if exposure:
+            self.funding_obligations[t]=exposure
+            self.unresolved_funding.add(t)
+
+    def apply_funding(self,e):
+        rate,mark=float(e.data['rate']),float(e.data['mark'])
+        if not math.isfinite(rate) or not math.isfinite(mark) or mark<=0 or e.occurred>self.now:
+            raise ValueError('Invalid realized funding event')
+        values=(rate,mark)
+        if e.occurred in self.funding_values:
+            if self.funding_values[e.occurred]!=values:
+                self.incomplete=True;self.halted=True
+                self.log('conflicting_funding_duplicate')
+            return
+        exposure=self.funding_obligations.get(e.occurred,self.exposure_at(e.occurred))
+        if any(time==e.occurred for time,_,_,_ in self.exposure_history):
+            self.incomplete=True
+            self.log('funding_fill_timestamp_tie_unverified')
+        self.funding_values[e.occurred]=values
+        self.funding_seen.add(e.occurred)
+        self.unresolved_funding.discard(e.occurred)
+        if not exposure:return
+        pid,side,qty=exposure
+        cost=side*qty*mark*rate
+        self.cash-=cost
+        if self.position and self.position['position_id']==pid:
+            self.position['funding']+=cost
+        else:
+            trade=next((t for t in self.trades if t['position_id']==pid),None)
+            if trade is None:
+                self.incomplete=True;self.halted=True
+                raise ValueError('Funding exposure has no owning trade')
+            trade['funding']+=cost
+            trade['net']=trade['gross']-trade['fees']-trade['funding']
+            trade['net_r']=trade['net']/trade['risk_budget']
+        # Realized cash is corrected, but historical peaks and decisions made
+        # before receipt must not be retrospectively presented as certified.
+        if e.occurred<self.now:
+            self.funding_history_revised=True
+        self.log('funding_paid',cost=cost,position_id=pid,settlement_ms=e.occurred)
+
     def maintenance(self):
+        if any(t+5000<self.now for t in self.unresolved_funding):
+            self.incomplete=True;self.request_exit('funding_not_verified')
         if self.position:
             p=self.position
-            if self.next_funding is not None and self.now>self.next_funding+5000 and self.next_funding not in self.funding_seen:
-                self.unresolved_funding.add(self.next_funding)
-            if any(t+5000<self.now for t in self.unresolved_funding):
-                self.incomplete=True;self.request_exit('funding_not_verified')
             if not self.fresh():
                 self.incomplete=True;self.request_exit('stale_execution_book')
             else:
@@ -299,7 +377,7 @@ class Broker:
         balance=self.s.capital+realized+(p['gross']-p['fees']-p['funding'] if p else 0)
         if not math.isclose(balance,self.cash,abs_tol=1e-7):raise AssertionError('Cash ledger does not reconcile')
         eq=self.equity()
-        return dict(mode=self.mode,venue=self.venue,settings=asdict(self.s),settings_sha256=self.s.fingerprint(),
+        return dict(mode=self.mode,venue=self.venue,model_sha256=model_fingerprint(),settings=asdict(self.s),settings_sha256=self.s.fingerprint(),
                     capital=self.s.capital,cash=self.cash,marked_equity=eq,
                     marked_return_pct=(eq/self.s.capital-1)*100 if eq is not None else None,
                     max_marked_drawdown_pct=self.max_dd*100,closed_trades=self.trades,
@@ -307,4 +385,5 @@ class Broker:
                     open_position_at_end=p is not None,execution_incomplete=self.incomplete or bool(self.unresolved_funding),
                     unresolved_funding=sorted(self.unresolved_funding),proposal_count=self.proposals,
                     cagr_pct=None,annual_target_established=False,live_ready=False,
-                    ledger_reconciled=True,events=self.events)
+                    ledger_reconciled=True,funding_history_revised=self.funding_history_revised,
+                    funding_time_drawdown_verified=not self.funding_history_revised,events=self.events)

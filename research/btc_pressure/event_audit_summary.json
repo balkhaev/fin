@@ -1,0 +1,40 @@
+{
+  "id": "btc-pressure-event-audit-20260905",
+  "protocol_commit": "06d89feaef8b55ab67c35e41e30b0cbe5f9783ec",
+  "acquisition_run": 33954086998,
+  "acquisition_artifact": 9965775587,
+  "dates": ["2025-09-01", "2026-03-01", "2026-09-01"],
+  "source_files": 18,
+  "source_records": 27398297,
+  "valid_frames": 237491,
+  "signals": 121,
+  "price_gate_pass": 35,
+  "session_signals": [47, 47, 27],
+  "session_price_gate_pass": [13, 9, 13],
+  "markout_status_counts": {"priced":347,"funding_unpriced":12,"right_censored":4},
+  "markout_groups": [
+    {"family":"cascade","horizon_seconds":30,"signals":91,"priced":90,"mean_net_bps":-10.035129598357962,"median_net_bps":-11.978807048427804,"positive_fraction":0.14444444444444443,"unpriced":{"funding_unpriced":1},"price_gate_pass":5},
+    {"family":"cascade","horizon_seconds":300,"signals":91,"priced":88,"mean_net_bps":-12.249454777186987,"median_net_bps":-13.027820790138506,"positive_fraction":0.25,"unpriced":{"funding_unpriced":3},"price_gate_pass":5},
+    {"family":"cascade","horizon_seconds":1800,"signals":91,"priced":82,"mean_net_bps":-12.209836319247184,"median_net_bps":-16.702056748781246,"positive_fraction":0.3170731707317073,"unpriced":{"funding_unpriced":6,"right_censored":3},"price_gate_pass":5},
+    {"family":"spot_trend","horizon_seconds":30,"signals":30,"priced":30,"mean_net_bps":-12.687182990864903,"median_net_bps":-12.967596944787728,"positive_fraction":0.06666666666666667,"unpriced":{},"price_gate_pass":30},
+    {"family":"spot_trend","horizon_seconds":300,"signals":30,"priced":30,"mean_net_bps":-7.320937438673758,"median_net_bps":-8.085827072426182,"positive_fraction":0.23333333333333334,"unpriced":{},"price_gate_pass":30},
+    {"family":"spot_trend","horizon_seconds":1800,"signals":30,"priced":27,"mean_net_bps":-2.226409160199168,"median_net_bps":-3.6002319428985383,"positive_fraction":0.4444444444444444,"unpriced":{"funding_unpriced":2,"right_censored":1},"price_gate_pass":30}
+  ],
+  "price_gate_filtered_groups": [
+    {"family":"cascade","horizon_seconds":30,"priced":5,"mean_net_bps":-9.36921528292358},
+    {"family":"cascade","horizon_seconds":300,"priced":5,"mean_net_bps":-26.502511362292278},
+    {"family":"cascade","horizon_seconds":1800,"priced":5,"mean_net_bps":-39.851707242783434},
+    {"family":"spot_trend","horizon_seconds":30,"priced":30,"mean_net_bps":-12.687182990864901},
+    {"family":"spot_trend","horizon_seconds":300,"priced":30,"mean_net_bps":-7.320937438673758},
+    {"family":"spot_trend","horizon_seconds":1800,"priced":27,"mean_net_bps":-2.226409160199168}
+  ],
+  "local_tests":109,
+  "regression_cases_added":20,
+  "account_return_pct":null,
+  "cagr_pct":null,
+  "target_achieved":false,
+  "live_ready":false,
+  "annual_test_complete":false,
+  "sample_days":3,
+  "scope":"Counterfactual taker markout audit on three fixed days, not portfolio backtest or realized maker fills."
+}

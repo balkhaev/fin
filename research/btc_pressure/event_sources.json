@@ -1,0 +1,25 @@
+{
+  "protocol_sha256": "c3a8ebaae9e8c1501f46fa2dfc22b2cc1f10a8056347340830df68e47f84e4ad",
+  "acquisition_run": 33954086998,
+  "acquisition_commit": "e19f3245b3f3af1f31a4767ec94af2cac59e7a8b",
+  "files": [
+    {"date":"2025-09-01","venue":"bybit","kind":"trades","sha256":"16759bc9450973f2010f87505809f10d61afe0e42b4f3be8b1ce4100e072799f","bytes":44307385},
+    {"date":"2025-09-01","venue":"bybit","kind":"book_snapshot_5","sha256":"6f136d456c31acf9aafcc20112bdda0b3ce2dbc4261da8151fabaafacac219c8","bytes":33141097},
+    {"date":"2025-09-01","venue":"bybit","kind":"liquidations","sha256":"745394c3d3ee06b0ebc0c1b4928bce008f0c564a32eb75d81c7cba795c05070e","bytes":25929},
+    {"date":"2025-09-01","venue":"bybit","kind":"derivative_ticker","sha256":"73fb580b846aede212c38c1036dc6051f9762040582b7604c8375d7f9b1cfe0f","bytes":3559441},
+    {"date":"2025-09-01","venue":"bybit-spot","kind":"trades","sha256":"2d3da0cd5f9c1058effd705d13e60ddc9edd7ec29f5016b90fd50f6a622b80ac","bytes":5976221},
+    {"date":"2025-09-01","venue":"binance","kind":"trades","sha256":"73ecfaa10e83870dd8d5a0bbb0376064822be2323b36a998dd709285ade37249","bytes":21608002},
+    {"date":"2026-03-01","venue":"bybit","kind":"trades","sha256":"4545e6bfdccb47bb24612bf6a69bac1f80ed24c6a284a09c63726af6c298b5b6","bytes":83207925},
+    {"date":"2026-03-01","venue":"bybit","kind":"book_snapshot_5","sha256":"13bff716acd1ac8de505cf4c9f30b7ead32540d65e3818e70169ec452bc69089","bytes":35980098},
+    {"date":"2026-03-01","venue":"bybit","kind":"liquidations","sha256":"a278731fb3be4402990d82edb331be3ea6b64f6ca06d1b2377ee22532c715939","bytes":25129},
+    {"date":"2026-03-01","venue":"bybit","kind":"derivative_ticker","sha256":"ec41096fe016b9090c5f8233cb6c41874f170b9fb96c815f8e83b65706172957","bytes":4007199},
+    {"date":"2026-03-01","venue":"bybit-spot","kind":"trades","sha256":"96eb13b7f4b3bd16c82bd45fc4d0d02df2cf3bf4e73135b569bad49c6c4886ea","bytes":9682852},
+    {"date":"2026-03-01","venue":"binance","kind":"trades","sha256":"6c476f05ad9e4593bb586bb3bdf3f7ef17647791d10c8cc6f341c75ac06400e0","bytes":39424524},
+    {"date":"2026-09-01","venue":"bybit","kind":"trades","sha256":"25ff55e4433f2cc9efcc81e91dbac39a29f0c7eeb1cc3e210a0ea5853fc215ea","bytes":54305683},
+    {"date":"2026-09-01","venue":"bybit","kind":"book_snapshot_5","sha256":"b9aebf0084ae814a21f0d1de991eb8ddc2eda1720267db5c9a30bc4c4ca46959","bytes":25584856},
+    {"date":"2026-09-01","venue":"bybit","kind":"liquidations","sha256":"9756aeaa4ceeb1f949db0b6c6152093e549dec1952f7befb948ed4d2dfbc9f17","bytes":15708},
+    {"date":"2026-09-01","venue":"bybit","kind":"derivative_ticker","sha256":"851dd3d1ed78fbdc0cf35cbbf4c7c28cad63783531b8408829873d1c2b3b01d0","bytes":3048767},
+    {"date":"2026-09-01","venue":"bybit-spot","kind":"trades","sha256":"7cc36a821336789a1f17e85e41e2a2df04717c4764274d65420a0c2f1ae2f358","bytes":5442862},
+    {"date":"2026-09-01","venue":"binance","kind":"trades","sha256":"3fef1165d2683638a958d9b92745c442cdb2a8b0fdce77e2e22505da303eb8d3","bytes":24277959}
+  ]
+}

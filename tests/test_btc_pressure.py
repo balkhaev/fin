@@ -8,7 +8,7 @@ import random
 import pytest
 from research.btc_pressure.adapters import Book,Event,Normalizer,number
 from research.btc_pressure.strategy import Features,Frame,Mechanisms,Proposal
-from research.btc_pressure.paper import Broker,Gate,Settings,round_step
+from research.btc_pressure.paper import Broker,Gate,Settings,round_step,model_fingerprint
 from research.btc_pressure.run import fit_gate,replay
 
 
@@ -220,7 +220,7 @@ def test_observe_and_uncalibrated_modes_cannot_trade():
 
 
 def test_calibration_identity_future_and_synthetic_rejected():
-    s=Settings();p=proposal();a=dict(venue='bybit_perp',settings_sha256=s.fingerprint(),training_end_ms=99999,
+    s=Settings();p=proposal();a=dict(schema='btc-pressure-gate-v2',model_sha256=model_fingerprint(),venue='bybit_perp',settings_sha256=s.fingerprint(),training_end_ms=99999,
          synthetic=False,cells={'cascade:1':dict(trades=200,days=30,lower_mean_daily_r=.1)})
     assert Gate(a).allows(p,'bybit_perp',s)[0]
     for changes in (dict(venue='binance_perp'),dict(training_end_ms=100000),dict(synthetic=True),dict(settings_sha256='bad')):
