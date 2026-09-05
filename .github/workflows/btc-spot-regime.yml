@@ -4,7 +4,7 @@ on:
     branches: [research/btc-spot-regime]
     paths:
       - research/btc_spot_regime/*.py
-      - tests/test_btc_spot_regime.py
+      - tests/test_btc_spot*.py
       - .github/workflows/btc-spot-regime.yml
   workflow_dispatch:
 permissions:
@@ -29,13 +29,13 @@ jobs:
       - run: python -m pip install -e . -r research/btc_flow/requirements.txt scipy
       - name: New unit tests and full repository tests
         run: |
-          python -m pytest -q tests/test_btc_spot_regime.py --junitxml=spot-tests.xml
+          python -m pytest -q tests/test_btc_spot*.py --junitxml=spot-tests.xml
           python -m pytest -q tests --junitxml=all-tests.xml > all-tests.log 2>&1
       - name: Download fixed official history and execute precommitted study
         shell: bash
         run: |
           set -euo pipefail
-          python -m research.btc_spot_regime.study --data spot-data --out spot-report --download > research.log 2>&1
+          python -m research.btc_spot_regime.study --data spot-data --out spot-report --download > research.log 2>&1 || { tail -n 80 research.log; exit 1; }
       - name: Print numerical evidence, not a forecast
         run: |
           python - <<'PY'
@@ -45,22 +45,20 @@ jobs:
           print('SOURCE_AUDIT',json.dumps(r['data']))
           print('SELECTION',r['selection']['primary'],r['selection']['challenger'])
           fields=('policy','period','scenario','return_pct','cagr_pct','max_close_drawdown_pct','round_trips','fees','accounting_complete','halted_at')
-          for x in r['results']:
-              print('RESULT',json.dumps({k:x[k] for k in fields}))
+          for x in r['results']:print('RESULT',json.dumps({k:x[k] for k in fields}))
           for name in {r['selection']['primary'],r['selection']['challenger'],'buy_hold'}:
-              if name:
-                  print('YEARS',name,json.dumps([{k:x[k] for k in ('year','return_pct','round_trips','accounting_complete')} for x in r['annual_reset'] if x['policy']==name]))
+              if name:print('YEARS',name,json.dumps([{k:x[k] for k in ('year','return_pct','round_trips','accounting_complete')} for x in r['annual_reset'] if x['policy']==name]))
           print('500_YEARS',json.dumps(r['observed_full_years_above_500']))
           print('UNCERTAINTY',json.dumps(r['uncertainty']))
           print('TEST_SUMMARY',p('all-tests.log').read_text().splitlines()[-1])
           print('RESULT_HASH',json.loads(p('spot-report/summary.json').read_text())['result_sha256'])
           PY
-      - name: Preserve tested source and independent arithmetic checks
+      - name: Preserve tested source and logs
         if: always()
         run: |
           mkdir -p spot-delivery/research spot-delivery/tests
           cp -r research/btc_spot_regime spot-delivery/research/
-          cp tests/test_btc_spot_regime.py spot-delivery/tests/
+          cp tests/test_btc_spot*.py spot-delivery/tests/
           cp research/btc_flow/requirements.txt spot-delivery/requirements.txt
           git rev-parse HEAD > spot-delivery/TESTED_COMMIT.txt
           find spot-delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
@@ -96,7 +94,7 @@ jobs:
           name: btc-spot-regime-evidence
           path: original
       - name: Recompute every scenario on a fresh runner with identical input hashes
-        run: python -m research.btc_spot_regime.study --data original/spot-data --out reproduced > reproduce.log 2>&1
+        run: python -m research.btc_spot_regime.study --data original/spot-data --out reproduced > reproduce.log 2>&1 || { tail -n 80 reproduce.log; exit 1; }
       - name: Compare complete numerical result and independently reconcile all exported fills
         run: |
           python - <<'PY'
