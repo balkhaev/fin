@@ -1,0 +1,11 @@
+{
+  "original_protocol_commit":"79d5c8081359436cd5e417c0239a5c3898e9bd13",
+  "discovered_before_market_evaluation":true,
+  "failed_run":33993631355,
+  "reason":"Official BTCUSDT spot 1h monthly archive for 2026-08 returned HTTP404. 103 other months acquired; study stopped before loading prices or computing any return.",
+  "amendment":"For a missing monthly archive ONLY, obtain the complete official daily 1h spot archives covering exactly that same UTC month, each with the published SHA256. No missing day may be dropped, no futures prices substituted, no synthetic candles. Dataset period and signal/execution rules unchanged.",
+  "failure_policy":"Retain original monthly failure in manifest. If any daily archive or checksum is unavailable, fail acquisition and do not claim a complete-period result.",
+  "parameters_changed":false,
+  "access_restrictions_bypassed":false,
+  "live_orders":false
+}
