@@ -1,0 +1,26 @@
+name: BTC Pressure capture
+on:
+  push:
+    branches: [implementation/btc-pressure-v1]
+    paths: [.github/workflows/btc-pressure-capture.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install websockets==15.0.1
+      - name: Finite public-data capture (no keys, no order submission)
+        run: python -m research.btc_pressure.record --out pressure-capture --seconds 180
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-pressure-public-evidence
+          path: pressure-capture/
+          retention-days: 90
