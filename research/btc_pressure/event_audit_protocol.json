@@ -1,0 +1,18 @@
+{
+  "id": "btc-pressure-event-audit-20260905",
+  "base_commit": "2860191286f236c768a2fc0cff38999f38a90530",
+  "objective": "Investigate the stated +500% net annual return goal without claiming it before evidence exists.",
+  "sample_dates": ["2025-09-01", "2026-03-01", "2026-09-01"],
+  "sample_selection": "Fixed six-month-spaced first-of-month public vendor sessions, selected before inspecting these event tapes. These are only three days, NOT one year. Earlier dates overlap previously seen candle history.",
+  "market": "Bybit BTCUSDT linear execution; Binance and Bybit BTCUSDT spot confirmation",
+  "required_types": {"bybit": ["trades", "book_snapshot_5", "liquidations", "derivative_ticker"], "bybit-spot": ["trades"], "binance": ["trades"]},
+  "source": "Public first-day-of-month Tardis CSV samples; no API key, purchase or real orders. Preserve provider timestamp and local_timestamp separately. Download content hashes attest local integrity, not independent authenticity.",
+  "frozen_strategy": "BTC Pressure V1 three mechanisms. Correct demonstrated implementation errors with regression tests; do not tune signal thresholds to these results.",
+  "costs": {"maker_fee": 0.0002, "taker_fee": 0.00055, "slippage": 0.0001, "latency_ms": 250},
+  "assumptions": "Fees and contract filters are experimental scenarios, not verified historical account entitlements. Archive normalized top-five book is not L3 queue data. Settlement funding is required for occupied timestamps; ticker forecast cannot replace realized payment.",
+  "experiments": ["causal feature and signal replay", "net executable-price event markout with fixed horizons 30s, 300s, 1800s", "one-position paper execution only where required data and accounting are complete"],
+  "selection_for_profit": false,
+  "annualization_of_sample": false,
+  "annual_target_acceptance": "Requires >=365 continuous evaluated days, no unpriced exposure or missing mandatory data, net return >500%, original risk constraints reported, out-of-selection and cost/latency stress evidence. Annual observed profit is not a guarantee of future annual profit.",
+  "readiness": "No live orders. Synthetic engineering tests and sparse-day event results cannot establish the annual target. Store all failures and negative results."
+}
