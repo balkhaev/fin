@@ -52,7 +52,6 @@ def download(root):
             except OSError as first:
                 if getattr(first,'code',None)!=404:raise
                 r['monthly_error']=str(first);r['frequency']='daily'
-                # All same-resolution, same-market days required. No shortened test.
                 parts=[]
                 for day in days(month):parts.append(archive(day,'daily'))
                 r.update(parts=parts,status='verified')
@@ -68,13 +67,13 @@ def download(root):
     return manifest
 
 
-def timestamps(values):
+def timestamps(values,require_hour=True):
     a=np.asarray(values,dtype=np.int64);us=a>10**14
     if us.any() and not us.all():raise ValueError('Mixed time units')
     if us.all() and len(a):
         if np.any(a%1000):raise ValueError('Nonintegral millisecond timestamps')
         a=a//1000
-    if np.any(a%3600000):raise ValueError('Non-hour open time')
+    if require_hour and np.any(a%3600000):raise ValueError('Non-hour open time')
     return a
 
 
@@ -92,7 +91,7 @@ def files_for_month(row):
 def load(root):
     root=Path(root);m=json.loads((root/'manifest.json').read_text());rows=m['files']
     if len(rows)!=len(periods()) or {r['month'] for r in rows}!=set(periods()):raise ValueError('Manifest identity mismatch')
-    parts=[];file_count=0;fallback=[]
+    parts=[];file_count=0;fallback=[];excluded=[]
     for r in rows:
         if r['status']!='verified':raise ValueError('Unverified month')
         if r.get('frequency')=='daily':fallback.append(r['month'])
@@ -106,12 +105,15 @@ def load(root):
             if bad.any():
                 if bad.sum()!=1 or not bad.iloc[0]:raise ValueError('Malformed timestamp row')
                 d=d.iloc[1:]
-            d=d.apply(pd.to_numeric,errors='raise');d['time']=timestamps(d.time)
+            d=d.apply(pd.to_numeric,errors='raise');d['time']=timestamps(d.time,require_hour=False)
             begin=pd.Timestamp(r['month']+'-01',tz='UTC');end=begin+pd.offsets.MonthBegin(1)
             if not ((d.time>=begin.timestamp()*1000)&(d.time<end.timestamp()*1000)).all():raise ValueError('Wrong archive month')
             needed=d[['open','high','low','close','volume']].to_numpy(float)
             if not np.isfinite(needed).all() or (needed[:,:4]<=0).any() or (needed[:,4]<0).any():raise ValueError('Nonfinite prices or volume')
             if ((d.high<d[['open','close','low']].max(axis=1))|(d.low>d[['open','close','high']].min(axis=1))).any():raise ValueError('Inconsistent OHLC')
+            off=(d.time%3600000)!=0
+            excluded.extend(dict(file=item['filename'],open_ms=int(v),reason='off_grid_not_rounded') for v in d.loc[off,'time'])
+            d=d.loc[~off]
             parts.append(d[['time','open','high','low','close','volume']]);file_count+=1
     data=pd.concat(parts).sort_values('time')
     if data.time.duplicated().any():raise ValueError('Duplicate hourly bar')
@@ -121,6 +123,6 @@ def load(root):
     missing=[str(t) for t in idx[~data.observed]]
     audit=dict(covered_months=len(rows),verified_files=file_count,daily_fallback_months=fallback,
        hours=len(idx),observed_hours=int(data.observed.sum()),missing_hours=len(missing),missing_open_times=missing,
-       price_forward_filled=False,start=START,end_exclusive=END,
+       off_grid_rows=len(excluded),excluded_rows=excluded,price_forward_filled=False,start=START,end_exclusive=END,
        manifest_sha256=hashlib.sha256((root/'manifest.json').read_bytes()).hexdigest())
     return data,audit
