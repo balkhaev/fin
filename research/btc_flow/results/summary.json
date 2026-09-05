@@ -1,0 +1,58 @@
+{
+  "id": "btc-pullback-flow-500-v1",
+  "date": "2026-09-05",
+  "target_achieved": false,
+  "live_ready": false,
+  "exact_tick_backtest_complete": false,
+  "same_venue_execution_validated": false,
+  "protocol_sha256": "d4b0d7528745ed46b41bcfb2fd2b518213d46d1027f19ea2293c6416d04d286e",
+  "protocol_commit": "6dfd2a9c3f1c9804b8c6fccb7bb7f717e9d48143",
+  "data_run": 33931423434,
+  "data_artifact": 9958669457,
+  "data": {
+    "rows": 2409120,
+    "start": "2022-01-01 00:00:00+00:00",
+    "end_exclusive": "2026-08-01 00:00:00+00:00",
+    "funding_rows": 5019,
+    "source_manifest_sha256": "4282c5c4442889e8424ea82eadec33fde818ff17383b4a6d3507e352a37e135f",
+    "missing_minutes": 0,
+    "checksum_verified_files": 110
+  },
+  "candidate_count": 36,
+  "candidates_passing_training": 0,
+  "selected_diagnostic_id": "v20_h8_rr2_flow1",
+  "admitted": false,
+  "final_used_for_selection": false,
+  "annual_baseline": [
+    {"year": 2022, "full_calendar_year": true, "return_pct": -2.9770978801338055, "trades": 88},
+    {"year": 2023, "full_calendar_year": true, "return_pct": -1.715419199003887, "trades": 30},
+    {"year": 2024, "full_calendar_year": true, "return_pct": -3.5784874589966265, "trades": 96},
+    {"year": 2025, "full_calendar_year": true, "return_pct": -1.3397144204980393, "trades": 50},
+    {"year": 2026, "full_calendar_year": false, "return_pct": -1.631556241988763, "trades": 28}
+  ],
+  "oos": [
+    {
+      "scenario": "original_proxy_protected", "days": 577.0,
+      "return_pct": -2.949301010224048, "cagr_pct": -1.8771952010795845,
+      "max_drawdown_pct": -2.9696471417333337, "trades": 78,
+      "trades_per_day": 0.13518197573656845, "profit_factor": 0.35363711863893676,
+      "win_rate_pct": 29.48717948717949, "final_equity": 9705.069898977596
+    },
+    {
+      "scenario": "winner_proxy_aggressive_sensitivity", "days": 577.0,
+      "return_pct": -11.237786109956527, "cagr_pct": -7.268433548352271,
+      "max_drawdown_pct": -11.3041005259774, "trades": 78,
+      "trades_per_day": 0.13518197573656845, "profit_factor": 0.36832113499496266,
+      "win_rate_pct": 29.48717948717949, "final_equity": 8876.221389004348
+    }
+  ],
+  "tests": 37,
+  "mode": "research only; no exchange submission",
+  "limitations": [
+    "Minute flow/stall is not 10s/5s flow; taker proxy is not post-only execution.",
+    "Binance prices with hypothetical OKX/MEXC cost scenarios is not a same-venue backtest.",
+    "Funding uses minute-open trade price, not historical mark price.",
+    "No full-depth queue, live latency, margin/liquidation certification.",
+    "2026 is January-July YTD, not a full-year return."
+  ]
+}

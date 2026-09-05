@@ -1,0 +1,64 @@
+name: BTC Flow public data evidence
+on:
+  push:
+    branches: [research/btc-pullback-flow-500]
+    paths: [.github/workflows/btc-flow-data.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Download public archives with SHA-256 verification
+        shell: bash
+        run: |
+          python - <<'PY'
+          import concurrent.futures, hashlib, json, pathlib, time, urllib.request
+          root = pathlib.Path('btc-evidence'); root.mkdir()
+          tasks = []
+          for year in range(2022, 2027):
+              for month in range(1, 13):
+                  if year == 2026 and month > 7:
+                      continue
+                  period = f'{year}-{month:02d}'
+                  for kind in ('klines', 'fundingRate'):
+                      name = f'BTCUSDT-1m-{period}.zip' if kind == 'klines' else f'BTCUSDT-fundingRate-{period}.zip'
+                      path = f'klines/BTCUSDT/1m/{name}' if kind == 'klines' else f'fundingRate/BTCUSDT/{name}'
+                      tasks.append((kind, period, name, 'https://data.binance.vision/data/futures/um/monthly/' + path))
+          def get(url):
+              for attempt in range(3):
+                  try:
+                      with urllib.request.urlopen(url, timeout=60) as response:
+                          return response.read()
+                  except Exception:
+                      if attempt == 2:
+                          raise
+                      time.sleep(1 + attempt)
+          def download(task):
+              kind, period, name, url = task
+              try:
+                  expected = get(url + '.CHECKSUM').decode().split()[0].lower()
+                  raw = get(url); actual = hashlib.sha256(raw).hexdigest()
+                  if expected != actual:
+                      raise ValueError('Checksum mismatch')
+                  (root / name).write_bytes(raw)
+                  return dict(kind=kind, period=period, filename=name, url=url, sha256=actual, bytes=len(raw), status='verified')
+              except Exception as error:
+                  return dict(kind=kind, period=period, filename=name, url=url, status='missing', error=str(error))
+          with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+              evidence = list(pool.map(download, tasks))
+          (root / 'manifest.json').write_text(json.dumps(evidence, indent=2))
+          print(json.dumps({'verified':sum(x['status']=='verified' for x in evidence), 'missing':[x for x in evidence if x['status']!='verified']}, indent=2))
+          if not any(x['status']=='verified' and x['kind']=='klines' for x in evidence):
+              raise SystemExit('No market data acquired; research blocked.')
+          PY
+      - name: Upload public evidence (no repository writes or exchange keys)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: btc-flow-public-evidence
+          path: btc-evidence/
+          retention-days: 14
+          compression-level: 0
