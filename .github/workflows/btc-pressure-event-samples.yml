@@ -1,0 +1,62 @@
+name: BTC Pressure fixed event samples
+on:
+  push:
+    branches: [research/btc-pressure-event-audit]
+    paths: [.github/workflows/btc-pressure-event-samples.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download preselected public samples (no credentials or purchases)
+        run: |
+          python - <<'PY'
+          import concurrent.futures, datetime, gzip, hashlib, json, pathlib, urllib.request
+          root=pathlib.Path('event-samples');root.mkdir()
+          protocol=json.loads(pathlib.Path('research/btc_pressure/event_audit_protocol.json').read_text())
+          tasks=[(date,venue,kind) for date in protocol['sample_dates'] for venue,kinds in protocol['required_types'].items() for kind in kinds]
+          def one(task):
+              date,venue,kind=task
+              url=f'https://datasets.tardis.dev/v1/{venue}/{kind}/{date.replace("-","/")}/BTCUSDT.csv.gz'
+              name=f'{date}_{venue}_{kind}.csv.gz';path=root/name
+              row=dict(date=date,venue=venue,kind=kind,url=url,filename=name)
+              try:
+                  with urllib.request.urlopen(url,timeout=60) as r:
+                      row['http_status']=r.status
+                      row['etag']=r.headers.get('ETag')
+                      row['last_modified']=r.headers.get('Last-Modified')
+                      size=0;digest=hashlib.sha256()
+                      with path.open('wb') as out:
+                          while True:
+                              chunk=r.read(1024*1024)
+                              if not chunk:break
+                              size+=len(chunk)
+                              if size>250*1024*1024:raise ValueError('Per-file 250MiB research budget exceeded')
+                              digest.update(chunk);out.write(chunk)
+                  with gzip.open(path,'rt') as f:
+                      row['header']=f.readline().strip();row['first_row']=f.readline().strip()
+                  row.update(status='downloaded',bytes=size,sha256=digest.hexdigest())
+              except Exception as e:
+                  path.unlink(missing_ok=True);row.update(status='unavailable',error=str(e))
+              return row
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+              rows=list(pool.map(one,tasks))
+          result=dict(protocol_sha256=hashlib.sha256(pathlib.Path('research/btc_pressure/event_audit_protocol.json').read_bytes()).hexdigest(),downloaded_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),files=rows,api_key_used=False,purchases=False,live_orders=False)
+          (root/'manifest.json').write_text(json.dumps(result,indent=2))
+          print(json.dumps(result,indent=2))
+          docs='https://docs.tardis.dev/downloadable-csv-files/data-types'
+          try:
+              with urllib.request.urlopen(docs,timeout=30) as r:(root/'vendor_schema.txt').write_bytes(r.read())
+          except Exception as e:(root/'vendor_schema_error.txt').write_text(str(e))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-pressure-fixed-event-samples
+          path: event-samples/
+          retention-days: 7
+          compression-level: 0
