@@ -1,0 +1,25 @@
+{
+  "id":"btc-frontier-v2-20260905",
+  "protocol_commit":"2b4be34a82049f804d796c26eb5df68128ce83dc",
+  "selection_lock_commit":"c6d0704d1d61586b32e3acd65ce0639c8a7f2c1c",
+  "candidate_count":128,"family_finalists":8,"admitted_count":0,
+  "selected_id":"trend_channel_t240_w48_fast",
+  "target_achieved":false,"live_ready":false,"main_modified":false,
+  "fresh_data":{"fresh_rows":44640,"fresh_funding_rows":93,"fresh_mark_rows":44640,"manifest_sha256":"51647a8b19638a675477da5b080e39ce5174ee09d4c8a5a9fd0f080b1bd9ea6b","same_venue":"Binance USD-M BTCUSDT","funding_price":"minute-open trade price approximation; marks not substituted silently"},
+  "annual_selected":[
+    {"year":2022,"full_year":true,"return_pct":2.6136876514010643,"trades":34,"max_drawdown_pct":-0.7826623812914768},
+    {"year":2023,"full_year":true,"return_pct":4.3468149045414295,"trades":37,"max_drawdown_pct":-1.2497953918966243},
+    {"year":2024,"full_year":true,"return_pct":2.0719350900233247,"trades":46,"max_drawdown_pct":-1.6090318706713846},
+    {"year":2025,"full_year":true,"return_pct":-0.026900938226226412,"trades":48,"max_drawdown_pct":-1.3258125039832591},
+    {"year":2026,"full_year":false,"return_pct":-0.6453012919031109,"trades":26,"max_drawdown_pct":-1.3823499930462058}
+  ],
+  "evaluations":[
+    {"scenario":"selected","period":"reused","return_pct":-0.6722022301293373,"trades":74,"trades_per_day":0.12824956672443674,"max_drawdown_pct":-1.4781832746848078,"profit_factor":0.8905920246086415,"cagr_pct":-0.42604095667186925,"fees":90.066223681432,"funding_cost":3.8360266067500004},
+    {"scenario":"selected","period":"fresh_august","return_pct":0.5929907652714173,"trades":2,"trades_per_day":0.06451612903225806,"max_drawdown_pct":-0.49875294814397675,"profit_factor":3.9152094953157683,"cagr_pct":null,"fees":2.0749850557545173,"funding_cost":0.31886308614000003},
+    {"scenario":"router","period":"reused","return_pct":-7.225863290469537,"trades":175,"trades_per_day":0.30329289428076256,"max_drawdown_pct":-9.499999999999996,"profit_factor":0.6913441544272819,"cagr_pct":-4.636818085482819,"fees":293.33742871123906,"funding_cost":2.6475207390630007},
+    {"scenario":"router","period":"fresh_august","return_pct":0.0,"trades":0,"trades_per_day":0.0,"max_drawdown_pct":0.0,"profit_factor":null,"cagr_pct":null,"fees":0.0,"funding_cost":0.0},
+    {"scenario":"risk_0.5pct","period":"reused","return_pct":-1.2944139716653646,"trades":74,"trades_per_day":0.12824956672443674,"max_drawdown_pct":-2.8203489879377264,"profit_factor":0.8936234101867074,"cagr_pct":-0.8213419610466399,"fees":177.72733704371828,"funding_cost":7.118496474888},
+    {"scenario":"risk_0.5pct","period":"fresh_august","return_pct":1.18598153054279,"trades":2,"trades_per_day":0.06451612903225806,"max_drawdown_pct":-0.9867961196735275,"profit_factor":3.9152094953157683,"cagr_pct":null,"fees":4.149970111509035,"funding_cost":0.6377261722800001}
+  ],
+  "limitations":["Historical minute simulation, not tick or live execution.","2025-Jul2026 is previously seen, reused history.","August is 31 days and has now been opened; no annualization or future pristine-holdout claim.","Funding uses minute-open trade price, not exact settlement mark.","Hyperliquid not backtested; no cross-venue fee substitution.","No margin/liquidation certification; exposure capped 2x in simulation."]
+}
