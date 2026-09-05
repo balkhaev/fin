@@ -1,0 +1,68 @@
+name: BTC Spot all-policy diagnostics
+on:
+  push:
+    branches: [research/btc-spot-regime]
+    paths:
+      - research/btc_spot_followup/*.py
+      - .github/workflows/btc-spot-followup.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: balkhaev/fin
+          run-id: 33994142427
+          name: btc-spot-regime-evidence
+          path: original
+      - name: Existing signal/engine/source regressions
+        run: python -m pytest -q tests/test_btc_spot*.py --junitxml=followup-tests.xml
+      - name: All policies, unchanged signals and explicit post-result risk diagnostics
+        run: python -m research.btc_spot_followup.study --data original/spot-data --original original/spot-report --out followup > followup.log 2>&1 || { tail -n 80 followup.log; exit 1; }
+      - name: Print complete comparison and uncertainty
+        run: |
+          python - <<'PY'
+          import json,pathlib,hashlib
+          p=pathlib.Path;r=json.loads(p('followup/results.json').read_text())
+          for x in r['results']:
+              print('RESULT',json.dumps({k:x[k] for k in ('policy','scenario','return_pct','cagr_pct','max_close_drawdown_pct','round_trips','average_hold_hours','profit_factor','halted_at')}))
+          for n in ('ema_4h_24_120','ema_1d_10_50','channel_4h_55_20','momentum_1d_63_200'):
+              print('ANNUAL',n,json.dumps([{k:x[k] for k in ('year','return_pct','round_trips','max_close_drawdown_pct')} for x in r['annual_reset_2024_on'] if x['policy']==n]))
+          print('UNCERTAINTY',json.dumps(r['uncertainty']))
+          print('CANONICAL_RESULT',hashlib.sha256(json.dumps(r,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest())
+          print('FILL_LEDGER_HASH',r['fill_ledger_sha256'])
+          PY
+      - name: Bundle full reproducible code and evidence
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/btc_spot_regime research/btc_spot_followup delivery/research/
+          cp tests/test_btc_spot*.py delivery/tests/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-spot-all-policy-diagnostics
+          path: |
+            followup/
+            followup.log
+            followup-tests.xml
+            delivery/
+          retention-days: 90
