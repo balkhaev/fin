@@ -87,6 +87,8 @@ async def capture(out: Path, seconds: int = 180) -> dict:
                 except Exception as exc:
                     item=dict(source=name,error=str(exc)); errors.append(item)
                     emit(name,'disconnect',item)
+                    if 'HTTP 451' in str(exc) or 'HTTP 403' in str(exc):
+                        break
                     await asyncio.sleep(min(2,max(0,deadline-time.monotonic())))
             emit(name,'capture_end',{})
         tasks=[asyncio.create_task(socket(name,*spec)) for name,spec in STREAMS.items()]
@@ -101,6 +103,7 @@ async def capture(out: Path, seconds: int = 180) -> dict:
                   requested_stream_seconds=seconds,records=sequence,counts=dict(counts),
                   errors=errors,raw_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
                   collection_only=True,annual_backtest=False,live_orders=False,
+                  synthetic=False,capture_origin='public_websocket',
                   sources=STREAMS,rest_endpoints=REST)
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     print(json.dumps(manifest,indent=2))

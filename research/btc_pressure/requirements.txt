@@ -1,0 +1,4 @@
+# The replay itself uses only the Python standard library.
+# WebSocket dependency is used exclusively by the public-data recorder.
+websockets==15.0.1
+pytest==9.0.2

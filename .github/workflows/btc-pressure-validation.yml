@@ -1,0 +1,82 @@
+name: BTC Pressure validation
+on:
+  push:
+    branches: [implementation/btc-pressure-v1, main]
+    paths:
+      - research/btc_pressure/**
+      - tests/test_btc_pressure.py
+      - .github/workflows/btc-pressure-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: btc-pressure-validation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e . -r research/btc_flow/requirements.txt -r research/btc_pressure/requirements.txt scipy
+      - name: BTC Pressure regression tests (synthetic engineering only)
+        run: python -m pytest -q tests/test_btc_pressure.py --junitxml=pressure-tests.xml
+      - name: Full root repository test suite
+        run: python -m pytest -q tests --junitxml=full-tests.xml > full-tests.log 2>&1
+      - name: Retrieve immutable public capture
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 33934991785
+          name: btc-pressure-public-evidence
+          path: pressure-evidence
+      - name: Replay both execution venues on recorded receive-time events
+        run: |
+          python -m research.btc_pressure.run replay --data pressure-evidence --out pressure-report-bybit --mode diagnostic --venue bybit_perp > pressure-bybit.log
+          python -m research.btc_pressure.run replay --data pressure-evidence --out pressure-report-binance --mode diagnostic --venue binance_perp > pressure-binance.log
+      - name: Verify counts and missing-data refusal, not profitability
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          for venue in ('bybit','binance'):
+              r=json.loads(pathlib.Path(f'pressure-report-{venue}/report.json').read_text())
+              assert r['raw_sha256']=='c52e72996d84475dd2b2547eef64ba7e5bd2f3b03abd1e19c8052538ca93da70'
+              assert r['input_records']==36573
+              assert r['parse_errors']==[]
+              assert r['usable_feature_frames']==0 and r['proposal_count']==0
+              assert r['closed_trades']==[] and r['ledger_reconciled'] is True
+              assert r['strategy_return_pct'] is None and r['performance_evaluable'] is False
+              assert r['annual_test_complete'] is False and r['live_ready'] is False
+              c=r['normalized_counts']
+              assert sum(v for k,v in c.items() if k.endswith(':trade'))==2320
+              assert sum(v for k,v in c.items() if k.endswith(':book'))==33770
+              assert c['binance_perp:liquidation']==2
+          print('Recorded stream replay reproduced. No annual return or profitability claim.')
+          PY
+      - name: Bundle actual tested source
+        if: always()
+        run: |
+          mkdir -p pressure-delivery/research pressure-delivery/tests
+          cp -r research/btc_pressure pressure-delivery/research/
+          cp tests/test_btc_pressure.py pressure-delivery/tests/
+          find pressure-delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+          git rev-parse HEAD > pressure-delivery/TESTED_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-pressure-verified-implementation
+          path: |
+            pressure-delivery/
+            pressure-evidence/
+            pressure-report-bybit/
+            pressure-report-binance/
+            pressure-tests.xml
+            full-tests.xml
+            full-tests.log
+            pressure-bybit.log
+            pressure-binance.log
+          retention-days: 90
