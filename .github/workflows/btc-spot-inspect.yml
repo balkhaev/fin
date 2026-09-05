@@ -1,0 +1,33 @@
+name: Inspect BTC Spot research evidence
+on:
+  push:
+    branches: [research/btc-spot-regime]
+    paths: [.github/workflows/btc-spot-inspect.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: balkhaev/fin
+          run-id: 33993631355
+          name: btc-spot-regime-evidence
+          path: evidence
+      - run: |
+          python - <<'PY'
+          import pathlib,json
+          root=pathlib.Path('evidence')
+          for name in ('research.log','all-tests.log'):
+              p=root/name
+              if p.exists():print(name, '\n'.join(p.read_text().splitlines()[-45:]))
+          p=root/'spot-data/manifest.json'
+          if p.exists():
+              m=json.loads(p.read_text());print('ACQUISITION',len(m['files']))
+              print('FAILURES',json.dumps([r for r in m['files'] if r['status']!='verified']))
+          print('REPORT_FILES',[p.name for p in (root/'spot-report').glob('*')])
+          PY
