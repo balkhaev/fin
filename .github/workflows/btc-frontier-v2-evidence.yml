@@ -1,0 +1,51 @@
+name: BTC Frontier V2 fresh evidence
+on:
+  push:
+    branches: [research/btc-frontier-v2]
+    paths: [.github/workflows/btc-frontier-v2-evidence.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch fresh August BTC public data and attest checksums
+        run: |
+          python - <<'PY'
+          import concurrent.futures, datetime, hashlib, json, pathlib, urllib.request
+          root=pathlib.Path('fresh-evidence');root.mkdir()
+          base='https://data.binance.vision/data/futures/um/'
+          tasks=[]
+          for day in range(1,32):
+              s=f'2026-08-{day:02d}'
+              for kind in ('klines','markPriceKlines'):
+                  name=f'BTCUSDT-1m-{s}.zip'
+                  tasks.append((kind,s,kind+'-'+name,base+f'daily/{kind}/BTCUSDT/1m/{name}'))
+          for m in range(1,9):
+              s=f'2026-{m:02d}'
+              name=f'BTCUSDT-fundingRate-{s}.zip'
+              if m==8: tasks.append(('fundingRate',s,name,base+f'monthly/fundingRate/BTCUSDT/{name}'))
+          def one(t):
+              kind,period,name,url=t
+              try:
+                  with urllib.request.urlopen(url+'.CHECKSUM',timeout=60) as r: expected=r.read().decode().split()[0]
+                  with urllib.request.urlopen(url,timeout=60) as r: raw=r.read()
+                  actual=hashlib.sha256(raw).hexdigest()
+                  if actual!=expected: raise ValueError('Checksum mismatch')
+                  (root/name).write_bytes(raw)
+                  return dict(kind=kind,period=period,filename=name,url=url,sha256=actual,bytes=len(raw),status='verified')
+              except Exception as e:
+                  return dict(kind=kind,period=period,filename=name,url=url,status='missing',error=str(e))
+          with concurrent.futures.ThreadPoolExecutor(max_workers=6) as p: rows=list(p.map(one,tasks))
+          (root/'manifest.json').write_text(json.dumps(rows,indent=2))
+          print(json.dumps({'verified':sum(r['status']=='verified' for r in rows),'missing':[r for r in rows if r['status']!='verified']},indent=2))
+          # Keep truthful partial evidence even when the funding monthly archive is not yet published.
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-frontier-v2-fresh-evidence
+          path: fresh-evidence/
+          retention-days: 90
