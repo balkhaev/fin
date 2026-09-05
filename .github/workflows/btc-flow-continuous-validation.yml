@@ -1,0 +1,85 @@
+name: BTC Flow continuous validation
+on:
+  push:
+    branches: [research/btc-flow-continuous]
+    paths:
+      - research/btc_flow_continuous/*.py
+      - tests/test_btc_flow_continuous.py
+      - .github/workflows/btc-flow-continuous-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: btc-flow-continuous-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install existing pinned research dependencies
+        run: python -m pip install -e . -r research/btc_flow/requirements.txt scipy
+      - name: Synthetic engineering tests, not profit evidence
+        run: python -m pytest -q tests/test_btc_flow_continuous.py --junitxml=continuous-tests.xml
+      - name: Full root repository tests
+        run: python -m pytest -q tests --junitxml=all-tests.xml > all-tests.log 2>&1
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 33961171337
+          name: btc-flow-continuous-data
+          path: continuous-data
+      - name: Real continuous-data study with frozen selection
+        run: python -m research.btc_flow_continuous.study --data continuous-data --out continuous-report | tee research.log
+      - name: Independently audit every exported fill ledger
+        run: |
+          python - <<'PY'
+          import json,math,pathlib
+          import pandas as pd
+          r=pathlib.Path('continuous-report')
+          total=0
+          for p in r.glob('*trades.csv.gz'):
+              d=pd.read_csv(p)
+              calc=d.side*d.quantity*(d.exit-d.entry)-d.fees-d.funding
+              assert all(abs(calc-d.net)<1e-7),p
+              assert all(d.exit_ms>d.entry_ms),p
+              assert all(abs(d.quantity/.001-(d.quantity/.001).round())<1e-6),p
+              total+=len(d)
+          print('AUDIT_EXPORTED_TRADE_ROWS',total)
+          summary=json.loads((r/'results.json').read_text())
+          assert summary['configuration_count']==54
+          assert summary['selection']['final_period_used_for_selection'] is False
+          assert summary['annual_target_proven'] is False and summary['live_ready'] is False
+          print('FINAL_NUMERICAL_SUMMARY',json.dumps(json.loads((r/'summary.json').read_text())))
+          PY
+      - name: Bundle tested source and manifests, no archive duplication
+        if: always()
+        run: |
+          mkdir -p continuous-delivery/research continuous-delivery/tests
+          cp -r research/btc_flow_continuous continuous-delivery/research/
+          cp tests/test_btc_flow_continuous.py continuous-delivery/tests/
+          cp research/btc_flow/requirements.txt continuous-delivery/requirements.txt
+          git rev-parse HEAD > continuous-delivery/TESTED_COMMIT.txt
+          cp continuous-data/manifest.json continuous-delivery/DATA_MANIFEST.json || true
+          find continuous-delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-flow-continuous-research
+          path: |
+            continuous-delivery/
+            continuous-report/
+            continuous-tests.xml
+            all-tests.xml
+            all-tests.log
+            research.log
+          retention-days: 90
