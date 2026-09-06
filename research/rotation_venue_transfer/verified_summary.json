@@ -1,0 +1,96 @@
+{
+  "id":"rotation-venue-transfer-20260906",
+  "protocol_commit":"dbb1c520bc689908a1b8e722a668351d7cf2b05d",
+  "tested_commit":"c360f40005771d2c89c47fdc2c1122bd41c53cca",
+  "data_acquisition_run":34024495798,
+  "validation_and_reproduction_run":34024683190,
+  "research_job":101463453595,
+  "reproduction_job":101463633023,
+  "fixed_policy":"guarded_ensemble20",
+  "policy_sha256":"5a88fe2da2bf8d28cb7f3bead91124465161a0ffdbd1ea6c452e640048d3db0f",
+  "policy_and_simulator_unchanged":true,
+  "original_binance_later_full_report_exactly_reproduced":true,
+  "market_dates_previously_researched":true,
+  "new_price_venue":"OKX spot",
+  "independent_market_regime_or_new_time_holdout":false,
+  "four_arms":["binance_to_binance","binance_to_okx","okx_to_binance","okx_to_okx"],
+  "report_count":18,
+  "all_reports_accounting_complete":true,
+  "any_capacity_rejection":false,
+  "pure_okx_full_common":{
+    "start":"2024-01-01","end_exclusive":"2026-09-01","days":974,
+    "initial_cash":10000,"return_pct":33.18614123905388,"cagr_pct":11.345363818485232,
+    "max_close_drawdown_pct":-9.419592357489936,"order_fills":259,"closed_asset_positions":58,
+    "fees":126.69891482688084,
+    "annual_segments":[
+      {"year":2024,"full_year":true,"return_pct":22.59340617685932},
+      {"year":2025,"full_year":true,"return_pct":9.914470459648994},
+      {"year":2026,"full_year":false,"through":"2026-08-31","return_pct":-1.1590177340764063}
+    ],
+    "months":{"positive":9,"zero":16,"negative":7,"total":32}
+  },
+  "pure_okx_later":{
+    "start":"2025-01-01","end_exclusive":"2026-09-01","days":608,
+    "initial_cash":10000,"return_pct":8.666350433481561,"cagr_pct":5.11961557854641,
+    "max_close_drawdown_pct":-7.335006473713557,"order_fills":130,"closed_asset_positions":35,
+    "fees":58.90815466284353,
+    "annual_segments":[
+      {"year":2025,"full_year":true,"return_pct":9.940581268944548},
+      {"year":2026,"full_year":false,"through":"2026-08-31","return_pct":-1.1590177355402465}
+    ],
+    "months":{"positive":5,"zero":12,"negative":3,"total":20}
+  },
+  "same_period_binance_control":{
+    "full_common_return_pct":33.51521693772228,"full_common_cagr_pct":11.448451120119385,
+    "full_common_close_drawdown_pct":-9.373637516757894,
+    "later_return_pct":8.642288466009497,"later_close_drawdown_pct":-7.3561574193716
+  },
+  "okx_stresses":[
+    {"scenario":"double_costs","period":"later","return_pct":7.772359720146316,"cagr_pct":4.5992317928007065,"drawdown_pct":-7.5317425275538525,"fills":130},
+    {"scenario":"double_costs","period":"full_common","return_pct":31.033939815143885,"cagr_pct":10.667200697752467,"drawdown_pct":-9.660252597426865,"fills":259},
+    {"scenario":"extra_day_delay","period":"later","return_pct":5.916361063201836,"cagr_pct":3.513336395975042,"drawdown_pct":-9.560038298153827,"fills":132},
+    {"scenario":"extra_day_delay","period":"full_common","return_pct":36.005118839592434,"cagr_pct":12.22334782531631,"drawdown_pct":-9.560038648815517,"fills":271},
+    {"scenario":"capital1000","period":"later","return_pct":8.994916022118794,"cagr_pct":5.310440702270713,"drawdown_pct":-7.344467509499319,"fills":100},
+    {"scenario":"capital1000","period":"full_common","return_pct":33.95923707810196,"cagr_pct":11.587294904941704,"drawdown_pct":-9.36137804883127,"fills":197}
+  ],
+  "target_comparison":{
+    "days":974,"mean_L1_target_difference":0.003607116706688239,
+    "days_L1_difference_above_001":18,"binance_nonzero_target_days":347,"okx_nonzero_target_days":347,
+    "zero_vs_nonzero_gate_disagreements":0,
+    "nonzero_target_day_is_not_a_fill_or_actual_holding_day":true
+  },
+  "data_examples":{
+    "BTC_median_absolute_daily_close_difference_bps":0.5232738580829288,
+    "BTC_median_OKX_Binance_quote_volume_ratio":0.32850558376834826,
+    "BNB_median_OKX_Binance_quote_volume_ratio":0.05845335660191489,
+    "all_nine_sources_kept":true,"volume_filter_unchanged":true,
+    "OKX_raw_hashes_computed_locally_not_exchange_signatures":true
+  },
+  "verification":{
+    "new_tests_passed":39,"root_tests_passed":594,"additional_subtests_passed":46,
+    "new_tests_included_in_root_count":true,"failures":0,
+    "clean_runner_reports_exactly_reproduced":18,"exported_fill_ledgers_exactly_reproduced":18,
+    "independent_code_implementation":false,"local_execution":false,
+    "first_incomplete_run_superseded_when_integrity_tests_added":34024623809
+  },
+  "hashes":{
+    "full_result_sha256":"0157cfd58cde388f3923dd3f01650edaff9cddea711dd76d640f0464766ed759",
+    "full_fill_ledger_sha256":"8cb55befce99d5d8ab98838b56e05191901c7079ca175ee740d58f6ce0253022"
+  },
+  "artifacts":[
+    {"id":9986618186,"kind":"okx_raw_source","sha256":"77025555ac05936e61517fb0552be0e77817f07e8faa821aa409cb6351969276"},
+    {"id":9986681694,"kind":"complete_code_data_results","bytes":2550891,"sha256":"c2152740c003174705a094493e4efad1a0c8ff417739065e44cc6b50b72fdac6"},
+    {"id":9986690690,"kind":"independent_reproduction","bytes":301375,"sha256":"8b978d15f8fd2b3bccf4ee7461cf164ab11b6239192e51e43ce1509af2ba0e32"}
+  ],
+  "interpretation":"Frozen-model historical source/venue transfer succeeded in these scenarios. It does not prove regular profits, independent out-of-time performance or500% annual returns.",
+  "stable_profit_proven":false,"annual500proven":false,"live_ready":false,"real_orders":0,
+  "limitations":[
+    "Different exchange observations share the same economic market history; no pristine time holdout.",
+    "Nine known surviving assets and repeated prior studies create uncorrected selection risk.",
+    "Daily close-DD is not guaranteed intraday drawdown. Target caps are not stop-loss guarantees.",
+    "Fees/slippage/volume cap/lot size are scenarios, not historical personal account entitlements or actual book fills.",
+    "Most months are flat; negative months and2026YTD persist. Weekly portfolio rotation is not frequent scalping.",
+    "No new autonomous controller, unattended scheduler, quarter allocator or real trading process was enabled.",
+    "Taxes, infrastructure, custody/counterparty and USDT depeg costs omitted. Tiny venue performance differences do not justify changing venue by themselves."
+  ]
+}
