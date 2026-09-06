@@ -1,0 +1,109 @@
+{
+  "id":"guard-execution-and-budget-20260906",
+  "base_main":"511fab848db4fed8797be6e1d1bdd39e4e1cfc66",
+  "funding_policy_implemented":false,
+  "funding_policy_blocked_and_not_bypassed":true,
+  "experiments":[
+    {"name":"initial_cadence","protocol":"883d3f0dd551146b6c794d5a801dcfb213f66a5a","tested_commit":"b362e3a8bc30cb6fa1351abc9106ba5a06feda7c","run":34030758810,"report_count":150,"primary":"guarded_ensemble20_every1","primary_joint_improvement":false},
+    {"name":"constant_budget","protocol":"43acca17986cf1b0ec23565d9c5299cc71e1dacd","tested_commit":"7c69afb5c24793b4bb9e40271a2388ba22dd3b4b","run":34030984895,"report_count":91,"focus":"market_gate25_every7","post_result":true,"focus_joint_improvement":false},
+    {"name":"candidate_robustness","protocol":"0ac13339d04125e97632551c0b82cb956bd95247","tested_commit":"cec8cd5e1de6c86dfc5a27f6a16524df1120b246","run":34031202441,"report_count":47,"candidate":"market_gate25_every3","candidate_selected_after_results":true}
+  ],
+  "periods":{"full":{"start":"2021-01-01","end_exclusive":"2026-09-01","days":2069},"later":{"start":"2025-01-01","end_exclusive":"2026-09-01","days":608}},
+  "original_control":{
+    "policy":"guarded_ensemble20","cadence":7,
+    "full_return_pct":121.21467568581403,"full_CAGR_pct":15.046013817733561,"full_close_DD_pct":-14.962395424773046,"full_worst365_pct":-8.390672768575847,
+    "later_return_pct":8.642288466009497,"later_close_DD_pct":-7.3561574193716,
+    "later_fills":130,"later_rebalance_days":26,"later_closed_asset_positions":35,
+    "later_double_cost_pct":7.748215541699066,"later_extra_day_delay_pct":5.895205843802787,"later_OKX_pct":8.666350433481561,
+    "quarterly365_starts":{"positive":15,"zero":1,"negative":3,"worst_pct":-6.263277369420173}
+  },
+  "original_daily_primary":{
+    "full_CAGR_pct":12.388774814961078,"full_close_DD_pct":-23.832611487683142,
+    "later_return_pct":6.3220992555544475,"later_close_DD_pct":-10.309654753553577,
+    "later_fills":593,"later_closed_asset_positions":79,
+    "quarterly365_starts":{"positive":13,"zero":1,"negative":5,"worst_pct":-17.302432176476668},
+    "failed_joint_improvement":true
+  },
+  "post_result_candidate":{
+    "existing_policy":"ensemble_market_gate","constant_allocation":0.25,"cadence_days":3,
+    "target_and_executor_unchanged":true,"actual_native_fills_recomputed":true,
+    "selected_after_budget_table":true,"not_a_new_funding_strategy":true,
+    "full_return_pct":193.30362853322396,"full_CAGR_pct":20.919871464075214,
+    "full_close_DD_pct":-13.768386716316062,"full_worst365_pct":-11.490933176059192,
+    "full_fills":1168,"full_rebalance_days":279,"full_closed_asset_positions":200,
+    "full_fees":624.8435089956515,"full_positive_months":20,"full_zero_months":31,"full_negative_months":17,
+    "later_return_pct":4.666547368780183,"later_CAGR_pct":2.777819467084841,
+    "later_close_DD_pct":-8.081516668642507,"later_worst365_pct":-4.246086394330861,
+    "later_fills":227,"later_rebalance_days":57,"later_closed_asset_positions":50,
+    "later_fees":61.264146773166814,"later_positive_months":4,"later_zero_months":11,"later_negative_months":5,
+    "base_accounts_complete":true,
+    "stress":[
+      {"case":"full_double_cost","return_pct":181.34628841474455,"CAGR_pct":20.03464015033618,"close_DD_pct":-14.484177014847866},
+      {"case":"full_delay","return_pct":187.5700126284082,"CAGR_pct":20.4991817742997,"close_DD_pct":-14.258136490239304},
+      {"case":"full_capital1000","return_pct":193.28959585925003,"CAGR_pct":20.91885015082713,"close_DD_pct":-13.672334794625385},
+      {"case":"later_double_cost","return_pct":3.745987914780735,"close_DD_pct":-8.355572732526484},
+      {"case":"later_delay","return_pct":5.831039218426715,"close_DD_pct":-9.359989715168338},
+      {"case":"later_capital1000","return_pct":4.8168143353364945,"close_DD_pct":-8.121419426070709},
+      {"case":"okx_later","return_pct":4.874040505893351,"close_DD_pct":-8.082893414705893},
+      {"case":"okx_full_common","return_pct":31.478987905578748,"CAGR_pct":10.808004046409337,"close_DD_pct":-8.80316499494863}
+    ],
+    "annual_segments":[
+      {"year":2021,"full_year":true,"return_pct":130.47741464728833},
+      {"year":2022,"full_year":true,"return_pct":0.0},
+      {"year":2023,"full_year":true,"return_pct":-2.681931206075583},
+      {"year":2024,"full_year":true,"return_pct":24.869496978991634},
+      {"year":2025,"full_year":true,"return_pct":5.0873906885498865},
+      {"year":2026,"full_year":false,"return_pct":-0.3474057501630212}
+    ],
+    "quarterly365_starts":{"complete":19,"positive":14,"zero":1,"negative":4,"worst_pct":-10.931356913865143,"median_pct":5.028636008243814},
+    "all9_exclusions_positive_full_and_later":true,
+    "without_DOGE_full_CAGR_pct":15.106040200312698,
+    "without_BTC_full_close_DD_pct":-33.60099686398779,
+    "excluding_BTC_changes_allocation_and_market_gate":true,
+    "dominates_original_full_and_later":false
+  },
+  "fixed25pct_weekly_followup_focus":{
+    "full_CAGR_pct":17.73869161144923,"full_close_DD_pct":-18.265877522406427,
+    "later_return_pct":7.764861874074258,"later_close_DD_pct":-5.236900992844095,
+    "quarterly365_starts_positive":16,"quarterly365_starts_negative":2,
+    "worst_start_pct":-6.189828874689807,"joint_improvement":false
+  },
+  "riskier_comparator_not_new_primary":{
+    "policy":"ensemble_market_gate","allocation":0.5,"cadence_days":3,
+    "full_CAGR_pct":43.890325702961675,"full_close_DD_pct":-24.48164286646164,
+    "later_return_pct":8.416963473606543,"later_close_DD_pct":-15.668598713595705,
+    "later_double_cost_pct":6.530205848996484,"later_OKX_pct":8.849759789076472
+  },
+  "verification":{
+    "new_tests":24,"funding_data_tests_included":13,"reporting_tests_included":11,
+    "root_tests":701,"additional_subtests":46,"failures":0,
+    "initial150_reports_and_fills_exactly_reproduced":true,
+    "budget91_reports_and_fills_exactly_reproduced":true,
+    "candidate47_reports_and_fills_exactly_reproduced":true,
+    "total_report_runs":288,"distinct_independent_market_observations":false,
+    "extra_automatic_repeat_run":34030957328,"extra_repeat_counted_as_new_research":false,
+    "local_execution":false,"independent_execution_same_model":true,
+    "original_policy_SHA":"5a88fe2da2bf8d28cb7f3bead91124465161a0ffdbd1ea6c452e640048d3db0f",
+    "original_executor_SHA":"e4c9b244e5044dd34062dc83e56c681e33e1e352245529b39d9bc1fa252d95e8"
+  },
+  "hashes":{
+    "cadence_result":"f2e5335220f26a56ef63c496c1e96683bcd341225ba5e6d3883e02704083e8e9",
+    "cadence_ledger":"3b2c7d62f61aaad84ebf53e2140d244cf2181cb3787f7abd6094759fa88614f8",
+    "budget_result":"c0780fb5468bb57cd34b94ea251c79d58cbee96ef491370de7d5f9ec92d5fd90",
+    "budget_ledger":"c87231d5f1bc92f9995de4f19363b02db4a16b8fccbdba8a665a5fd93af7b279",
+    "candidate_result":"0ff8caf412c356a0827de4396ab13dfb4cb597c905847a627785658ac2a5d393",
+    "candidate_ledger":"8bea3de071d428d485032bf5cca3587e003c2a9b4054ac00bcdd9f6d4ac5d660"
+  },
+  "artifact_ids":{"cadence":9988535893,"cadence_reproduction":9988549964,"budget":9988593414,"budget_reproduction":9988605053,"candidate":9988659530,"funding_source":9988469296},
+  "stable_profit_proven":false,"annual500proven":false,"live_ready":false,"real_orders":0,
+  "limits":[
+    "Better full-history CAGR and close-DD do not establish better later return or fewer losing years.",
+    "The daily primary and fixedweeklyfollowupfocus failed their frozen joint criteria; the3daycandidate was chosen after results.",
+    "Constant allocation constrains scheduled target budget, not actual drifted positions or a guaranteed stop loss.",
+    "All dates and nine surviving assets reused; no pristineholdout or correction for prior research selection.",
+    "No funding income, loans, real execution, production changes or blocked-policy recreation.",
+    "Full-model native residual flags retained; riskier incomplete accounts are not ranked by null CAGR.",
+    "Every-year500% and500%CAGR were not obtained. A single stronger2021 or cumulative multiyear gain is not that goal.",
+    "Taxes, stablecoin/custody/counterparty, infrastructure and actual historical exchange filters not fully modeled."
+  ]
+}
