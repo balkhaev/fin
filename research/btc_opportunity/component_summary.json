@@ -1,0 +1,89 @@
+{
+  "id": "btc-opportunity-components-20260906",
+  "status": "PARTIAL_COMPONENTS_ONLY",
+  "base_main_commit": "4571c9cdfedde3f3b71508255738969e0a61305b",
+  "protocol_commit": "69511b1bd38873ec051c2398a78d324f3e24cd47",
+  "tested_commit": "5d4896dfa5e551bd3ef70edaca72528ea02039d7",
+  "draft_pr": 125,
+  "validation_run": 34019126995,
+  "validation_job": 101448325073,
+  "verification": {
+    "component_tests_passed": 34,
+    "root_tests_passed": 506,
+    "additional_subtests_passed": 46,
+    "component_tests_included_in_root_total": true,
+    "failures": 0,
+    "independent_second_full_recalculation": false,
+    "local_execution": false,
+    "environment": "GitHub Actions, Python 3.13",
+    "initial_test_failure": "RSI floating-point roundoff produced 100.00000000000001; clamped calculated RSI to its mathematical 0..100 range before final validation. Trading thresholds unchanged."
+  },
+  "real_data_scan": {
+    "start_decision_utc": "2025-01-01T00:00:00Z",
+    "end_decision_utc_exclusive": "2026-09-01T00:00:00Z",
+    "days": 608,
+    "observed_scan_frames": 14592,
+    "ready_frames": 14592,
+    "raw_condition_hours": {
+      "daily_trend": 5544,
+      "trend_pullback": 842,
+      "range_rebound": 300,
+      "breakout": 65
+    },
+    "condition_episodes": {
+      "daily_trend": 13,
+      "trend_pullback": 445,
+      "range_rebound": 228,
+      "breakout": 65
+    },
+    "cost_room_pass_hours": {
+      "daily_trend": 5544,
+      "trend_pullback": 842,
+      "range_rebound": 170,
+      "breakout": 65
+    },
+    "source_manifest_sha256": "0ce4a8eb23c2e925d678e55367df02277c524ff686d6b1c54825a870b7bcc8ed",
+    "source_artifact": 9977552924,
+    "source_artifact_sha256": "000cff56919a9004b90e3157c910b0b207c5ffd85c79a708e7776ee0933c572f",
+    "source_history_reused": true,
+    "episodes_are_independent_profitable_opportunities": false,
+    "cost_room_is_expected_profit": false
+  },
+  "implemented": [
+    "Four closed-bar spot scan hypotheses and source-gap-aware feature generation",
+    "Qualification function using only supplied completed trades strictly before decision time",
+    "Native MarketSnapshot/StrategySnapshot/risk/planner/PaperBroker integration",
+    "Paper/shadow-only registry entry without inherited historical profitability",
+    "Adapter checks for stale/future quotes, feature delay,25% entry notional cap, lot/minimum constraints, and no adding to existing BTC exposure",
+    "Synthetic native buy/sell/fee, partial-fill, durable retry and conflicting-state integration tests"
+  ],
+  "not_implemented_or_not_run": [
+    "controller.py write blocked by tool; controller not published",
+    "Automatic shared-account orchestration and shadow calibration collection",
+    "Binding the qualification decision into each autonomous execution request",
+    "Portfolio-level stop, daily pause, cooldown and entry quota lifecycle",
+    "New autonomous CLI or continuous producer/watch service",
+    "Unified portfolio historical backtest and execution frequency measurement",
+    "Production scheduler activation or real exchange submission"
+  ],
+  "blocker": {
+    "path": "src/finruntime/opportunities/controller.py",
+    "message": "Tool could not determine request safety and blocked the write",
+    "bypassed": false,
+    "pr_left_draft": true
+  },
+  "artifact": {
+    "id": 9984897745,
+    "name": "btc-opportunity-components",
+    "bytes": 400193,
+    "sha256": "e96d3c44c0eb06f74c5a95b5a6cd769e71cb7bf4227ea8d54bcf98f028cdf99b"
+  },
+  "market_qualified_models": 0,
+  "autonomous_loop_started": false,
+  "portfolio_return_pct": null,
+  "portfolio_trades": null,
+  "stable_profit_proven": false,
+  "annual_500_proven": false,
+  "live_ready": false,
+  "real_orders_sent": 0
+}
