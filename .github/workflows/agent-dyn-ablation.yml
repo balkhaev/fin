@@ -1,0 +1,44 @@
+name: Agent DYN-IV113 ablation audit
+
+on:
+  push:
+    branches: [agent/backtest-audit-20260801]
+    paths:
+      - 'research/agent_dyn_ablations_20260801.py'
+      - '.github/workflows/agent-dyn-ablation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/agent_dyn_ablations_20260801.py'
+      - '.github/workflows/agent-dyn-ablation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dyn-ablation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile harness
+        run: python -m compileall -q research/agent_dyn_ablations_20260801.py
+      - name: Run DYN-IV113 ablations
+        run: |
+          mkdir -p audit-results
+          python research/agent_dyn_ablations_20260801.py \
+            --output audit-results/dyn-ablations.json
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-dyn-ablations-20260801
+          path: audit-results/dyn-ablations.json
+          if-no-files-found: warn
+          retention-days: 14
