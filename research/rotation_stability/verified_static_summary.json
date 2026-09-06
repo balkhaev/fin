@@ -1,0 +1,59 @@
+{
+  "id":"rotation-stability-static-20260906",
+  "protocol_commit":"6a79a603d2113a4d84b02023f4e669999f7be2d1",
+  "tested_commit":"4669b693194ac51bb765432a945d2d49c1f28000",
+  "run_id":34023233225,
+  "job_id":101459537178,
+  "primary_fixed_before_results":"guarded_ensemble20",
+  "core_simulator_unchanged":true,
+  "old_raw126_and_risk63_full_and_later_reports_exactly_reproduced":true,
+  "periods":{"full":"2021-01-01 to2026-09-01 exclusive,2069days","later":"2025-01-01 to2026-09-01 exclusive,608days"},
+  "primary_full":{"return_pct":121.21467568581403,"cagr_pct":15.046013817733561,"max_close_drawdown_pct":-14.962395424773046,"worst_rolling365_pct":-8.390672768575847,"order_fills":565,"accounting_complete":true,"open_assets":0},
+  "primary_later":{"return_pct":8.642288466009497,"cagr_pct":5.105631763786933,"max_close_drawdown_pct":-7.3561574193716,"worst_rolling365_pct":-5.630524444768414,"order_fills":130,"accounting_complete":true,"open_assets":0},
+  "primary_full_continuous_annual":[
+    {"year":2021,"full_year":true,"return_pct":50.63083631301899},
+    {"year":2022,"full_year":true,"return_pct":0.0},
+    {"year":2023,"full_year":true,"return_pct":10.137920576457438},
+    {"year":2024,"full_year":true,"return_pct":22.76961060190581},
+    {"year":2025,"full_year":true,"return_pct":9.883049393738762},
+    {"year":2026,"full_year":false,"through":"2026-08-31","return_pct":-1.1579842242203986}
+  ],
+  "stresses":[
+    {"name":"double_costs_full","return_pct":113.86376287857223,"cagr_pct":14.361705980145967,"max_close_drawdown_pct":-16.078216270798585,"order_fills":565,"accounting_complete":true},
+    {"name":"double_costs_later","return_pct":7.748215541699066,"max_close_drawdown_pct":-7.552995516396955,"order_fills":130,"accounting_complete":true},
+    {"name":"extra_day_delay_full","return_pct":112.82451079582789,"cagr_pct":14.263403451766376,"max_close_drawdown_pct":-13.921066885942412,"order_fills":589,"accounting_complete":true},
+    {"name":"extra_day_delay_later","return_pct":5.895205843802787,"max_close_drawdown_pct":-9.559371213531309,"order_fills":132,"accounting_complete":true},
+    {"name":"capital1000_full","return_pct":120.5690894842566,"max_close_drawdown_pct":-14.992521390408076,"order_fills":447,"accounting_complete":true},
+    {"name":"capital1000_later","return_pct":8.97209893469666,"max_close_drawdown_pct":-7.364967911220299,"order_fills":100,"accounting_complete":true}
+  ],
+  "neighbor_risk_budgets":[
+    {"name":"guarded_ensemble10","full_cagr_pct":7.508846146356429,"full_drawdown_pct":-7.653941146553622,"later_return_pct":4.378227355046849,"later_drawdown_pct":-3.710323232617696},
+    {"name":"guarded_ensemble30","full_cagr_pct":21.64551075038719,"full_drawdown_pct":-21.82136804721827,"later_return_pct":11.543535079167476,"later_drawdown_pct":-10.832594149756513}
+  ],
+  "full_period_leave_one_out":[
+    {"excluded":"BTCUSDT","cagr_pct":13.875205093398456,"drawdown_pct":-23.998113286771083},
+    {"excluded":"ETHUSDT","cagr_pct":16.858041913779466,"drawdown_pct":-15.678825516082961},
+    {"excluded":"BNBUSDT","cagr_pct":16.372986799428844,"drawdown_pct":-13.132806883357917},
+    {"excluded":"XRPUSDT","cagr_pct":17.610046692776994,"drawdown_pct":-16.381642797582963},
+    {"excluded":"ADAUSDT","cagr_pct":18.13818480716669,"drawdown_pct":-12.15986980302619},
+    {"excluded":"LTCUSDT","cagr_pct":22.339541251626404,"drawdown_pct":-11.131093683301085},
+    {"excluded":"BCHUSDT","cagr_pct":14.287528246882841,"drawdown_pct":-14.479934504752645},
+    {"excluded":"LINKUSDT","cagr_pct":20.104122505275402,"drawdown_pct":-14.488868910421305},
+    {"excluded":"DOGEUSDT","cagr_pct":14.342415111700845,"drawdown_pct":-14.61647404712021}
+  ],
+  "scope_counts":{"fixed_policies":11,"base_period_reports":22,"primary_stress_reports":6,"constituent_exclusions":9,"quarterly_start_reports":38,"total_existing_simulator_reports":75},
+  "verification":{"new_tests":18,"root_tests":555,"subtests":46,"failures":0,"local_execution":false,"second_runner_reproduction_verified":false},
+  "hashes":{"result_sha256":"6c6dc96296f0281168e6670ff3231fe47c6bb46bb92e5cc2e4bd31c7e8b6a26a","fills_sha256":"698876b4e0b8e55b8a39fa3e8b24df85f13491ccf5f365c78f660aa3003f2636","policy_source_sha256":"5a88fe2da2bf8d28cb7f3bead91124465161a0ffdbd1ea6c452e640048d3db0f"},
+  "artifact":{"id":9986218189,"bytes":1218576,"sha256":"94ff48233dfba44a089c7492db588154245ef6da5698605deed449b602099c90"},
+  "not_implemented":{"evaluation_py_write_blocked":true,"quarterly_allocator":true,"cash_floor_valuation":true,"strict4pct_portfolio_backtest":true,"live_runtime":true},
+  "limitations":[
+    "Market history and named survivor cohort reused from earlier research; no pristine holdout.",
+    "A0% year may mean no exposure; this does not establish active profitable trading.",
+    "Weekly target budgets are not per-trade stop-loss guarantees or bounds on drifted holdings.",
+    "Leave-BTC-out removes the BTC allocation and BTC market-gate condition, so it changes two roles.",
+    "All incomplete returns remain null under the unchanged simulator; no dust writeoff used.",
+    "Daily OHLC and declared fees/capacity assumptions are not real exchange fills; taxes and infrastructure not included.",
+    "18tests are included in555, not additional to555.37 exported ledgers versus75 report runs are distinct counts."
+  ],
+  "stable_profit_proven":false,"stable500proven":false,"live_ready":false,"real_orders":0
+}
