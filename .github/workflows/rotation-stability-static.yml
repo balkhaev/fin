@@ -1,0 +1,141 @@
+name: Rotation stability static-policy audit
+on:
+  push:
+    branches: [research/rotation-stability-20260906]
+    paths:
+      - research/rotation_stability/policy.py
+      - tests/test_rotation_stability_policy.py
+      - .github/workflows/rotation-stability-static.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: rotation-stability-static-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  static_research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e . -r research/btc_flow/requirements.txt scipy
+      - name: Saved-policy tests and full existing repository suite
+        run: |
+          python -m pytest -q tests/test_rotation_stability_policy.py --junitxml=policy-tests.xml
+          python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 80 root-tests.log; exit 1; }
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34020685550
+          name: annual-rotation-complete-evidence
+          path: original
+      - name: Existing simulator on saved static targets only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,math
+          import numpy as np
+          import pandas as pd
+          from research.annual_rotation.data import load,SYMBOLS
+          from research.annual_rotation.model import simulate,Costs
+          from research.rotation_stability.policy import build,POLICIES,PRIMARY,WEEKLY
+          p=pathlib.Path
+          old=json.loads(p('original/report/results.json').read_text())
+          for name,want in old['source_sha256'].items():
+              assert hashlib.sha256(p('research/annual_rotation',name).read_bytes()).hexdigest()==want,name
+          frames,audit=load(p('original/inputs/rotation-data'))
+          assert audit['manifest_sha256']=='da9ca6d1e782e8ef6c816390ef3e6ea363eec53a67f58592a8505d754bf5bfe2'
+          targets,traces=build(frames)
+          out=p('static-report');out.mkdir()
+          rows=[];ledger_sets=[];exclusions=[];starts=[]
+          def record(name,label,start,end,target,cost=Costs()):
+              r,f,c=simulate(frames,target,WEEKLY,start,end,cost)
+              row=dict(r,policy=name,period=label)
+              rows.append(row)
+              prefix=f'{name}_{label}'
+              f.to_csv(out/f'{prefix}_fills.csv',index=False)
+              c.to_csv(out/f'{prefix}_equity.csv',index=False)
+              ledger_sets.append({'key':prefix,'fills':f.to_dict('records')})
+              cash=cost.initial;coins={s:0 for s in SYMBOLS}
+              for x in f.itertuples():
+                  sign=1 if x.side=='sell' else -1
+                  cash+=sign*x.notional-x.fee
+                  coins[x.symbol]-=sign*round(x.quantity/cost.step)
+                  assert cash>=-1e-5 and min(coins.values())>=0
+                  assert math.isclose(cash,x.cash_after,rel_tol=1e-10,abs_tol=1e-5)
+              if r['accounting_complete']:
+                  assert not any(coins.values())
+                  assert math.isclose(cash,r['final_equity'],rel_tol=1e-10,abs_tol=1e-5)
+              print('STATIC_RESULT',json.dumps({k:row[k] for k in ('policy','period','return_pct','cagr_pct','max_close_drawdown_pct','worst_rolling_365_pct','order_fills','accounting_complete','open_assets')}),flush=True)
+              return r
+          for policy in POLICIES:
+              for label,start,end in [('full','2021-01-01','2026-09-01'),('later','2025-01-01','2026-09-01')]:
+                  r=record(policy.name,label,start,end,targets[policy.name])
+                  if policy.name in ('legacy_raw126','legacy_risk63'):
+                      old_id='raw_126_top3_every7' if policy.name=='legacy_raw126' else 'risk_adjusted_63_top3_every7'
+                      expected=next(x for x in old['results'] if x['id']==old_id and x['period']==label)
+                      for key,value in r.items():assert value==expected[key],(old_id,label,key)
+                  if policy.name==PRIMARY:print('PRIMARY_YEARS',label,json.dumps(r['annual']),flush=True)
+          for scenario,cost in [('double_costs',Costs(fee=.002,slip=.001)),('extra_day_delay',Costs(extra_delay=1)),('capital1000',Costs(initial=1000))]:
+              for label,start in [('full','2021-01-01'),('later','2025-01-01')]:
+                  record(PRIMARY,scenario+'_'+label,start,'2026-09-01',targets[PRIMARY],cost)
+          for asset in SYMBOLS:
+              t,_=build(frames,exclude=asset)
+              r,f,c=simulate(frames,t[PRIMARY],WEEKLY,'2021-01-01','2026-09-01')
+              exclusions.append(dict(r,excluded=asset))
+              f.to_csv(out/f'exclude_{asset}_fills.csv',index=False)
+              c.to_csv(out/f'exclude_{asset}_equity.csv',index=False)
+              ledger_sets.append({'key':'exclude_'+asset,'fills':f.to_dict('records')})
+              print('ASSET_EXCLUSION',asset,json.dumps({k:r[k] for k in ('return_pct','cagr_pct','max_close_drawdown_pct','accounting_complete')}),flush=True)
+          for date in pd.date_range('2021-01-01','2025-07-01',freq='QS',tz='UTC'):
+              end=date+pd.Timedelta(days=365)
+              for name in (PRIMARY,'legacy_raw126'):
+                  r,_,_=simulate(frames,targets[name],WEEKLY,str(date.date()),str(end.date()))
+                  starts.append(dict(r,policy=name))
+          traces[PRIMARY].to_csv(out/'primary_target_diagnostics.csv',index=False)
+          pd.DataFrame([{k:r[k] for k in ('policy','period','return_pct','cagr_pct','max_close_drawdown_pct','worst_rolling_365_pct','order_fills','fees','accounting_complete','open_assets')} for r in rows]).to_csv(out/'comparison.csv',index=False)
+          pd.DataFrame([dict(policy=r['policy'],period=r['period'],**a) for r in rows for a in r['annual']]).to_csv(out/'annual.csv',index=False)
+          pd.DataFrame([{k:r[k] for k in ('policy','start','end_exclusive','return_pct','max_close_drawdown_pct','order_fills','accounting_complete')} for r in starts]).to_csv(out/'quarterly_start_sensitivity.csv',index=False)
+          result=dict(scope='saved_static_policies_only',primary=PRIMARY,results=rows,exclusions=exclusions,starts=starts,data=audit,
+              core_source_unchanged=True,legacy_controls_exactly_reproduced=True,
+              new_evaluation_module_published=False,quarterly_allocator_implemented=False,
+              conservative_cash_floor_implemented=False,strict4pct_account_replay_implemented=False,
+              stable_profit_proven=False,stable500proven=False,live_orders=False)
+          raw=json.dumps(result,sort_keys=True,separators=(',',':'),allow_nan=False)
+          (out/'results.json').write_text(json.dumps(result,indent=2,allow_nan=False))
+          verification=dict(result_sha256=hashlib.sha256(raw.encode()).hexdigest(),
+              fills_sha256=hashlib.sha256(json.dumps(ledger_sets,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest(),
+              target_source_sha256=hashlib.sha256(p('research/rotation_stability/policy.py').read_bytes()).hexdigest(),
+              original_model_unchanged=True,stable_profit_proven=False)
+          (out/'verification.json').write_text(json.dumps(verification,indent=2))
+          print('VERIFICATION',json.dumps(verification),flush=True)
+          print('ROOT_TESTS',p('root-tests.log').read_text().splitlines()[-1],flush=True)
+          PY
+      - name: Package saved implementation and evidence
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/rotation_stability research/annual_rotation delivery/research/
+          cp tests/test_rotation_stability_policy.py delivery/tests/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          cp .github/workflows/rotation-stability-static.yml delivery/
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rotation-stability-static-evidence
+          path: |
+            static-report/
+            delivery/
+            policy-tests.xml
+            root-tests.xml
+            root-tests.log
+          retention-days: 90
