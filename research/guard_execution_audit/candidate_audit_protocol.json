@@ -1,0 +1,12 @@
+{
+  "id":"guard25-three-day-candidate-audit-20260906",
+  "budget_result_sha256":"c0780fb5468bb57cd34b94ea251c79d58cbee96ef491370de7d5f9ec92d5fd90",
+  "candidate_selected_after_results":true,
+  "selection_reason":"The25%constant-allocation,3day existing market-gate target improved fullCAGR20.9199% versus15.0460% while improving full closeDD13.7684% versus14.9624%. But its later return4.6665% is BELOW old8.6423%, and worstrolling365 is worse. This is a disclosed ex-post candidate, not the originaldailyprimary or the fixedweeklyfocus.",
+  "no_new_optimization":"Keep exact25%allocation,3daycadence,existing market-gate target and allcosts. No changing thresholds, gate, horizon, phase anchor, ranks or engine. No funding use or blocked-policy recreation.",
+  "cases":"Reproduce originalcandidatefull/later (2); full/later doublecost,extra1daydelay,capital1000 (6); full/later each of9 oldbuild(exclude=asset) cases (18);19predeclaredquarterly365day origins (19); pureOKXlater/fullcommon2024-Aug2026 (2). Total47reports,allledgers retained. All exclusions use existingAPI,not retraining or new feature logic. ExcludingBTC also removes its market-gate role and must be disclosed.",
+  "comparison":"Oldguard20weekly stays first reference. Report full/later net,CAGR,DD,downside365,fullcalendar andpartyear,monthlysigns,allcosts,liquidity/residualflags and origins. Exclusionnegative results are not removed. At least1000USDTsmall-account tested; no claim of freeexecution. No annualizing a partialyear to500%.",
+  "acceptance":"No investment approval. Candidate is exploratory; cannot call jointfull/laterimprovement when laterreturn is lower. Even robustpositive variants retain survivor/reusedhistory bias and require fresh observation.",
+  "verification":"Hash-pinned budget/cadence results and oldengine/policy source. Native cash+integercoin verification for all47reports. Repeatall47 in clean secondrunner. No sourcechanges afterresults except genuine regression corrections with disclosure.",
+  "live_orders":false,"autonomous_schedule":false
+}

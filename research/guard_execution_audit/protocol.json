@@ -1,0 +1,19 @@
+{
+  "id":"guard-execution-audit-20260906",
+  "purpose":"Seek better net returns and quicker risk response from EXISTING guarded targets, not implement the blocked funding policy. A weekly executor can remain exposed after targets turn defensive; test whether more responsive execution pays its additional turnover.",
+  "source_and_scope":"Import research.rotation_stability.policy.build and research.annual_rotation.model.simulate unchanged. Only Config.every changes. No funding inputs, new ranking/target rules, portfolio ledger, restricted controller or production changes.",
+  "known_before_results":"PR127 weeklyguard20 fullCAGR15.046%,DD14.962%,later+8.642%; guard30fullCAGR21.646%,DD21.821%. Earlier PR129 cadence checks concerned different aggressive pulse policies, not this frozen four-target audit. All market dates reused.",
+  "policies":["guarded_ensemble20","guarded_ensemble30","guarded_raw12620","ensemble_market_gate"],
+  "cadences_days":[1,3,7,14],
+  "primary":"guarded_ensemble20 every1day; fixed now, never replaced by an ex-post better cell.",
+  "control":"guarded_ensemble20 every7days (original PR127). Original yearly control column always first. Risk30 and unscaled market-gate targets are separate higher-risk comparisons, not assumed compliant with20%DD.",
+  "periods":["development2021-01-01 to2024-01-01 exclusive","validation2024 independentstart","later2025-01-01 to2026-09-01 exclusive","full2021-01-01 to2026-09-01 exclusive"],
+  "stress":"EVERY16policy/cadence cell: doubledfee/slippage later,extra1daydelay later,pureOKX target+execution later. Primary and originalweeklycontrol get19quarterly365day starts2021-Jan through2025-Jul. No selecting only positive cells for stress.",
+  "costs":"Native fully funded10000USDTaccount,fee0.1%+slip0.05%eachside,openD usescloseD-2. All native capacity/minimum/rounding/final-residual rules unchanged. Phase anchor calendarUNIXdaymodulo every plus native first-day rebalance. Not a bestweekday/offset optimization.",
+  "count":"16cells*4baseperiods +16cells*3laterstresses +2cadences*19startdates =150account reports. Counts include controls/overlappingperiods,not independent marketobservations.",
+  "selection":"No candidate admission or live replacement from highest later return. Report primary/control paired differences and allcells,including riskier,incomplete and losing ones. Any ex-post standout clearly labeled exploratory.",
+  "admission":"Fixedprimary only: completefull/later accounts,fullCAGR greaterthan originalweeklycontrol and fullDD no worse,positive doublecost/delayed/OKXlater,more completed assetpositions later,all fullyobserved calendarreturns nonnegative. If anyfails -> no established joint improvement.500target separately fullCAGR>=500 andeachfullcalendar>=500. Gates are research rules,not guaranteed futureprofit.",
+  "verification":"Check original policySHA5a88fe2da2bf8d28cb7f3bead91124465161a0ffdbd1ea6c452e640048d3db0f and simulatorSHAe4c9b244e5044dd34062dc83e56c681e33e1e352245529b39d9bc1fa252d95e8. All4priorweeklyfull/later reports exactly matched before comparing changed cadence. Independentcash/lot recons and secondcleanrunner reproduces all150reports/fillledgers. Retain monthly signs and annual segments.",
+  "data":"Exact PR128 artifact9986681694 via run34024683190, both old Binance and OKX snapshots with original manifests, no new market endpoints needed by this experiment.",
+  "safety_and_limits":"No funding-policy recreation, no leverage/livecapital/secret/productionwrite. No pristineholdout; nine survivingassets and allprices alreadyseen. All costs scenarios, not real exchangefills. Drawdownclose notintradaybound. Finite calculations in current research pass, no background schedule."
+}

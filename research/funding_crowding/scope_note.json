@@ -1,0 +1,12 @@
+{
+  "funding_protocol_commit":"abca2181ecd88d83cb192e9e65423d5addab836a",
+  "blocked_write":"research/funding_crowding/policy.py",
+  "blocked_reason":"Tool could not determine request safety; new funding-based target policy was not published.",
+  "same_policy_retried_or_reimplemented":false,
+  "funding_strategy_implemented":false,
+  "funding_strategy_return_computed":false,
+  "funding_source_work":"Complete only the separate official funding-rate source and validation tests already saved before the block. Do not create target ranks, persistent funding memberships, squeeze allocations, trades or returns for the blocked policy in another location.",
+  "distinct_experiment":"Inspect the existing PR127 target policies and existing PR126 simulator, both byte-unchanged, at predeclared execution cadences. This work does NOT use funding as an input, implement funding policy or create a new ledger. Its protocol and outputs live separately and must not be labeled results of the initial funding hypothesis.",
+  "timing":"Declared before any new cadence results, after funding-policy publication was refused.",
+  "production_strategy_unchanged":true,"real_orders":0
+}

@@ -1,0 +1,15 @@
+{
+  "id":"guard-execution-first-results-20260906",
+  "tested_commit":"b362e3a8bc30cb6fa1351abc9106ba5a06feda7c",
+  "run":34030758810,
+  "result_sha256":"f2e5335220f26a56ef63c496c1e96683bcd341225ba5e6d3883e02704083e8e9",
+  "ledger_sha256":"3b2c7d62f61aaad84ebf53e2140d244cf2181cb3787f7abd6094759fa88614f8",
+  "first_study_reports":150,
+  "primary":"guarded_ensemble20_daily",
+  "primary_result":{"full_cagr_pct":12.388774814961078,"full_close_dd_pct":-23.832611487683142,"later_return_pct":6.3220992555544475,"later_dd_pct":-10.309654753553577,"later_fills":593,"later_closed_asset_positions":79,"admitted_as_joint_improvement":false},
+  "weekly_control":{"full_cagr_pct":15.046013817733561,"full_close_dd_pct":-14.962395424773046,"later_return_pct":8.642288466009497,"later_dd_pct":-7.3561574193716,"later_fills":130,"later_closed_asset_positions":35},
+  "higher_risk_existing_reference":{"policy":"ensemble_market_gate","cadence":7,"full_cagr_pct":65.97809415819765,"full_dd_pct":-57.898879822383265,"later_return_pct":29.574251683038955,"later_dd_pct":-20.170464051840597,"double_cost_later_pct":26.659821525987184,"extra_delay_later_pct":8.93291383796404,"OKX_later_pct":29.64884592705015,"already_existed_in_PR127":true,"not_new_discovered_strategy":true},
+  "new_tests":24,"root_tests":701,"subtests":46,
+  "funding_policy_implemented":false,"real_orders":0,
+  "followup_reason":"Strong reference signal may be worth testing at fixed smaller account allocations, distinct from the prior dynamically volatility-scaled version. Any such test is post-result and cannot relabel the failed daily primary. No funding input or new simulator."
+}

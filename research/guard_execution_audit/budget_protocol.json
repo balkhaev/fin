@@ -1,0 +1,16 @@
+{
+  "id":"guard-fixed-budget-followup-20260906",
+  "first_result_sha256":"f2e5335220f26a56ef63c496c1e96683bcd341225ba5e6d3883e02704083e8e9",
+  "chronology":"Designed AFTER the150-case cadence audit. Original dailyguard20 primary failed. The high-return unscaled market-gate policy already existed inPR127 and is not a newly discovered strategy. This is exploratory post-result position-sizing research on reused data.",
+  "hypothesis":"Dynamic volatility sizing may reduce participation in profitable strong trends. Keeping the old market gate and ranking exactly unchanged but assigning a smaller CONSTANT fraction of account equity may preserve some upside while cutting worst drawdown. It can still fail, produce idle months or underperform the prior risk-managed guard.",
+  "permitted_implementation":"Call existing simulate on existing build()['ensemble_market_gate']; only already-supported Costs.allocation and Config.every vary. No target formula, funding input, account overlay multiplication, ledger or blocked-policy recreation.",
+  "allocations":[0.25,0.5,0.75],
+  "cadences_days":[1,3,7,14],
+  "fixed_followup_focus":"allocation0.25,cadence7; fixed now before budget results, but not independent of original research selection. Do not choose a different post-resultfocus because it performs better.",
+  "periods":["validation2024","later2025-Jan through2026-Aug","full2021-Jan through2026-Aug"],
+  "all_cell_stresses":"Each of12allocation/cadence combinations:laterdoublecosts,extra1daydelay,pureOKXlater. Native positions/costs recomputed for each cell, not scaling an equity curve.36base+36stress=72reports.",
+  "origins":"The fixed25%weekly focus also gets the same19quarterly365daystarts2021-Jan to2025-Jul.91new reports total. Reference originalguard20weekly starts reused only from hash-pinned first results.",
+  "comparison":"Prior guard20weekly is first control. Compare fullCAGR/DD, everyfullcalendar, laterreturn/DD, cost/delay/OKXstresses and positive/negative quarterly starts. Different full horizons or accounts never spliced. More capital in cash is not new alpha or guaranteed income.",
+  "success_gate":"Focus fullCAGR>originalcontrol AND fullDD no worse, laterreturn>0, all3laterstressespositive, allfullcalendar>=0, at least15positive quarterlystarts with no worse worststart than originalcontrol. Only a research diagnostic; no future guarantee.500%CAGR andeveryyear500 remains separate unfulfilledunlessactuallycomputed.",
+  "evidence":"Pin existing signal/engine sources and oldfirstresults. Keep all91native account reports, exact filled-order files and independent runner verification. Failure and native residualnulls retained. No models retrained or fundedtrading activated."
+}
