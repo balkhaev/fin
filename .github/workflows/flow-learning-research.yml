@@ -1,0 +1,96 @@
+name: Paired flow learning research
+on:
+  push:
+    branches: [research/flow-learning-20260906]
+    paths:
+      - research/flow_learning/*.py
+      - tests/test_flow_learning.py
+      - .github/workflows/flow-learning-research.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: flow-learning-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e . -r research/btc_flow/requirements.txt scipy
+      - name: Causal training tests and complete repository regression
+        run: |
+          python -m pytest -q tests/test_flow_learning.py --junitxml=flow-tests.xml
+          python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 100 root-tests.log; exit 1; }
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34025701632
+          name: asymmetric-pulse-research-evidence
+          path: inputs
+      - name: Check exact locally tested source identity
+        run: |
+          python - <<'PY'
+          import hashlib,pathlib
+          wanted={'data.py':'408e084edea5b5b831d3ed8d3b3db9d53da3329c8929685410f6859234802d5e','study.py':'4bc94e411330e6444b48e80abdc725706e8e376f2678c92dd0702a095681f10f','learning.py':'9f029e7e284f6c47c11ca5ab69d215a035bef7ddd67f4a63f4296fa439f20be5'}
+          for name,digest in wanted.items():
+              assert hashlib.sha256(pathlib.Path('research/flow_learning',name).read_bytes()).hexdigest()==digest,name
+          PY
+      - name: Recompute paired information tests and all55 native accounts
+        run: python -m research.flow_learning.study --source inputs/source --out report > research.log 2>&1 || { tail -n 100 research.log; exit 1; }
+      - name: Compare against completed local report and print all outcomes
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path
+          v=json.loads(p('report/verification.json').read_text())
+          v['local_result_exact_hash_match']=v['result_sha256']=='9a0bd26941cd0c50de1d9d6d0a0d8c7fabf65b80e44c407a9f7367854dff7717'
+          v['local_ledger_exact_hash_match']=v['ledger_sha256']=='ed9c58fe8758864c559c9478a091bf89afff2c3d1b72b81e454ba715605a024b'
+          v['independent_execution_not_independent_implementation']=True
+          p('LOCAL_CI_COMPARISON.json').write_text(json.dumps(v,indent=2))
+          assert v['report_count']==55 and v['ledger_count']==55
+          r=json.loads(p('report/results.json').read_text())
+          print('PAIRED_INFORMATION',json.dumps(r['predictive_information']))
+          print('COMPARISON_CSV\n'+p('report/comparison.csv').read_text())
+          print('FITTING',json.dumps(r['fitting']))
+          print('SOURCE_ROWS',r['source']['extra_rows'])
+          print('ADMISSION',json.dumps(r['admission_gates']))
+          print('LOCAL_CI_COMPARISON',json.dumps(v))
+          print('ROOT_TESTS',p('root-tests.log').read_text().splitlines()[-1])
+          # Floating platform differences require numerical inspection, not false equality.
+          print('Exact match:',v['local_result_exact_hash_match'],v['local_ledger_exact_hash_match'])
+          PY
+      - name: Preserve exact replay package and source data
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/flow_learning research/annual_rotation research/rotation_stability research/rotation_venue_transfer delivery/research/
+          cp tests/test_flow_learning.py delivery/tests/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flow-learning-evidence
+          path: |
+            delivery/
+            report/
+            inputs/source/prior/rotation-data/
+            inputs/source/new-source/okx-data/
+            inputs/source/prior/static-report/results.json
+            flow-tests.xml
+            root-tests.xml
+            root-tests.log
+            research.log
+            LOCAL_CI_COMPARISON.json
+          retention-days: 90
