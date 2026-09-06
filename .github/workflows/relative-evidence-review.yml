@@ -1,0 +1,186 @@
+name: Relative futures evidence review
+on:
+  push:
+    branches: [research/relative-futures-20260906]
+    paths:
+      - .github/workflows/relative-evidence-review.yml
+      - research/relative_futures/verified_summary.json
+      - research/relative_futures/compact_comparison.csv
+      - research/relative_futures/RESULTS_RU.md
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: relative-evidence-review-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034061046
+          name: relative-futures-research-evidence
+          path: first-original
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034061046
+          name: relative-futures-independent-reproduction
+          path: package/proofs/original
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034392920
+          name: relative-futures-reconciled-evidence
+          path: package/reconciled
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034392920
+          name: relative-futures-reconciled-reproduction
+          path: package/proofs/reconciled
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034741238
+          name: relative-positive-comparator-evidence
+          path: package/candidate
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034741238
+          name: relative-positive-comparator-reproduction
+          path: package/proofs/candidate
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34035078056
+          name: relative-regime-composition-evidence
+          path: package/composition
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34035078056
+          name: relative-regime-composition-reproduction
+          path: package/proofs/composition
+      - name: Inspect saved results and disclosures, no new model or accounting changes
+        run: |
+          python - <<'PY'
+          import csv,hashlib,io,json,math,pathlib,shutil,subprocess
+          p=pathlib.Path
+          target=p('package/original');target.mkdir()
+          shutil.copytree('first-original/report',target/'report')
+          for name in ('research.log','relative-tests.xml','root-tests.xml','root-tests.log'):
+              source=p('first-original')/name
+              if source.exists():shutil.copyfile(source,target/name)
+          results={name:json.loads(p(path,'report/results.json').read_text()) for name,path in {
+              'original':'package/original','base':'package/reconciled','candidate':'package/candidate','composition':'package/composition'}.items()}
+          summary=json.loads(p('research/relative_futures/verified_summary.json').read_text())
+          digest=lambda x:hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+          proofdirs={'original':'original','base':'reconciled','candidate':'candidate','composition':'composition'}
+          proof_flags={'original':'all62_reports_exact','base':'all_reports_and248_financial_files_equal',
+              'candidate':'all30_reports_and120_financial_files_exact','composition':'all41reports_and164files_equal'}
+          expected_counts={'original':62,'base':62,'candidate':30,'composition':41}
+          qualification={}
+          for name,r in results.items():
+              proof=json.loads(p('package/proofs',proofdirs[name],'REPRODUCTION.json').read_text())
+              assert digest(r)==summary['hashes'][name+'_result']==proof['result_sha256'],name
+              assert r['ledger_sha256']==proof['ledger_sha256'],name
+              if name!='original':assert r['ledger_sha256']==summary['hashes'][name+'_ledger']
+              assert proof[proof_flags[name]] is True,name
+              assert len(r['rows'])==expected_counts[name]
+              qualification[name]=sum(x['qualification']['qualified_historical_scenario'] for x in r['rows'])
+          assert sum(expected_counts.values())==195
+          assert qualification=={'original':30,'base':62,'candidate':30,'composition':41},qualification
+          for filename,want in results['base']['source_sha256'].items():
+              assert hashlib.sha256(p('research/relative_futures',filename).read_bytes()).hexdigest()==want,filename
+          assert hashlib.sha256(p('research/relative_futures_checks/candidates.py').read_bytes()).hexdigest()==results['candidate']['candidate_script_sha256']
+          assert hashlib.sha256(p('research/relative_portfolio/study.py').read_bytes()).hexdigest()==results['composition']['script_sha256']
+          assert subprocess.check_output(['git','hash-object','research/relative_futures/account.py'],text=True).strip()==summary['hashes']['unpatched_account_git_blob']
+          checks=0;failures=[]
+          def check(key,actual,claimed):
+              global checks
+              checks+=1
+              if isinstance(actual,bool) or actual is None:good=actual==claimed
+              else:good=claimed is not None and math.isclose(float(actual),float(claimed),abs_tol=1e-9,rel_tol=1e-11)
+              if not good:failures.append(dict(field=key,actual=actual,claimed=claimed))
+          def find(dataset,model,period,start=None):
+              found=[x for x in results[dataset]['rows'] if x['model']==model and x['period']==period and (start is None or x['start']==start)]
+              assert len(found)==1,(dataset,model,period,start)
+              return found[0]
+          for claim in summary['case_claims']:
+              actual=find(claim['dataset'],claim['model'],claim['period'])
+              assert actual['qualification']['qualified_historical_scenario']
+              for key,value in claim['metrics'].items():check(claim['model']+'.'+claim['period']+'.'+key,actual[key],value)
+          for period,stats in summary['pair_candidate_episode_statistics'].items():
+              actual=find('candidate','pair_momentum720',period)['episode_statistics']
+              for key,value in stats.items():check('episodes.'+period+'.'+key,actual[key],value)
+          for claim in summary['independent_calendar_start_claims']:
+              r=find('base','pair_momentum720','validation') if claim.get('source')=='base_validation' else find('candidate','pair_momentum720','fresh365',claim['start'])
+              check('calendar_start.'+claim['start'],r['return_pct'],claim['return_pct'])
+          assert summary['pair_candidate_seven_origin_summary']==results['candidate']['origin_summary']['pair_momentum720']
+          mapping={'full_return_pct':('full','return_pct'),'full_cagr_pct':('full','cagr_pct'),
+              'full_mark_close_drawdown_pct':('full','max_mark_close_drawdown_pct'),
+              'validation2024_return_pct':('validation','return_pct'),'later_return_pct':('later','return_pct'),
+              'later_cagr_pct':('later','cagr_pct'),'later_mark_close_drawdown_pct':('later','max_mark_close_drawdown_pct'),
+              'later_episodes':('later','completed_episodes'),'later_fills':('later','order_fills'),
+              'later_fees':('later','fees'),'later_funding':('later','funding_cashflow')}
+          with p('research/relative_futures/compact_comparison.csv').open() as file:table=list(csv.DictReader(file))
+          assert len(table)==10 and len({x['model'] for x in table})==10
+          reference=[]
+          for entry in table:
+              exact={'model':entry['model']}
+              for field,(period,key) in mapping.items():
+                  value=find('base',entry['model'],period)[key];exact[field]=value
+                  check(entry['model']+'.'+field,value,None if entry[field]=='' else float(entry[field]))
+              reference.append(exact)
+          stream=io.StringIO();writer=csv.DictWriter(stream,fieldnames=list(table[0]));writer.writeheader();writer.writerows(reference)
+          p('package/REFERENCE_COMPARISON.csv').write_text(stream.getvalue())
+          print('EXACT_COMPACT_REFERENCE\n'+stream.getvalue())
+          data=results['base']['source'];assert data['raw_files']==summary['source_reconciliation']['monthly_archives']
+          marks=data['mark_gap_reconciliation']
+          assert sum(x['missing_hours_before'] for x in marks.values())==288
+          assert all(x['missing_hours_after']==0 for x in marks.values())
+          rawmanifest=p('package/reconciled/supplemented/daily-mark-raw/manifest.json').read_bytes()
+          assert hashlib.sha256(rawmanifest).hexdigest()==data['supplementary_daily_manifest_sha256']
+          records=json.loads(rawmanifest)['records'];assert len(records)==12
+          for item in records:
+              assert item['status']=='verified'
+              raw=p('package/reconciled/supplemented/daily-mark-raw',item['filename']).read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==item['sha256'] and len(raw)==item['bytes']
+          log=p('package/composition/root-tests.log').read_text()
+          assert '761 passed' in log and '46 subtests passed' in log and '6 warnings' in log
+          assert summary['engineering']['new_tests']==43==761-718
+          review=dict(numerical_checks=checks,failures=failures,all_declared_metrics_reconciled=not failures,
+              account_reference_still_unpatched=True,original_and_supplemented_results_both_retained=True,
+              financial_cases=expected_counts,qualified_scenarios=qualification,
+              all_four_stages_independently_reproduced=True,all_current_model_source_hashes_match=True,
+              source_days_verified=12,no_new_backtest_or_parameter_search=True,
+              draft_only_no_merge_or_live_authority=True)
+          p('package/EVIDENCE_REVIEW.json').write_text(json.dumps(review,indent=2))
+          print('EVIDENCE_REVIEW',json.dumps(review))
+          assert not failures,'Published transcription differs from immutable results'
+          PY
+      - name: Add current code and readable final report, retain immutable original evidence
+        if: always()
+        run: |
+          mkdir -p package/current_code/research package/current_code/tests
+          cp -r research/relative_futures research/relative_futures_checks research/relative_portfolio research/funding_crowding research/annual_rotation package/current_code/research/
+          cp tests/test_relative*.py tests/test_pair_audit_statistics.py tests/test_pair_regime_composition.py package/current_code/tests/
+          cp research/btc_flow/requirements.txt package/current_code/requirements.txt
+          cp research/relative_futures/RESULTS_RU.md package/REPORT_RU.md
+          cp research/relative_futures/verified_summary.json package/verified_summary.json
+          git rev-parse HEAD > package/REVIEWED_COMMIT.txt
+          find package -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relative-futures-complete-research
+          path: package/
+          retention-days: 90
