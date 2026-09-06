@@ -1,0 +1,130 @@
+name: Opportunity evidence final review
+on:
+  push:
+    branches: [research/relative-futures-20260906]
+    paths: [.github/workflows/opportunity-evidence-review.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34038284168
+          name: opportunity-budget-reproduction
+          path: repeated
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034392920
+          name: relative-futures-reconciled-evidence
+          path: package/reconciled
+      - name: Retain exact financial outputs for read-only audit
+        run: |
+          cp -r repeated/budget package/opportunity-first
+          cp -r repeated/runner package/runner-first
+          cp -r repeated/ladder package/ladder-first
+          mkdir -p package/proofs
+          cp repeated/REPRODUCTION.json repeated/root-tests.xml repeated/root-tests.log repeated/new-tests.xml repeated/SOURCE_LOCK.json package/proofs/
+      - name: Independent source-price, quantity and funding-time audit; no new account calculation
+        run: python -m research.opportunity_checks.verify_evidence --root package
+      - name: Compare all published metrics, every CSV row and source identities
+        run: |
+          python - <<'PY'
+          import csv,hashlib,json,math,pathlib
+          p=pathlib.Path
+          s=json.loads(p('research/opportunity_budget/verified_summary.json').read_text())
+          maps={'budget':'opportunity-first','runner':'runner-first','ladder':'ladder-first'}
+          digest=lambda x:hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+          reports={k:json.loads(p('package',v,'results.json').read_text()) for k,v in maps.items()}
+          reproduction=json.loads(p('repeated/REPRODUCTION.json').read_text())
+          for name,r in reports.items():
+              assert digest(r)==s['hashes'][name+'_result']==reproduction[name]['verification']['result_sha256']
+              assert r['ledger_sha256']==s['hashes'][name+'_ledger']
+              assert all(x['qualification']['qualified_historical_scenario'] for x in r['rows'])
+              for filename,want in reproduction[name]['file_hashes'].items():
+                  assert hashlib.sha256(p('package',maps[name],filename).read_bytes()).hexdigest()==want
+          source_locks=json.loads(p('repeated/SOURCE_LOCK.json').read_text())
+          for file,want in source_locks.items():assert hashlib.sha256(p(file).read_bytes()).hexdigest()==want,file
+          checks=0
+          def check(a,b):
+              global checks
+              checks+=1
+              if isinstance(a,bool) or a is None:assert a==b,(a,b)
+              else:assert math.isclose(float(a),float(b),rel_tol=1e-11,abs_tol=1e-9),(a,b)
+          def get(name,period):
+              found=[r for data in reports.values() for r in data['rows'] if r['model']==name and r['period']==period]
+              assert len(found)==1,(name,period)
+              return found[0]
+          for claim in s['case_claims']:
+              r=get(claim['model'],claim['period'])
+              for key,value in claim['metrics'].items():check(r[key],value)
+          columns={'full_total_pct':('full','return_pct'),'full_cagr_pct':('full','cagr_pct'),
+            'full_mark_dd_pct':('full','max_mark_close_drawdown_pct'),'later_total_pct':('later','return_pct'),
+            'later_cagr_pct':('later','cagr_pct'),'later_mark_dd_pct':('later','max_mark_close_drawdown_pct'),
+            'later_double_cost_total_pct':('later_double_costs','return_pct'),
+            'later_delay2_total_pct':('later_delay2','return_pct'),'separate2024_total_pct':('validation','return_pct'),
+            'later_episodes':('later','completed_episodes')}
+          with p('research/opportunity_budget/comparison_all15.csv').open() as f:table=list(csv.DictReader(f))
+          assert len(table)==len(set(row['model'] for row in table))==15
+          for row in table:
+              for key,(period,field) in columns.items():check(get(row['model'],period)[field],float(row[key]))
+              check(get(row['model'],'full')['leverage_audit']['max_mark_close_gross'],float(row['max_full_mark_gross']))
+          for name,year_values in s['long_runner_full_calendar_claims'].items():
+              actual=get(name,'full')['annual'];assert [r['year'] for r in actual]==list(range(2021,2027))
+              for a,b in zip(actual,year_values):check(a['return_pct'],b)
+              assert actual[-1]['full_year'] is False
+          for name,value in s['long_runner_full_mark_gross_max'].items():check(get(name,'full')['leverage_audit']['max_mark_close_gross'],value)
+          for name,expected in s['seven_annual_starts'].items():
+              r=[r for data in reports.values() for r in data['rows'] if r['model']==name and r['period']=='origin365']
+              assert len(r)==7
+              check(sum(x['return_pct']>0 for x in r),expected['positive'])
+              check(sum(x['return_pct']<0 for x in r),expected['negative'])
+              check(min(x['return_pct'] for x in r),expected['worst_pct'])
+          late=get('runner720_15','later');stats=late['episode_statistics'];expected=s['runner15_late_episode_statistics']
+          for claim,field in [('positive','positive_episodes'),('negative','negative_episodes'),('mean_hours','mean_episode_hours'),('largest_five_winning_net','largest_five_winning_net'),('largest_five_fraction_of_net','largest_five_as_fraction_of_net')]:check(stats[field],expected[claim])
+          for key in ('positive_months','negative_months','zero_months'):check(late[key],expected[key])
+          audit=json.loads(p('package/INDEPENDENT_EVENT_AUDIT.json').read_text())
+          assert audit['cases']==147 and audit['fill_rows_checked']==20840 and audit['funding_rows_checked']==268974 and audit['entry_quantity_groups_checked']==5772
+          for name in ('old_pair_1x','old_pair_15x','old_pair_2x'):
+              for period in ('full','later'):
+                  item=next(r for r in audit['rows'] if r['model']==name and r['period']==period)
+                  assert item['nonterminal_exits_with_unchanged_signs']==(18 if period=='full' else 3) if name=='old_pair_2x' else item['nonterminal_exits_with_unchanged_signs']==0
+          assert reports['budget']['primary_joint_improvement'] is False
+          text=p('repeated/root-tests.log').read_text();assert '779 passed' in text and '46 subtests passed' in text and '6 warnings' in text
+          review=dict(numeric_claims_compared=checks,all15_rows_and_published_summary_match=True,
+              all147_reports_and588_files_hash_verified=True,source_locks_match=True,
+              independently_audited_fills=20840,independently_audited_funding_records=268974,
+              independent_entry_quantity_groups=5772,read_only_review_not_new_financial_experiment=True,
+              reference_account_bug_unpatched=True,draft_only_no_live_orders=True)
+          p('package/EVIDENCE_REVIEW.json').write_text(json.dumps(review,indent=2));print(json.dumps(review))
+          PY
+      - name: Current code, truthful risk report and repeatable source bundle
+        if: always()
+        run: |
+          cp -r repeated/current_code package/current_code
+          cp research/opportunity_checks/verify_evidence.py package/current_code/research/opportunity_checks/
+          cp research/opportunity_budget/*.json research/opportunity_budget/*.csv research/opportunity_budget/*.md package/current_code/research/opportunity_budget/
+          cp research/opportunity_budget/README_RU.md package/REPORT_RU.md
+          cp research/opportunity_budget/verified_summary.json package/verified_summary.json
+          cp research/opportunity_budget/comparison_all15.csv package/comparison_all15.csv
+          git rev-parse HEAD > package/REVIEWED_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: opportunity-leverage-complete-evidence
+          path: package/
+          retention-days: 90
