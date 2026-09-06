@@ -1,0 +1,70 @@
+{
+  "id":"relative-futures-research-20260906",
+  "main_at_start":"155c9bf5cbcc944f36f1be9b077a0930605adb3d",
+  "branch":"research/relative-futures-20260906",
+  "pull_request":134,
+  "original_primary":"pair_revert168",
+  "original_primary_failed":true,
+  "interesting_comparator":"pair_momentum720",
+  "comparator_selected_after_initial_table":true,
+  "financial_scenario":"USD-M BTC/ETH perpetuals, actual signed positions, initial10000USDT, baseline gross1x,fee5bps+slip1bps eachside of eachleg, actual funding rates with hour-open mark approximation",
+  "periods":{"full":"2021-01-01 to2026-09-01 exclusive,2069days","later":"2025-01-01 to2026-09-01 exclusive,608days"},
+  "case_claims":[
+    {"dataset":"base","model":"pair_revert168","period":"full","metrics":{"return_pct":-76.2248732890502,"cagr_pct":-22.399571121761973}},
+    {"dataset":"base","model":"pair_revert168","period":"later","metrics":{"return_pct":-11.007866350782047,"completed_episodes":151}},
+    {"dataset":"candidate","model":"pair_momentum720","period":"full","metrics":{"return_pct":55.6302389902183,"cagr_pct":8.121291975103805,"max_mark_close_drawdown_pct":-26.953809533374507,"completed_episodes":106,"order_fills":424,"fees":1393.1679162740486,"funding_cashflow":-56.59355853504917,"positive_months":29,"negative_months":23,"zero_months":16}},
+    {"dataset":"candidate","model":"pair_momentum720","period":"later","metrics":{"return_pct":28.901821218225933,"cagr_pct":16.476158371770634,"max_mark_close_drawdown_pct":-8.184635132757755,"simultaneous_mark_extrema_stress_pct":-9.4859494783758,"completed_episodes":33,"order_fills":132,"fees":387.5634931761355,"funding_cashflow":5.881057127639935,"gross_price_pnl":3271.864557871088,"positive_months":10,"negative_months":5,"zero_months":5}},
+    {"dataset":"candidate","model":"pair_momentum720","period":"later_double_costs","metrics":{"return_pct":23.957075179218368,"max_mark_close_drawdown_pct":-8.553003742786046}},
+    {"dataset":"candidate","model":"pair_momentum720","period":"later_extra_hour","metrics":{"return_pct":30.09759646489907,"max_mark_close_drawdown_pct":-7.830845876553072}},
+    {"dataset":"candidate","model":"pair_momentum720","period":"later_capital1000","metrics":{"return_pct":28.95035217797952,"max_mark_close_drawdown_pct":-8.55451700090779}},
+    {"dataset":"candidate","model":"pair_momentum720","period":"full_double_costs","metrics":{"return_pct":37.30794046633441,"cagr_pct":5.756736638222737,"max_mark_close_drawdown_pct":-29.452005510826574}},
+    {"dataset":"candidate","model":"pair_momentum720","period":"full_extra_hour","metrics":{"return_pct":52.49874040538123,"cagr_pct":7.734010595440122,"max_mark_close_drawdown_pct":-30.05813303053082}},
+    {"dataset":"candidate","model":"btc_trend_ensemble","period":"later","metrics":{"return_pct":27.412361052169132,"max_mark_close_drawdown_pct":-24.90536644240281,"completed_episodes":173,"fees":1692.11347515254}},
+    {"dataset":"candidate","model":"btc_trend_ensemble","period":"later_double_costs","metrics":{"return_pct":3.752685852410731,"max_mark_close_drawdown_pct":-28.52190234990336}},
+    {"dataset":"composition","model":"switch_half","period":"full","metrics":{"return_pct":51.277920422656905,"cagr_pct":7.581252568069763,"max_mark_close_drawdown_pct":-38.77002719642493,"funding_cashflow":-3705.5795513428443}},
+    {"dataset":"composition","model":"switch_half","period":"later","metrics":{"return_pct":3.808123177786027,"max_mark_close_drawdown_pct":-15.435125827840945,"completed_episodes":30}},
+    {"dataset":"composition","model":"switch_half","period":"later_double_costs","metrics":{"return_pct":2.0227820229960614,"max_mark_close_drawdown_pct":-15.71690044072499}},
+    {"dataset":"composition","model":"btc_bull_half","period":"later","metrics":{"return_pct":1.0942575907328056,"max_mark_close_drawdown_pct":-14.378383299933816}},
+    {"dataset":"composition","model":"relative_half_always","period":"later","metrics":{"return_pct":13.817153879490807,"max_mark_close_drawdown_pct":-4.152133846074402}},
+    {"dataset":"composition","model":"relative_half_bear_only","period":"later","metrics":{"return_pct":2.9717606132467322,"max_mark_close_drawdown_pct":-3.2761728627838105}}
+  ],
+  "pair_candidate_episode_statistics":{
+    "full":{"positive_episodes":59,"negative_episodes":47,"profit_factor":1.4813419604202445,"largest_five_as_fraction_of_net":0.9264404537593546,"longest_losing_streak":5},
+    "later":{"positive_episodes":22,"negative_episodes":11,"profit_factor":2.6960860090722196,"largest_five_as_fraction_of_net":0.9029608186149607,"longest_losing_streak":2,"mean_episode_hours":164.60606060606062,"same_fills_adverse_funding_extra":1.6616822844884362}
+  },
+  "independent_calendar_start_claims":[
+    {"start":"2021-01-01","return_pct":25.808943171719978},
+    {"start":"2022-01-01","return_pct":14.157185614839584},
+    {"start":"2023-01-01","return_pct":-7.095122330386438},
+    {"start":"2024-01-01","return_pct":-9.508418638428918,"source":"base_validation"},
+    {"start":"2025-01-01","return_pct":26.441099968793225}
+  ],
+  "pair_candidate_seven_origin_summary":{"total":7,"qualified":7,"positive":5,"negative":2,"worst_return_pct":-17.572406073939927},
+  "source_reconciliation":{"monthly_archives":480,"daily_mark_archives":12,"previously_missing_mark_hours":288,"missing_hours_after":0,"all_existing_values_preserved":true,"all_signal_targets_identical_before_after":true,"synthetic_price_values":false},
+  "report_counts":{"original_source":62,"same_cases_with_complete_daily_verified_marks":62,"post_result_fixed_comparator_checks":30,"post_result_regime_composition":41,"total_including_source_replays":195,"independent_strategies_or_market_observations":false},
+  "runs":{"source":34033698128,"original62":34034061046,"source_reconciliation":34034265987,"reconciled62":34034392920,"candidate30":34034741238,"composition41":34035078056},
+  "hashes":{
+    "original_result":"36c43bebae88b4bef08525229a738f9639636c2ff467b2604b5e3dbc99415f86",
+    "base_result":"157fe890756519f3faba4903a88950d24a890a8cecfa0fad4ae4e849d0fd9645",
+    "base_ledger":"8e55ccd963214a27a26b3b778a2f89304ebb7b680da5a996167417c60c319425",
+    "candidate_result":"edc61edb4b5a924b26ebe577d3a02a935cc20ea1f91e343a0e6ed17b7d0caff0",
+    "candidate_ledger":"5af955869edd96832a9c6831ae96f566c123db6ecff2e6d046012cd400dee6f9",
+    "composition_result":"0b9a9097206a3eb11b4fccbbf97639fa5d9787f4aca423ca6eb2cc043bc1c1b3",
+    "composition_ledger":"81a1c68b16c51c67109e7ed7f88d2aceabb7db584ab77543ce750e39f73d3e2a",
+    "unpatched_account_git_blob":"eeb7bdf510db837f681b32c8d01afca6d6f68c6f"
+  },
+  "engineering":{"new_tests":43,"root_tests":761,"additional_subtests":46,"pandas_future_warnings":6,"new_tests_included_in_root_count":true,"known_bug_characterization_test_is_not_a_fix":true,"local_execution":false,"independent_implementation":false},
+  "known_bug":"Unused leg zero quantity multiplied by missing mark price may poison equity. Attempted update was tool-blocked; code is still unpatched. A complete verified input set avoids this case during reported reconciled runs, not in a general runtime.",
+  "publication_decision":"Keep research in draft PR134; do not merge this unpatched futures reference or enable capital.",
+  "live_ready":false,"stable_profit_proven":false,"annual500proven":false,"real_orders":0,
+  "limitations":[
+    "Positive late performance is selected after inspecting a fixed ten-model family; all economic dates repeatedly researched.",
+    "33 late paired episodes are not high-frequency trading; five largest winners account for90.3%ofnetprofit.",
+    "2023 and2024 independent-year accounts lose; shifted start can lose17.57%. Not stable every-year income.",
+    "BTC/ETH dollar neutrality at entry is not cointegration, beta neutrality or riskless arbitrage.",
+    "Forecast inputs and source supplementation do not fix known engine defects. No incomplete original-source path is relabeled complete.",
+    "Funding marks approximate the settlement with the hour open; historical exchange fee tiers, exact simultaneous fills and liquidation rules unverified.",
+    "Two-leg real execution, custody, exchange/USDT, tax and infrastructure risks not included fully.",
+    "More risk is not converted into an assumed500%return; no real leverage or production permissions changed."
+  ]
+}
