@@ -1,0 +1,11 @@
+{
+  "protocol_commit":"001a55949232629c7d51bcb5a797aed24e382c33",
+  "timing":"Before first financial replay of the four runner variants;18combined synthetic checks passed locally (14allocation+4lifecycle).",
+  "runner_study_sha256":"c7c61ad49c347a5a8500e1310cca7b17be96208c96617beeb1f1b92caba55cd3",
+  "runner_tests_sha256":"9ec9e39e0d67d31b5b181481a5aadf2f43e8688ef37598aafdb72ddbdcb06f4f",
+  "same_168hour_signal_without_trail_matches_original_exactly":true,
+  "reference_account_not_changed":true,
+  "original_63case_primary_failed":true,
+  "new_market_results_not_yet_observed":true,
+  "live_ready":false
+}
