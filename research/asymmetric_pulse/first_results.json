@@ -1,0 +1,23 @@
+{
+  "id":"asymmetric-pulse-first-results",
+  "tested_commit":"b64f035766790ba65e8bfd614c68081901ff23e1",
+  "run":34025701632,
+  "result_sha256":"48c5932a6b3eff560feed90274e7e90a9188cca9fb71ebebc695026baa97fbf9",
+  "fills_sha256":"329b4b04e08b6fa9ada55656f0816da38038cf3588e30433a73f161c9bed06c3",
+  "new_tests":28,"root_tests":622,"subtests":46,
+  "reports":72,"primary":"asymmetric_blend","qualified_challenger":null,
+  "primary":{"later_net_pct":-21.974931806143537,"later_close_dd_pct":-32.766770584681616,"later_fills":1103,"later_rebalance_days":436,"later_closed_asset_positions":180,"later_fees":617.8599110077998,"later_positive_months":6,"later_negative_months":14,"full_cagr_pct":33.90213757313762,"full_dd_pct":-44.45436512883503,"pure_okx_later_pct":-25.812394182197608,"double_costs_later_pct":-29.839782768291744},
+  "comparators_later":[
+    {"name":"early_total","net_pct":3.192650224607685,"dd_pct":-33.56483203793164,"fills":665,"fees":923.6656656028989},
+    {"name":"early_downside","net_pct":-1.693361406856131,"dd_pct":-33.45009195524102,"fills":670,"fees":971.6758572825544},
+    {"name":"leader_downside","net_pct":-1.7538895777850283,"dd_pct":-46.630668978720315,"fills":280,"fees":1684.5605498892837},
+    {"name":"ignition_downside","net_pct":-21.43823068840606,"dd_pct":-44.88413557516219,"fills":911},
+    {"name":"rebound_downside","net_pct":-18.872885579593767,"dd_pct":-31.454657090294656,"fills":371},
+    {"name":"asymmetric_blend_weekly","net_pct":-12.663131148328121,"dd_pct":-27.09682049365706,"fills":279},
+    {"name":"guarded_control","net_pct":8.642288466009497,"dd_pct":-7.3561574193716,"fills":130}
+  ],
+  "conclusion":"Primary failed. Only early_total among11 new later base candidates positive, but worse return/risk than old control. Greater frequency did not establish greater edge. No gates lowered.",
+  "calendar_note":"early_full has a2021 segment+1025.444%, but later-13.274% and full endpoint retains2unliquidated assets; do not claim complete full-period CAGR or stable500%.",
+  "followup_not_yet_run":true,
+  "live_ready":false,"annual500proven":false
+}
