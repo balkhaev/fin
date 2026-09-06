@@ -1,0 +1,90 @@
+{
+  "id":"cash-gap-20260906",
+  "protocol_commit":"068e156a505212a58faadd46810f2cad46592ce5",
+  "tested_commit":"0b2e23d399f545200595bed4a99e0201968d707e",
+  "run":34032314629,
+  "primary":"idle_trend10",
+  "control":"core_weekly",
+  "initial_capital":10000,
+  "full_period":{"start":"2021-01-01","end_exclusive":"2026-09-01","days":2069},
+  "later_period":{"start":"2025-01-01","end_exclusive":"2026-09-01","days":608},
+  "primary_full":{
+    "return_pct":121.52802533808624,"cagr_pct":15.074765512366039,
+    "max_close_drawdown_pct":-19.324831482272387,"worst_rolling_365_pct":-10.28308633602184,
+    "order_fills":834,"closed_asset_positions":145,"fees":387.4188585613657,
+    "invested_days":1578,"flat_days":491,"positive_months":26,"zero_months":7,"negative_months":35,
+    "accounting_complete":true
+  },
+  "primary_later":{
+    "return_pct":6.820174935515899,"cagr_pct":4.043074713080541,
+    "max_close_drawdown_pct":-8.001998189644011,"worst_rolling_365_pct":-6.42537826170363,
+    "order_fills":194,"closed_asset_positions":40,"fees":60.112881467005955,
+    "invested_days":390,"flat_days":218,"positive_months":8,"zero_months":2,"negative_months":10,
+    "accounting_complete":true
+  },
+  "control_full":{
+    "return_pct":121.21467568581403,"cagr_pct":15.046013817733561,
+    "max_close_drawdown_pct":-14.962395424773046,"worst_rolling_365_pct":-8.390672768575847,
+    "order_fills":565,"closed_asset_positions":121,"fees":378.12730868915185,
+    "invested_days":766,"flat_days":1303,"positive_months":20,"zero_months":32,"negative_months":16,
+    "accounting_complete":true
+  },
+  "control_later":{
+    "return_pct":8.642288466009497,"cagr_pct":5.105631763786933,
+    "max_close_drawdown_pct":-7.3561574193716,"worst_rolling_365_pct":-5.630524444768414,
+    "order_fills":130,"closed_asset_positions":35,"fees":58.924458632400665,
+    "invested_days":145,"flat_days":463,"positive_months":5,"zero_months":12,"negative_months":3,
+    "accounting_complete":true
+  },
+  "primary_annual":[
+    {"year":2021,"full_year":true,"return_pct":48.37144215168405},
+    {"year":2022,"full_year":true,"return_pct":-4.846193099647245},
+    {"year":2023,"full_year":true,"return_pct":13.603792077566235},
+    {"year":2024,"full_year":true,"return_pct":29.35064892445569},
+    {"year":2025,"full_year":true,"return_pct":8.413674743659548},
+    {"year":2026,"full_year":false,"return_pct":-1.5067009005257703}
+  ],
+  "primary_stresses":{
+    "later_double_cost":{"return_pct":5.910532276409541,"max_close_drawdown_pct":-8.19256996372566},
+    "later_delay":{"return_pct":4.688612548244886,"max_close_drawdown_pct":-9.743352711171049},
+    "later_capital1000":{"return_pct":6.919280177473364,"max_close_drawdown_pct":-8.241107552442827},
+    "later_okx":{"return_pct":6.050379989683652,"max_close_drawdown_pct":-8.084559202834274},
+    "full_double_cost":{"return_pct":113.83150236133778,"cagr_pct":14.358660390015343,"max_close_drawdown_pct":-20.37200162775926}
+  },
+  "sleeve_alone_diagnostic":{
+    "full_return_pct":-0.5659622175367973,"later_return_pct":-1.8638831950022694,
+    "later_fees":14.5018238007266,"later_closed_asset_positions":30,
+    "sleeve_return_not_added_to_core":true
+  },
+  "always_on_blend_not_primary":{
+    "full_cagr_pct":20.748030665904782,"full_max_close_drawdown_pct":-24.52803498300119,
+    "later_return_pct":8.97126468833167,"later_max_close_drawdown_pct":-9.336311983953582,
+    "later_okx_return_pct":8.189425662537886,"new_winner_selected":false
+  },
+  "origin_sensitivity":{
+    "idle_trend10":{"total":19,"complete":19,"positive":14,"zero":0,"negative":5,"worst_return_pct":-7.950910955490798},
+    "core_weekly":{"total":19,"complete":19,"positive":15,"zero":1,"negative":3,"worst_return_pct":-6.263277369420173}
+  },
+  "admission":{
+    "complete_full_and_later":true,"higher_full_CAGR":true,"higher_later_return":false,
+    "full_drawdown_within_two_points":false,"positive_later_stresses":true,
+    "more_closed_later_asset_positions":true,"no_worse_origin_results":false
+  },
+  "result_sha256":"68f145cd40e95936f2f526cbcb3e377e6527db419f1ddcda8b747f81b40da988",
+  "ledger_sha256":"c8afd4041e6256128cb08e15cd1b0ac2f99424072150255e7a81678d69dc9606",
+  "reports":98,"new_tests":17,"root_tests":718,"additional_subtests":46,
+  "full_legacy_reports_checked":2,"PR132_key_metric_reports_checked":2,
+  "all_report_accounts_complete":true,
+  "independent_reproduction":"See completed CI REPRODUCTION.json; not inferred from this handwritten summary.",
+  "local_execution":false,"parameters_changed_after_results":false,
+  "primary_admitted":false,"stable500proven":false,"live_ready":false,"real_orders":0,
+  "limitations":[
+    "Same repeatedly inspected history and nine surviving spot assets, not BTC-only or pristine OOS.",
+    "More position-days does not establish more independent profitable opportunities.",
+    "Target regime is not an instant guarantee of actual flatness, filled positions or a10%loss limit.",
+    "Slightly higher full CAGR is outweighed by worse full drawdown and lower later returns; not a breakthrough.",
+    "Always-on blend improves some raw returns while substantially worsening risk; not selected as new primary.",
+    "Independent code execution is not independent market evidence or independent simulator implementation.",
+    "Costs and historical execution assumptions are hypothetical, not actual exchange trading."
+  ]
+}
