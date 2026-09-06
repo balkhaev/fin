@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "source_identities": {
+    "budget": {
+      "result_sha256": "09c051ca2e5a779775240aa9a28fd155f0cb615e431090e3b8b0f78dad12239e",
+      "ledger_sha256": "bf1a3bb1d7948d14ce54bd56fda82e9f0415f45d35f74b533d0a3fb998a8e670"
+    },
+    "runner": {
+      "result_sha256": "2631594c74bf298f3c29fb4ad55ae2a2a9b6cb70b48436ebe1a1dd2a70c105c4",
+      "ledger_sha256": "8374f7b80add221c1a690c149cd610b4b1ff094a5f0a71bc2fab443eb660152f"
+    },
+    "ladder": {
+      "result_sha256": "f38757a0bfcc95196cc6c4bff1fcad8194f0a9202473ebea34f3374fc4222e68",
+      "ledger_sha256": "1096cc4d72e15664d84761586782980cf98190010796e9e2a199cc36292a1bba"
+    }
+  },
+  "snapshot_sha256": "28ce210eafc75d3db9e9a3fabe2b9f94e890c146a6de1c576e4ded3d44eaab29",
+  "models": 15,
+  "baseline_periods": 45,
+  "source_scenarios": 147,
+  "trading_code_imported": false
+}
