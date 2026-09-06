@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0e14">
+  <meta name="description" content="Проверенные исследования FIN: реальные результаты исторической симуляции, периоды, расходы и риск. Только чтение.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>FIN — Лаборатория стратегий</title>
+  <link rel="stylesheet" href="./research.css">
+  <script src="./research.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">К результатам</a>
+  <header class="topbar">
+    <a class="brand" href="./live.html" aria-label="FIN — операторская панель"><b class="brand-mark">F</b><span>FIN <small>RESEARCH</small></span></a>
+    <nav aria-label="Основная навигация"><a href="./live.html">Paper-панель</a><a href="./research.html" aria-current="page">Исследования</a></nav>
+    <span class="status"><i aria-hidden="true"></i>Только чтение</span>
+  </header>
+  <main id="main" class="workspace">
+    <section class="hero" aria-labelledby="title">
+      <div><p class="eyebrow">ЛАБОРАТОРИЯ СТРАТЕГИЙ <span> / 01</span></p><h1 id="title">Больше данных.<br><span>Меньше предположений.</span></h1><p class="intro">Доходность, издержки и риск — на одном экране.<br>Исходная стратегия всегда остаётся точкой сравнения.</p></div>
+      <aside class="edition"><span class="edition-icon" aria-hidden="true">↗</span><span>Снимок исследования</span><strong>06 сентября 2026</strong><small>BTC / ETH · USD-M perpetual</small></aside>
+    </section>
+    <div class="boundary" role="note"><span aria-hidden="true">◇</span><p><strong>Исследование, не торговый запуск.</strong> Расчётное ядро с известным дефектом остаётся в draft PR #134. Здесь — только проверенный статический результат. 500% годовых не подтверждены.</p></div>
+    <div id="load-status" class="loading" role="status">Загружаем проверенный снимок…</div>
+    <div id="load-error" class="error" role="alert" hidden><h2>Снимок недоступен</h2><p>Нельзя показать неподтверждённые или устаревшие числа вместо результата.</p><button id="retry" type="button">Повторить загрузку</button></div>
+    <noscript><p class="error">Для интерактивного сравнения нужен JavaScript. Таблицу можно прочитать в <a href="./data/research-comparison.csv">CSV</a>.</p></noscript>
+    <div id="content" hidden>
+      <section class="filters panel" aria-label="Условия сравнения">
+        <label>Вариант для сравнения<select id="model-select"></select></label>
+        <fieldset><legend>Независимый начальный счёт</legend><div id="periods" class="segmented"><button type="button" data-period="full" aria-pressed="true">Вся история</button><button type="button" data-period="later" aria-pressed="false">2025–2026</button><button type="button" data-period="validation" aria-pressed="false">2024</button></div></fieldset>
+        <div class="filter-meta"><span>Начальный капитал</span><strong>10 000 <small>USDT</small></strong></div>
+      </section>
+      <div class="selection-heading"><div><span id="candidate-kind" class="eyebrow"></span><h2 id="candidate-title"></h2></div><p id="period-label"></p></div>
+      <section id="metric-grid" class="metrics" aria-label="Ключевые показатели"></section>
+      <section class="analysis-grid">
+        <article class="panel chart-panel" aria-labelledby="chart-title">
+          <header class="panel-head"><div><p class="eyebrow">ОДИН СЧЁТ · ОДИН ПЕРИОД</p><h2 id="chart-title">Траектория капитала</h2></div><div class="segmented compact" aria-label="Тип графика"><button id="show-equity" type="button" aria-pressed="true">Капитал</button><button id="show-dd" type="button" aria-pressed="false">Просадка</button></div></header>
+          <div class="legend"><span class="legend-base">Исходная пара · 1×</span><span id="chart-candidate" class="legend-candidate"></span></div>
+          <svg id="equity-chart" viewBox="0 0 880 320" role="img" aria-label="Сравнение исторических кривых капитала"></svg>
+          <p id="chart-note" class="chart-note"></p>
+        </article>
+        <aside class="panel risk-panel" aria-labelledby="risk-title"><header class="panel-head"><div><p class="eyebrow">НЕ ТОЛЬКО ПРОЦЕНТ ПРИБЫЛИ</p><h2 id="risk-title">Цена результата</h2></div><span class="risk-icon" aria-hidden="true">⌁</span></header><dl id="risk-facts" class="facts"></dl><div class="risk-note">Плечо при входе не ограничивает его дальнейший дрейф. Номинал и просадка — не гарантия допустимого убытка.</div></aside>
+      </section>
+      <section class="details-grid">
+        <article class="panel" aria-labelledby="years-title"><header class="panel-head"><div><p class="eyebrow">НЕПРЕРЫВНЫЙ СЧЁТ</p><h2 id="years-title">Каждый год на виду</h2></div><span class="panel-label">Минусы не скрыты</span></header><div class="table-wrap"><table id="annual-table"><caption class="sr-only">Доходность календарных сегментов выбранного счёта; исходная стратегия в первой колонке сравнения</caption><thead><tr><th scope="col">Период</th><th scope="col">Исходная 1×</th><th scope="col">Выбранная</th></tr></thead><tbody id="annual-rows"></tbody></table></div><p class="footnote">Это сегменты одного счёта, не ежегодный сброс капитала. Неполный 2026 год обозначен отдельно.</p></article>
+        <article class="panel" aria-labelledby="stress-title"><header class="panel-head"><div><p class="eyebrow">ТОТ ЖЕ СИГНАЛ</p><h2 id="stress-title">Проверка издержек</h2></div><span class="panel-label">Не новый подбор</span></header><div class="table-wrap"><table><caption class="sr-only">Стрессовые варианты на совпадающем периоде</caption><thead><tr><th scope="col">Условие</th><th scope="col">Исходная 1×</th><th scope="col">Выбранная</th></tr></thead><tbody id="stress-rows"></tbody></table></div><p id="stress-note" class="footnote"></p></article>
+      </section>
+      <section class="panel comparison-panel" aria-labelledby="comparison-title"><header class="panel-head"><div><p class="eyebrow">ВСЕ ВАРИАНТЫ, А НЕ ТОЛЬКО ПОБЕДИТЕЛЬ</p><h2 id="comparison-title">Общая картина</h2></div><a class="download" href="./data/research-comparison.csv" download>Таблица CSV <span aria-hidden="true">↓</span></a></header><div class="table-wrap"><table><caption class="sr-only">Все 15 вариантов для выбранного периода. Исходная модель закреплена первой.</caption><thead><tr><th scope="col">Конфигурация</th><th scope="col">За период</th><th scope="col">CAGR / год</th><th scope="col">Просадка</th><th scope="col">Эпизодов</th></tr></thead><tbody id="comparison-rows"></tbody></table></div></section>
+      <section class="method-grid" aria-labelledby="method-title"><article><p class="eyebrow">ПРОИСХОЖДЕНИЕ РЕЗУЛЬТАТА</p><h2 id="method-title">Проверяемость<br>вместо обещаний.</h2><p>Финансовые расчёты выполнены ранее. Эта страница читает сохранённые результаты, но не запускает стратегию, не обращается к бирже и не меняет позиции.</p><div class="source-links"><a href="https://github.com/balkhaev/fin/pull/134" target="_blank" rel="noopener noreferrer">Исходный PR ↗</a><a href="https://github.com/balkhaev/fin/actions/runs/34039211921" target="_blank" rel="noopener noreferrer">Проверка доказательств ↗</a><a href="./data/research-manifest.json" download>Хеши снимка ↓</a></div></article><div class="method-notes"><div class="proof-row"><strong>15</strong><span>вариантов с контролями</span><strong>147</strong><span>расчётов на пересекающейся истории</span></div><h3>Границы интерпретации</h3><ul id="limitations"></ul></div></section>
+    </div>
+  </main>
+  <footer class="footer"><span>FIN RESEARCH <b> / </b> Результат — это число вместе с условиями.</span><span>Статический снимок · Без реальных ордеров</span></footer>
+</body>
+</html>
