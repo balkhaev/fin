@@ -1,0 +1,125 @@
+name: Rotation stability independent static replay
+on:
+  push:
+    branches: [research/rotation-stability-20260906]
+    paths: [.github/workflows/rotation-stability-reproduce.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34023233225
+          name: rotation-stability-static-evidence
+          path: first
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34020685550
+          name: annual-rotation-complete-evidence
+          path: source
+      - name: Independently recompute saved-policy reports using original simulator
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,math
+          import numpy as np
+          import pandas as pd
+          from research.annual_rotation.data import load,SYMBOLS
+          from research.annual_rotation.model import simulate,Costs
+          from research.rotation_stability.policy import build,PRIMARY,WEEKLY
+          p=pathlib.Path
+          old=json.loads(p('first/static-report/results.json').read_text())
+          digest=lambda x:hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+          assert digest(old)=='6c6dc96296f0281168e6670ff3231fe47c6bb46bb92e5cc2e4bd31c7e8b6a26a'
+          assert hashlib.sha256(p('research/rotation_stability/policy.py').read_bytes()).hexdigest()=='5a88fe2da2bf8d28cb7f3bead91124465161a0ffdbd1ea6c452e640048d3db0f'
+          frames,audit=load(p('source/inputs/rotation-data'));assert audit==old['data']
+          targets,traces=build(frames);out=p('reproduced');out.mkdir()
+          rows=[];exclusions=[];starts=[];ledgers=[];primary_curves={};primary_fills={}
+          def compare(actual,expected):
+              for key,value in actual.items():assert value==expected[key],key
+          for expected in old['results']:
+              cost=Costs(**expected['settings']);name=expected['policy'];period=expected['period']
+              r,f,c=simulate(frames,targets[name],WEEKLY,expected['start'],expected['end_exclusive'],cost)
+              compare(r,expected);rows.append(dict(r,policy=name,period=period))
+              key=name+'_'+period;ledgers.append({'key':key,'fills':f.to_dict('records')})
+              f.to_csv(out/f'{key}_fills.csv',index=False);c.to_csv(out/f'{key}_equity.csv',index=False)
+              if name==PRIMARY:primary_curves[period]=c;primary_fills[period]=f
+          for expected in old['exclusions']:
+              asset=expected['excluded'];t,_=build(frames,exclude=asset)
+              r,f,c=simulate(frames,t[PRIMARY],WEEKLY,expected['start'],expected['end_exclusive'])
+              compare(r,expected);exclusions.append(dict(r,excluded=asset))
+              ledgers.append({'key':'exclude_'+asset,'fills':f.to_dict('records')})
+              f.to_csv(out/f'exclude_{asset}_fills.csv',index=False)
+          for expected in old['starts']:
+              r,_,_=simulate(frames,targets[expected['policy']],WEEKLY,expected['start'],expected['end_exclusive'])
+              compare(r,expected);starts.append(dict(r,policy=expected['policy']))
+          result=dict(old,results=rows,exclusions=exclusions,starts=starts)
+          assert digest(result)==digest(old)
+          assert digest(ledgers)=='698876b4e0b8e55b8a39fa3e8b24df85f13491ccf5f365c78f660aa3003f2636'
+          facts={}
+          for name in (PRIMARY,'legacy_raw126'):
+              all_starts=[r for r in starts if r['policy']==name]
+              complete=[r for r in all_starts if r['accounting_complete']]
+              positive=[r for r in complete if r['return_pct']>0]
+              facts[name]=dict(start_count=len(all_starts),complete_count=len(complete),positive_count=len(positive),
+                  zero_count=sum(r['return_pct']==0 for r in complete),negative_count=sum(r['return_pct']<0 for r in complete),
+                  worst_complete_start=min(complete,key=lambda r:r['return_pct'])['start'] if complete else None,
+                  worst_complete_return_pct=min(r['return_pct'] for r in complete) if complete else None,
+                  median_complete_return_pct=float(np.median([r['return_pct'] for r in complete])) if complete else None,
+                  incomplete_starts=[r['start'] for r in all_starts if not r['accounting_complete']])
+          c=primary_curves['full'];dates=pd.to_datetime(c.time)-pd.Timedelta(days=1)
+          f=primary_fills['full'];times=pd.to_datetime(f.time)
+          facts['year2022']=dict(invested_days=int(((dates.dt.year==2022)&c.invested_assets.gt(0)).sum()),
+              order_fills=int((times.dt.year==2022).sum()))
+          path=np.r_[10000.,c.equity.to_numpy()]
+          rolling=path[365:]/path[:-365]-1
+          facts['full_primary_rolling365']=dict(count=len(rolling),positive_fraction=float((rolling>0).mean()),
+              zero_fraction=float((rolling==0).mean()),negative_fraction=float((rolling<0).mean()),
+              median_pct=float(np.median(rolling)*100),not_independent_windows=True)
+          rfull=next(r for r in rows if r['policy']==PRIMARY and r['period']=='full')
+          rlater=next(r for r in rows if r['policy']==PRIMARY and r['period']=='later')
+          wanted=('return_pct','cagr_pct','max_close_drawdown_pct','simultaneous_daily_low_stress_pct','worst_rolling_365_pct',
+              'order_fills','rebalance_days','closed_asset_positions','fees','positive_month_fraction','liquidity_rejections','accounting_complete')
+          facts['primary_full']={k:rfull[k] for k in wanted}
+          facts['primary_later']={k:rlater[k] for k in wanted}
+          facts['limits']=dict(new_dynamic_evaluator_absent=True,cash_floor_absent=True,quarterly_allocator_absent=True,
+              not_independent_market_history=True,not_second_model_implementation=True)
+          verified=dict(full_static_result_exactly_reproduced=True,complete_exported_fill_ledger_exactly_reproduced=True,
+              account_reports=len(rows)+len(exclusions)+len(starts),local_execution=False,
+              result_sha256=digest(result),fill_ledger_sha256=digest(ledgers),facts=facts,
+              stable_profit_proven=False,stable500proven=False,real_orders=False)
+          (out/'REPRODUCTION.json').write_text(json.dumps(verified,indent=2))
+          print('REPRODUCTION',json.dumps(verified),flush=True)
+          print('START_SENSITIVITY_CSV\n'+p('first/static-report/quarterly_start_sensitivity.csv').read_text(),flush=True)
+          PY
+      - name: Assemble data, saved code and both independent results
+        if: always()
+        run: |
+          mkdir -p package
+          cp -r first/static-report first/delivery package/
+          cp -r source/inputs/rotation-data package/
+          cp -r reproduced package/
+          cp first/policy-tests.xml first/root-tests.xml first/root-tests.log package/
+          cp research/rotation_stability/verified_static_summary.json package/ || true
+          git rev-parse HEAD > package/REPRODUCTION_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rotation-stability-complete-package
+          path: package/
+          retention-days: 90
