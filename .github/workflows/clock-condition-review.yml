@@ -1,0 +1,87 @@
+name: Clock conditional price observation review
+on:
+  push:
+    branches: [research/clock-phase-20260906]
+    paths: [.github/workflows/clock-condition-review.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install numpy==2.3.5 pandas==2.2.3
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34029472691
+          name: clock-phase-information-evidence
+          path: initial
+      - name: Fixed post-result descriptive audit, no new trades or forecasts
+        run: |
+          python - <<'PY'
+          import hashlib,json,math,pathlib
+          import numpy as np
+          import pandas as pd
+          p=pathlib.Path
+          digest=lambda x:hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+          r=json.loads(p('initial/report/results.json').read_text())
+          assert digest(r)=='d9bd9d9f969a56c549995abf18155924d1d024c4f6168c7f51e906e4e00213de'
+          out=p('review');out.mkdir();groups=[];overlaps=[]
+          for period in ('earlier','later'):
+              for horizon in (4,12):
+                  d=pd.read_csv(p('initial/report',f'{period}_{horizon}_conditional_prices.csv.gz'))
+                  d['date']=pd.to_datetime(d.signal_hour,utc=True).dt.strftime('%Y-%m-%d')
+                  iso=pd.to_datetime(d.signal_hour,utc=True).dt.isocalendar()
+                  d['week']=iso.year.astype(str)+'-'+iso.week.astype(str)
+                  reference=next(x for x in r['comparisons'] if x['period']==period and x['horizon']==horizon)
+                  for model in ('base','boundary','placebo'):
+                      selected=d[d.model==model]
+                      for asset in ('BTCUSDT','ETHUSDT','POOLED'):
+                          g=selected if asset=='POOLED' else selected[selected.asset==asset]
+                          values=np.expm1(g.observed_log.to_numpy(float))*10000
+                          original=next(x for x in reference['conditional_observations'] if x['model']==model and x['asset']==asset)
+                          assert len(g)==original['count']
+                          if len(g):
+                              assert math.isclose(float(values.mean()),original['mean_observed_price_change_bps'],abs_tol=1e-9,rel_tol=1e-10)
+                          counts=g.groupby('date').size()
+                          tail=np.sort(values)[:-5] if len(values)>5 else np.array([])
+                          row=dict(period=period,horizon=horizon,model=model,asset=asset,count=len(g),
+                              unique_signal_hours=int(g.signal_hour.nunique()),unique_dates=int(g.date.nunique()),
+                              unique_iso_weeks=int(g.week.nunique()),
+                              largest_same_date_count=int(counts.max()) if len(g) else 0,
+                              largest_same_date_fraction=float(counts.max()/len(g)) if len(g) else None,
+                              mean_price_change_bps=float(values.mean()) if len(g) else None,
+                              median_price_change_bps=float(np.median(values)) if len(g) else None,
+                              mean_without_five_best_observations_bps=float(tail.mean()) if len(tail) else None,
+                              residual_count_after_removing_five_best=len(tail),
+                              descriptive_post_result_sensitivity=True,observations_are_not_trades=True)
+                          groups.append(row)
+                          print('GROUP',json.dumps(row))
+                  sets={model:set(zip(d[d.model==model].signal_hour,d[d.model==model].asset)) for model in ('base','boundary','placebo')}
+                  for other in ('base','placebo'):
+                      overlaps.append(dict(period=period,horizon=horizon,against=other,
+                          boundary_count=len(sets['boundary']),other_count=len(sets[other]),
+                          intersection=len(sets['boundary']&sets[other]),union=len(sets['boundary']|sets[other])))
+          final=dict(original_result_sha256=digest(r),post_result_review=True,model_rules_unchanged=True,
+              descriptive_groups=groups,overlap=overlaps,no_independent_market_observations_claim=True,
+              no_position_selection_or_cash_replay=True,annual_return_computed=False,real_orders=0)
+          (out/'CLUSTER_REVIEW.json').write_text(json.dumps(final,indent=2,allow_nan=False))
+          pd.DataFrame(groups).to_csv(out/'conditional_clusters.csv',index=False)
+          print('OVERLAP',json.dumps(overlaps))
+          print('REVIEW_SHA256',digest(final))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clock-conditional-cluster-review
+          path: review/
+          retention-days: 90
