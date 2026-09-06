@@ -1,0 +1,11 @@
+{
+  "id":"runner-size-attribution-20260906",
+  "chronology":"Post-result attribution: runner720_15 at1.5entrygross produced late+73.4675% but fullDD36.4969%, actualheldgross up to2.2118. The56case lifecycle trial was inspected. This is NOT a newly untouched holdout or selection of an unseen winner.",
+  "question":"Separate the benefit of longer profitable holding from the benefit/cost of leverage; quantify a less aggressive1x/1.25x choice instead of claiming nominal1.5 is a continuous risk ceiling.",
+  "fixed_models":["runner720_1x","runner720_125x"],
+  "targets":"Same unchanged runner720_15 signal states andmax720hour exits, only targetnotional multiplied byentrygross/1.5 (originalengineCostsgross2). This rescales requested contract quantities BEFORE trades are simulated, not after-the-fact equity or returns.",
+  "cases":"Each variant full/later/independent2024, fullandlaterdoublefees+slip, laterdelay2hours, latercapital1000 andseven same365daystarts:14each=28. Compare original1x/1.5x weekly exits and1.5xrunner already saved. No newdirection/window/trailing thresholds.",
+  "audit":"Same complete real source, existingbuggedaccount bytes untouched, signedcash audit and entry/heldgross/drift/margincover retained. Report annual andshiftedstartlosses and tradeconcentration. No unconditional risk-loss guarantee or500% claim.",
+  "scope":"Research sizing attribution only. Maximum-future-profit optimization cannot be certified by historical selection. No realorders or mainmerge; knowninactive-markvaluation defect stillblocksproduction.",
+  "publication":"Keep both successful and weak controls in same draftPR134 and deliver numeric artifact bundle."
+}
