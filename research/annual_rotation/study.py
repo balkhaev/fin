@@ -59,7 +59,7 @@ def study(root,out):
     for name in list(configs)+list(controls):
         t,c=(targets[name],configs[name]) if name in configs else controls[name]
         for label,start,end in periods:
-            r,fills,curve=simulate(frames,t,c,start,end)
+            r,fills,curve=simulate(frames,t,c,start,end,hold_only=name=='btc_hold_control')
             r.update(id=name,period=label,scenario='base');rows.append(r)
             if label=='full':
                 for annual in r['annual']:
