@@ -1,0 +1,123 @@
+name: Asymmetric cadence diagnostic audit
+on:
+  push:
+    branches: [research/asymmetric-pulse-20260906]
+    paths:
+      - research/asymmetric_pulse_checks/*.py
+      - .github/workflows/asymmetric-cadence-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - run: python -m pytest -q tests/test_asymmetric_pulse.py --junitxml=cadence-tests.xml
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34025701632
+          name: asymmetric-pulse-research-evidence
+          path: original
+      - name: All120 post-result comparisons with byte-pinned signal and fill model
+        run: python -m research.asymmetric_pulse_checks.cadence --original original --out cadence > cadence.log 2>&1 || { tail -n 100 cadence.log; exit 1; }
+      - name: Compact comparison without hiding failed gates or missing residuals
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path;r=json.loads(p('cadence/results.json').read_text())
+          assert len(r['rows'])==120
+          keys=sorted({(x['policy'],x['cadence']) for x in r['rows']})
+          comparison=[]
+          for name,freq in keys:
+              group={x['period']:x for x in r['rows'] if x['policy']==name and x['cadence']==freq}
+              compact={'policy':name,'cadence':freq}
+              for period in ('development','validation','later','full','later_double_costs','okx_later'):
+                  x=group[period]
+                  compact[period]={k:x[k] for k in ('return_pct','cagr_pct','max_close_drawdown_pct','order_fills','fees','accounting_complete')}
+              compact['development_eligible']=next(x['eligible'] for x in r['development_gates'] if x['policy']==name and x['cadence']==freq)
+              comparison.append(compact)
+              print('PAIR',json.dumps(compact))
+              print('ANNUAL',name,freq,json.dumps(group['full']['annual']))
+          p('cadence/compact.json').write_text(json.dumps(comparison,indent=2))
+          print('VERIFY',p('cadence/verification.json').read_text())
+          PY
+      - name: Preserve tested sources and original evidence
+        if: always()
+        run: |
+          mkdir -p delivery/research
+          cp -r research/asymmetric_pulse research/asymmetric_pulse_checks delivery/research/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asymmetric-cadence-evidence
+          path: |
+            cadence/
+            cadence.log
+            cadence-tests.xml
+            delivery/
+          retention-days: 90
+  reproduce:
+    needs: diagnostic
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34025701632
+          name: asymmetric-pulse-research-evidence
+          path: original
+      - uses: actions/download-artifact@v4
+        with:
+          name: asymmetric-cadence-evidence
+          path: first
+      - run: python -m research.asymmetric_pulse_checks.cadence --original original --out second > reproduce.log 2>&1 || { tail -n 100 reproduce.log; exit 1; }
+      - name: Verify all120 reports and their execution files exactly
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path
+          a=json.loads(p('first/cadence/results.json').read_text());b=json.loads(p('second/results.json').read_text())
+          assert a==b
+          files=sorted(p('first/cadence').glob('*_fills.csv'));assert len(files)==120
+          for x in files:assert x.read_bytes()==(p('second')/x.name).read_bytes(),x.name
+          v=json.loads(p('second/verification.json').read_text())
+          v.update(full_result_exactly_reproduced=True,fill_ledgers_exactly_reproduced=120,
+            independent_execution=True,independent_model=False,unseen_data=False,live_orders=False)
+          p('REPRODUCTION.json').write_text(json.dumps(v,indent=2))
+          print(json.dumps(v))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asymmetric-cadence-reproduction
+          path: |
+            REPRODUCTION.json
+            second/comparison.csv
+            second/annual.csv
+            reproduce.log
+          retention-days: 90
