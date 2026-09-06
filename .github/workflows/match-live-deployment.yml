@@ -1,0 +1,74 @@
+name: Match deployed FIN frontend to history
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/match-live-deployment.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  match:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Find historical commit matching production assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import subprocess
+
+          expected = {
+              'frontend/live.html': '4f61748f09619ff3545dba1346f76c8545b5d29f142d6040c18915c1d4834416',
+              'frontend/live.js': '5f3fa408705323c0361b1ce46bafa9fc6a4529eb89de50382145fe73530786e3',
+              'frontend/live.css': '5bcaca8b3dd01a26e5cb98b5332f1cdd3f81788d5bec55824c2af942c113c4cd',
+          }
+
+          commits = subprocess.check_output(
+              ['git', 'rev-list', '--all', '--', *expected], text=True
+          ).splitlines()
+          matches_by_path = {path: [] for path in expected}
+          exact = []
+          for commit in commits:
+              matched = []
+              for path, digest in expected.items():
+                  try:
+                      payload = subprocess.check_output(['git', 'show', f'{commit}:{path}'])
+                  except subprocess.CalledProcessError:
+                      continue
+                  actual = hashlib.sha256(payload).hexdigest()
+                  if actual == digest:
+                      matches_by_path[path].append(commit)
+                      matched.append(path)
+              if len(matched) == len(expected):
+                  exact.append(commit)
+
+          print('EXPECTED')
+          for path, digest in expected.items():
+              print(path, digest)
+          print('PATH_MATCHES')
+          for path, rows in matches_by_path.items():
+              print(path, len(rows))
+              for commit in rows[:20]:
+                  line = subprocess.check_output(
+                      ['git', 'show', '-s', '--format=%H|%cI|%s', commit], text=True
+                  ).strip()
+                  print(' ', line)
+          print('EXACT_MATCHES', len(exact))
+          for commit in exact:
+              print(subprocess.check_output(
+                  ['git', 'show', '-s', '--format=%H|%cI|%s', commit], text=True
+              ).strip())
+          if not exact:
+              raise SystemExit('No single historical commit matches all production assets')
+          PY
