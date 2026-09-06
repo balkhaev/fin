@@ -1,0 +1,16 @@
+{
+  "stage":"after_original_and_reconciled_base_results_before_candidate_stresses",
+  "original_protocol":"22904391648af3dda65f143d7e894ee7ef49aea0",
+  "original_primary":"pair_revert168",
+  "primary_reconciled":{"full_return_pct":-76.2248732890502,"full_cagr_pct":-22.399571121761973,"later_return_pct":-11.007866350782047,"later_mark_close_drawdown_pct":-22.867983345644394},
+  "relative_momentum720":{"full_return_pct":55.6302389902183,"full_cagr_pct":8.121291975103805,"full_mark_close_drawdown_pct":-26.953809533374507,"later_return_pct":28.901821218225933,"later_cagr_pct":16.476158371770634,"later_mark_close_drawdown_pct":-8.184635132757755,"later_episodes":33,"later_order_fills":132,"later_fees":387.5634931761355,"later_funding":5.881057127639935,"independent2024_return_pct":-9.508418638428918},
+  "btc_directional_control":{"full_cagr_pct":13.34844022752586,"full_mark_close_drawdown_pct":-47.77545661517906,"later_return_pct":27.412361052169132,"later_mark_close_drawdown_pct":-24.90536644240281,"later_episodes":173},
+  "source_reconciliation":{"real_daily_archives":12,"mark_hours_supplied":288,"synthetic_prices":false,"existing_observed_prices_modified":false,"all_target_signals_unchanged":true},
+  "original62_result_sha256":"36c43bebae88b4bef08525229a738f9639636c2ff467b2604b5e3dbc99415f86",
+  "original62_ledger_sha256":"064ddaf87fd662eed0b584551036ad9ffecf03bede13d2c4ede5f7bd88034966",
+  "reconciled62_result_sha256":"157fe890756519f3faba4903a88950d24a890a8cecfa0fad4ae4e849d0fd9645",
+  "reconciled62_ledger_sha256":"8e55ccd963214a27a26b3b778a2f89304ebb7b680da5a996167417c60c319425",
+  "reconciled62_cases_complete_and_finite":true,
+  "known_engine_bug_repaired":false,"original_primary_replaced":false,
+  "positive_comparators_selected_after_results":true,"live_ready":false,"stable500proven":false,"real_orders":0
+}
