@@ -1,0 +1,23 @@
+{
+  "id": "btc-frontier-v2-20260905",
+  "objective": "Search for net annual profit >500% and >=20 completed BTC trades per calendar day; do not promise or synthesize the target.",
+  "constraints": {"capital": 10000, "max_exposure": 2.0, "max_drawdown_acceptance": 0.10, "drawdown_circuit_breaker": 0.095, "daily_loss": 0.02, "risk_per_trade": 0.0025, "allowed_venues": ["Binance", "Hyperliquid"], "paper_only": true, "merge_requires_separate_approval": true},
+  "families": ["breakout", "trend_pullback", "impulse_follow", "impulse_fade", "range_revert", "squeeze", "trend_channel", "funding_revert"],
+  "grid": {"ordinary_timeframes_minutes": [1,5,15,60], "trend_channel_timeframes_minutes": [15,60,240,1440], "lookback_bars": [12,48], "exit_profiles": ["fast", "wide"], "candidate_count": 128},
+  "exit_profiles": {"fast": {"stop_atr":1.5,"reward_risk":2,"hold_bars":12}, "wide": {"stop_atr":3,"reward_risk":3,"hold_bars":48}},
+  "trend_channel_override": "No profit target; causal trailing stop plus opposite half-length channel close signal; maximum hold 288 bars.",
+  "source": "BTCUSDT Binance USD-M 1m trade OHLCV and realized funding; no synthetic candles or cross-venue performance attribution.",
+  "discovery": "2022-2023; historical data already reused in prior study",
+  "validation": "2024; historical data already reused in prior study",
+  "reused_evaluation": "2025-01-01 through 2026-07-31; NOT pristine OOS",
+  "fresh_historical_test": "2026-08-01 through 2026-08-31, fetched but never inspected for strategy selection; a short historical test, NOT live forward and NOT annualizable",
+  "selection": "For each family rank on minimum 2022/2023 protected annual net return (ties: aggregate net, config id). Freeze one per family before validation. Admission requires both discovery years positive, >=100 combined discovery trades, 2024 positive, discovery and validation PF>=1.1, DD<=10%. Rank admitted by 2024 return then id; otherwise select the best diagnostic by same 2024 rank and label REJECTED. No selection using 2025-2026 or fresh August.",
+  "router": "Separately predeclared monthly top-1 or CASH among family winners using ONLY previous 180 days of daily returns with 2-day embargo; require positive net return, >=20 closed trades, PF>=1.1, DD<=10%; fresh replay of chosen signals on one account with shared exposure/risk. No sum of independently margined accounts.",
+  "execution": "Signals at fully closed bars; next minute open taker. Conservative stop-first when intrabar order unknown; adverse gap/slippage; round BTC qty down to 0.001, min notional 100; <=0.1% of previous minute base volume. Single position, no averaging or martingale. Trailing updated only after bar close and applies next minute. Funding charged only when previously positioned; retain exact published rate and disclose minute price approximation.",
+  "costs": {"fee_each_side":0.0005,"slippage_each_side":0.0001,"funding": "realized Binance schedule, required complete; minute-open price approximation"},
+  "stresses": ["double slippage", "one additional minute entry latency", "double commission", "zero commission/slippage ablation not deployable"],
+  "risk_sensitivity": "Only frozen selected strategy, risk 0.1%, 0.25%, 0.5%; exposure capped 2x and same loss circuit breakers. No leverage escalation to manufacture CAGR.",
+  "reporting": "Always report full calendar-year return, continuous reused evaluation, fresh August actual return without annualization, trade frequency, marked and adverse-bar DD, fees, funding and ledger reconciliation. All candidates and rejected outcomes retained.",
+  "target_gate": "No target pass unless a complete >=365-day non-selection period exceeds +500% net, >=20 trades/day, DD<=10%, stress and venue-specific execution tests pass. Fresh month cannot establish annual target; live_ready remains false without forward and execution evidence.",
+  "hyperliquid": "Research venue only if authentic matching trade/funding/execution history acquired; do not substitute Binance returns with Hyperliquid fees. No unsupported Hyperliquid backtest claim."
+}
