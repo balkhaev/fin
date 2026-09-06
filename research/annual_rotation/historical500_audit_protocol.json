@@ -1,0 +1,13 @@
+{
+  "id":"historical500-followup-20260906",
+  "original_protocol_commit":"7da7823225f689de2bf9d0451627f91c58fb8e2a",
+  "corrected_tested_commit":"e4c20f30879966c925fde7fd1f5ac56c0dd86d39",
+  "original_result_sha256":"55cea963fa8fc5e101e1144692340e7032b83cd8cd3d01deaa110b2a2409c161",
+  "selection_disclosure":"raw_126_top3_every7 was identified AFTER inspecting the36-policy2021 calendar table. It was not the fixed primary and did not pass the original challenger selection. All results below are post-result diagnostics on already seen prices, not a new holdout.",
+  "observed_before_followup":{"calendar2021_return_pct":1195.0204642283993,"full_2021_Aug2026_cagr_pct":84.35527315327785,"later_2025_Aug2026_return_pct":-7.801620187498825},
+  "unchanged_model":"No modifications to model.py, data.py, study.py, signals, cohort eligibility, or portfolio risk limits. Apply the same fixed policy and compare every requested case regardless of result.",
+  "diagnostics":["Standalone calendar2021 from10000USDT, including actual modeled terminal liquidation","2021 with fee/slippage both doubled","2021 with one extra day signal delay","2021 from1000USDT to quantify capital/capacity dependence","Exclude each of all9 cohort constituents one at a time in2021; no replacement chosen from outside fixed cohort","Selected calendar-winner full-period and later-period doubled-cost reruns, with original defaults otherwise unchanged"],
+  "deliverables":"All scenario reports and complete fill ledgers, independent cash reconstruction, causal feature hashes, terminal residual flag. Do not convert2021 performance into expected annual return or ignore later losses.",
+  "interpretation":"The target is observed net500% for a full year, not a stable annual guarantee. This audit checks mechanics and fragility of a historical result, not investment suitability.",
+  "live_orders":false
+}
