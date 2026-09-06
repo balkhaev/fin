@@ -68,7 +68,7 @@ def weights(bank,cfg,exclude=None):
     return out
 
 
-def simulate(frames,target,cfg,start,end,costs=Costs()):
+def simulate(frames,target,cfg,start,end,costs=Costs(),hold_only=False):
     idx=frames[SYMBOLS[0]].index
     if any(not frames[s].index.equals(idx) for s in SYMBOLS):raise ValueError('Source indices differ')
     if len(idx)>1 and not np.all(np.diff(idx.asi8)==86400000000000):raise ValueError('Missing rows must be explicit NaN')
@@ -87,16 +87,22 @@ def simulate(frames,target,cfg,start,end,costs=Costs()):
         if not math.isfinite(capacity) or amount>capacity+1e-10:
             liquidity_rejections+=1;return False
         price=reference*(1+costs.slip if side=='buy' else 1-costs.slip)
+        # Every target/holding is an integer number of configured lot units.
+        # Floating floor of a mathematically exact full exit can strand one lot.
+        held_units=int(round(q[k]/costs.step))
+        units=int(round(amount/costs.step))
         if side=='buy':
-            amount=min(amount,math.floor(cash/(price*(1+costs.fee))/costs.step)*costs.step)
-        amount=math.floor((amount+costs.step*1e-7)/costs.step)*costs.step
-        if amount*price<costs.minimum or amount<=0:return False
-        if side=='sell':amount=min(amount,q[k])
+            affordable=math.floor(cash/(price*(1+costs.fee))/costs.step)
+            units=min(units,affordable)
+        else:units=min(units,held_units)
+        amount=units*costs.step
+        if amount*price<costs.minimum or units<=0:return False
         notional=amount*price;fee=notional*costs.fee
         before=q[k]
-        if side=='buy':q[k]+=amount;cash-=notional+fee
-        else:q[k]-=amount;cash+=notional-fee
-        if abs(q[k])<costs.step/2:q[k]=0.
+        if side=='buy':
+            q[k]=(held_units+units)*costs.step;cash-=notional+fee
+        else:
+            q[k]=(held_units-units)*costs.step;cash+=notional-fee
         if cash<-1e-6 or (q<-1e-10).any():raise AssertionError('Borrowing/shorting detected')
         if before==0 and q[k]>0:entries+=1
         if before>0 and q[k]==0:roundtrips+=1
@@ -112,7 +118,7 @@ def simulate(frames,target,cfg,start,end,costs=Costs()):
         # One full day AFTER a completed daily bar: open D uses close D-2.
         j=i-2-costs.extra_delay
         calendar_day=int(idx[i].timestamp()//86400)
-        scheduled=(i==a or calendar_day%cfg.every==0)
+        scheduled=(i==a or (not hold_only and calendar_day%cfg.every==0))
         if scheduled and j>=0 and math.isfinite(current) and not missing and i<b-1:
             valid=np.isfinite(o)&(o>0)
             desired=np.zeros_like(q)
@@ -126,14 +132,15 @@ def simulate(frames,target,cfg,start,end,costs=Costs()):
             for k in range(len(q)):
                 if desired[k]>q[k]:trade(k,'buy',desired[k]-q[k],o[k],idx[i],'rebalance',capacities[k])
             rebalance_count+=int(len(fills)>before)
+        held=q>0
+        loweq=float(cash+np.sum(q[held]*l[held]*(1-costs.slip)*(1-costs.fee))) if np.isfinite(l[held]).all() else np.nan
+        if math.isfinite(loweq):adverse=min(adverse,loweq/peak-1)
         if i==b-1:
             capacities=matrices['volume'][i-1]*costs.participation
             for k in range(len(q)):
                 if q[k]>0:trade(k,'sell',q[k],c[k],idx[i]+pd.Timedelta(days=1),'period_end',capacities[k])
         held=q>0
         eq=float(cash+np.sum(q[held]*c[held]*(1-costs.slip)*(1-costs.fee))) if np.isfinite(c[held]).all() else np.nan
-        loweq=float(cash+np.sum(q[held]*l[held]*(1-costs.slip)*(1-costs.fee))) if np.isfinite(l[held]).all() else np.nan
-        if math.isfinite(loweq):adverse=min(adverse,loweq/peak-1)
         if math.isfinite(eq):peak=max(peak,eq)
         curve.append(dict(time=str(idx[i]+pd.Timedelta(days=1)),equity=eq,cash=float(cash),
             invested_assets=int(held.sum()),unpriced_held_quote=missing))
