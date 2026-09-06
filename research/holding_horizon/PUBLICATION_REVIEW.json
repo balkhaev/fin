@@ -1,0 +1,15 @@
+{
+  "all_three_result_hashes_and_proofs_match": true,
+  "all_events_independently_checked": true,
+  "reports": 164,
+  "financial_files": 656,
+  "source_files_checked": [
+    "research/channel_budget/study.py",
+    "research/channel_scale/study.py",
+    "research/holding_horizon/reference.py",
+    "research/holding_horizon/study.py"
+  ],
+  "summary_sha256": "b0e9600d4be07a9ebffbeac55eb007d689026f0a4aafecf58324bfa15140b83c",
+  "no_new_account_simulation": true,
+  "engine_not_copied_to_main": true
+}
