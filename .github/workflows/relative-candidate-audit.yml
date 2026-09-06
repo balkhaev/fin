@@ -1,0 +1,107 @@
+name: Relative positive comparator audit
+on:
+  push:
+    branches: [research/relative-futures-20260906]
+    paths:
+      - research/relative_futures_checks/*.py
+      - tests/test_pair_audit_statistics.py
+      - .github/workflows/relative-candidate-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -e . -r research/clock_phase/requirements.txt
+      - name: Original mechanics and new descriptive-statistic tests plus full regressions
+        run: |
+          python -m pytest -q tests/test_relative*.py tests/test_pair_audit_statistics.py --junitxml=candidate-tests.xml
+          python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 100 root-tests.log; exit 1; }
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034392920
+          name: relative-futures-reconciled-evidence
+          path: base
+      - name: Fixed candidate stress and fresh starts, no parameter or account changes
+        run: python -m research.relative_futures_checks.candidates --source base --out report > candidate.log 2>&1 || { tail -n 100 candidate.log; exit 1; }
+      - run: |
+          cat candidate.log
+          tail -n 2 root-tests.log
+      - name: Preserve exact extra audit code
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/relative_futures_checks delivery/research/
+          cp tests/test_pair_audit_statistics.py delivery/tests/
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relative-positive-comparator-evidence
+          path: |
+            report/
+            delivery/
+            candidate.log
+            candidate-tests.xml
+            root-tests.xml
+            root-tests.log
+          retention-days: 90
+  repeat:
+    needs: audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034392920
+          name: relative-futures-reconciled-evidence
+          path: base
+      - uses: actions/download-artifact@v4
+        with: {name: relative-positive-comparator-evidence, path: first}
+      - run: python -m research.relative_futures_checks.candidates --source base --out repeated > repeat.log 2>&1 || { tail -n 100 repeat.log; exit 1; }
+      - name: Compare every report, fill, funding, episode and equity file
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          p=pathlib.Path
+          assert json.loads(p('first/report/results.json').read_text())==json.loads(p('repeated/results.json').read_text())
+          for suffix in ('_fills.csv','_funding.csv','_episodes.csv','_equity.csv.gz'):
+              files=list(p('first/report').glob('*'+suffix));assert len(files)==30
+              for f in files:assert f.read_bytes()==(p('repeated')/f.name).read_bytes(),f.name
+          v=json.loads(p('repeated/verification.json').read_text());assert v['reports']==30
+          v.update(all30_reports_and120_financial_files_exact=True,independent_execution=True,
+              independent_model_implementation=False,new_time_holdout=False,account_bug_unpatched=True,
+              local_execution=False,live_ready=False)
+          p('REPRODUCTION.json').write_text(json.dumps(v,indent=2));print(json.dumps(v))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relative-positive-comparator-reproduction
+          path: |
+            REPRODUCTION.json
+            repeated/comparison.csv
+            repeated/annual.csv
+            repeat.log
+          retention-days: 90
