@@ -1,0 +1,12 @@
+{
+  "timing":"After inspecting original source coverage, before inspecting any strategy outcome.",
+  "original_source_run":34033698128,
+  "original_manifest":"233a4afe965c99034d69076d2a3080b7fcf847fc44c3b508ee6db088673bcc1a",
+  "observed_gap_hours":{"BTCUSDT":216,"ETHUSDT":72},
+  "question":"Do checksum-verified official DAILY mark-price1h archives contain the observations absent from the monthly snapshots?",
+  "method":"Inspect only calendar dates containing a missing monthly mark OHLC. Download same-venue/same-instrument/same-interval dailyZIP and published CHECKSUM. Preserve original dataset and original62-case result. Reconcile overlapping values first; if discrepancies exceed numerical parser precision or daily rows are malformed, stop and retain error. Supplement only previously absent mark OHLC, never replace known values, infer from trade prices or round timestamps.",
+  "scope":"Independent source verification, NOT a repair or alternative implementation of account.py. The blocked inactive-leg valuation repair remains unapplied; no code writes to that file or proxy valuation routines. The unpatched reference remains non-production regardless of whether a more complete input snapshot avoids that defect in certain runs.",
+  "limits":"At most32missing dates per asset, GETonly existing data.binance.vision hostname,404 recorded no proxy fallback. SHA verifies retained bytes not independent exchange accuracy. Both old and supplemented snapshots and provenance are retained. No strategy/time-window/cost/parameter retuning.",
+  "replay":"If daily data are authentic and mutually consistent, rerun the SAME62 scenarios on the supplemented snapshot using exact original code. Results are paired data-sensitivity checks, not62 new independent strategies. If daily data do not supply observations, do not fabricate them. Report unknown risk/funding rather than profit certification.",
+  "live_orders":false
+}
