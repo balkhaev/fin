@@ -1,0 +1,103 @@
+name: Opportunity budget and lifecycle verification
+on:
+  push:
+    branches: [research/relative-futures-20260906]
+    paths: [.github/workflows/opportunity-budget-research.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -e . -r research/clock_phase/requirements.txt
+      - name: Match pre-result local source locks including unchanged account
+        run: |
+          python - <<'PY'
+          import pathlib,hashlib,json
+          p=pathlib.Path
+          checks={
+            'research/opportunity_budget/policy.py':'af7136a636a24071ad547f91a19af53ee561e108dc57c16373c61c4e18c0ba44',
+            'research/opportunity_budget/study.py':'38bf8eddabceccf9fc0f280e1ce6d2c809a419d82c8e5fa402c262afe832de01',
+            'tests/test_opportunity_budget.py':'551ca07c0d20e9fd262dcd0851bf1bb98cbec648594341f606046f035d16b0f7',
+            'research/opportunity_runner/study.py':'c7c61ad49c347a5a8500e1310cca7b17be96208c96617beeb1f1b92caba55cd3',
+            'tests/test_opportunity_runner.py':'9ec9e39e0d67d31b5b181481a5aadf2f43e8688ef37598aafdb72ddbdcb06f4f',
+            'research/opportunity_checks/ladder.py':'35d5ff775eea1cd6b724a0096ca4eedc96576e1ae74ab0d6ea62e60aede83e2f',
+            'research/relative_futures/account.py':'b67c939a829c0c2366964ed8ac97747f5747b8664fceee679ff0dd3b0a023cee'}
+          for path,want in checks.items():assert hashlib.sha256(p(path).read_bytes()).hexdigest()==want,path
+          p('SOURCE_LOCK.json').write_text(json.dumps(checks,indent=2));print('All source locks match')
+          PY
+      - name: New tests and complete repository regression
+        run: |
+          python -m pytest -q tests/test_opportunity*.py --junitxml=new-tests.xml
+          python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 100 root-tests.log; exit 1; }
+          tail -n 2 root-tests.log
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034392920
+          name: relative-futures-reconciled-evidence
+          path: base
+      - name: Independent execution of same63risk-budget reports
+        run: python -m research.opportunity_budget.study --source base --out budget > budget.log 2>&1 || { tail -n 50 budget.log; exit 1; }
+      - name: Same56post-result lifecycle reports
+        run: python -m research.opportunity_runner.study --source base --out runner > runner.log 2>&1 || { tail -n 50 runner.log; exit 1; }
+      - name: Same28lower-risk sizing attribution reports
+        run: python -m research.opportunity_checks.ladder --source base --out ladder > ladder.log 2>&1 || { tail -n 50 ladder.log; exit 1; }
+      - name: Record execution identity and all financial file hashes
+        run: |
+          python - <<'PY'
+          import pathlib,json,hashlib
+          p=pathlib.Path
+          checks={}
+          for folder,count in [('budget',63),('runner',56),('ladder',28)]:
+              v=json.loads(p(folder,'verification.json').read_text());assert v['reports']==count
+              hashes={}
+              for suffix in ('_fills.csv','_funding.csv','_episodes.csv','_equity.csv.gz'):
+                  files=sorted(p(folder).glob('*'+suffix));assert len(files)==count
+                  for f in files:hashes[f.name]=hashlib.sha256(f.read_bytes()).hexdigest()
+              checks[folder]={'verification':v,'file_hashes':hashes}
+          checks.update(actual_execution_environment='GitHub Actions clean runner',
+              local_execution_field_in_results_is_retained_origin_metadata=True,
+              independent_execution=True,independent_implementation=False,unseen_market=False,
+              total_reports=147,known_account_bug_unpatched=True,real_orders=0)
+          p('REPRODUCTION.json').write_text(json.dumps(checks,indent=2))
+          print(json.dumps({k:checks[k]['verification'] for k in ('budget','runner','ladder')}))
+          PY
+      - name: Retain code and protocols without copying production secrets
+        if: always()
+        run: |
+          mkdir -p current_code/research current_code/tests
+          cp -r research/opportunity_budget research/opportunity_runner research/opportunity_checks research/relative_futures research/relative_futures_checks research/relative_portfolio research/funding_crowding research/annual_rotation current_code/research/
+          cp tests/test_opportunity*.py tests/test_relative*.py tests/test_pair_audit_statistics.py tests/test_pair_regime_composition.py current_code/tests/
+          cp research/btc_flow/requirements.txt current_code/requirements.txt
+          git rev-parse HEAD > TESTED_COMMIT.txt
+          find current_code -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: opportunity-budget-reproduction
+          path: |
+            budget/
+            runner/
+            ladder/
+            current_code/
+            REPRODUCTION.json
+            SOURCE_LOCK.json
+            TESTED_COMMIT.txt
+            new-tests.xml
+            root-tests.xml
+            root-tests.log
+            budget.log
+            runner.log
+            ladder.log
+          retention-days: 90
