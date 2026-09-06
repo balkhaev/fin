@@ -1,0 +1,47 @@
+name: Inspect clock minute source
+on:
+  push:
+    branches: [research/clock-phase-20260906]
+    paths: [.github/workflows/clock-source-inspect.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: balkhaev/fin
+          run-id: 34028949048
+          name: clock-phase-raw-minutes
+          path: raw
+      - name: Examine all duration classes and bounded anomalous examples
+        run: |
+          python - <<'PY'
+          import pathlib,zipfile,csv,io,collections,json
+          counts=collections.Counter();examples=[];badfiles=collections.Counter();total=0
+          for p in sorted(pathlib.Path('raw').glob('*.zip')):
+              with zipfile.ZipFile(p) as z:
+                  with z.open(z.namelist()[0]) as f:
+                      for row in csv.reader(io.TextIOWrapper(f)):
+                          try:t=int(row[0]);end=int(row[6])
+                          except ValueError:continue
+                          total+=1
+                          unit=1000 if t>10**14 else 1
+                          dt=end//unit-t//unit
+                          counts[dt]+=1
+                          if dt!=59999:
+                              badfiles[p.name]+=1
+                              if len(examples)<30:examples.append(dict(file=p.name,open=t,close=end,duration_ms=dt,OHLC=row[1:5]))
+          out=dict(rows=total,durations=counts,anomalous_files=badfiles,examples=examples)
+          pathlib.Path('SOURCE_INSPECTION.json').write_text(json.dumps(out,indent=2))
+          print(json.dumps(out))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clock-source-duration-audit
+          path: SOURCE_INSPECTION.json
+          retention-days: 90

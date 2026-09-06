@@ -1,0 +1,15 @@
+{
+  "id":"clock-conditional-cluster-review-20260906",
+  "designed_after_first_prediction_results":true,
+  "initial_result_sha256":"d9bd9d9f969a56c549995abf18155924d1d024c4f6168c7f51e906e4e00213de",
+  "known_results":"Primary boundary4 later error improvement0.213507%vsbase; positive bootstrap lower bound versusbase only,not versusplacebo or earlierperiod. Only49late condition observations (48ETH,1BTC),mean raw price change97.2177bps; shiftedplacebo49observations mean111.3425bps. These are NOT returns of a funded account.",
+  "purpose":"Determine whether conditional price-change observations represent many different calendar episodes or clusters of overlapping horizons. Audit every model/period/horizon/asset group, not just attractive rows.",
+  "checks":["Exact first results and source hashes","Unique signal hours, dates and ISO weeks","Largest same-day concentration","Conditional sample overlap between true and shifted phases","Mean and median price changes after removal of the best five observations as a disclosed sensitivity, not a selected trading rule"],
+  "no_model_changes":true,
+  "no_threshold_changes":true,
+  "not_new_market_holdout":true,
+  "not_statistical_multiple_testing_correction":true,
+  "no_account_replay_or_trade_selection":true,
+  "no_blocked_ledger_reimplementation":true,
+  "portfolio_pnl_or_annual_return_not_computed":true
+}

@@ -1,0 +1,104 @@
+{
+  "id":"clock-phase-information-20260906",
+  "protocol_commit":"a5f033058fe7913ddc46914110304f7d8169916a",
+  "tested_commit":"c13c4f66ce6bc99291abe84bcc20792e687ef8fc",
+  "primary":"boundary4",
+  "scope":"Completed predictive-information experiment, NOT a portfolio return backtest or live trading system.",
+  "run":34029472691,
+  "research_job":101476235070,
+  "independent_reproduction_job":101476627050,
+  "source":{
+    "symbols":["BTCUSDT","ETHUSDT"],"venue":"Binance spot",
+    "start":"2022-01-01","end_exclusive":"2026-09-01",
+    "raw_zip_files":172,"symbol_months":112,"raw_minute_rows":4907360,
+    "per_asset_minutes":2453680,"per_asset_hour_rows":40896,
+    "incomplete_hours_per_asset":2,"missing_minute2_quotes_per_asset":1,
+    "incomplete_hour_opens":["2023-03-24T12:00:00Z","2023-03-24T13:00:00Z"],
+    "partial_candles_masked":2,"price_interpolation":false,
+    "raw_manifest_sha256":"1cf6d3fd871431fca00904e8d3a61e7987d2040d2b580e24a4d6be17f4f95f7a",
+    "BTC_aggregate_sha256":"9ac25e2dad9eb09519f480ff859c8b789009357ce336a72214652002433edd91",
+    "ETH_aggregate_sha256":"f54990fa37bc5afe668a7d19df1632907d52a0955b4e5d8a604160ab8688981e"
+  },
+  "design":{
+    "boundary_minutes":[0,15,30,45],"shifted_placebo_minutes":[7,22,37,52],
+    "horizons_hours":[4,12],"model_variants":["base","boundary","placebo"],
+    "monthly_model_snapshots":264,"distinct_model_horizon_configs":6,
+    "train_days":180,"label_maturity_embargo_hours":24,
+    "reference_quote_minutes_after_hour_close":2,
+    "hyperparameter_search":false,"historical_periods_economically_reused":true,
+    "paper_replication_is_exact":false,"paper_uses_ten_second_futures":true
+  },
+  "forecast_comparison":[
+    {"period":"2023_2024","horizon":4,"matched_observations":34680,"base_MSE":1.2251615431660736,"boundary_MSE":1.224410730079865,"placebo_MSE":1.2240545856269534,"error_reduction_vs_base_pct":0.06128278269887207},
+    {"period":"2023_2024","horizon":12,"matched_observations":34648,"base_MSE":1.3549287362507663,"boundary_MSE":1.355342450948461,"placebo_MSE":1.3560786681671368,"error_reduction_vs_base_pct":-0.030534055897256517},
+    {"period":"2025_Aug2026","horizon":4,"matched_observations":29174,"base_MSE":1.1742472869259322,"boundary_MSE":1.1717401842791204,"placebo_MSE":1.172846837999456,"error_reduction_vs_base_pct":0.21350721221380128},
+    {"period":"2025_Aug2026","horizon":12,"matched_observations":29158,"base_MSE":1.3159146863097317,"boundary_MSE":1.3149951531407664,"placebo_MSE":1.314362930007631,"error_reduction_vs_base_pct":0.06987787115166219}
+  ],
+  "primary_paired_bootstrap":{
+    "earlier_base_minus_boundary_95":[-0.0012514362510190223,0.0030069286429756435],
+    "earlier_placebo_minus_boundary_95":[-0.0024842945776928525,0.0018725242261488804],
+    "later_base_minus_boundary_95":[0.000009751257329493023,0.006162312630118759],
+    "later_placebo_minus_boundary_95":[-0.001420695976933309,0.004007964416285683],
+    "block_days":7,"draws":2000,"multiple_testing_corrected":false,
+    "required_positive_lower_bounds_passed":1,"required_comparisons":4,
+    "incremental_phase_information_accepted":false
+  },
+  "conditional_prices_not_account_returns":{
+    "forecast_log_hurdle":0.006,"roundtrip_cost_reference_bps":30,
+    "primary4_earlier":{"count":131,"mean_gross_price_change_bps":69.6388004929542,"median_gross_price_change_bps":38.343179686344264},
+    "primary4_later":{"count":49,"BTC_observations":1,"ETH_observations":48,"mean_gross_price_change_bps":97.21773465717008,"median_gross_price_change_bps":55.3132484558172,"fraction_price_change_above_30bps":0.6122448979591837},
+    "base4_later":{"count":43,"mean_gross_price_change_bps":89.34088784564534},
+    "placebo4_later":{"count":49,"mean_gross_price_change_bps":111.34252814759297,"median_gross_price_change_bps":77.22506390745565},
+    "primary12_earlier":{"count":1894,"mean_gross_price_change_bps":14.66850798507413},
+    "primary12_later":{"count":1314,"mean_gross_price_change_bps":54.04823285640192},
+    "overlapping_observations_are_independent_trades":false,
+    "costs_subtracted_to_claim_profit":false,"annualized":false
+  },
+  "post_result_cluster_review":{
+    "protocol_commit":"d01dedd2dfc6f865d39422a278a6045d0c737622",
+    "tested_commit":"a9328400c623d2092f731792ee8221d91547cd91",
+    "run":34029689153,"job":101476828011,"all_model_groups_reviewed":36,
+    "primary4_later_unique_hours":48,"primary4_later_unique_dates":21,
+    "primary4_later_unique_iso_weeks":14,"largest_same_date_observations":6,
+    "primary4_later_mean_after_removing_best5_bps":54.32231793003039,
+    "placebo4_later_mean_after_removing_best5_bps":72.11861400856523,
+    "primary_placebo_later4_shared_asset_hours":34,
+    "primary12_later_unique_dates":168,"primary12_later_unique_iso_weeks":67,
+    "post_result_descriptive_not_new_holdout":true,
+    "no_model_retraining_or_trade_selection":true,
+    "review_sha256":"accd2e44baace8ace2acb2f4dd1a752cd9fda9b71661f405bbe161e3fa3e505c"
+  },
+  "verification":{
+    "new_tests_passed":30,"root_tests_passed":677,"additional_subtests_passed":46,
+    "new_tests_included_in_root_total":true,"failures":0,
+    "second_runner_raw_to_hourly_bytes_equal":true,"second_runner_complete_information_result_equal":true,
+    "second_runner_model_text_files_equal":264,"prediction_hashes_equal":true,
+    "local_execution":false,"independent_execution":true,
+    "independent_model_implementation":false,"independent_market_time":false
+  },
+  "hashes":{
+    "result_sha256":"d9bd9d9f969a56c549995abf18155924d1d024c4f6168c7f51e906e4e00213de",
+    "predictions_sha256":"adfa52cc3d912135693aad457024ba4ff42cdd8f8454fcb227d4289baba232b9"
+  },
+  "artifacts":[
+    {"id":9988153752,"kind":"code_hourly_inputs_models_forecasts_results","bytes":20516039,"sha256":"c63fa4654862fa1ce158bfd73e6c20d86f51b251be13b67ab26d9a4a256ad047"},
+    {"id":9988185201,"kind":"independent_reproduction","bytes":6192,"sha256":"46eb50f816e7c161252519ca4071582016c9ae79d635c4687e10861fb96d7181"},
+    {"id":9988182911,"kind":"cluster_review","bytes":5203,"sha256":"6155e1bdef7d5fc0efb872d23bf4e489d3a6a65810db883836501e614a1e6940"},
+    {"id":9987982476,"kind":"original_minute_archives","bytes":233377072,"sha256":"ec65ead22868de5f1f4fe5a481f4acaab3d3b8f677fb645b7b22780c47fb3e54"}
+  ],
+  "unfinished":{"ledger_py_publication_blocked":true,"blocker_bypassed":false,
+    "one_account_replay":false,"capacity_constrained_fills":false,"portfolio_risk_path":false,
+    "autonomous_trading_service":false},
+  "portfolio_return_pct":null,"annual_return_pct":null,"portfolio_trades":null,
+  "stable_profit_proven":false,"annual500proven":false,"live_ready":false,"real_orders":0,
+  "limitations":[
+    "Minute spot phase proxy differs from ten-second futures study and is not an exact replication.",
+    "Improved squared forecast loss is not a profitable trading system; primary fails the phase-placebo and cross-period admission test.",
+    "Strong4h observations are rare and calendar-clustered; mean raw price movement is not a filled trade return or independent sample.",
+    "No portfolio ledger was published after tool block; prediction-only evaluation is not an alternative cash simulation.",
+    "The30bps cost reference is a declared research approximation, not a verified personal exchange tariff.",
+    "Model snapshots are repeated monthly fits, not264 independently selected strategies.",
+    "Economic history reused; bootstrap is not corrected for the program's repeated hypothesis search.",
+    "Existing guarded strategy and production scheduler unchanged; no real capital deployed."
+  ]
+}

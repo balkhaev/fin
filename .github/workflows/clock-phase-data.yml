@@ -1,0 +1,42 @@
+name: Clock phase minute data
+on:
+  push:
+    branches: [research/clock-phase-20260906]
+    paths: [.github/workflows/clock-phase-data.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - run: python -m pytest -q tests/test_clock_phase_data.py --junitxml=source-tests.xml
+      - name: Read-only fixed minute archives and phase aggregation
+        run: python -m research.clock_phase.data --raw minute-raw --out hour-data --download > acquisition.log 2>&1 || { tail -n 100 acquisition.log; exit 1; }
+      - name: Show measured source coverage
+        run: cat hour-data/audit.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clock-phase-normalized-data
+          path: |
+            hour-data/
+            minute-raw/manifest.json
+            source-tests.xml
+            acquisition.log
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clock-phase-raw-minutes
+          path: minute-raw/
+          compression-level: 0
+          retention-days: 90

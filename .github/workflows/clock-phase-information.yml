@@ -1,0 +1,147 @@
+name: Clock phase predictive information
+on:
+  push:
+    branches: [research/clock-phase-20260906]
+    paths:
+      - research/clock_phase/*.py
+      - tests/test_clock_phase*.py
+      - .github/workflows/clock-phase-information.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: clock-phase-information-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e . -r research/clock_phase/requirements.txt
+      - name: Source, prefix and future-label tests
+        run: python -m pytest -q tests/test_clock_phase*.py --junitxml=clock-tests.xml
+      - name: Entire existing test suite
+        run: python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 100 root-tests.log; exit 1; }
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: balkhaev/fin
+          run-id: 34028949048
+          name: clock-phase-raw-minutes
+          path: raw
+      - name: Rebuild audited phase features from unchanged raw minute archives
+        run: python -m research.clock_phase.data --raw raw --out hours > aggregation.log 2>&1 || { tail -n 100 aggregation.log; exit 1; }
+      - name: Forecast information only, no blocked cash ledger or portfolio substitution
+        run: python -m research.clock_phase.information --data hours --out report > research.log 2>&1 || { tail -n 100 research.log; exit 1; }
+      - name: Show measured predictions and their limits
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path
+          print('SOURCE_AUDIT',p('hours/audit.json').read_text())
+          print('COMPARISON\n'+p('report/forecast_comparison.csv').read_text())
+          print('CONDITIONAL_PRICE_CHANGES_NOT_TRADES\n'+p('report/conditional_price_changes.csv').read_text())
+          r=json.loads(p('report/results.json').read_text())
+          for item in r['comparisons']:
+              print('PAIRED_TESTS',item['period'],item['horizon'],json.dumps(item['paired_tests']))
+          print('VERIFICATION',p('report/verification.json').read_text())
+          print('ROOT_TESTS',p('root-tests.log').read_text().splitlines()[-1])
+          assert r['portfolio_return_pct'] is None and r['real_orders']==0
+          PY
+      - name: Bundle saved code, hourly inputs and inspectable models
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/clock_phase delivery/research/
+          cp tests/test_clock_phase*.py delivery/tests/
+          python - <<'PY'
+          from pathlib import Path
+          base=Path('research/btc_flow/requirements.txt').read_text()
+          extra='scikit-learn==1.7.2\nscipy==1.16.3\n'
+          Path('delivery/requirements.txt').write_text(base+extra)
+          PY
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clock-phase-information-evidence
+          path: |
+            delivery/
+            hours/
+            report/
+            raw/manifest.json
+            clock-tests.xml
+            root-tests.xml
+            root-tests.log
+            aggregation.log
+            research.log
+          retention-days: 90
+  reproduce:
+    needs: research
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/clock_phase/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: clock-phase-information-evidence
+          path: first
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: balkhaev/fin
+          run-id: 34028949048
+          name: clock-phase-raw-minutes
+          path: raw
+      - run: python -m research.clock_phase.data --raw raw --out repeated-hours > repeated-aggregation.log 2>&1
+      - run: python -m research.clock_phase.information --data repeated-hours --out second > repeat.log 2>&1 || { tail -n 100 repeat.log; exit 1; }
+      - name: Independently reproduced source transformation and predictive statistics
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path
+          for name in ('BTCUSDT.csv','ETHUSDT.csv','audit.json'):
+              assert (p('first/hours')/name).read_bytes()==(p('repeated-hours')/name).read_bytes(),name
+          a=json.loads(p('first/report/results.json').read_text());b=json.loads(p('second/results.json').read_text())
+          assert a==b,'Repeated predictive result differs'
+          assert p('first/report/fit_audit.json').read_bytes()==p('second/fit_audit.json').read_bytes()
+          original=sorted(p('first/report/model_text').glob('*.json.gz'))
+          for f in original:assert f.read_bytes()==(p('second/model_text')/f.name).read_bytes(),f.name
+          v=json.loads(p('second/verification.json').read_text())
+          v.update(raw_to_hourly_exactly_reproduced=True,complete_information_result_equal=True,
+              model_files_equal=len(original),independent_runner=True,independent_market_data=False,
+              local_execution=False,portfolio_run=False)
+          p('REPRODUCTION.json').write_text(json.dumps(v,indent=2))
+          print(json.dumps(v))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clock-phase-information-reproduction
+          path: |
+            REPRODUCTION.json
+            second/forecast_comparison.csv
+            second/conditional_price_changes.csv
+            second/verification.json
+            repeat.log
+          retention-days: 90
