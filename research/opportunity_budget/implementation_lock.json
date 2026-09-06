@@ -1,0 +1,15 @@
+{
+  "protocol_commit": "76e3c7c4b1fe662fed6988ebc453b5fcd853d193",
+  "timing": "Before first new financial simulation;14 synthetic tests passed locally.",
+  "files_sha256": {
+    "policy.py": "af7136a636a24071ad547f91a19af53ee561e108dc57c16373c61c4e18c0ba44",
+    "study.py": "38bf8eddabceccf9fc0f280e1ce6d2c809a419d82c8e5fa402c262afe832de01",
+    "test_opportunity_budget.py": "551ca07c0d20e9fd262dcd0851bf1bb98cbec648594341f606046f035d16b0f7"
+  },
+  "confidence_ceiling_clarification": "For cap1.5, ceiling=0.5+confidence, exactly as protocol. For predeclared cap2 comparator use0.5+1.5*confidence so2x can be reached; general form0.5+(cap-0.5)*confidence. Final size also limited by annual risk and multiplied by0.5+0.5confidence. Confidence is not probability.",
+  "reference_account_sha256": "b67c939a829c0c2366964ed8ac97747f5747b8664fceee679ff0dd3b0a023cee",
+  "known_reference_bug_not_fixed": true,
+  "market_outcomes_not_yet_observed": true,
+  "all63cases_planned": true,
+  "production_or_real_orders": false
+}
