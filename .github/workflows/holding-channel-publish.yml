@@ -1,0 +1,156 @@
+name: Holding and channel evidence publication
+on:
+  push:
+    branches: [research/holding-horizon-main-20260906]
+    paths: [.github/workflows/holding-channel-publish.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: holding-channel-publication-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/research/holding-horizon-main-20260906'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -e . -r research/clock_phase/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34041805481
+          name: holding-horizon-research-evidence
+          path: package/holding
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34041805481
+          name: holding-horizon-reproduction
+          path: package/proofs/holding
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34042247613
+          name: channel-scale-research-evidence
+          path: package/channels
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34042247613
+          name: channel-scale-reproduction
+          path: package/proofs/channels
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34042576174
+          name: channel-budget-research-evidence
+          path: package/budget
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34042576174
+          name: channel-budget-reproduction
+          path: package/proofs/budget
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34039211921
+          name: opportunity-leverage-complete-evidence
+          path: package/archived
+      - name: Independently audit every saved execution and pre-order funding record
+        run: |
+          mkdir -p package/audits
+          python - <<'PY'
+          import pathlib,json
+          from research.holding_horizon.reference import digest
+          p=pathlib.Path
+          r=json.loads(p('package/budget/report/results.json').read_text())
+          assert digest(r)=='8a6e75a29e4631eb1db107840d7f63f989c13de5953cd6a89d1c1a7bf2aa3105'
+          assert not p('research/relative_futures/account.py').exists()
+          PY
+          for stage in holding channels budget; do
+            python -m research.holding_checks.review --source package/archived --reports "package/$stage/report" --out "package/audits/$stage.json"
+          done
+      - name: Generate every result and human-readable comparison from immutable reports
+        run: python -m research.holding_checks.publish --package package --repo . > publication.log 2>&1 || { tail -n 100 publication.log; exit 1; }
+      - name: Complete regression suite on final source plus generated results
+        run: |
+          python -m pytest -q tests/test_holding_horizon.py tests/test_channel_scale.py tests/test_channel_budget.py --junitxml=final-new-tests.xml
+          python -m pytest -q tests --junitxml=final-root-tests.xml > final-root-tests.log 2>&1 || { tail -n 100 final-root-tests.log; exit 1; }
+          tail -n 2 final-root-tests.log
+          python -m compileall -q research/holding_horizon research/channel_scale research/channel_budget research/holding_checks
+      - name: Verify all main-bound data and frozen execution source remain intact
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,subprocess
+          p=pathlib.Path
+          source={'holding':'holding_horizon','channels':'channel_scale','budget':'channel_budget'}
+          for label,folder in source.items():
+              for name in ('results.json','comparison.csv','annual.csv','verification.json'):
+                  assert p('package',label,'report',name).read_bytes()==p('research',folder,'results',name).read_bytes()
+          assert not p('research/relative_futures/account.py').exists()
+          untouched=subprocess.check_output(['git','diff','--name-only','--','frontend','src','config','Dockerfile','scripts/run_paper_stack.py'],text=True).strip()
+          assert untouched=='','No production or existing UI change permitted'
+          # Inspect complete held-curve coverage without filling or rebuilding any curve.
+          counts={}
+          for label,count in [('holding',68),('channels',53),('budget',43)]:
+              actual={}
+              for suffix in ('_fills.csv','_funding.csv','_episodes.csv','_equity.csv.gz'):
+                  files=list(p('package',label,'report').glob('*'+suffix));assert len(files)==count
+                  for f in files:actual[f.name]=hashlib.sha256(f.read_bytes()).hexdigest()
+              counts[label]=actual
+          p('package/FINANCIAL_FILE_HASHES.json').write_text(json.dumps(counts,indent=2))
+          print('Verified164reports and656financialfiles; production unchanged')
+          PY
+      - name: Commit only verified evidence to the feature branch using a normal fast-forward push
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess,json
+          dirs=['research/holding_horizon/results','research/channel_scale/results','research/channel_budget/results']
+          files=['research/holding_horizon/verified_summary.json','research/holding_horizon/RESULTS_RU.md','research/holding_horizon/all_comparisons.csv','research/holding_horizon/PUBLICATION_REVIEW.json']
+          tested=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          subprocess.run(['git','config','user.name','github-actions[bot]'],check=True)
+          subprocess.run(['git','config','user.email','41898282+github-actions[bot]@users.noreply.github.com'],check=True)
+          subprocess.run(['git','add','--']+dirs+files,check=True)
+          staged=subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
+          assert all(p in files or any(p.startswith(d+'/') for d in dirs) for p in staged)
+          if staged:subprocess.run(['git','commit','-m','research: publish164 reproduced account results, audit and complete comparison'],check=True)
+          release=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          Path('package/RELEASE_RECEIPT.json').write_text(json.dumps({'tested_commit':tested,'release_commit':release,'paths':staged,'account_engine_copied':False,'real_orders':0},indent=2))
+          print('RELEASE_COMMIT',release)
+          PY
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" push origin HEAD:refs/heads/research/holding-horizon-main-20260906
+      - name: Assemble complete reproducible package with archival dependency clearly separate
+        if: always()
+        run: |
+          mkdir -p package/current_code/research package/current_code/tests package/proofs/final
+          cp -r research/holding_horizon research/channel_scale research/channel_budget research/holding_checks package/current_code/research/
+          cp tests/test_holding_horizon.py tests/test_channel_scale.py tests/test_channel_budget.py package/current_code/tests/
+          cp research/btc_flow/requirements.txt package/current_code/requirements.txt
+          cp research/holding_horizon/RESULTS_RU.md package/REPORT_RU.md || true
+          cp research/holding_horizon/verified_summary.json package/verified_summary.json || true
+          cp research/holding_horizon/all_comparisons.csv package/all_comparisons.csv || true
+          cp publication.log final-new-tests.xml final-root-tests.xml final-root-tests.log package/proofs/final/ || true
+          git rev-parse HEAD > package/FINAL_TREE_COMMIT.txt
+          find package -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: holding-channel-complete-research
+          path: package/
+          retention-days: 90
