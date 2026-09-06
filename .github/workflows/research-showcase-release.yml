@@ -1,0 +1,111 @@
+name: Research showcase release
+on:
+  push:
+    branches: [feat/research-showcase-20260906]
+    paths:
+      - scripts/build_research_showcase.py
+      - scripts/check_research_showcase_browser.py
+      - frontend/research.html
+      - frontend/research.css
+      - frontend/research.js
+      - tests/test_research_showcase.py
+      - .github/workflows/research-showcase-release.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: research-showcase-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/feat/research-showcase-20260906'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -e . -r research/clock_phase/requirements.txt playwright==1.55.0
+      - run: python -m playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34039211921
+          name: opportunity-leverage-complete-evidence
+          path: immutable-source
+      - name: Verify no draft trading engine is present and export known results
+        run: |
+          test ! -e research/relative_futures/account.py
+          python scripts/build_research_showcase.py --source immutable-source --repo . --link-navigation
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('frontend/research.html')
+          p.write_text(p.read_text().replace('Парных эпизодов', 'Эпизодов'))
+          PY
+      - name: Full repository regression and source-independent display tests
+        run: |
+          python -m pytest -q tests/test_research_showcase.py --junitxml=showcase-tests.xml
+          python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 120 root-tests.log; exit 1; }
+          tail -n 3 root-tests.log
+      - name: Real browser comparison, error-state, keyboard and responsive checks
+        run: python scripts/check_research_showcase_browser.py
+      - name: Verify native frontend build preserves the separate snapshot
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,subprocess
+          paths=[Path('frontend/data')/n for n in ('research-evidence.json','research-comparison.csv','research-manifest.json')]
+          before={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
+          subprocess.run(['python','scripts/build_frontend_data.py'],check=True)
+          after={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
+          assert before==after,'Native frontend build changed research publication'
+          Path('showcase-evidence/BUILD_ISOLATION.json').write_text(json.dumps({'separate_snapshot_preserved':True,'hashes':after},indent=2))
+          PY
+      - name: Commit only checked static data and navigation into the feature branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,subprocess
+          allowed=['frontend/live.html','frontend/research.html','frontend/data/research-evidence.json','frontend/data/research-comparison.csv','frontend/data/research-manifest.json']
+          original=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          subprocess.run(['git','config','user.name','github-actions[bot]'],check=True)
+          subprocess.run(['git','config','user.email','41898282+github-actions[bot]@users.noreply.github.com'],check=True)
+          subprocess.run(['git','add','--']+allowed,check=True)
+          staged=subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
+          assert set(staged)<=set(allowed)
+          if staged: subprocess.run(['git','commit','-m','data(research): publish verified static evidence and navigation; no trading engine'],check=True)
+          final=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          receipt={'tested_source_commit':original,'release_commit':final,'generated_paths':staged,
+              'static_files':{p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in allowed},
+              'simulator_imported_or_merged':False,'real_orders':False}
+          Path('showcase-evidence/RELEASE_RECEIPT.json').write_text(json.dumps(receipt,indent=2))
+          print(json.dumps(receipt))
+          PY
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" push origin HEAD:refs/heads/feat/research-showcase-20260906
+      - name: Package the exact checked release and rendered previews
+        if: always()
+        run: |
+          mkdir -p release/frontend/data release/scripts release/tests release/docs
+          cp frontend/research.html frontend/research.css frontend/research.js release/frontend/ || true
+          cp frontend/data/research-evidence.json frontend/data/research-comparison.csv frontend/data/research-manifest.json release/frontend/data/ || true
+          cp scripts/build_research_showcase.py scripts/check_research_showcase_browser.py release/scripts/
+          cp tests/test_research_showcase.py release/tests/
+          cp docs/research-showcase-20260906.md release/docs/
+          cp -r showcase-evidence release/ || true
+          cp showcase-tests.xml root-tests.xml root-tests.log release/ || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: research-showcase-release
+          path: release/
+          retention-days: 90
