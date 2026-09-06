@@ -1,0 +1,26 @@
+{
+  "id":"btc-opportunity-controller-v1-20260906",
+  "base_commit":"4571c9cdfedde3f3b71508255738969e0a61305b",
+  "objective":"A working integrated paper opportunity system, not another isolated winner table. Profitability, frequency, drawdown and rejection reasons must all be measured. No guarantee of stable profit or500%.",
+  "integration":"finruntime MarketSnapshot/StrategySnapshot -> existing risk/planner -> existing PaperBroker/PaperAccountState; durable operation via existing run_paper_cycle. Do not create an exchange submission adapter or modify the production stack defaults.",
+  "instrument":"BTCUSDT spot, fully funded long/cash; one shared position. Four shadow strategy accounts are calibration observations only and are NEVER summed as portfolio equity.",
+  "families":["daily_trend","trend_pullback","range_rebound","breakout"],
+  "definitions":{
+    "daily_trend":"Daily EMA10>EMA50 and daily close>EMA50. Stop max(5%,2*dailyATR14/close); hypothetical target3x stop; signal exit on lost daily trend, maximum30 days.",
+    "trend_pullback":"Daily trend positive, hourly close below EMA20 and RSI2<15. Stop max(1%,2*hourATR14/close), target2x stop; maximum24 hours.",
+    "range_rebound":"Hourly20 efficiency ratio<0.25, close below mean20 minus2 standard deviations, RSI2<10; target preceding20 mean, stop max(1%,2*hourATR14/close); maximum12 hours. No short position.",
+    "breakout":"Closed4h close above previous55-bar high, daily trend positive. Stop max(2%,2*4hATR14/close), target3x stop, maximum96 hours. Only fresh closed4h breakout pulses, not repeated reuse of one candle."
+  },
+  "scan":"One decision per completed hourly signal frame; live quote-only risk checks may run more often. Default one full hour signal delay. Never call scan frequency filled-trade frequency.",
+  "qualification":"Before each decision, only already CLOSED shadow trades strictly before decision time enter the trailing365-day evidence window, at most60 trades/family. Require>=12 trades spanning>=2 UTC months, PF>=1.10, mean net return minus1.28 standard errors>0, and positive mean if the same trade commissions were doubled. This is a heuristic filter, not statistical proof or multiplicity correction. No synthetic backfilled qualifications.",
+  "ranking":"Eligible raw opportunity with highest historical conservative mean net return; ties by family name. Only one position; no averaging, no parallel use of the same capital. Current positions exit under their own rules, not merely because another family appears.",
+  "risk":{"initial_cash":1000,"per_trade_risk_fraction":0.0025,"entry_notional_cap":0.25,"daily_loss_pause":0.01,"permanent_drawdown_stop":0.07,"max_entries_per_UTC_day":2,"cooldown_hours_after_exit":4,"live_execution":false},
+  "costs":{"spot_commission_bps_each_side":10,"half_spread_plus_impact_bps_each_side":5,"quantity_step":0.00001,"min_notional":10,"participation_cap_of_preceding_hour_volume":0.001,"move_gate":"gross target room >=3x round-trip declared costs; not a profit prediction"},
+  "execution":"Protective stops on next available quote; historical replay uses actual hourly OPEN only and cannot promise intrahour stops. No retrospective low/high stop fills. Native paper broker is the sole fill/accounting implementation. Partial fills and retries must not duplicate entry; stale quotes/future bars block new exposure.",
+  "data":"Reuse exact134 Binance archives from PR124 artifact9977552924, verify manifest and source hashes. Warmup before2024. Any gap in2024 onward fails replay; old gaps reset indicators. No futures substitutions or missing-price synthesis.",
+  "periods":{"calibration_observation":"2024 with four independent shadow paper accounts","evaluation":"2025-01-01 to2026-09-01 exclusive,608 days, one portfolio cash balance without January reset"},
+  "scenarios":["qualified_primary","ungated_exploration_comparator","qualified_double_costs","qualified_extra_hour_delay"],
+  "history_status":"All historical periods already seen in previous research. This is new-system reused-history testing, NOT pristine OOS. Report all predeclared outcomes and cash control. No retuning after seeing PnL.",
+  "engineering_tests":["closed-bar/prefix causality","future calibration rejection","model/cost/source identity","cash conservation via native broker","one capital/one position","daily/permanent risk state persists","same-tick idempotency","crash recovery around runtime commit","partial execution does not duplicate quantity","gap/stale quote fail closed","unproven models never enabled for real orders"],
+  "delivery":"Native runtime module, bounded CLI step/watch, paper status and decision audit, tests, all backtest rows and deployment runbook through PR. Do not activate an unattended production process or change the existing scheduler without reporting it."
+}
