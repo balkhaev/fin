@@ -1,0 +1,12 @@
+{
+  "stage":"before_any_market_strategy_results",
+  "original_account_commit":"f4d0ebe9298a561a574d53259993ef57503236ef",
+  "blocked_action":"Update research/relative_futures/account.py to mask inactive-leg NaN prices when valuing active positions.",
+  "repair_applied":false,
+  "repair_retried_or_moved":false,
+  "known_defect":"Original account math can multiply zero quantity by NaN in an unused instrument's mark fields, creating an unpriced equity observation even if active-leg marks exist. This may understate marked-path drawdown when nan-aware min ignores those rows.",
+  "consequence":"Do not claim the unpatched engine is production-ready or that passing other tests repairs this defect. Additional report inspection will FLAG and QUARANTINE any case with nonfinite equity, missing held marks/funding/prices, residual contracts or adverse maintenance breach. It will NOT repair or fill its curve. A regression documenting the known defect is separate from correctness tests.",
+  "allowed_remaining_work":"Test already saved original source, preserve all raw results, compare signed entry/exit cashflows and funding, and report only fully priced cases as historical scenario results. If every active case is affected, report the failure rather than a substitute account simulation.",
+  "no_production_change":true,
+  "no_real_orders":true
+}
