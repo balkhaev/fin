@@ -103,7 +103,8 @@ def build_frames(data):
             result.loc[v.index,'std20']=c.rolling(20).std().shift()
             gain=delta.clip(lower=0).ewm(alpha=.5,adjust=False,min_periods=2).mean()
             loss=(-delta.clip(upper=0)).ewm(alpha=.5,adjust=False,min_periods=2).mean()
-            result.loc[v.index,'rsi2']=(100*gain/(gain+loss).replace(0,np.nan)).fillna(50)
+            # Floating arithmetic can otherwise produce 100.00000000000001.
+            result.loc[v.index,'rsi2']=(100*gain/(gain+loss).replace(0,np.nan)).fillna(50).clip(0,100)
             result.loc[v.index,'efficiency']=(c-c.shift(20)).abs()/delta.abs().rolling(20).sum().replace(0,np.nan)
             result.loc[v.index,'channel55']=v.high.rolling(55).max().shift()
         result['close']=b.close
