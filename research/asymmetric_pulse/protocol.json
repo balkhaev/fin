@@ -1,0 +1,29 @@
+{
+  "id":"asymmetric-pulse-20260906",
+  "base_commit":"bf762be5910e7878c14821ef306e974521fb4578",
+  "objective":"Search for a substantial return/frequency improvement and500% annual target, not merely repeat the prior model. Bold hypotheses may fail; retain every failure. No promise of future profit.",
+  "scope":"NEW research-only nine-asset SPOT targets. Original BTC-only goal is not silently claimed satisfied. No leverage, shorting, derivatives, lending, live orders or account scaling to manufacture500%.",
+  "source":"Exact Binance and OKX input snapshots in PR128 artifact9986681694. Binance2020-Aug2026, OKX2023-Aug2026. Fixed nine surviving assets; selection/survivorship risk remains. Existing source loaders and PR126 execution simulator unchanged, source hashes verified.",
+  "novel_hypotheses":[
+    "Earlier independent asset trends may capture recovery before slow BTC/SMA200 permission. No global BTC bull gate for new models.",
+    "An upside price surge should not cut position size as much as downside turbulence: compare symmetric covariance risk with uncentered downside second-moment risk, without falsely calling downside risk a guaranteed loss bound.",
+    "A fresh20-day breakout with1.5x prior20-day median turnover may justify holding a leader; retain the state until10-day-low exit or42days, not repeated entry every signal day.",
+    "A3-day5% bounce after a20% drawdown from63-day high, confirmed by turnover, may exploit rebounds that the old model leaves untraded; hold at most7days or10% drawdown from running close peak.",
+    "Positive returns unexplained by contemporaneous BTC beta may identify independent leaders, rather than9 copies of BTC risk. Only past60-day fitted beta, trailing21-day residual log-return score."
+  ],
+  "policies":["early_total","early_downside","early_full","leader_downside","residual_downside","ignition_downside","rebound_downside","asymmetric_blend","asymmetric_blend_weekly","guarded_plus_pulse","btc_early_downside"],
+  "controls":["guarded_control","raw126_control","btc_hold","cash"],
+  "primary":"asymmetric_blend; fixed before computation.50%early_downside+30%ignition_downside+20%rebound_downside of one shared target budget, NOT separately compounded accounts. If equal-weight cohort7-day return<-10% and less than one third closes above EMA20, suppress the target for current and next2closed signal days.",
+  "early_rule":"Complete201day price support and30day mean quote turnover>=5mUSDT. Asset close>EMA20>EMA50,7day and21day return positive. Rank .5*21day log return+.3*63day+.2*7day divided by its appropriate60day risk estimate. Equal top3 slots, unused slots cash. leader variant top1. early_full uses raw composite score with no volatility reduction. BTC-only comparator keeps onlyBTC.",
+  "risk":"For budgeted policies target annual risk50%, gross<=100%, each asset<=1/K. Symmetric risk=max(sqrt(w'Cw*365.25),.7*sum(w*individual_vol)). Asymmetric risk=max(sqrt(2*w'E[min(r,0)min(r,0)']w*365.25),.7*sum(w*downside_vol),.25*symmetric_risk). Missing/zero support ->cash. These are deliberately riskier targets than old20% model; old10%DD and.25%trade-risk are NOT satisfied by assumption. No borrowed cash.",
+  "execution":"Original simulate unchanged: one10000USDT account,10bpsfee+5bpsslippage each side, full24hdelay (openD uses closeD-2), capacity.1% preceding daily volume, min10USDT, lot1e-8. New policies daily, named weekly variant and original controls weekly. OHLC signal exits execute only through scheduled delayed opens; no intraday stop price claimed.",
+  "periods":{"development":"2021-01-01 to2024-01-01 exclusive","validation":"2024","later":"2025-01-01 to2026-09-01 exclusive","full_diagnostic":"2021-01-01 to2026-09-01 exclusive"},
+  "selection":"Optional diagnostic challenger from11 new policies on development only: complete accounting, positive CAGR,close-DD<=35%,worst365>=-15%,>=24rebalance days. Rank CAGR/max(10%,absDD),tiesname. None->NONE; do not relax gates. Fixed primary remains primary. All15 later/full outcomes shown and any ex-post high-return comparator labeled exploratory.",
+  "robustness":"Fixed primary and any admitted challenger: full/later doubled fee+slippage and additional1day delay; pureOKX signals/execution on2024,later,fullcommon2024-Aug2026. Primary leave-one-out all9 constituents on fullBinance, preserving empty slots and excluded coin removal from votes. No adjustment to improve failed transfer.",
+  "assessment":"Report cumulative vs calendar vs CAGR separately, full conservative DD, worstrolling365, positive/zero/negative months, asset-position completions vs buy/sell fills and days active. A few tail days or a bull year do not establish stable annual500%. Retain native null for unliquidated residuals, no new writeoff accounting.",
+  "causality":"All indicators computed from closed data. Gap resets price support and event state. Squeeze/rebound entry states are hypothetical SIGNAL states, not automatically actual fills. Prefix tests and native cash/lot/fill audits required. Original control reproduction before interpreting new outcome.",
+  "research_history":"All dates and universe already seen by the broader program, including2021DOGE and2025-26 results. This is explicitly exploratory, not pristineOOS, irrespective of precommit. Gates are engineering research criteria, not statistically corrected significance.",
+  "delivery":"Readable code, complete result tables and failure reasons in repository viaPR. FiniteCI computations, no perpetual background loop. No modifications to previously blocked controller.py/evaluation.py or production runtime. No actual money risked.",
+  "sources":["https://www.nber.org/papers/w24877","https://www.nber.org/papers/w22208"],
+  "source_interpretation":"Prior studies motivate momentum and risk-management comparisons; they do not validate these new thresholds, assets, expected returns or a500% guarantee."
+}
