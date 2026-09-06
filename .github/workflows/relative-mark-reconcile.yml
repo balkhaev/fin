@@ -1,0 +1,90 @@
+name: Relative mark source reconciliation
+on:
+  push:
+    branches: [research/relative-futures-20260906]
+    paths: [.github/workflows/relative-mark-reconcile.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34033698128
+          name: relative-futures-source
+          path: original
+      - name: Actual independent source observations only, preserve all known values
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,urllib.error
+          import numpy as np
+          import pandas as pd
+          from research.relative_futures.data import load,parse_prices,request,SYMBOLS
+          p=pathlib.Path
+          frames,audit=load(p('original/data'))
+          assert audit['raw_manifest_sha256']=='233a4afe965c99034d69076d2a3080b7fcf847fc44c3b508ee6db088673bcc1a'
+          out=p('reconciled');out.mkdir();rawdir=p('daily-mark-raw');rawdir.mkdir()
+          records=[];files=[];counts={};columns=['mark_open','mark_high','mark_low','mark_close']
+          for symbol in SYMBOLS:
+              frame=frames[symbol];before=frame.copy(deep=True)
+              dates=sorted(set(frame.index[frame[columns].isna().any(axis=1)].strftime('%Y-%m-%d')))
+              assert len(dates)<=32
+              for date in dates:
+                  name=f'{symbol}-1h-{date}.zip'
+                  url=f'https://data.binance.vision/data/futures/um/daily/markPriceKlines/{symbol}/1h/{name}'
+                  rec={'symbol':symbol,'date':date,'url':url,'filename':name}
+                  try:
+                      expected=request(url+'.CHECKSUM').decode().split()[0].lower()
+                      content=request(url);sha=hashlib.sha256(content).hexdigest();assert sha==expected
+                  except urllib.error.HTTPError as e:
+                      if e.code!=404:raise
+                      rec.update(status='missing404');records.append(rec);continue
+                  (rawdir/name).write_bytes(content)
+                  observed=parse_prices(content,'markPriceKlines').drop(columns='volume').add_prefix('mark_')
+                  assert (observed.index.strftime('%Y-%m-%d')==date).all()
+                  wanted=pd.date_range(date,periods=24,freq='h',tz='UTC')
+                  assert observed.index.equals(wanted),'Daily source hour coverage differs'
+                  old=before.loc[wanted,columns];valid=old.notna()&observed.notna()
+                  assert np.allclose(old.to_numpy()[valid.to_numpy()],observed.to_numpy()[valid.to_numpy()],rtol=1e-12,atol=1e-9),'Daily/monthly conflicting existing values'
+                  count=0
+                  for col in columns:
+                      missing=frame.loc[wanted,col].isna()&observed[col].notna()
+                      frame.loc[wanted[missing],col]=observed.loc[wanted[missing],col]
+                      count+=int(missing.sum())
+                  rec.update(status='verified',sha256=sha,bytes=len(content),filled_cells=count)
+                  records.append(rec)
+              for col in frame.columns:
+                  if col not in columns:pd.testing.assert_series_equal(frame[col],before[col])
+                  else:
+                      known=before[col].notna();pd.testing.assert_series_equal(frame.loc[known,col],before.loc[known,col])
+              name=symbol+'.csv';frame.to_csv(out/name,index_label='time')
+              files.append(dict(symbol=symbol,filename=name,sha256=hashlib.sha256((out/name).read_bytes()).hexdigest()))
+              counts[symbol]=dict(missing_hours_before=int(before[columns].isna().any(axis=1).sum()),missing_hours_after=int(frame[columns].isna().any(axis=1).sum()))
+          manifest=dict(original_manifest_sha256=audit['raw_manifest_sha256'],records=records,missing=counts,
+              existing_prices_unchanged=True,no_interpolation=True,no_account_code_repair=True)
+          text=json.dumps(manifest,sort_keys=True,indent=2);(rawdir/'manifest.json').write_text(text)
+          revised=dict(audit,files=files,supplementary_daily_manifest_sha256=hashlib.sha256(text.encode()).hexdigest(),
+              mark_gap_reconciliation=counts,base_quality_before_reconciliation=audit['quality'])
+          for symbol in SYMBOLS:revised['quality'][symbol]['missing_mark_hours']=counts[symbol]['missing_hours_after']
+          (out/'audit.json').write_text(json.dumps(revised,indent=2))
+          print('SOURCE_RECONCILIATION',json.dumps(manifest))
+          print('RECONCILED_AUDIT',json.dumps(revised))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relative-mark-reconciled-source
+          path: |
+            reconciled/
+            daily-mark-raw/
+          retention-days: 90
