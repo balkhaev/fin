@@ -1,0 +1,96 @@
+name: BTC opportunity component validation
+on:
+  push:
+    branches: [feat/btc-opportunity-controller]
+    paths:
+      - src/finruntime/opportunities/**
+      - src/finruntime/registry.py
+      - tests/test_btc_opportunity*.py
+      - .github/workflows/btc-opportunity-components.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e . -r research/btc_flow/requirements.txt scipy
+      - name: Component and native integration tests
+        run: python -m pytest -q tests/test_btc_opportunity_components.py --junitxml=component-tests.xml
+      - name: Full root regression suite
+        run: python -m pytest -q tests --junitxml=all-tests.xml > all-tests.log 2>&1 || { tail -n 100 all-tests.log; exit 1; }
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: balkhaev/fin
+          run-id: 33994142427
+          name: btc-spot-regime-evidence
+          path: original
+      - name: Audit real archived scans, not trades or profit
+        run: |
+          python - <<'PY'
+          import collections,hashlib,json,pathlib,dataclasses
+          import pandas as pd
+          from research.btc_spot_regime.data import load
+          from finruntime.opportunities.features import build_frames,scan
+          root=pathlib.Path('component-report');root.mkdir()
+          data,audit=load(pathlib.Path('original/spot-data'))
+          assert audit['manifest_sha256']=='0ce4a8eb23c2e925d678e55367df02277c524ff686d6b1c54825a870b7bcc8ed'
+          frames=build_frames(data)
+          start=int(pd.Timestamp('2025-01-01',tz='UTC').timestamp()*1000)
+          end=int(pd.Timestamp('2026-09-01',tz='UTC').timestamp()*1000)
+          selected=[f for f in frames if start<=f.time_ms<end]
+          raw=collections.Counter();cost=collections.Counter();episodes=collections.Counter();prior=set();rows=[]
+          for frame in selected:
+              opportunities=scan(frame);present={o.family for o in opportunities}
+              for op in opportunities:
+                  raw[op.family]+=1
+                  passed=op.target_fraction>=3*.003
+                  cost[op.family]+=int(passed)
+                  episodes[op.family]+=int(op.family not in prior)
+                  rows.append({**dataclasses.asdict(op),'cost_room_pass':passed,'frame_hash':frame.identity})
+              prior=present
+          summary=dict(phase='components_only',observed_scan_frames=len(selected),
+              ready_frames=sum(f.healthy for f in selected),days=608,
+              raw_condition_hours=dict(raw),condition_episodes=dict(episodes),cost_room_pass_hours=dict(cost),
+              standalone_portfolio_backtest_run=False,market_qualified_models=0,
+              controller_file_published=False,autonomous_loop_started=False,
+              historical_profit=None,annual_500_proven=False,live_ready=False,
+              source_manifest_sha256=audit['manifest_sha256'],
+              interpretation='Condition hours and episodes are NOT fills, distinct independent opportunities, or profitable trades.')
+          (root/'scan_summary.json').write_text(json.dumps(summary,indent=2))
+          pd.DataFrame(rows).to_csv(root/'raw_candidates.csv.gz',index=False,compression='gzip')
+          print('SCAN_SUMMARY',json.dumps(summary))
+          print('FULL_TESTS',pathlib.Path('all-tests.log').read_text().splitlines()[-1])
+          PY
+      - name: Package actually saved files
+        if: always()
+        run: |
+          mkdir -p component-delivery/src/finruntime component-delivery/tests
+          cp -r src/finruntime/opportunities component-delivery/src/finruntime/
+          cp src/finruntime/registry.py component-delivery/src/finruntime/
+          cp tests/test_btc_opportunity_components.py component-delivery/tests/
+          git diff 4571c9cdfedde3f3b71508255738969e0a61305b HEAD > component-delivery/changes.patch || true
+          git rev-parse HEAD > component-delivery/TESTED_COMMIT.txt
+          find component-delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: btc-opportunity-components
+          path: |
+            component-delivery/
+            component-report/
+            component-tests.xml
+            all-tests.xml
+            all-tests.log
+          retention-days: 90
