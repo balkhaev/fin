@@ -17,6 +17,23 @@ class FrozenStrategy:
 
 
 STRATEGIES: dict[str, FrozenStrategy] = {
+    "btc_opportunity_paper_v1": FrozenStrategy(
+        strategy_id="btc_opportunity_paper_v1",
+        role="experimental_opportunity_controller",
+        allowed_modes=("paper", "shadow"),
+        live_ready=False,
+        real_leverage_authorized=False,
+        parameters={
+            "profile": "BTC shared-account causal opportunity controller v1",
+            "spot_only": True,
+            "entry_notional_cap": 0.25,
+            "per_trade_risk_fraction": 0.0025,
+            "qualification_required_by_default": True,
+            "historical_metrics_inherited": False,
+            "forward_clock_reset": True,
+            "exchange_submission_available": False,
+        },
+    ),
     "ds40180_t50c3_okx_paper": FrozenStrategy(
         strategy_id="ds40180_t50c3_okx_paper",
         role="turbo_paper",
