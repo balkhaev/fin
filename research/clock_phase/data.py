@@ -1,8 +1,8 @@
 """Public spot minute archives -> completed-hour features, never order submission.
 
 Raw ZIPs are retained. Hourly feature values require all60 minute observations.
-Execution reference quotes are independent minute2/17 OPENs; they are not the
-hour's already-known CLOSE or synthetic interpolations.
+Execution references are independent minute2/17 OPENs, not interpolated prices.
+Short source candles remain timestamped but are masked and audited, not rounded.
 """
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -26,8 +26,7 @@ FEATURE_COLS=['open','high','low','close','volume','quote_volume','trades','buy_
               'boundary_quote','boundary_buy','placebo_quote','placebo_buy']
 
 
-def months():
-    return [str(x.date())[:7] for x in pd.date_range(START,END,freq='MS',inclusive='left')]
+def months():return [str(x.date())[:7] for x in pd.date_range(START,END,freq='MS',inclusive='left')]
 
 
 def dates(month):
@@ -78,7 +77,7 @@ def download(root):
     return manifest
 
 
-def parse(raw):
+def parse(raw,mask_partial=False):
     with zipfile.ZipFile(io.BytesIO(raw)) as z:
         if len(z.namelist())!=1:raise ValueError('One CSV per ZIP required')
         with z.open(z.namelist()[0]) as f:d=pd.read_csv(f,names=COLS,header=None,dtype=str)
@@ -93,7 +92,10 @@ def parse(raw):
         if (ts%1000).any():raise ValueError('Submillisecond bar OPEN')
         ts=ts//1000;d['close_time']=d.close_time.astype(np.int64)//1000
     if (ts%60000).any() or len(np.unique(ts))!=len(ts):raise ValueError('Off-minute or duplicate OPEN')
-    if not np.array_equal(d.close_time.to_numpy(np.int64),ts+59999):raise ValueError('Incomplete or wrong candle duration')
+    complete=d.close_time.to_numpy(np.int64)==ts+59999
+    duration=d.close_time.to_numpy(np.int64)-ts
+    if ((duration<0)|(duration>59999)).any():raise ValueError('Invalid candle duration')
+    if not complete.all() and not mask_partial:raise ValueError('Incomplete or wrong candle duration')
     d['time']=ts
     p=d[['open','high','low','close']]
     if not np.isfinite(p.to_numpy()).all() or (p<=0).any().any():raise ValueError('Invalid OHLC')
@@ -103,7 +105,10 @@ def parse(raw):
     if (d.trades!=np.floor(d.trades)).any():raise ValueError('Noninteger trade count')
     for buy,total in [('buy_volume','volume'),('buy_quote','quote_volume')]:
         if (d[buy]>d[total]+1e-8*np.maximum(1,d[total])).any():raise ValueError('Aggressor volume exceeds total')
+    partial=[dict(open_ms=int(t),duration_ms=int(v)) for t,v in zip(ts[~complete],duration[~complete])]
+    d.loc[~complete,['open','high','low','close','volume','quote_volume','trades','buy_volume','buy_quote']]=np.nan
     d=d.sort_values('time');d.index=pd.to_datetime(d.pop('time'),unit='ms',utc=True)
+    d.attrs['partial_candles']=partial
     return d
 
 
@@ -117,14 +122,10 @@ def hourly(minutes):
         for source,suffix in [('quote_volume','quote'),('buy_quote','buy')]:
             r[prefix+'_'+suffix]=subset[source].resample('h').sum().reindex(r.index)
     for offset in (2,17):
-        prices=minutes.loc[minutes.index.minute==offset,'open'].copy()
-        prices.index=prices.index.floor('h')
-        capacity=minutes.loc[minutes.index.minute==offset-1,'volume'].copy()
-        capacity.index=capacity.index.floor('h')
-        r['price'+str(offset)]=prices.reindex(r.index)
-        r['volume'+str(offset)]=capacity.reindex(r.index)
-    r['bar_ok']=counts.eq(60)
-    r['minute_count']=counts
+        prices=minutes.loc[minutes.index.minute==offset,'open'].copy();prices.index=prices.index.floor('h')
+        capacity=minutes.loc[minutes.index.minute==offset-1,'volume'].copy();capacity.index=capacity.index.floor('h')
+        r['price'+str(offset)]=prices.reindex(r.index);r['volume'+str(offset)]=capacity.reindex(r.index)
+    r['bar_ok']=counts.eq(60);r['minute_count']=counts
     r.loc[~r.bar_ok,FEATURE_COLS]=np.nan
     return r
 
@@ -135,22 +136,21 @@ def aggregate(root,out):
     raw_manifest=(root/'manifest.json').read_bytes();manifest=json.loads(raw_manifest)
     rows=manifest['sources'];expect={(s,m) for s in SYMBOLS for m in months()}
     if len(rows)!=len(expect) or {(r['symbol'],r['month']) for r in rows}!=expect:raise ValueError('Changed cohort or months')
-    groups={s:[] for s in SYMBOLS};raw_count={s:0 for s in SYMBOLS};zip_count=0
+    groups={s:[] for s in SYMBOLS};raw_count={s:0 for s in SYMBOLS};zip_count=0;partial=[]
     for record in rows:
         s,m=record['symbol'],record['month']
         if record['status']!='complete':raise ValueError('Unavailable month')
         names={f'{s}-1m-{x}.zip' for x in (dates(m) if record['frequency']=='daily' else [m])}
         if len(record['parts'])!=len(names) or {x['filename'] for x in record['parts']}!=names:raise ValueError('Incomplete month fallback')
-        chunks=[]
-        begin=pd.Timestamp(m+'-01',tz='UTC');end=begin+pd.offsets.MonthBegin(1)
+        chunks=[];begin=pd.Timestamp(m+'-01',tz='UTC');end=begin+pd.offsets.MonthBegin(1)
         for part in record['parts']:
             raw=(root/part['filename']).read_bytes()
             if len(raw)!=part['bytes'] or hashlib.sha256(raw).hexdigest()!=part['sha256']:raise ValueError('Raw archive changed')
-            d=parse(raw)
+            d=parse(raw,mask_partial=True)
+            partial.extend(dict(symbol=s,file=part['filename'],**x) for x in d.attrs['partial_candles'])
             if not ((d.index>=begin)&(d.index<end)).all():raise ValueError('Wrong archive month')
-            chunks.append(d);zip_count+=1
-        d=pd.concat(chunks).sort_index()
-        raw_count[s]+=len(d);groups[s].append(hourly(d))
+            d.attrs={};chunks.append(d);zip_count+=1
+        d=pd.concat(chunks).sort_index();raw_count[s]+=len(d);groups[s].append(hourly(d))
     out.mkdir(parents=True);expected=pd.date_range(START,END,freq='h',inclusive='left',tz='UTC');files=[];audit={}
     for s in SYMBOLS:
         h=pd.concat(groups[s]).sort_index()
@@ -161,7 +161,7 @@ def aggregate(root,out):
             missing_price2=int(h.price2.isna().sum()),first_incomplete=[str(t) for t in h.index[~h.bar_ok][:12]])
         files.append(dict(symbol=s,filename=name,sha256=hashlib.sha256((out/name).read_bytes()).hexdigest()))
     result=dict(raw_manifest_sha256=hashlib.sha256(raw_manifest).hexdigest(),zip_files=zip_count,assets=audit,
-        files=files,source_interval='1m',feature_interval='1h',no_price_fill=True,
+        files=files,source_interval='1m',feature_interval='1h',no_price_fill=True,partial_candles=partial,
         phase_minutes=[0,15,30,45],placebo_minutes=[7,22,37,52])
     (out/'audit.json').write_text(json.dumps(result,indent=2));print('AGGREGATE',json.dumps(result),flush=True)
     return result
@@ -174,8 +174,7 @@ def load(root):
         raw=(root/f['filename']).read_bytes()
         if hashlib.sha256(raw).hexdigest()!=f['sha256']:raise ValueError('Aggregate hash mismatch')
         d=pd.read_csv(io.BytesIO(raw),index_col='hour_open',parse_dates=True)
-        d.index=pd.to_datetime(d.index,utc=True);d.bar_ok=d.bar_ok.astype(bool)
-        frames[f['symbol']]=d
+        d.index=pd.to_datetime(d.index,utc=True);d.bar_ok=d.bar_ok.astype(bool);frames[f['symbol']]=d
     if set(frames)!=set(SYMBOLS):raise ValueError('Incomplete normalized universe')
     return frames,audit
 
