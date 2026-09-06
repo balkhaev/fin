@@ -1,0 +1,13 @@
+{
+  "id":"relative-positive-comparator-audit-20260906",
+  "chronology":"Designed AFTER the fixed10-model outcomes. pair_revert168 remains the rejected original primary. pair_momentum720 and btc_trend_ensemble are ex-post comparators, not pristineOOS winners.",
+  "base_result_sha256":"157fe890756519f3faba4903a88950d24a890a8cecfa0fad4ae4e849d0fd9645",
+  "known_results":"pair_momentum720 later+28.9018%,closeDD8.1846%,33episodes, but2024-9.5084%,fullCAGR8.1213%,DD26.9538%. BTCtrend later+27.4124%,173episodes,DD24.9054%,fullDD47.7755%. These differences are not hidden by focus on later profit.",
+  "fixed_models":["pair_momentum720","btc_trend_ensemble"],
+  "parameters":"Exact existing target arrays and account.py bytes; no new ranks, windows, leverage or gates. Baselinegross1x,fee5bps/slip1bp eachsideofeachleg. No fix or alternative implementation of blocked inactive-leg mark bug. All evaluation on separately verified complete actual mark observations, original source/results preserved.",
+  "cases":"For each model: exact full/later base rerun (2); full/later doublefee+slip,extra1hourdelay,capital1000 (6); seven same fixed independent annual starts as original study (7).15permodel=30report runs. Every loss/quarantine reason retained; no dropping 2023/2024 or unfavorable shifted starts.",
+  "account_audit":"Every existing signed-fill and funding event retained; compare firsttwo base reports with exact prior values; independent finalcash identity. Quote-path NaN, funding/price gaps, terminal contracts and marginstress make qualification false. Added text statistics never alter positions or financing.",
+  "descriptive_checks":"For basefull/later: net episode profitfactor, wins/losses/zeros, longest losing streak,5largest positiveepisodeprofits as fraction of final net profit, actual heldhours/flat hours, fixed-position adversefunding-price sensitivity. These are descriptive, not a resampled trading strategy or alternate compounded account.",
+  "acceptance":"No trading approval. Positivefull/laterandcoststress is useful evidence, but a losing fully observed year or few trades still defeats stable high-frequency claims. Do not assert500%annual,CAGR or leverage safety unless actually supported; this remains exploratory and engine remains non-production.",
+  "verification":"All30reports and four financial file families independently repeated on secondcleanrunner. Current modelhashes must match base_result source_sha256. No original defect bypass, no productionchange, no realorders."
+}

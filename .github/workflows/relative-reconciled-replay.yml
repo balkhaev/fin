@@ -1,0 +1,140 @@
+name: Relative futures reconciled-source replay
+on:
+  push:
+    branches: [research/relative-futures-20260906]
+    paths: [.github/workflows/relative-reconciled-replay.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - run: python -m pytest -q tests/test_relative*.py --junitxml=replay-tests.xml
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34034265987
+          name: relative-mark-reconciled-source
+          path: supplemented
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34033698128
+          name: relative-futures-source
+          path: original-source
+      - name: Audit real daily provenance and correct descriptive before-quality metadata only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,subprocess
+          import pandas as pd
+          from research.relative_futures.data import load,parse_prices
+          from research.relative_futures.signals import build
+          p=pathlib.Path
+          assert subprocess.check_output(['git','hash-object','research/relative_futures/account.py'],text=True).strip()=='eeb7bdf510db837f681b32c8d01afca6d6f68c6f','Blocked account repair must remain unapplied'
+          old,old_audit=load(p('original-source/data'));new,new_audit=load(p('supplemented/reconciled'))
+          manifest=json.loads(p('supplemented/daily-mark-raw/manifest.json').read_text())
+          for row in manifest['records']:
+              if row['status']!='verified':continue
+              raw=p('supplemented/daily-mark-raw',row['filename']).read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==row['sha256']
+              observed=parse_prices(raw,'markPriceKlines')
+              frame=new[row['symbol']]
+              for col in ('open','high','low','close'):
+                  pd.testing.assert_series_equal(frame.loc[observed.index,'mark_'+col].rename(col),observed[col],check_names=False,rtol=1e-12,atol=1e-9)
+          old_targets,_=build(old);new_targets,_=build(new)
+          for name in old_targets:
+              assert (old_targets[name]==new_targets[name]).all(),'Source repair must not change trading signals'
+          new_audit['base_quality_before_reconciliation']=old_audit['quality']
+          new_audit['quality']=json.loads(json.dumps(old_audit['quality']))
+          for symbol in new:new_audit['quality'][symbol]['missing_mark_hours']=int(new[symbol].mark_open.isna().sum())
+          new_audit['descriptive_before_quality_alias_corrected']=True
+          p('supplemented/reconciled/audit.json').write_text(json.dumps(new_audit,indent=2))
+          print('MARK_COVERAGE',json.dumps(manifest['missing']))
+          print('SOURCE_RECONCILIATION',json.dumps(manifest))
+          print('SIGNALS_EXACTLY_IDENTICAL',True)
+          PY
+      - name: Same reference and same62cases, no model retuning
+        run: python -m research.relative_futures.study --data supplemented/reconciled --out report > replay.log 2>&1 || { tail -n 120 replay.log; exit 1; }
+      - name: Compact economic results and all quarantine reasons
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          p=pathlib.Path;r=json.loads(p('report/results.json').read_text())
+          print('COMPARISON\n'+p('report/comparison.csv').read_text())
+          for row in r['rows']:
+              if row['period']=='full':print('FULL_CALENDAR',row['model'],json.dumps(row['annual']))
+          print('PRIMARY_GATES',json.dumps(r['primary_admission']))
+          print('VERIFY',p('report/verification.json').read_text())
+          PY
+      - name: Save exact code and both source versions
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/relative_futures research/funding_crowding research/annual_rotation delivery/research/
+          cp tests/test_relative*.py delivery/tests/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relative-futures-reconciled-evidence
+          path: |
+            report/
+            delivery/
+            supplemented/
+            original-source/
+            replay.log
+            replay-tests.xml
+          retention-days: 90
+  repeat:
+    needs: replay
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with: {name: relative-futures-reconciled-evidence, path: first}
+      - run: python -m research.relative_futures.study --data first/supplemented/reconciled --out repeated > repeat.log 2>&1 || { tail -n 100 repeat.log; exit 1; }
+      - name: Exact62report and all four financial file families comparison
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          p=pathlib.Path
+          assert json.loads(p('first/report/results.json').read_text())==json.loads(p('repeated/results.json').read_text())
+          for suffix in ('_fills.csv','_funding.csv','_episodes.csv','_equity.csv.gz'):
+              files=list(p('first/report').glob('*'+suffix));assert len(files)==62
+              for f in files:assert f.read_bytes()==(p('repeated')/f.name).read_bytes(),f.name
+          v=json.loads(p('repeated/verification.json').read_text())
+          v.update(all_reports_and248_financial_files_equal=True,independent_execution=True,
+              account_bug_not_repaired=True,unseen_market=False,local_execution=False,live_ready=False)
+          p('REPRODUCTION.json').write_text(json.dumps(v,indent=2));print(json.dumps(v))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relative-futures-reconciled-reproduction
+          path: |
+            REPRODUCTION.json
+            repeated/comparison.csv
+            repeated/annual.csv
+            repeat.log
+          retention-days: 90
