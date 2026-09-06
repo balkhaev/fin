@@ -11,6 +11,9 @@ on:
 permissions:
   contents: read
   actions: read
+concurrency:
+  group: btc-opportunity-components-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -21,12 +24,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
       - run: python -m pip install -e . -r research/btc_flow/requirements.txt scipy
       - name: Component and native integration tests
-        run: python -m pytest -q tests/test_btc_opportunity_components.py --junitxml=component-tests.xml
+        run: python -m pytest -q tests/test_btc_opportunity*.py --junitxml=component-tests.xml
       - name: Full root regression suite
         run: python -m pytest -q tests --junitxml=all-tests.xml > all-tests.log 2>&1 || { tail -n 100 all-tests.log; exit 1; }
       - uses: actions/download-artifact@v4
@@ -76,11 +80,13 @@ jobs:
       - name: Package actually saved files
         if: always()
         run: |
-          mkdir -p component-delivery/src/finruntime component-delivery/tests
+          mkdir -p component-delivery/src/finruntime component-delivery/tests component-delivery/research
           cp -r src/finruntime/opportunities component-delivery/src/finruntime/
           cp src/finruntime/registry.py component-delivery/src/finruntime/
-          cp tests/test_btc_opportunity_components.py component-delivery/tests/
-          git diff 4571c9cdfedde3f3b71508255738969e0a61305b HEAD > component-delivery/changes.patch || true
+          cp tests/test_btc_opportunity*.py component-delivery/tests/
+          cp -r research/btc_opportunity component-delivery/research/
+          cp research/btc_flow/requirements.txt component-delivery/requirements.txt
+          git diff 4571c9cdfedde3f3b71508255738969e0a61305b HEAD > component-delivery/changes.patch
           git rev-parse HEAD > component-delivery/TESTED_COMMIT.txt
           find component-delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
       - uses: actions/upload-artifact@v4
