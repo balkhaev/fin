@@ -1,0 +1,16 @@
+{
+  "id":"asymmetric-pulse-cadence-post-result",
+  "initial_result_sha256":"48c5932a6b3eff560feed90274e7e90a9188cca9fb71ebebc695026baa97fbf9",
+  "known_before_followup":"Original primary later-21.9749%, weekly same target-12.6631%; original early_total+3.19265%,early_downside-1.69336%,leader_downside-1.75389%. No original candidate passed unchanged development gates.",
+  "hypothesis":"The direction may have economic content but daily changes of position and size consume it. Test slower observation-to-portfolio cadence without changing any signal, event state, risk budget, price, fee, or initial cash. This may reduce activity and may still lose.",
+  "post_result_disclosure":"This experiment was designed AFTER the first results on these same dates. It is exploratory, not a fresh independent holdout, even though the full follow-up grid is frozen now. Original failed primary remains failed.",
+  "policies":"All10 unique target arrays from original11 new names; omit asymmetric_blend_weekly only because its target array equals asymmetric_blend. No positive-candidate-only test.",
+  "cadences_days":[3,7],
+  "anchoring":"Calendar UNIX-day modulo cadence, same as original simulator; no selecting a profitable weekday or start offset.",
+  "periods":["development2021-2023","validation2024","later2025-Aug2026","full2021-Aug2026"],
+  "additional_checks":"Every20 policy/cadence pair on later Binance with double commission+slippage and on later pure OKX.120 total reports, every result and fill ledger retained. No optimizing costs or liquidity gates.",
+  "gates":"Same development CAGR>0,DD<=35%,worst365>=-15%,>=24rebalance days, accounting complete. Gate reported only; no threshold relaxation. A positive later comparator is not a preselected deployable winner.",
+  "code_integrity":"Original asymmetric policy.py/study.py and original execution source remain byte-identical. Only new orchestration of simulate with3/7-day calendar is added. No controller, quarterly allocator, accounting change, dust writeoff or live-order code.",
+  "source":"Exact initial research artifact9986997017 and existing input hashes; no new time or asset selection.",
+  "acceptance":"Report gains AND drawdowns/activity; never use a cumulative gain or one bull year as500% annual stability. No real trading or future guarantee."
+}

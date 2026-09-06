@@ -1,0 +1,103 @@
+name: Asymmetric research summary audit
+on:
+  push:
+    branches: [research/asymmetric-pulse-20260906]
+    paths:
+      - .github/workflows/asymmetric-evidence-review.yml
+      - research/asymmetric_pulse/verified_summary.json
+      - research/asymmetric_pulse/base_comparison.csv
+      - research/asymmetric_pulse/cadence_comparison.csv
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: asymmetric-summary-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34025701632
+          name: asymmetric-pulse-research-evidence
+          path: initial
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34025957861
+          name: asymmetric-cadence-evidence
+          path: cadence
+      - name: Arithmetic and table transcription review, not another profitability test
+        run: |
+          python - <<'PY'
+          import csv,json,math,hashlib,pathlib
+          p=pathlib.Path
+          original=json.loads(p('initial/report/results.json').read_text())
+          cadence=json.loads(p('cadence/cadence/results.json').read_text())
+          summary=json.loads(p('research/asymmetric_pulse/verified_summary.json').read_text())
+          digest=lambda x:hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+          assert digest(original)==summary['hashes']['initial_result']
+          assert digest(cadence)==summary['hashes']['cadence_result']
+          failures=[];checked=0
+          def check(name,actual,declared):
+              global checked
+              checked+=1
+              if isinstance(actual,bool) or actual is None:
+                  good=actual==declared
+              else:
+                  good=declared is not None and math.isclose(float(actual),float(declared),rel_tol=1e-11,abs_tol=1e-9)
+              if not good:failures.append(dict(field=name,actual=actual,declared=declared))
+          def row(name,period):
+              return next(r for r in original['rows'] if r['policy']==name and r['period']==period)
+          def cr(name,freq,period):
+              return next(r for r in cadence['rows'] if r['policy']==name and r['cadence']==freq and r['period']==period)
+          def value(text):
+              if text=='':return None
+              if text in ('true','false'):return text=='true'
+              return float(text)
+          maps={'validation_2024_net_pct':('validation','return_pct'),'later_608day_net_pct':('later','return_pct'),
+            'later_close_dd_pct':('later','max_close_drawdown_pct'),'later_order_fills':('later','order_fills'),
+            'later_rebalance_days':('later','rebalance_days'),'later_closed_asset_positions':('later','closed_asset_positions'),
+            'later_fees_usdt':('later','fees'),'full_cagr_pct':('full','cagr_pct'),
+            'full_close_dd_pct':('full','max_close_drawdown_pct'),'full_accounting_complete':('full','accounting_complete')}
+          with p('research/asymmetric_pulse/base_comparison.csv').open() as f:
+              base=list(csv.DictReader(f));assert len(base)==15
+              for item in base:
+                  for field,(period,key) in maps.items():check(item['policy']+'.'+field,row(item['policy'],period)[key],value(item[field]))
+          maps={'later_net_pct':('later','return_pct'),'later_close_dd_pct':('later','max_close_drawdown_pct'),
+            'later_fills':('later','order_fills'),'later_double_cost_net_pct':('later_double_costs','return_pct'),
+            'okx_later_net_pct':('okx_later','return_pct'),'full_cagr_pct':('full','cagr_pct'),
+            'full_close_dd_pct':('full','max_close_drawdown_pct'),'full_accounting_complete':('full','accounting_complete')}
+          with p('research/asymmetric_pulse/cadence_comparison.csv').open() as f:
+              table=list(csv.DictReader(f));assert len(table)==20
+              for item in table:
+                  name=item['policy'];freq=int(item['cadence_days'])
+                  for field,(period,key) in maps.items():check(f'{name}.{freq}.{field}',cr(name,freq,period)[key],value(item[field]))
+                  gate=next(r['eligible'] for r in cadence['development_gates'] if r['policy']==name and r['cadence']==freq)
+                  check(f'{name}.{freq}.development_gate',gate,value(item['development_gate_passed']))
+          for period,section in [('later','primary_later'),('full','primary_full')]:
+              r=row('asymmetric_blend',period)
+              for key in ('return_pct','cagr_pct','max_close_drawdown_pct','order_fills','rebalance_days','closed_asset_positions','fees','accounting_complete'):
+                  check(section+'.'+key,r[key],summary[section][key])
+              if 'worst_rolling365_pct' in summary[section]:check(section+'.worst365',r['worst_rolling_365_pct'],summary[section]['worst_rolling365_pct'])
+          actual_facts=dict(primary_later=row('asymmetric_blend','later'),primary_full=row('asymmetric_blend','full'))
+          review=dict(comparisons=checked,failures=failures,all_compact_tables_reconciled=not failures,
+            actual_primary_metrics={section:{k:r[k] for k in ('return_pct','cagr_pct','max_close_drawdown_pct','worst_rolling_365_pct','order_fills','gross_before_fees','fees')} for section,r in actual_facts.items()},
+            source_result_hashes=[digest(original),digest(cadence)],not_new_market_replay=True)
+          p('SUMMARY_REVIEW.json').write_text(json.dumps(review,indent=2))
+          print(json.dumps(review))
+          assert not failures,'Readable summary transcription differs from computed evidence'
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: asymmetric-summary-review
+          path: SUMMARY_REVIEW.json
+          retention-days: 90

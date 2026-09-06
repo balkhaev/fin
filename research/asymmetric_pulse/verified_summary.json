@@ -1,0 +1,124 @@
+{
+  "id":"asymmetric-pulse-20260906",
+  "base_main_commit":"bf762be5910e7878c14821ef306e974521fb4578",
+  "original_protocol_commit":"da18d3f668d99d3e30f58b39c61a95b97937eff7",
+  "core_tested_commit":"b64f035766790ba65e8bfd614c68081901ff23e1",
+  "core_run":34025701632,
+  "core_research_job":101466161263,
+  "core_reproduction_job":101466403185,
+  "scope":"NEW eleven spot-target hypotheses plus four controls, all on reused nine-asset history. Not an achieved BTC-only breakthrough.",
+  "primary":"asymmetric_blend",
+  "primary_design":"50%early_downside+30%ignition_downside+20%rebound_downside, daily shared-account execution and predeclared market crash brake.",
+  "qualified_original_challengers":0,
+  "primary_later":{
+    "start":"2025-01-01","end_exclusive":"2026-09-01","days":608,"capital":10000,
+    "return_pct":-21.974931806143537,"cagr_pct":-13.848918599853388,
+    "max_close_drawdown_pct":-32.766770584681616,"order_fills":1103,
+    "rebalance_days":436,"closed_asset_positions":180,"fees":617.8599110077998,
+    "positive_months":6,"zero_months":0,"negative_months":14,
+    "accounting_complete":true,"double_costs_return_pct":-29.839782768291744,
+    "extra_day_delay_return_pct":-21.981102008221555,
+    "pure_okx_return_pct":-25.812394182197608
+  },
+  "primary_full":{
+    "start":"2021-01-01","end_exclusive":"2026-09-01","days":2069,
+    "return_pct":422.63947963348636,"cagr_pct":33.90213757313762,
+    "max_close_drawdown_pct":-44.45436512883503,"worst_rolling365_pct":-42.010095380655464,
+    "order_fills":5064,"rebalance_days":1572,"closed_asset_positions":679,
+    "fees":10584.739725088608,"accounting_complete":true
+  },
+  "primary_standalone2024_return_pct":80.70940618617098,
+  "old_guarded_control_later":{
+    "return_pct":8.642288466009497,"max_close_drawdown_pct":-7.3561574193716,
+    "order_fills":130,"rebalance_days":26,"closed_asset_positions":35,"fees":58.924458632400665
+  },
+  "original_new_policies_positive_in_later_period":1,
+  "only_original_positive_later_policy":{
+    "policy":"early_total","return_pct":3.192650224607685,
+    "max_close_drawdown_pct":-33.56483203793164,"order_fills":665,
+    "full_cagr_pct":null,"full_accounting_complete":false
+  },
+  "cadence_extension":{
+    "post_result_exploratory":true,
+    "protocol_commit":"a342b13dcd4b28229bbd78a5055797d1bb90b234",
+    "tested_commit":"233743b2a78e3a293ca5a9162fb2e3013bf6ccfa",
+    "run":34025957861,"research_job":101466841981,"reproduction_job":101466931708,
+    "unchanged_original_signal_code":true,"unchanged_accounting":true,
+    "unique_target_policies":10,"cadences_days":[3,7],"policy_cadence_pairs":20,
+    "report_count":120,"qualified_development_pairs":0,
+    "positive_later_base_pairs":2,"original_primary_not_replaced":true,
+    "positive_later_examples":[
+      {
+        "policy":"leader_downside","cadence_days":7,
+        "later_return_pct":11.210677703324556,"later_cagr_pct":6.59137066076656,
+        "later_close_drawdown_pct":-26.87323154618867,"later_order_fills":71,
+        "later_fees":604.6131677028864,
+        "later_double_cost_return_pct":2.195288411035601,
+        "later_double_cost_drawdown_pct":-29.939422728595343,
+        "pure_okx_later_return_pct":4.981427374463365,
+        "pure_okx_later_drawdown_pct":-25.950998711331607,
+        "full_return_pct":null,"full_cagr_pct":null,"full_accounting_complete":false,
+        "full_close_drawdown_pct":-80.4085667851749,
+        "full_account_calendar2022_return_pct":-52.347434874856134,
+        "development_gate_passed":false,"selected_after_results":true
+      },
+      {
+        "policy":"guarded_plus_pulse","cadence_days":7,
+        "later_return_pct":3.2996801761035144,"later_cagr_pct":1.9693899919514202,
+        "later_close_drawdown_pct":-10.273671163238895,"later_order_fills":326,
+        "later_fees":112.33040624559196,
+        "later_double_cost_return_pct":1.6507562512238838,
+        "pure_okx_later_return_pct":0.8550569993996726,
+        "full_return_pct":178.15257406810196,"full_cagr_pct":19.79296592363795,
+        "full_close_drawdown_pct":-24.613134290647277,"full_accounting_complete":true,
+        "full_account_calendar2022_return_pct":-12.748282923709276,
+        "development_gate_passed":false,"selected_after_results":true
+      }
+    ]
+  },
+  "calendar500_boundary":{
+    "early_full_initial_calendar2021_pct":1025.4440842668637,
+    "early_full_initial_later_pct":-13.274010673420655,
+    "early_full_initial_full_endpoint_complete":false,
+    "early_full_cadence3_calendar2021_pct":1191.9037244146987,
+    "early_full_cadence3_later_pct":-32.175185219423206,
+    "calendar_values_are_marked_segments_not_standalone_liquidated_year_tests":true,
+    "stable_annual500_inferred":false
+  },
+  "verification":{
+    "new_tests":28,"root_tests":622,"additional_subtests":46,"failures":0,
+    "new_tests_included_in_root_total":true,
+    "initial_report_count":72,"initial_reports_exactly_repeated":72,
+    "initial_fill_ledgers_exactly_repeated":72,
+    "followup_report_count":120,"followup_reports_exactly_repeated":120,
+    "followup_fill_ledgers_exactly_repeated":120,
+    "total_report_runs":192,"reports_are_independent_market_observations":false,
+    "same28_regressions_rerun_in_followup":true,"local_execution":false,
+    "independent_execution_same_code_and_data":true,"independent_model_implementation":false,
+    "legacy_guarded_and_raw126_controls_exactly_reproduced":true
+  },
+  "hashes":{
+    "initial_result":"48c5932a6b3eff560feed90274e7e90a9188cca9fb71ebebc695026baa97fbf9",
+    "initial_fill_ledger":"329b4b04e08b6fa9ada55656f0816da38038cf3588e30433a73f161c9bed06c3",
+    "cadence_result":"d11d54a88e2caac7f1c84c18116ca772134e2cf22dee66a62d411ddd9085da2d",
+    "cadence_fill_ledger":"c499936e015e4cd408bb7e996a6621eddd8ea79dcb7d0df29d2ea2137419e7cc"
+  },
+  "artifacts":[
+    {"id":9986997017,"kind":"core_code_inputs_all_results","bytes":8558204,"sha256":"fcc1a285497003f107f344db6c29d799a2bccaa71cea84d91337b20e7b6d4fc1"},
+    {"id":9987010639,"kind":"core_reproduction","bytes":12272,"sha256":"6b378182aff2a34a8cdfe9b92969a4b2176d225ce1f9b38b39c5763351024e22"},
+    {"id":9987057118,"kind":"cadence_code_all_results","bytes":3046499,"sha256":"b1325fc1f2e38fdb938632782f30118cb056410b195c796b7daefe15c3cf05a4"},
+    {"id":9987076319,"kind":"cadence_reproduction","bytes":19500,"sha256":"8b88b83a42d0cd1cb778e0151790f516beb90a16903a247e1922e64b813d42bf"}
+  ],
+  "conclusion":"Bold hypotheses materially increased activity and some bull-year returns, but did not improve stable return/risk. Primary failed, no candidate passed frozen admission. Post-result positive cadence examples remain riskier or less profitable than prior guard.",
+  "breakthrough_achieved":false,"stable_profit_proven":false,"annual500proven":false,
+  "live_ready":false,"real_orders_sent":0,
+  "limitations":[
+    "Market periods and nine surviving assets were repeatedly inspected; neither precommit nor clean-run repetition produces pristine OOS.",
+    "Some full accounts have native terminal residuals; null return/CAGR retained. No cash-floor workaround or fake fill.",
+    "Riskier target budgets do not preserve previous10%DD/.25%trade-risk limits. Close-DD is not an intraday loss bound.",
+    "Signal event state is not actual fill state, and fill counts include daily rebalancing rather than only new independent trades.",
+    "A calendar segment above500% is not stable500%CAGR, nor a guarantee of executable real-account profit.",
+    "Native daily OHLC, cost and contract assumptions omit real queues, taxes, infrastructure, custody/counterparty and USDT risks.",
+    "The first_results.json file remains the initial chronological snapshot, not the final status of the cadence extension."
+  ]
+}
