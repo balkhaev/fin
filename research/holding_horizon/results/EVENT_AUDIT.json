@@ -1,0 +1,560 @@
+{
+  "id": "holding-horizon-20260906",
+  "result_sha256": "fd786db742ddce242151cae621c38d430a74d399f84c19925978cf99b0d4d35b",
+  "reports": 68,
+  "fill_rows": 4420,
+  "funding_rows": 141220,
+  "entry_groups": 1105,
+  "all_saved_events_checked": true,
+  "funding_quantity_before_same_timestamp_orders": true,
+  "entry_signal_delay_checked": true,
+  "original_source_not_modified": true,
+  "no_new_account_simulation": true,
+  "actual_exchange_execution_not_verified": true,
+  "rows": [
+    {
+      "model": "hold30_125",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 188,
+      "funding_rows": 5344,
+      "entry_groups": 47
+    },
+    {
+      "model": "hold30_125",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1686,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold30_125",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 40,
+      "funding_rows": 830,
+      "entry_groups": 10
+    },
+    {
+      "model": "hold14_100",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 280,
+      "funding_rows": 4804,
+      "entry_groups": 70
+    },
+    {
+      "model": "hold14_100",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 80,
+      "funding_rows": 1540,
+      "entry_groups": 20
+    },
+    {
+      "model": "hold14_100",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 48,
+      "funding_rows": 712,
+      "entry_groups": 12
+    },
+    {
+      "model": "hold14_100",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 80,
+      "funding_rows": 1540,
+      "entry_groups": 20
+    },
+    {
+      "model": "hold14_100",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 80,
+      "funding_rows": 1544,
+      "entry_groups": 20
+    },
+    {
+      "model": "hold14_125",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 280,
+      "funding_rows": 4804,
+      "entry_groups": 70
+    },
+    {
+      "model": "hold14_125",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 80,
+      "funding_rows": 1540,
+      "entry_groups": 20
+    },
+    {
+      "model": "hold14_125",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 48,
+      "funding_rows": 712,
+      "entry_groups": 12
+    },
+    {
+      "model": "hold14_125",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 80,
+      "funding_rows": 1540,
+      "entry_groups": 20
+    },
+    {
+      "model": "hold14_125",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 80,
+      "funding_rows": 1544,
+      "entry_groups": 20
+    },
+    {
+      "model": "hold30_100",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 188,
+      "funding_rows": 5344,
+      "entry_groups": 47
+    },
+    {
+      "model": "hold30_100",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1686,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold30_100",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 40,
+      "funding_rows": 830,
+      "entry_groups": 10
+    },
+    {
+      "model": "hold30_100",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1686,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold30_100",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1690,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold30_125",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1686,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold30_125",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1690,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold60_100",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 156,
+      "funding_rows": 5480,
+      "entry_groups": 39
+    },
+    {
+      "model": "hold60_100",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1764,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold60_100",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 36,
+      "funding_rows": 840,
+      "entry_groups": 9
+    },
+    {
+      "model": "hold60_100",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1764,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold60_100",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1770,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold60_125",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 156,
+      "funding_rows": 5480,
+      "entry_groups": 39
+    },
+    {
+      "model": "hold60_125",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1764,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold60_125",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 36,
+      "funding_rows": 840,
+      "entry_groups": 9
+    },
+    {
+      "model": "hold60_125",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1764,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold60_125",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1770,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold90_100",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 156,
+      "funding_rows": 5540,
+      "entry_groups": 39
+    },
+    {
+      "model": "hold90_100",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1824,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold90_100",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 36,
+      "funding_rows": 840,
+      "entry_groups": 9
+    },
+    {
+      "model": "hold90_100",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1824,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold90_100",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1830,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold90_125",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 156,
+      "funding_rows": 5540,
+      "entry_groups": 39
+    },
+    {
+      "model": "hold90_125",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1824,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold90_125",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 36,
+      "funding_rows": 840,
+      "entry_groups": 9
+    },
+    {
+      "model": "hold90_125",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1824,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold90_125",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1830,
+      "entry_groups": 8
+    },
+    {
+      "model": "signal_only_100",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 152,
+      "funding_rows": 5540,
+      "entry_groups": 38
+    },
+    {
+      "model": "signal_only_100",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 28,
+      "funding_rows": 1824,
+      "entry_groups": 7
+    },
+    {
+      "model": "signal_only_100",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 36,
+      "funding_rows": 840,
+      "entry_groups": 9
+    },
+    {
+      "model": "signal_only_100",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 28,
+      "funding_rows": 1824,
+      "entry_groups": 7
+    },
+    {
+      "model": "signal_only_100",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 28,
+      "funding_rows": 1830,
+      "entry_groups": 7
+    },
+    {
+      "model": "signal_only_125",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 152,
+      "funding_rows": 5540,
+      "entry_groups": 38
+    },
+    {
+      "model": "signal_only_125",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 28,
+      "funding_rows": 1824,
+      "entry_groups": 7
+    },
+    {
+      "model": "signal_only_125",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 36,
+      "funding_rows": 840,
+      "entry_groups": 9
+    },
+    {
+      "model": "signal_only_125",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 28,
+      "funding_rows": 1824,
+      "entry_groups": 7
+    },
+    {
+      "model": "signal_only_125",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 28,
+      "funding_rows": 1830,
+      "entry_groups": 7
+    },
+    {
+      "model": "hold90_125",
+      "period": "full_double_costs",
+      "start": "2021-01-01",
+      "fill_rows": 156,
+      "funding_rows": 5540,
+      "entry_groups": 39
+    },
+    {
+      "model": "hold90_125",
+      "period": "later_capital1000",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1824,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold90_125",
+      "period": "origin365",
+      "start": "2021-01-01",
+      "fill_rows": 36,
+      "funding_rows": 1382,
+      "entry_groups": 9
+    },
+    {
+      "model": "hold90_125",
+      "period": "origin365",
+      "start": "2022-01-01",
+      "fill_rows": 20,
+      "funding_rows": 894,
+      "entry_groups": 5
+    },
+    {
+      "model": "hold90_125",
+      "period": "origin365",
+      "start": "2023-01-01",
+      "fill_rows": 32,
+      "funding_rows": 600,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold90_125",
+      "period": "origin365",
+      "start": "2025-01-01",
+      "fill_rows": 20,
+      "funding_rows": 1278,
+      "entry_groups": 5
+    },
+    {
+      "model": "hold90_125",
+      "period": "origin365",
+      "start": "2022-07-01",
+      "fill_rows": 28,
+      "funding_rows": 596,
+      "entry_groups": 7
+    },
+    {
+      "model": "hold90_125",
+      "period": "origin365",
+      "start": "2023-07-01",
+      "fill_rows": 40,
+      "funding_rows": 786,
+      "entry_groups": 10
+    },
+    {
+      "model": "hold90_125",
+      "period": "origin365",
+      "start": "2024-07-01",
+      "fill_rows": 24,
+      "funding_rows": 1262,
+      "entry_groups": 6
+    },
+    {
+      "model": "hold30_125",
+      "period": "full_double_costs",
+      "start": "2021-01-01",
+      "fill_rows": 188,
+      "funding_rows": 5344,
+      "entry_groups": 47
+    },
+    {
+      "model": "hold30_125",
+      "period": "later_capital1000",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1686,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold30_125",
+      "period": "origin365",
+      "start": "2021-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1368,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold30_125",
+      "period": "origin365",
+      "start": "2022-01-01",
+      "fill_rows": 24,
+      "funding_rows": 868,
+      "entry_groups": 6
+    },
+    {
+      "model": "hold30_125",
+      "period": "origin365",
+      "start": "2023-01-01",
+      "fill_rows": 36,
+      "funding_rows": 592,
+      "entry_groups": 9
+    },
+    {
+      "model": "hold30_125",
+      "period": "origin365",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1214,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold30_125",
+      "period": "origin365",
+      "start": "2022-07-01",
+      "fill_rows": 32,
+      "funding_rows": 596,
+      "entry_groups": 8
+    },
+    {
+      "model": "hold30_125",
+      "period": "origin365",
+      "start": "2023-07-01",
+      "fill_rows": 44,
+      "funding_rows": 770,
+      "entry_groups": 11
+    },
+    {
+      "model": "hold30_125",
+      "period": "origin365",
+      "start": "2024-07-01",
+      "fill_rows": 36,
+      "funding_rows": 1200,
+      "entry_groups": 9
+    }
+  ]
+}

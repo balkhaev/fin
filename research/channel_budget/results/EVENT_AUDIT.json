@@ -1,0 +1,360 @@
+{
+  "id": "channel-budget-20260906",
+  "result_sha256": "8a6e75a29e4631eb1db107840d7f63f989c13de5953cd6a89d1c1a7bf2aa3105",
+  "reports": 43,
+  "fill_rows": 3902,
+  "funding_rows": 90655,
+  "entry_groups": 1177,
+  "all_saved_events_checked": true,
+  "funding_quantity_before_same_timestamp_orders": true,
+  "entry_signal_delay_checked": true,
+  "original_source_not_modified": true,
+  "no_new_account_simulation": true,
+  "actual_exchange_execution_not_verified": true,
+  "rows": [
+    {
+      "model": "relative125",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 188,
+      "funding_rows": 5344,
+      "entry_groups": 47
+    },
+    {
+      "model": "relative125",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1686,
+      "entry_groups": 11
+    },
+    {
+      "model": "relative125",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 40,
+      "funding_rows": 830,
+      "entry_groups": 10
+    },
+    {
+      "model": "relative125",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1686,
+      "entry_groups": 11
+    },
+    {
+      "model": "relative125",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1690,
+      "entry_groups": 11
+    },
+    {
+      "model": "daily25",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 192,
+      "funding_rows": 4145,
+      "entry_groups": 69
+    },
+    {
+      "model": "daily25",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 56,
+      "funding_rows": 1340,
+      "entry_groups": 20
+    },
+    {
+      "model": "daily25",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 32,
+      "funding_rows": 618,
+      "entry_groups": 12
+    },
+    {
+      "model": "daily25",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 56,
+      "funding_rows": 1340,
+      "entry_groups": 20
+    },
+    {
+      "model": "daily25",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 56,
+      "funding_rows": 1340,
+      "entry_groups": 20
+    },
+    {
+      "model": "daily50",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 192,
+      "funding_rows": 4145,
+      "entry_groups": 69
+    },
+    {
+      "model": "daily50",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 56,
+      "funding_rows": 1340,
+      "entry_groups": 20
+    },
+    {
+      "model": "daily50",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 32,
+      "funding_rows": 618,
+      "entry_groups": 12
+    },
+    {
+      "model": "daily50",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 56,
+      "funding_rows": 1340,
+      "entry_groups": 20
+    },
+    {
+      "model": "daily50",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 56,
+      "funding_rows": 1340,
+      "entry_groups": 20
+    },
+    {
+      "model": "mix25",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 334,
+      "funding_rows": 7313,
+      "entry_groups": 98
+    },
+    {
+      "model": "mix25",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 84,
+      "funding_rows": 2267,
+      "entry_groups": 25
+    },
+    {
+      "model": "mix25",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 70,
+      "funding_rows": 1295,
+      "entry_groups": 21
+    },
+    {
+      "model": "mix25",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 84,
+      "funding_rows": 2267,
+      "entry_groups": 25
+    },
+    {
+      "model": "mix25",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 84,
+      "funding_rows": 2274,
+      "entry_groups": 25
+    },
+    {
+      "model": "mix50",
+      "period": "full",
+      "start": "2021-01-01",
+      "fill_rows": 386,
+      "funding_rows": 6860,
+      "entry_groups": 121
+    },
+    {
+      "model": "mix50",
+      "period": "later",
+      "start": "2025-01-01",
+      "fill_rows": 106,
+      "funding_rows": 2100,
+      "entry_groups": 33
+    },
+    {
+      "model": "mix50",
+      "period": "validation",
+      "start": "2024-01-01",
+      "fill_rows": 72,
+      "funding_rows": 1277,
+      "entry_groups": 22
+    },
+    {
+      "model": "mix50",
+      "period": "later_double_costs",
+      "start": "2025-01-01",
+      "fill_rows": 106,
+      "funding_rows": 2100,
+      "entry_groups": 33
+    },
+    {
+      "model": "mix50",
+      "period": "later_delay2",
+      "start": "2025-01-01",
+      "fill_rows": 106,
+      "funding_rows": 2107,
+      "entry_groups": 33
+    },
+    {
+      "model": "mix25",
+      "period": "full_double_costs",
+      "start": "2021-01-01",
+      "fill_rows": 334,
+      "funding_rows": 7313,
+      "entry_groups": 98
+    },
+    {
+      "model": "mix25",
+      "period": "later_capital1000",
+      "start": "2025-01-01",
+      "fill_rows": 84,
+      "funding_rows": 2267,
+      "entry_groups": 25
+    },
+    {
+      "model": "mix25",
+      "period": "origin365",
+      "start": "2021-01-01",
+      "fill_rows": 64,
+      "funding_rows": 1494,
+      "entry_groups": 18
+    },
+    {
+      "model": "mix25",
+      "period": "origin365",
+      "start": "2022-01-01",
+      "fill_rows": 42,
+      "funding_rows": 1149,
+      "entry_groups": 13
+    },
+    {
+      "model": "mix25",
+      "period": "origin365",
+      "start": "2023-01-01",
+      "fill_rows": 74,
+      "funding_rows": 1108,
+      "entry_groups": 21
+    },
+    {
+      "model": "mix25",
+      "period": "origin365",
+      "start": "2025-01-01",
+      "fill_rows": 52,
+      "funding_rows": 1397,
+      "entry_groups": 16
+    },
+    {
+      "model": "mix25",
+      "period": "origin365",
+      "start": "2022-07-01",
+      "fill_rows": 62,
+      "funding_rows": 1025,
+      "entry_groups": 18
+    },
+    {
+      "model": "mix25",
+      "period": "origin365",
+      "start": "2023-07-01",
+      "fill_rows": 74,
+      "funding_rows": 1195,
+      "entry_groups": 21
+    },
+    {
+      "model": "mix25",
+      "period": "origin365",
+      "start": "2024-07-01",
+      "fill_rows": 60,
+      "funding_rows": 1407,
+      "entry_groups": 19
+    },
+    {
+      "model": "relative125",
+      "period": "full_double_costs",
+      "start": "2021-01-01",
+      "fill_rows": 188,
+      "funding_rows": 5344,
+      "entry_groups": 47
+    },
+    {
+      "model": "relative125",
+      "period": "later_capital1000",
+      "start": "2025-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1686,
+      "entry_groups": 11
+    },
+    {
+      "model": "relative125",
+      "period": "origin365",
+      "start": "2021-01-01",
+      "fill_rows": 44,
+      "funding_rows": 1368,
+      "entry_groups": 11
+    },
+    {
+      "model": "relative125",
+      "period": "origin365",
+      "start": "2022-01-01",
+      "fill_rows": 24,
+      "funding_rows": 868,
+      "entry_groups": 6
+    },
+    {
+      "model": "relative125",
+      "period": "origin365",
+      "start": "2023-01-01",
+      "fill_rows": 36,
+      "funding_rows": 592,
+      "entry_groups": 9
+    },
+    {
+      "model": "relative125",
+      "period": "origin365",
+      "start": "2025-01-01",
+      "fill_rows": 32,
+      "funding_rows": 1214,
+      "entry_groups": 8
+    },
+    {
+      "model": "relative125",
+      "period": "origin365",
+      "start": "2022-07-01",
+      "fill_rows": 32,
+      "funding_rows": 596,
+      "entry_groups": 8
+    },
+    {
+      "model": "relative125",
+      "period": "origin365",
+      "start": "2023-07-01",
+      "fill_rows": 44,
+      "funding_rows": 770,
+      "entry_groups": 11
+    },
+    {
+      "model": "relative125",
+      "period": "origin365",
+      "start": "2024-07-01",
+      "fill_rows": 36,
+      "funding_rows": 1200,
+      "entry_groups": 9
+    }
+  ]
+}

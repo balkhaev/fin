@@ -1,0 +1,115 @@
+name: Channel time-scale research
+on:
+  push:
+    branches: [research/holding-horizon-main-20260906]
+    paths:
+      - research/channel_scale/*.py
+      - tests/test_channel_scale.py
+      - .github/workflows/channel-scale-research.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: channel-scale-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -e . -r research/clock_phase/requirements.txt
+      - name: Completed-bar tests and entire main-compatible test suite
+        run: |
+          python -m pytest -q tests/test_holding_horizon.py tests/test_channel_scale.py --junitxml=new-tests.xml
+          python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 100 root-tests.log; exit 1; }
+          tail -n 2 root-tests.log
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34039211921
+          name: opportunity-leverage-complete-evidence
+          path: archived
+      - name: Slow signal clock, original hourly trade and funding account
+        run: python -m research.channel_scale.study --source archived --out report --allow-archived-reference > study.log 2>&1 || { tail -n 100 study.log; exit 1; }
+      - run: |
+          cat study.log
+          cat report/comparison.csv
+      - name: Preserve exact source and all financial paths
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/channel_scale research/holding_horizon research/holding_checks delivery/research/
+          cp tests/test_holding_horizon.py tests/test_channel_scale.py delivery/tests/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: channel-scale-research-evidence
+          path: |
+            report/
+            delivery/
+            study.log
+            new-tests.xml
+            root-tests.xml
+            root-tests.log
+          retention-days: 90
+  repeat:
+    needs: study
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.13'}
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34039211921
+          name: opportunity-leverage-complete-evidence
+          path: archived
+      - uses: actions/download-artifact@v4
+        with: {name: channel-scale-research-evidence, path: first}
+      - run: python -m research.channel_scale.study --source archived --out repeated --allow-archived-reference > repeat.log 2>&1 || { tail -n 100 repeat.log; exit 1; }
+      - name: All53 accounts and212 financial files reproduced
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path
+          assert json.loads(p('first/report/results.json').read_text())==json.loads(p('repeated/results.json').read_text())
+          count=0
+          for suffix in ('_fills.csv','_funding.csv','_episodes.csv','_equity.csv.gz'):
+              files=list(p('first/report').glob('*'+suffix));assert len(files)==53
+              for f in files:
+                  assert f.read_bytes()==(p('repeated')/f.name).read_bytes(),f.name
+                  count+=1
+          v=json.loads(p('repeated/verification.json').read_text());assert v['reports']==53
+          v.update(all53_reports_equal=True,all212_financial_files_equal=count==212,independent_execution=True,
+              independent_implementation=False,new_market_holdout=False,local_execution=False,reference_unpatched_outside_main=True,real_orders=0)
+          p('REPRODUCTION.json').write_text(json.dumps(v,indent=2));print(json.dumps(v))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: channel-scale-reproduction
+          path: |
+            REPRODUCTION.json
+            repeated/comparison.csv
+            repeated/annual.csv
+            repeat.log
+          retention-days: 90

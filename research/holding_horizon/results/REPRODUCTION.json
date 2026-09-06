@@ -1,0 +1,16 @@
+{
+  "result_sha256": "fd786db742ddce242151cae621c38d430a74d399f84c19925978cf99b0d4d35b",
+  "ledger_sha256": "7ef217ee3b69536e0466c4a02c84cdd0256df6fa058eca7a6fdb4cb20329dabf",
+  "reports": 68,
+  "qualified": 68,
+  "exact_original_reports": 3,
+  "all68_reports_equal": true,
+  "all272_financial_files_equal": true,
+  "independent_execution": true,
+  "independent_model": false,
+  "unseen_market": false,
+  "local_execution": false,
+  "reference_engine_unpatched_outside_main": true,
+  "beta_model_not_implemented": true,
+  "real_orders": 0
+}
