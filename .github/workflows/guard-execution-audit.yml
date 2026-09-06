@@ -1,0 +1,116 @@
+name: Existing guard execution audit
+on:
+  push:
+    branches: [research/funding-crowding-20260906]
+    paths:
+      - research/guard_execution_audit/*.py
+      - tests/test_guard_execution_audit.py
+      - .github/workflows/guard-execution-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: guard-execution-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e . -r research/clock_phase/requirements.txt
+      - name: New source/reporting tests and complete repository suite
+        run: |
+          python -m pytest -q tests/test_funding_crowding_data.py tests/test_guard_execution_audit.py --junitxml=new-tests.xml
+          python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 100 root-tests.log; exit 1; }
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34024683190
+          name: rotation-transfer-research-evidence
+          path: source
+      - name: Frozen150 account comparisons, no funding policy or new ledger
+        run: python -m research.guard_execution_audit.study --source source --out report > research.log 2>&1 || { tail -n 120 research.log; exit 1; }
+      - name: Report every base and stress result
+        run: |
+          cat research.log
+          tail -n 2 root-tests.log
+      - name: Preserve reproducible source and evidence
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/guard_execution_audit research/funding_crowding research/annual_rotation research/rotation_stability research/rotation_venue_transfer delivery/research/
+          cp tests/test_funding_crowding_data.py tests/test_guard_execution_audit.py delivery/tests/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: guard-execution-evidence
+          path: |
+            delivery/
+            report/
+            source/prior/rotation-data/
+            source/new-source/okx-data/
+            source/prior/static-report/results.json
+            new-tests.xml
+            root-tests.xml
+            root-tests.log
+            research.log
+          retention-days: 90
+  reproduce:
+    needs: research
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: guard-execution-evidence
+          path: first
+      - run: python -m research.guard_execution_audit.study --source first/source --out repeated > repeat.log 2>&1 || { tail -n 100 repeat.log; exit 1; }
+      - name: Verify complete report and each original filled-order CSV
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          p=pathlib.Path
+          a=json.loads(p('first/report/results.json').read_text());b=json.loads(p('repeated/results.json').read_text())
+          assert a==b,'Full report mismatch'
+          files=sorted(p('first/report').glob('*_fills.csv'));assert len(files)==150
+          for f in files:assert f.read_bytes()==(p('repeated')/f.name).read_bytes(),f.name
+          v=json.loads(p('repeated/verification.json').read_text())
+          assert v['reports']==150 and v['ledger_count']==150
+          v.update(all_reports_exact=True,all_fill_files_exact=True,independent_execution=True,
+            independent_model=False,independent_market=False,local_execution=False,
+            funding_policy_implemented=False,real_orders=0)
+          p('REPRODUCTION.json').write_text(json.dumps(v,indent=2));print(json.dumps(v))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: guard-execution-reproduction
+          path: |
+            REPRODUCTION.json
+            repeated/comparison.csv
+            repeated/annual.csv
+            repeat.log
+          retention-days: 90
