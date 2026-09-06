@@ -1,0 +1,109 @@
+name: Cash-gap evidence review
+on:
+  push:
+    branches: [research/cash-gap-20260906]
+    paths:
+      - .github/workflows/cash-gap-evidence-review.yml
+      - research/cash_gap/verified_summary.json
+      - research/cash_gap/compact_comparison.csv
+      - research/cash_gap/RESULTS_RU.md
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34032314629
+          name: cash-gap-research-evidence
+          path: package
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34032314629
+          name: cash-gap-reproduction
+          path: package/reproduction
+      - name: Reconcile compact table, summary and exact source against computed artifacts
+        run: |
+          python - <<'PY'
+          import csv,hashlib,json,math,pathlib
+          p=pathlib.Path
+          r=json.loads(p('package/report/results.json').read_text())
+          s=json.loads(p('research/cash_gap/verified_summary.json').read_text())
+          v=json.loads(p('package/reproduction/REPRODUCTION.json').read_text())
+          digest=lambda x:hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+          assert digest(r)==s['result_sha256']==v['result_sha256']
+          assert r['ledger_sha256']==s['ledger_sha256']==v['ledger_sha256']
+          assert v['full_result_exact'] and v['all98_fill_files_exact'] and v['all98_equity_files_exact']
+          for name,wanted in r['source_sha256'].items():
+              assert hashlib.sha256(p('research/cash_gap',name).read_bytes()).hexdigest()==wanted,name
+          pick=lambda name,period:next(x for x in r['rows'] if x['policy']==name and x['period']==period)
+          failures=[];count=0
+          def check(field,actual,want):
+              global count
+              count+=1
+              if actual is None or isinstance(actual,bool):good=actual==want
+              else:good=want is not None and math.isclose(float(actual),float(want),rel_tol=1e-11,abs_tol=1e-9)
+              if not good:failures.append(dict(field=field,actual=actual,declared=want))
+          columns={'full_cagr_pct':('full','cagr_pct'),'full_drawdown_pct':('full','max_close_drawdown_pct'),
+            'later_return_pct':('later','return_pct'),'later_drawdown_pct':('later','max_close_drawdown_pct'),
+            'later_fills':('later','order_fills'),'later_invested_days':('later','invested_days'),
+            'later_okx_return_pct':('later_okx','return_pct')}
+          with p('research/cash_gap/compact_comparison.csv').open() as f:table=list(csv.DictReader(f))
+          assert len(table)==13 and len({x['policy'] for x in table})==13
+          for entry in table:
+              for field,(period,key) in columns.items():check(entry['policy']+'.'+field,pick(entry['policy'],period)[key],float(entry[field]))
+          for who,name in [('primary',r['primary']),('control',r['control'])]:
+              for period in ('full','later'):
+                  actual=pick(name,period)
+                  for key,want in s[who+'_'+period].items():check(who+'.'+period+'.'+key,actual[key],want)
+          for year in s['primary_annual']:
+              actual=next(x for x in pick(r['primary'],'full')['annual'] if x['year']==year['year'])
+              check(str(year['year']),actual['return_pct'],year['return_pct'])
+              check('full_year'+str(year['year']),actual['full_year'],year['full_year'])
+          for period,fields in s['primary_stresses'].items():
+              for key,want in fields.items():check(period+'.'+key,pick(r['primary'],period)[key],want)
+          for period in ('full','later'):
+              check('sleeve_alone.'+period,pick('sleeve_trend10_only',period)['return_pct'],s['sleeve_alone_diagnostic'][period+'_return_pct'])
+          for key in ('fees','closed_asset_positions'):
+              check('sleeve_later.'+key,pick('sleeve_trend10_only','later')[key],s['sleeve_alone_diagnostic']['later_'+key])
+          for field,(period,key) in {'full_cagr_pct':('full','cagr_pct'),
+              'full_max_close_drawdown_pct':('full','max_close_drawdown_pct'),
+              'later_return_pct':('later','return_pct'),
+              'later_max_close_drawdown_pct':('later','max_close_drawdown_pct'),
+              'later_okx_return_pct':('later_okx','return_pct')}.items():
+              check('always_blend.'+field,pick('always_blend10',period)[key],s['always_on_blend_not_primary'][field])
+          assert r['origin_sensitivity']==s['origin_sensitivity'] and r['admission']==s['admission']
+          assert r['admitted']==s['primary_admitted'] is False
+          assert len(r['rows'])==s['reports']==98
+          assert all(x['accounting_complete'] for x in r['rows'])==s['all_report_accounts_complete']
+          assert '718 passed, 46 subtests passed' in p('package/root-tests.log').read_text()
+          report=dict(comparisons=count,failures=failures,exact_source_and_reproduction_verified=True,
+            all98_accounts_complete=True,summary_and_all13_rows_reconciled=not failures,
+            no_new_parameter_search=True,no_new_portfolio_simulation=True)
+          p('package/EVIDENCE_REVIEW.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps(report));assert not failures
+          PY
+      - name: Include final documents without rewriting primary evidence
+        if: always()
+        run: |
+          cp research/cash_gap/README_RU.md package/README_RU.md
+          cp research/cash_gap/RESULTS_RU.md package/RESULTS_RU.md
+          cp research/cash_gap/verified_summary.json package/verified_summary.json
+          cp research/cash_gap/compact_comparison.csv package/compact_comparison.csv
+          cp research/cash_gap/*.md research/cash_gap/*.json research/cash_gap/*.csv package/delivery/research/cash_gap/
+          git rev-parse HEAD > package/REVIEWED_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cash-gap-complete-evidence
+          path: package/
+          retention-days: 90
