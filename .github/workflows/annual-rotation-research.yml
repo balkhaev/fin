@@ -1,0 +1,96 @@
+name: Annual target rotation research
+on:
+  push:
+    branches: [research/annual-target-rotation]
+    paths:
+      - research/annual_rotation/*.py
+      - tests/test_annual_rotation*.py
+      - .github/workflows/annual-rotation-research.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: annual-rotation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e . -r research/btc_flow/requirements.txt scipy
+      - name: Engineering and accounting regressions
+        run: python -m pytest -q tests/test_annual_rotation*.py --junitxml=rotation-tests.xml
+      - name: Complete existing repository suite
+        run: python -m pytest -q tests --junitxml=root-tests.xml > root-tests.log 2>&1 || { tail -n 80 root-tests.log; exit 1; }
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34020016415
+          name: annual-rotation-fixed-data
+          path: inputs
+      - name: Same frozen signals, all periods, costs and all asset exclusions
+        run: python -m research.annual_rotation.study --data inputs/rotation-data --out report > research.log 2>&1 || { tail -n 80 research.log; exit 1; }
+      - name: Independent cash and integer-unit ledger audit
+        run: |
+          python - <<'PY'
+          import json,pathlib,math
+          import pandas as pd
+          root=pathlib.Path('report');r=json.loads((root/'results.json').read_text());count=0
+          for p in root.glob('*_fills.csv'):
+              if p.stat().st_size<5:continue
+              f=pd.read_csv(p);cash=10000.;units={}
+              for x in f.itertuples():
+                  sign=1 if x.side=='sell' else -1
+                  cash+=sign*x.notional-x.fee
+                  units[x.symbol]=units.get(x.symbol,0)-sign*round(x.quantity/1e-8)
+                  assert cash>=-1e-5 and min(units.values())>=0
+                  assert math.isclose(x.quantity*x.price,x.notional,abs_tol=1e-6,rel_tol=1e-9)
+                  assert math.isclose(cash,x.cash_after,abs_tol=1e-5,rel_tol=1e-10)
+              count+=len(f)
+          focus=(r['selection']['primary'],r['selection']['challenger'],'btc_hold_control','btc_trend_control')
+          fields=('id','period','scenario','return_pct','cagr_pct','max_close_drawdown_pct','worst_rolling_365_pct','order_fills','accounting_complete')
+          print('SELECTION',json.dumps(r['selection']))
+          for row in r['results']:
+              if row['id'] in focus:
+                  print('FOCUS',json.dumps({k:row[k] for k in fields}))
+                  if row['period']=='full':print('CALENDAR_YEARS',row['id'],json.dumps(row['annual']))
+              if row['id']=='btc_hold_control':assert row['order_fills']==2
+          print('OBSERVED500',json.dumps(r['observed_full_year_500']))
+          for row in r['stresses']:print('STRESS',json.dumps({k:row[k] for k in fields}))
+          print('FULL_SUITE',pathlib.Path('root-tests.log').read_text().splitlines()[-1])
+          verification=dict(fill_rows_reconciled=count,integer_unit_balances=True,one_cash_account=True,stable_500_proven=False,live_orders=False)
+          (root/'fill_audit.json').write_text(json.dumps(verification,indent=2))
+          print('CANONICAL_RESULT',(root/'verification_hash.json').read_text())
+          PY
+      - name: Bundle exact source, immutable source data and reports
+        if: always()
+        run: |
+          mkdir -p delivery/research delivery/tests
+          cp -r research/annual_rotation delivery/research/
+          cp tests/test_annual_rotation*.py delivery/tests/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: annual-rotation-complete-evidence
+          path: |
+            inputs/rotation-data/
+            inputs/incumbent-audit/
+            delivery/
+            report/
+            research.log
+            rotation-tests.xml
+            root-tests.xml
+            root-tests.log
+          retention-days: 90
