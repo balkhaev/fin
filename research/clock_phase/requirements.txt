@@ -1,0 +1,3 @@
+-r ../btc_flow/requirements.txt
+scikit-learn==1.7.2
+scipy==1.16.3
