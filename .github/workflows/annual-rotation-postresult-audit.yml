@@ -1,0 +1,67 @@
+name: Historical500 post-result audit
+on:
+  push:
+    branches: [research/annual-target-rotation]
+    paths:
+      - research/annual_rotation_checks/*.py
+      - .github/workflows/annual-rotation-postresult-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r research/btc_flow/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 34020685550
+          name: annual-rotation-complete-evidence
+          path: original
+      - name: Same31 engineering regressions
+        run: python -m pytest -q tests/test_annual_rotation*.py --junitxml=followup-tests.xml
+      - name: Fifteen disclosed diagnostics, not a new independent market holdout
+        run: python -m research.annual_rotation_checks.historical500 --data original/inputs/rotation-data --original original/report --out postresult
+      - name: Verify local results and full fill-ledger reproduction
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          from research.annual_rotation.study import digest
+          result=json.loads(pathlib.Path('postresult/results.json').read_text())
+          expected='74a7db0f766ee34c2520d043fad77ef5cf7ab0fa64f7b1c2644a78061096cb86'
+          assert digest(result)==expected, (digest(result),expected)
+          assert len(result['cases'])==15
+          assert result['stable_500_proven'] is False and result['live_orders'] is False
+          report=dict(result_sha256=expected,full_result_exactly_reproduced=True,
+                      independent_runner=True,not_independent_market_data=True,
+                      post_result_selection=True,stable_500_proven=False)
+          pathlib.Path('REPRODUCTION.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps(report))
+          PY
+      - name: Include exact reproducible followup code
+        if: always()
+        run: |
+          mkdir -p delivery/research
+          cp -r research/annual_rotation research/annual_rotation_checks delivery/research/
+          cp research/btc_flow/requirements.txt delivery/requirements.txt
+          git rev-parse HEAD > delivery/TESTED_COMMIT.txt
+          find delivery -type d -name __pycache__ -prune -exec rm -rf '{}' +
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: annual-rotation-postresult-audit
+          path: |
+            postresult/
+            delivery/
+            followup-tests.xml
+            REPRODUCTION.json
+          retention-days: 90
