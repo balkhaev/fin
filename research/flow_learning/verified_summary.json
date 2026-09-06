@@ -1,0 +1,42 @@
+{
+  "id":"flow-learning-20260906",
+  "protocol_commit":"56ebe9622313433bbed35a2dbb6597d122b69462",
+  "tested_code_commit":"102943536541bec0d0671e6c02dfaa2041420ba7",
+  "ci_run":34027667451,
+  "primary":"flow7_weekly",
+  "source":"990 pinned Binance spot archives, nine assets,21915daily rows; extra aggressor fields checked against original OHLC. Same historical dates and survivor-selected cohort.",
+  "scope":"Monthly past-only paired ridge prediction, not a new threshold flow signal or live execution. Three models share exactly the same training and prediction support.",
+  "model_comparison":["price and volume features only","same features plus aggressor imbalance and price response","same price features plus63-day-old flow features"],
+  "learning":{"monthly_fit_dates":56,"models_per_month":3,"maximum_training_days":730,"minimum_distinct_signal_dates":365,"minimum_training_rows":1500,"maturity_embargo_days":7,"horizon_days":7,"entry_offset_days":2,"label_maturity_offset_days":9,"forecast_asset_date_rows":15269,"regularization_fixed":true,"hyperparameter_search":false,"future_label_mutation_tests_passed":true,"unseen_market_holdout":false},
+  "information_tests":{
+    "2024":{"matured_labels":3213,"signal_days":357,"last_signal":"2024-12-22","price_MSE":1.6558904893545159,"flow_MSE":1.6630284849861174,"stale_flow_MSE":1.6413898340468915,"relative_error_increase_pct":0.4310668898390754,"daily_mean_price_minus_flow_error":-0.007137995631601504,"bootstrap95_daily_improvement":[-0.014777537510317051,-0.0013646891906000792]},
+    "2025_Aug2026":{"matured_labels":5377,"signal_days":599,"last_signal":"2026-08-22","price_MSE":1.29401778036516,"flow_MSE":1.2974403234374126,"stale_flow_MSE":1.2940150710991756,"zero_forecast_MSE":1.23384591699923,"relative_error_increase_pct":0.26448964799283725,"daily_mean_price_minus_flow_error":-0.003738738848036135,"bootstrap95_daily_improvement":[-0.012467491437550339,0.0035696276507887173]},
+    "interpretation":"No positive incremental forecasting evidence for these daily features and this frozen7-day ridge model. Not a general impossibility result about flow or ML.",
+    "bootstrap_draws":2000,"block_days":30,"multiple_testing_corrected":false,"labels_overlap":true
+  },
+  "late_account":{"start":"2025-01-01","end_exclusive":"2026-09-01","days":608,"initial_USDT":10000,"modelled_fee_each_side":0.001,"modelled_slippage_each_side":0.0005,"no_borrowing":true},
+  "late_base_comparison":[
+    {"policy":"flow7_weekly","return_pct":-24.87532618978433,"cagr_pct":-15.787294069416525,"close_drawdown_pct":-33.54904037285269,"fills":248,"rebalance_days":72,"closed_asset_positions":90,"fees":229.98050493180452,"positive_months":7,"zero_months":1,"negative_months":12},
+    {"policy":"price7_weekly","return_pct":-24.02981430890826,"close_drawdown_pct":-32.37786858241189,"fills":230,"fees":201.75415651200683},
+    {"policy":"flow7_daily","return_pct":-26.45109037621228,"close_drawdown_pct":-36.510146187223555,"fills":1445,"rebalance_days":474,"closed_asset_positions":433,"fees":1181.3922328765057},
+    {"policy":"flow7_bold","return_pct":-48.0644996158345,"close_drawdown_pct":-59.02898821326181,"fills":250},
+    {"policy":"flow7_conviction","return_pct":-12.697867999430967,"close_drawdown_pct":-24.418126936321972,"fills":201},
+    {"policy":"flow7_btc","return_pct":-21.462090657733057,"close_drawdown_pct":-31.88335307946044,"fills":54},
+    {"policy":"guarded_control","return_pct":8.642288466009497,"close_drawdown_pct":-7.3561574193716,"fills":130,"fees":58.924458632400665}
+  ],
+  "primary_full":{"start":"2022-01-01","end_exclusive":"2026-09-01","return_pct_rounded":4.658764,"cagr_pct_rounded":0.980815,"close_drawdown_pct_rounded":-33.559027},
+  "primary_full_calendar_segments":[
+    {"year":2022,"full_year":true,"return_pct":-11.474284226107445},
+    {"year":2023,"full_year":true,"return_pct":29.864914120837405},
+    {"year":2024,"full_year":true,"return_pct":21.918708329647462},
+    {"year":2025,"full_year":true,"return_pct":-2.7279838797033995},
+    {"year":2026,"full_year":false,"through":"2026-08-31","return_pct":-23.23627347425431}
+  ],
+  "admission":{"complete_full_and_later":true,"full_positive":true,"later_positive":false,"full_close_drawdown_not_below20":false,"worst_year_not_below10":false,"doubled_cost_later_positive":false,"delayed_later_positive":false,"validation_incremental_information_positive":false,"later_incremental_information_positive":false,"admitted":false},
+  "verification":{"local_tests_passed":25,"ci_new_tests_passed":25,"ci_root_tests_passed":647,"ci_additional_subtests":46,"new_tests_included_in_root_total":true,"all55_reports_accounting_complete":true,"exact_local_CI_account_reports":55,"exact_local_CI_fill_CSVs":55,"full_JSON_bitwise_equal":false,"maximum_metric_abs_difference":3.4638958368304884e-14,"maximum_prediction_abs_difference":3.907985046680551e-14,"all_numerics_close_rtol":1e-12,"all_numerics_close_atol":1e-12,"admission_identical":true,"old_guard_later_report_exactly_reproduced":true,"independent_execution":true,"independent_implementation":false},
+  "hashes":{"local_result":"9a0bd26941cd0c50de1d9d6d0a0d8c7fabf65b80e44c407a9f7367854dff7717","CI_result":"39bd7bd1572b068e61a648a75cd6ebe4c1f0eea79f8d40d892aa3f85cd15a49c","shared_fill_ledger":"ed9c58fe8758864c559c9478a091bf89afff2c3d1b72b81e454ba715605a024b","old_simulator":"e4c9b244e5044dd34062dc83e56c681e33e1e352245529b39d9bc1fa252d95e8"},
+  "artifact":{"id":9987593649,"name":"flow-learning-evidence","bytes":4834833,"sha256":"7c6ac9ce51c78d78a816437b9a73139f2645433c6ab2ab497ba11e41682e1570"},
+  "repair_disclosure":"Initial local unit failures in timezone construction and2.8e-17 batch arithmetic comparison fixed before market computation. After first results, nine2024 signals whose labels end in2025 were removed from2024 predictive scoring; regression added and all55portfolios recomputed unchanged. A timed-out intermediate run is not counted as completed. No predictor, threshold or execution parameter retuned after outcomes.",
+  "stable_profit_proven":false,"annual500proven":false,"live_ready":false,"real_orders":0,
+  "limits":["Trade-count and taker fields are executed aggressor information, not net capital flows or full order-book OFI.","Past-only label handling avoids lookahead but does not remove research-selection or survivorship bias.","MSE is a forecast diagnostic, not a guarantee of trading profit; stale input is a causal negative control, not an independent random market.","All55reports share market history and are not55independent observations.","No actual exchange fills or full intraday risk; original daily-open/cost/minimum/volume assumptions retained.","OKX test uses Binance-trained signals with OKX execution, not invented OKX taker history.","Allocation exclusions do not retrain models or remove assets from historical information.","Taxes, infrastructure, custody, counterparty and USDT risks not fully modeled."]
+}
